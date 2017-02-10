@@ -87,6 +87,7 @@ class AgentsQueueController extends CosapiController
         $Users                  = $this->query_user($id_usuario);
         $Colas                  = Queue::select()
                                         ->with('estrategia','prioridad')
+                                        ->where('estado_id','=',1)
                                         ->orderBy('name')
                                         ->get()
                                         ->toArray();

@@ -176,7 +176,7 @@ class CosapiController extends Controller
     protected function queues_proyect(){
         $queues_proyect     = [];
         $posicion           = 0;
-        $query_queues       = Queue::select()->where('estado_id','=',1)->get()->toArray();
+        $query_queues       = Queue::select()->get()->toArray();
         foreach($query_queues as $queues){
             $queues_proyect[$posicion] = $queues['name'];
             $posicion++;
@@ -192,6 +192,7 @@ class CosapiController extends Controller
     protected function query_user($id_usuario){
         $Users                  = User::select()
                                         ->filtro_usuarios($id_usuario)
+                                        ->where('estado_id','=','1')
                                         ->orderBy('primer_nombre')
                                         ->orderBy('apellido_paterno')
                                         ->orderBy('apellido_paterno')
