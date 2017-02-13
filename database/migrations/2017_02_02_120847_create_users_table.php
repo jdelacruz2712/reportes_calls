@@ -20,6 +20,7 @@ class CreateUsersTable extends Migration
             $table->string('apellido_materno');
             $table->string('username')->unique();
             $table->integer('agente_id')->unsigned();
+            $table->integer('estado_id')->unsigned();
             $table->string('email')->unique();
             $table->string('password', 60);
             $table->enum('role',['user','editor','admin']);
@@ -30,6 +31,10 @@ class CreateUsersTable extends Migration
             $table->foreign('agente_id')
                   ->references('id')
                   ->on('agentes');
+
+            $table->foreign('estado_id')
+                  ->references('id')
+                  ->on('estados');
 
         });
     }
