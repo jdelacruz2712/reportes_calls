@@ -145,6 +145,7 @@ class DashboardController extends CosapiController
             $Answered_less_20     = $list_kpi_details->answ_20s;
             $Answered_less_15     = $list_kpi_details->answ_15s;
             $Answered_less_10     = $list_kpi_details->answ_10s;
+            $Answered_high_20     = $Inbound - $list_kpi_details->answ_20s;
             $Unaswered_less_20    = $list_kpi_details->abandon_20s;
             $Unaswered_less_15    = $list_kpi_details->abandon_15s;
             $Unaswered_less_10    = $list_kpi_details->abandon_10s;
@@ -157,22 +158,23 @@ class DashboardController extends CosapiController
             $Sla_10               = convertDecimales(division($list_kpi_details->answ_10s,$Received)*100,2);
 
             return view('elements/dashboard/pictures_kpi/index')->with(array(
-                           'Inbound'              => $Inbound,
-                           'Abandon'              => $Abandon,
-                           'Transfer'             => $Transfer,
-                           'Answered_less_20'          => $Answered_less_20,
-                           'Answered_less_15'          => $Answered_less_15,
-                           'Answered_less_10'          => $Answered_less_10,
-                           'Unaswered_less_20'   => $Unaswered_less_20,
-                           'Unaswered_less_15'   => $Unaswered_less_15,
-                           'Unaswered_less_10'   => $Unaswered_less_10,
-                           'Unaswered_high_20'   => $Unaswered_high_20,
-                           'Unaswered_high_15'   => $Unaswered_high_15,
-                           'Unaswered_high_10'   => $Unaswered_high_10,
-                           'Queue'                => $Queue,
-                           'Sla_20'               => $Sla_20,
-                           'Sla_15'               => $Sla_15,
-                           'Sla_10'               => $Sla_10,
+                            'Inbound'              => $Inbound,
+                            'Abandon'              => $Abandon,
+                            'Transfer'             => $Transfer,
+                            'Answered_less_20'     => $Answered_less_20,
+                            'Answered_less_15'     => $Answered_less_15,
+                            'Answered_less_10'     => $Answered_less_10,
+                            'Answered_high_20'     => $Answered_high_20,
+                            'Unaswered_less_20'    => $Unaswered_less_20,
+                            'Unaswered_less_15'    => $Unaswered_less_15,
+                            'Unaswered_less_10'    => $Unaswered_less_10,
+                            'Unaswered_high_20'    => $Unaswered_high_20,
+                            'Unaswered_high_15'    => $Unaswered_high_15,
+                            'Unaswered_high_10'    => $Unaswered_high_10,
+                            'Queue'                => $Queue,
+                            'Sla_20'               => $Sla_20,
+                            'Sla_15'               => $Sla_15,
+                            'Sla_10'               => $Sla_10,
                         ));
         }
   }
