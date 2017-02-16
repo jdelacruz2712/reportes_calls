@@ -31,7 +31,8 @@
                     <th>Duration</th>
                     <th>Action</th>
                     <th>Wait Time</th>
-                    <th>Audio</th>
+                    <th>Download</th>
+                    <th>Listen</th>
                 </tr>
                 </thead>
             </table>

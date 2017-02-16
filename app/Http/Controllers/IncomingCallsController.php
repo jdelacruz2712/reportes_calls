@@ -160,19 +160,23 @@ class IncomingCallsController extends CosapiController
         $incomingcollection                 = new Collector;
         foreach ($builderview as $view) {
 
-            $colas = $this->list_vdn();
-            $vdn = $colas[$view['skill']]['vdn'];
-            $audio = 'No compatible';
-            $day   = Carbon::parse($view['date']);
-            $hour  = Carbon::parse($view['hour']);
+            $colas          = $this->list_vdn();
+            $vdn            = $colas[$view['skill']]['vdn'];
+            $listen         = 'No compatible';
+            $day            = Carbon::parse($view['date']);
+            $hour           = Carbon::parse($view['hour']);
+            $listen         = 'No compatible';
+            $bronswer       = detect_bronswer();
 
-            $url             = 'http://grabaciones.cosapidata.pe/'.getenv('AUDIO_PROYECT').'/'.$view['skill'].'/'.$day->format('Y/m/d').'/';
-            $audio_name      = $view['telephone'].'-'.$vdn.'-'.$day->format('dmY').'-'.$hour->format('His').'.gsm';
-            $route_complete  = $url.$audio_name;
-            $bronswer        = detect_bronswer();
+            $url            = 'url='.$view['skill'].'/'.$day->format('Y/m/d').'/';
+            $audio_name     = '&nameaudio='.$view['telephone'].'-'.$vdn.'-'.$day->format('dmY').'-';
+            $proyecto       = '&proyect='.getenv('AUDIO_PROYECT');
+            $hora           = '&hour='.$hour;
+            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/cosapi/script_php/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
+            $download       = '<center><a target="_blank" href="'.$route_complete.'"><i class="fa fa-download" aria-hidden="true"></i></a></center>';
 
-            if($bronswer["browser"] == 'FIREFOX'){ 
-            $audio           = '<a class="media" href="'.$route_complete.'" target="_blank">Audios <i class="fa fa-rss" aria-hidden="true"></i></a>';
+            if($bronswer["browser"] == 'FIREFOX'){
+                $listen = '<center><a target="_blank" href="'.$route_complete.'"><i class="fa fa-play" aria-hidden="true"></i></a></center>';
             }
 
             $incomingcollection->push([
@@ -184,8 +188,8 @@ class IncomingCallsController extends CosapiController
                 'duration'                  => $view['duration'],
                 'action'                    => $view['action'],
                 'waittime'                  => $view['waittime'],
-                'audio'                     => $audio
-
+                'download'                  => $download,
+                'listen'                    => $listen
             ]);
         }
 

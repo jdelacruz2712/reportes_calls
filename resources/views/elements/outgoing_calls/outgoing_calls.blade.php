@@ -12,6 +12,8 @@
                     <th>Username</th>
                     <th>Number Destination</th>
                     <th>Call Time</th>
+                    <th><i class="fa fa-download"   aria-hidden="true"></i> Download</th>
+                    <th><i class="fa fa-play"       aria-hidden="true"></i> Listen</th>
                 </tr>
                 </thead>
             </table>

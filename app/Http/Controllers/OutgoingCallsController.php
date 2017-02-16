@@ -131,14 +131,37 @@ class OutgoingCallsController extends CosapiController
 
             $day            = Carbon::parse($view['date']);
             $hour           = Carbon::parse($view['hour']);
+            $bronswer       = detect_bronswer();
+            $listen         = 'No compatible';
+            $carpeta        = '';
 
-            $posicion       = strripos($view['userfield'], '/');
+            if(substr($view['destination'], 0, 4)=='080000800'){
+                $carpeta = '0800';
+            }else if(strlen($view['destination']) =='7'){
+                $carpeta = 'local';
+            }else if(strlen($view['destination']) =='9'){
+                if(substr($view['destination'], 0,1)=='0'){
+                    $carpeta = 'nacional';
+                }else{
+                    $carpeta = 'celular';
+                }
+            }
+            $url            = 'url=Salientes/'.$carpeta.'/'.$day->format('Y/m/d').'/';
+            $proyecto       = '&proyect='.getenv('AUDIO_PROYECT');
 
-            $url            = 'url='.substr($view['userfield'], 0, $posicion).'/';
-            $proyecto       = '&proyect=empresas';
-            $audio_name     =  '&nameaudio='.$view['destination'].'-'.$view['annexedorigin'].'-'.$day->format('dmY').'-'.$hour->format('His');
-            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/cosapi/script_php/descargar_audio.php?'.$url.$audio_name.$proyecto;
+            if($view['username']!=''){
+                $audio_name     =  '&nameaudio='.$view['destination'].'-'.$view['annexedorigin'].'-'.$day->format('dmY').'-';
+            }else{
+                $audio_name     = '&nameaudio='.$view['annexedorigin'].'-'.$view['destination'].'-'.$day->format('dmY').'-';
+            }
+            $hora           = '&hour='.$hour;
+            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/cosapi/script_php/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
 
+            $download       = '<center><a target="_blank" href="'.$route_complete.'"><i class="fa fa-download" aria-hidden="true"></i></a></center>';
+
+            if($bronswer["browser"] == 'FIREFOX'){
+                $listen = '<center><a target="_blank" href="'.$route_complete.'"><i class="fa fa-play" aria-hidden="true"></i></a></center>';
+            }
 
             $outgoingcollection->push([
                 'date'                      => $view['date'],
@@ -147,7 +170,8 @@ class OutgoingCallsController extends CosapiController
                 'destination'               => $view['destination'],
                 'calltime'                  => $view['calltime'],
                 'username'                  => $view['username'],
-                'audio'                     => '<a target="_blank" href="'.$route_complete.'">Audios <i class="fa fa-rss" aria-hidden="true"></i></a>'
+                'download'                  => $download,
+                'listen'                    => $listen
             ]);
 
         }

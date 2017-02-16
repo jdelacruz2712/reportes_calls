@@ -89,7 +89,8 @@ function columns_datatable(route){
             {"data" : "duration"},
             {"data" : "action"},
             {"data" : "waittime"},
-            {"data" : "audio"}
+            {"data" : "download"},
+            {"data" : "listen"}
         ];
     }
 
@@ -165,7 +166,9 @@ function columns_datatable(route){
             {"data" : "annexedorigin"},
             {"data" : "username"},
             {"data" : "destination"},
-            {"data" : "calltime"}
+            {"data" : "calltime"},
+            {"data" : "download"},
+            {"data" : "listen"}
         ];
     }
 
