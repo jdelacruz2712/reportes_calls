@@ -24,7 +24,7 @@ class ConsolidatedCallsController extends CosapiController
     {
         if ($request->ajax()){
             if ($request->evento){
-                return $this->calls_consolidated($request->fecha_evento, $request->evento);
+                return $this->calls_consolidated($request->fecha_evento, $request->evento, $request->rank_hour);
             }else{
                 return view('elements/consolidated_calls/index');
             }
@@ -49,10 +49,10 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [string] $evento       [Tipo de consulta: Skill, fecha, hora, agente]
      * @return [array]                [Datos a cargar en la tabla del reporte de Calls Consolidated]
      */
-    protected function calls_consolidated($fecha_evento, $evento)
+    protected function calls_consolidated($fecha_evento, $evento, $rank_hour)
     {
                 
-        $calls_inbound              = $this->calls_inbound($fecha_evento, $evento);
+        $calls_inbound              = $this->calls_inbound($fecha_evento, $evento,$rank_hour);
         $consolidatedcollection     = $this->consolidatedcollection($calls_inbound);
         $CallsConsolidated          = $this->FormatDatatable($consolidatedcollection);        
 
@@ -67,10 +67,10 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [string] $evento       [Tipo de consulta: Skill, fecha, hora, agente]
      * @return [array]                [Retorna datos segun el tipo Calls Consolidated que se requiera]
      */
-    protected function calls_inbound($fecha_evento, $evento)
+    protected function calls_inbound($fecha_evento, $evento, $rank_hour)
     {
         $groupby                            = '';
-        $query_calls_inbound                = $this->query_calls_inbound($fecha_evento);
+        $query_calls_inbound                = $this->query_calls_inbound($fecha_evento, ($rank_hour/60));
 
         switch($evento){
             case 'skills_group' :
@@ -86,7 +86,7 @@ class ConsolidatedCallsController extends CosapiController
                 $groupby                    = 'fechamod';
                 break ;
             case 'hour_group'         :
-                $call_group                 = listHoursInterval();
+                $call_group                 = listHoursInterval($rank_hour);
                 $groupby                    = 'hourmod';
                 break ;
 
@@ -103,11 +103,11 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [date] $days  [Fecha de consulta]
      * @return [array]       [Retorna datos de las llamadas entrantes en determinada fecha]
      */
-    protected function query_calls_inbound ($fecha_evento)
+    protected function query_calls_inbound ($fecha_evento,$rank_hour)
     {
         $queues_proyect     = $this->queues_proyect();
         $days               = explode(' - ', $fecha_evento);
-        $calls_inbound      = Queue_Log::select_fechamod()
+        $calls_inbound      = Queue_Log::select_fechamod($rank_hour)
                                         ->filtro_days($days)
                                         ->filtro_anexos()
                                         ->whereIn('queue', $queues_proyect)

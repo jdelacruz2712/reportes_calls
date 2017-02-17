@@ -17,6 +17,7 @@
         <input type="hidden" id="hidEvent" value='export_consolidated'>
 
         @include('filtros.filtro-fecha')
+        @include('filtros.filtro-hour')
         </div>
     </div>
     {!! Form::close() !!}

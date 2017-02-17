@@ -6,7 +6,7 @@
 
 <div  class="col-md-12" id="container">
 	{!! Form::open([ 'method' => '', 'name'=>'buscador']) !!}
-		<div class="box box-primary">
+		< class="box box-primary">
 			<div class="box-header">
 				<h3 class="box-title"><b>Reportes de Estado por Agente</b></h3>
 			</div>
@@ -14,7 +14,6 @@
 
 			@include('filtros.filtro-fecha')
 			@include('filtros.button-search')
-			</div>
 		</div>
 	{!! Form::close() !!}
 

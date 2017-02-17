@@ -314,7 +314,7 @@ function ArrayDays ($fecha_evento){
         $fecha_arrays[$i]= array('fechamod' => date('Y-m-d',strtotime(modificarFecha($fecha_array[$i-1],'+1'))));
         
     }
-    
+
     return $fecha_arrays;
 }
 
@@ -392,17 +392,28 @@ function deletearray($value, $column, $array) {
  * [listHours Función para listar horas segun el parametro enviado.]
  * @return [Array] [Lista de horas creadas segun el parametro enviado]
  */
-function listHoursInterval(){
-    
+function listHoursInterval($increment){
     $array_hours = [];
-    for($hour = 0; $hour<24; $hour ++){
-        array_push($array_hours, ["hourmod" => ceroIzquierda($hour).':00', 'name' => ceroIzquierda($hour).':00 - '.ceroIzquierda($hour).':30' ]);
-        array_push($array_hours, ["hourmod" => ceroIzquierda($hour).':30', 'name' => ceroIzquierda($hour).':30 - '.ceroIzquierda($hour + 1).':00']);
-    }
+    $time       = 0;
+    $increment  = $increment;
+    array_push($array_hours, ["hourmod" =>ceroIzquierda(0).':'.ceroIzquierda(0), 'name'=>ceroIzquierda(0).':'.ceroIzquierda(0).' - '.nextHour(0,$increment)]);
 
+    do{
+        $time       = $time + $increment;
+        $hour       = intval($time / 3600);
+        $minute     = ($time - ($hour * 3600))/60;
+        $next_time  = ($hour*3600)+($minute*60);
+        array_push($array_hours, ["hourmod" =>ceroIzquierda($hour).':'.ceroIzquierda($minute), 'name'=>ceroIzquierda($hour).':'.ceroIzquierda($minute).' - '.nextHour($next_time,$increment)]);
+    }while(($next_time + $increment) < 86400);
     return $array_hours;
 }
 
+function nextHour($time, $increment){
+    $time       = intval($time) + intval($increment);
+    $hour       = intval($time / 3600);
+    $minute     = ($time - ($hour * 3600))/60;
+    return ceroIzquierda($hour).':'.ceroIzquierda($minute);
+}
 
 function detailEvents($detalleEventos){
 
