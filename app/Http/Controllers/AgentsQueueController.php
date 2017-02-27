@@ -193,27 +193,27 @@ class AgentsQueueController extends CosapiController
             );
         }
         foreach($Colas as $Cola){
-            //Creación de cabecera por cada Cola del proyecto
-            fwrite($file, '['.$Cola['name'].']'. PHP_EOL);
-            fwrite($file, 'musicclass       = '.getenv('MUSIC_CLASS_CONTEXT'). PHP_EOL);
-            fwrite($file, 'strategy         = '.$Cola['estrategia']. PHP_EOL);
-            fwrite($file, 'announce         = '.getenv('MUSIC_QUEUE_ROUTE').$Cola['vdn']. PHP_EOL);
-            fwrite($file, 'weight           = '.$Cola['prioridad']. PHP_EOL);
-            fwrite($file, 'joinempty        = yes'. PHP_EOL);
-            fwrite($file, 'leavewhenempty   = yes'. PHP_EOL);
-            fwrite($file, 'servicelevel     = 60'. PHP_EOL);
-            fwrite($file, 'wrapuptime       = 5'. PHP_EOL);
-            fwrite($file, 'timeout          = 60'. PHP_EOL);
-            fwrite($file, 'retry            = 5'. PHP_EOL);
-            fwrite($file, PHP_EOL);
             if(isset($queue_editors[$Cola['id']])){
+                //Creación de cabecera por cada Cola del proyecto
+                fwrite($file, '['.$Cola['name'].']'. PHP_EOL);
+                fwrite($file, 'musicclass       = '.getenv('MUSIC_CLASS_CONTEXT'). PHP_EOL);
+                fwrite($file, 'strategy         = '.$Cola['estrategia']. PHP_EOL);
+                fwrite($file, 'announce         = '.getenv('MUSIC_QUEUE_ROUTE').$Cola['vdn']. PHP_EOL);
+                fwrite($file, 'weight           = '.$Cola['prioridad']. PHP_EOL);
+                fwrite($file, 'joinempty        = yes'. PHP_EOL);
+                fwrite($file, 'leavewhenempty   = yes'. PHP_EOL);
+                fwrite($file, 'servicelevel     = 60'. PHP_EOL);
+                fwrite($file, 'wrapuptime       = 5'. PHP_EOL);
+                fwrite($file, 'timeout          = 60'. PHP_EOL);
+                fwrite($file, 'retry            = 5'. PHP_EOL);
+                fwrite($file, PHP_EOL);
                 foreach($queue_editors[$Cola['id']]['users'] as $queue_editor){
                     //Registra miembros de la cola
                     fwrite($file, 'member => Agent/'.$queue_editor['user_name'].','.$queue_editor['priority']. PHP_EOL);
                 }
+                //Ingresa un salto entre colas
+                fwrite($file, PHP_EOL);
             }
-            //Ingresa un salto entre colas
-            fwrite($file, PHP_EOL);
         }
         //Cierra el archivo
         fclose($file);
