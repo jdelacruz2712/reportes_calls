@@ -14,25 +14,34 @@
     {!!Html::style('plugins/adminLTE/css/font-awesome.css')!!}
     <!-- para el css de Adminlte -->
     {!!Html::style('plugins/adminLTE/css/AdminLTE.min.css')!!}
+    <!-- para cambiar el color del panel de adminlte -->
+    {!!Html::style('plugins/adminLTE/css/skins/_all-skins.min.css')!!}
     {!!Html::style('cosapi/css/preloader.css')!!}
      <!--para incluir otros css-->
      @yield('css')
 
-  </head>
-
-  <body >
-
-     @yield('content')
 
     <!--Todos los javascript del layout principal-->
     <!-- jQuery -->
     {!!Html::script('vendor/jquery/jquery.min.js')!!}
     {!!Html::script('vendor/bootstrap/js/bootstrap.min.js')!!}
+    {!!Html::script('extras/bootstrap3-dialog/js/bootstrap-dialog.min.js')!!}
+    {!!Html::script('plugins/adminLTE/js/app.min.js')!!}
+    {!!Html::script('plugins/adminLTE/js/funcionalidades.js')!!}
     {!!Html::script('cosapi/js/cosapi_adminlte.js')!!}
-    {!!Html::script('cosapi/js/socket.io.min.js')!!}
-    {!!Html::script('cosapi/js/vue.js')!!}
+
+    {!!Html::script('plugins/chartjs/Chart.bundle.js')!!}
+    {!!Html::script('plugins/highcharts/highcharts.js')!!}
+    {!!Html::script('plugins/highcharts/highcharts-more.js')!!}
+    {!!Html::script('plugins/highcharts/modules/solid-gauge.js')!!}
 
     <!--para incluir todos los demas script que se necesite-->
     @yield('scripts')
+  </head>
+
+  <body >
+
+     @yield('content')
+    
   </body>
 </html>

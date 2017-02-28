@@ -223,7 +223,10 @@ class CosapiController extends Controller
      */
     protected function list_queue(){
         $list_prioridad     = [];
-        $Colas              = Queue::select()->with('estrategia','prioridad')->get()->toArray();
+        $Colas              = Queue::select()
+                                    ->with('estrategia','prioridad')
+                                    ->where('estado_id','=',1)
+                                    ->get()->toArray();
         foreach($Colas as $Cola){
             $list_prioridad[$Cola['id']]['id']         = $Cola['id'];
             $list_prioridad[$Cola['id']]['name']       = $Cola['name'];

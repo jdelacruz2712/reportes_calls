@@ -10,6 +10,7 @@
 	    <div id='total_encoladas'></div>
 	</div>
 
+
 	<!-- Panel de Llamadas en Cola -->
 	<div class="row-fluid">
 		<div class="col-md-12">
@@ -37,34 +38,11 @@
 		        		</button>
 		      		</div>
 		    	</div>
-    			<div id='detail_agents' class="box-body"></div>
+
+				@include('elements.dashboard.tables.table_detail_calls')
+
 		  	</div>
 		</div>
 	</div>
-
-@endsection
-
-@section('scripts')
- 	<script type="text/javascript">
-      $(document).ready(function() {
-
-        detalle_kpi_dashboard_01();
-        total_encoladas_dashboard_01();
-        detalle_agentes_dashboard_01();
-        detail_encoladas_dashboard_01();
-        validar_sonido();
-
-        desloguear_agente = function ($anexo, $username){
-
-		    $.ajax({
-		        type        : 'GET',
-		        url         : 'dashboard_01/logoutagent/'+$anexo+'/'+$username,
-		        success: function (data){
-		        	detalle_agentes_dashboard_01();
-		        }
-		    });
-		}
-      } );
-    </script>
 
 @endsection
