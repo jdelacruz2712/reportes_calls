@@ -4,15 +4,12 @@ namespace Cosapi\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Support\Facades\Auth;
 
-class Authenticate
+class RoleAdministrator
 {
-    /**
-     * The Guard implementation.
-     *
-     * @var Guard
-     */
     protected $auth;
+
 
     /**
      * Create a new filter instance.
@@ -25,6 +22,7 @@ class Authenticate
         $this->auth = $auth;
     }
 
+
     /**
      * Handle an incoming request.
      *
@@ -34,14 +32,10 @@ class Authenticate
      */
     public function handle($request, Closure $next)
     {
-        if ($this->auth->guest()) {
-            if ($request->ajax()) {
-                return response('Unauthorized.', 401);
-            } else {
-                return redirect()->guest('/');
-            }
+        if(Auth::check() && Auth::user()->role == 'admin') {
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect('/');
     }
 }

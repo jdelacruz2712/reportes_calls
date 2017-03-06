@@ -1,5 +1,20 @@
 <?php
-Route::get('/'													, ['as' => 'admin', 'uses'=>'AdminController@index']);
+Route::get ('/'		    , ['uses'=>'Auth\AuthController@getLogin'  ,   'as'=>'login'        ]);
+Route::post('/'		    , ['uses'=>'Auth\AuthController@postLogin' ,   'as'=>'login'        ]);
+Route::get ('logout'    , ['uses'=>'Auth\AuthController@getLogout' ,  'as'=>'logout'        ]);
+
+Route::group ( ['middleware'=>['auth'], 'prefix'=>'home' ]      , function(){
+    Route::get('/'      , ['uses'=>'AdminController@index'         ,    'as' => 'home'      ]);
+});
+
+Route::group ( ['middleware'=>['admin'], 'prefix'=>'supervisor' ], function(){
+    Route::get('/'      , ['uses'=>'AdminController@supervisor'    ,    'as' => 'supervisor']);
+});
+
+Route::group ( ['middleware'=>['user'], 'prefix'=>'agente' ]    , function(){
+    Route::get('/'      , ['uses'=>'AdminController@agente'        ,    'as' => 'agente'    ]);
+});
+
 
 // Reportes de Eventos
 Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);

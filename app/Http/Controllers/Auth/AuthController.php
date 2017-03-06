@@ -3,6 +3,8 @@
 namespace Cosapi\Http\Controllers\Auth;
 
 use Cosapi\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Validator;
 use Cosapi\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -10,6 +12,10 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 
 class AuthController extends Controller
 {
+    protected $username             = 'username';
+    protected $loginPath            = '/';
+    protected $redirectPath         = 'home';
+    protected $redirectAfterLogout  = '/';
     /*
     |--------------------------------------------------------------------------
     | Registration & Login Controller
@@ -61,5 +67,12 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
+    }
+
+    public function getLogout()
+    {
+        Session::flush();
+        Auth::logout();
+        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
     }
 }
