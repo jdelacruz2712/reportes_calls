@@ -5,11 +5,11 @@ namespace Cosapi\Http\Controllers;
 use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\Cdr;
-use Cosapi\Http\Controllers\CosapiController;
 use Cosapi\Collector\Collector;
 
 use DB;
 use Carbon\Carbon;
+use Session;
 use Illuminate\Support\Facades\Log;
 
 class OutgoingCallsController extends CosapiController
@@ -38,8 +38,11 @@ class OutgoingCallsController extends CosapiController
      * @return [Array]                   [Retorna la lista del consolidado de llamadas]
      */
     public function list_calls_outgoing($fecha_evento){
-
-        $query_calls_outgoing   = $this->query_calls_outgoing($fecha_evento);
+        $users = '';
+        if(Session::get('UserRole') != 'admin'){
+            $users = Session::get('UserName');
+        }
+        $query_calls_outgoing   = $this->query_calls_outgoing($fecha_evento, $users);
         $builderview            = $this->builderview($query_calls_outgoing);
         $outgoingcollection     = $this->outgoingcollection($builderview);
         $list_call_outgoing     = $this->FormatDatatable($outgoingcollection);
@@ -62,11 +65,12 @@ class OutgoingCallsController extends CosapiController
      * @param  [array] $fecha_evento [Rango de consulta, Ejem: '2016-10-22 - 20016-10-25']
      * @return [array]               [Array con los datos obtenidos de la consutla]
      */
-    protected function query_calls_outgoing($fecha_evento){
+    protected function query_calls_outgoing($fecha_evento,$users=''){
         $days                   = explode(' - ', $fecha_evento);
         $tamano_anexo           = array (getenv('ANEXO_LENGTH'));
         $tamano_telefono        = array ('7','9');
         $query_calls_outgoing   = Cdr::Select()
+                                    ->filtro_users($users)
                                     ->whereIn(DB::raw('LENGTH(src)'),$tamano_anexo)
                                     ->whereIn(DB::raw('LENGTH(dst)'),$tamano_telefono)
                                     ->where('dst','not like','*%')

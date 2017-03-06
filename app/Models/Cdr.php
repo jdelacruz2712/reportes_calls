@@ -19,4 +19,12 @@ class Cdr extends Model
         }
 
     }
+
+    public function scopeFiltro_users($query,$users)
+    {
+        if( ! empty($users))
+        {
+            return    $query->where('accountcode','like','%'.$users.'%');
+        }
+    }
 }

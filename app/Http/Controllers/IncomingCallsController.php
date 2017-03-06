@@ -3,16 +3,15 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Http\Requests;
-use Cosapi\Models\Queue;
 use Illuminate\Http\Request;
 use Cosapi\Models\Queue_Log;
-use Cosapi\Http\Controllers\CosapiController;
 use Cosapi\Collector\Collector;
 
 use DB;
 use Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Session;
 
 
 class IncomingCallsController extends CosapiController
@@ -53,7 +52,11 @@ class IncomingCallsController extends CosapiController
      * @return [array]                [Array con datos de las llamadas entrantes]
      */
     protected function calls_incoming($fecha_evento, $evento){
-        $query_calls        = $this->query_calls($fecha_evento,$evento);
+        $users = '';
+        if(Session::get('UserRole') != 'admin'){
+            $users = 'Agent/'.Session::get('UserName');
+        }
+        $query_calls        = $this->query_calls($fecha_evento,$evento,$users);
         $builderview        = $this->builderview($query_calls);
         $incomingcollection = $this->incomingcollection($builderview);
         $calls_incoming     = $this->FormatDatatable($incomingcollection);

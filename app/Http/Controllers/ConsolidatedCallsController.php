@@ -5,15 +5,14 @@ namespace Cosapi\Http\Controllers;
 use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\Queue_Log;
-use Cosapi\Http\Controllers\CosapiController;
 use Cosapi\Collector\Collector;
 
 use DB;
 use Excel;
+use Session;
 
 class ConsolidatedCallsController extends CosapiController
 {
-
 
     /**
      * [index Función que retorna vista y datos del reporte de Calls Consolidated]
@@ -70,15 +69,19 @@ class ConsolidatedCallsController extends CosapiController
     protected function calls_inbound($fecha_evento, $evento, $rank_hour)
     {
         $groupby                            = '';
-        $query_calls_inbound                = $this->query_calls_inbound($fecha_evento, ($rank_hour/60));
+        $users                              = '';
+        if(Session::get('UserRole') != 'admin'){
+            $users = 'Agent/'.Session::get('UserName');
+        }
+        $query_calls_inbound                = $this->query_calls_inbound($fecha_evento, ($rank_hour/60),$users);
 
         switch($evento){
             case 'skills_group' :
-                $call_group                 = $this->calls_queue($fecha_evento);
+                $call_group                 = $this->calls_queue($fecha_evento,$users);
                 $groupby                    = 'queue';
                 break ;
             case 'agent_group'        :
-                $call_group                 = $this->calls_agents($fecha_evento);
+                $call_group                 = $this->calls_agents($fecha_evento,$users);
                 $groupby                    = 'agent';
                 break ;
             case 'day_group'          :
@@ -103,12 +106,13 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [date] $days  [Fecha de consulta]
      * @return [array]       [Retorna datos de las llamadas entrantes en determinada fecha]
      */
-    protected function query_calls_inbound ($fecha_evento,$rank_hour)
+    protected function query_calls_inbound ($fecha_evento,$rank_hour,$users)
     {
         $queues_proyect     = $this->queues_proyect();
         $days               = explode(' - ', $fecha_evento);
         $calls_inbound      = Queue_Log::select_fechamod($rank_hour)
                                         ->filtro_days($days)
+                                        ->filtro_users($users)
                                         ->filtro_anexos()
                                         ->whereIn('queue', $queues_proyect)
                                         ->OrderBy('id')
@@ -123,12 +127,13 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [date] $days  [Fecha de consulta]
      * @return [Array]       [Retorna un Array con la lista de nombre de los Skills]
      */
-    protected function calls_queue ($fecha_evento)
+    protected function calls_queue ($fecha_evento,$users)
     {
         $queues_proyect = $this->queues_proyect();
         $days           = explode(' - ', $fecha_evento);
         $calls_queue    = Queue_Log::Select('queue')
                                     ->filtro_days($days)
+                                    ->filtro_users($users)
                                     ->filtro_anexos()
                                     ->whereIn('queue', $queues_proyect)
                                     ->groupBy('queue')
@@ -143,13 +148,14 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [date] $days  [Fecha de consulta]
      * @return [Array]       [Retorna un Array con la lista de nombre de los Agentes]
      */
-    protected function calls_agents ($fecha_evento)
+    protected function calls_agents ($fecha_evento,$users)
     {
         $queues_proyect = $this->queues_proyect();
         $days           = explode(' - ', $fecha_evento);
         $calls_agents   = Queue_Log::Select('agent')
                                     ->filtro_days($days)
                                     ->filtro_anexos()
+                                    ->filtro_users($users)
                                     ->whereNotIn('agent', ['NONE'])
                                     ->whereIn('queue', $queues_proyect)
                                     ->groupBy('agent')
