@@ -135,7 +135,7 @@ class OutgoingCallsController extends CosapiController
             $listen         = 'No compatible';
             $carpeta        = '';
 
-            if(substr($view['destination'], 0, 4)=='080000800'){
+            if(substr($view['destination'], 0, 4) =='0800'){
                 $carpeta = '0800';
             }else if(strlen($view['destination']) =='7'){
                 $carpeta = 'local';
