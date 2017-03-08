@@ -452,7 +452,7 @@ class DashboardController extends CosapiController
                 echo 'Success - Agent/'.$UserAgente .' Desconectado Correctamente ';
               }else{
                 echo 'Error - Problemas al desconectar Agent/'.$this->UserAgente;
-              } 
+              }
           }
           else{
             echo 'Error - Agent/'.$UserAgente.' se encuentra en una llamada';
@@ -478,7 +478,7 @@ class DashboardController extends CosapiController
 
         if ($queueStatus['Response'] == 'Success') {
           foreach ($queueStatus['list'] as $skill_sip) {
-            foreach ($skill_sip['members'] as $members) {       
+            foreach ($skill_sip['members'] as $members) {
               $Status = $members['Status'];
               $Paused = $members['Paused'];
               //PAUSADO (SSHH,BREAK OTHERS EVENT)
@@ -501,7 +501,7 @@ class DashboardController extends CosapiController
               $statusqueue[$members['Name']]['color_status'] = $color_status;
               $statusqueue[$members['Name']]['icon_status']  = $icon_status;
             }
-            break;
+            //break;
           }
           return  $statusqueue;
 
@@ -536,7 +536,7 @@ class DashboardController extends CosapiController
         $day_fin    = $daymonth[1];
         break;
     }
-    
+
     $list_kpi_dashboard_02   = \DB::select('CALL sp_data_kpi_dashboard("'.$day_inicio.'","'.$day_fin.'");');
 
     $Recibidas               = $list_kpi_dashboard_02[0]->Abandon + $list_kpi_dashboard_02[0]->Transfer + $list_kpi_dashboard_02[0]->Inbound;
@@ -608,7 +608,7 @@ class DashboardController extends CosapiController
     $a = 0;
     $encoladas = array();
     foreach( $chans as $chan => $curr )
-    { 
+    {
       // El valor del Context cambia según el proyecto en el cual se instale el software
       if($curr['Context']==getenv('CONTEXT_NAME'))
       {
