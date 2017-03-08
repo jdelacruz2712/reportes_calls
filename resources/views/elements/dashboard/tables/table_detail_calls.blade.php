@@ -14,15 +14,22 @@
         </tr>
       </thead>
       <tbody>
-        <template v-for="(list_agent, list_index)   in list_agents ">
-        <template v-for="(agent,      agent_index)  in list_agent  ">
+
+        <template v-for="(agent, list_index)   in agents ">
           <tr>
             <td>
               @{{ agent.number_annexed }}
               <span class="pull-right-container">
-                <span class="img img-circle pull-right bg-red">
-                  <i class="fa fa-thumbs-down" style="padding: 3.5px; " aria-hidden="true"></i>
-                </span>
+                <template v-if="agent.status_pause === '0'">
+                  <span class="img img-circle pull-right bg-green">
+                    <i class="fa fa-thumbs-up" style="padding: 3.5px; " aria-hidden="true"></i>
+                  </span>
+                </template>
+                <template v-else>
+                  <span class="img img-circle pull-right bg-red">
+                    <i class="fa fa-thumbs-down" style="padding: 3.5px; " aria-hidden="true"></i>
+                  </span>
+                </template>
               </span>
             </td>
             <td>@{{ agent.name_agent }}</td>
@@ -42,14 +49,14 @@
               </button>
             </td>
           </tr>
-          </template>
         </template>
+
 
       </tbody>
     </table>
   </div>
 
-  @{{ $data }}
+  <pre>@{{ $data }}</pre>
 
 </div>
 
