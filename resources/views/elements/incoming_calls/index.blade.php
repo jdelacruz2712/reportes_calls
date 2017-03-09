@@ -19,7 +19,6 @@
 			<input type="hidden" id="hidEvent" value='export_incoming'>
 
 			@include('filtros.filtro-fecha')
-			</div>
 
 		</div>
 	{!! Form::close() !!}

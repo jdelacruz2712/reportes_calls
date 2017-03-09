@@ -4,13 +4,13 @@
             @include('filtros.export')
             <table id="table-detail-events" class="table table-bordered display nowrap table-responsive" cellspacing="0" width="100%">
                 <thead>
-                <tr>
-                    <th>NOMBRE COMPLETO</th>
-                    <th>FECHA</th>
-                    <th>HORA</th>
-                    <th>NOMBRE DEL EVENTO</th>
-                    <th>REALIZADO POR</th>
-                </tr>
+                    <tr>
+                        <th>NOMBRE COMPLETO</th>
+                        <th>FECHA</th>
+                        <th>HORA</th>
+                        <th>NOMBRE DEL EVENTO</th>
+                        <th>REALIZADO POR</th>
+                    </tr>
                 </thead>
             </table>
         </div>

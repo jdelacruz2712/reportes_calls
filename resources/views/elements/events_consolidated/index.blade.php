@@ -6,7 +6,7 @@
 
 <div  class="col-md-12" id="container">
 	{!! Form::open([ 'method' => '', 'name'=>'buscador']) !!}
-		< class="box box-primary">
+		<div class="box box-primary">
 			<div class="box-header">
 				<h3 class="box-title"><b>Reportes de Estado por Agente</b></h3>
 			</div>

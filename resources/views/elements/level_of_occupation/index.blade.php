@@ -14,7 +14,6 @@
 
 			@include('filtros.filtro-fecha')
 			@include('filtros.button-search')
-			</div>
 		</div>
 	{!! Form::close() !!}
 
