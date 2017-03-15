@@ -2,6 +2,7 @@
 
 namespace Cosapi\Http\Controllers;
 
+use Cosapi\Models\Anexo;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\Auth;
@@ -54,17 +55,28 @@ class AdminController extends Controller
 
     public function supervisor()
     {
+        $name_anexo = 0;
         if($this->UserRole != 'admin'){
             return redirect('logout');
         }
-        return view('/front-admin');
+        $Anexos = Anexo::select('name')->where('user_id','=',$this->UserId )->get()->toArray();
+        if(count($Anexos) != 0){
+            $name_anexo = $Anexos[0]['name'];
+        };
+        return view('/front-admin')->with(array('anexo'=>$name_anexo));
     }
 
     public function agente()
     {
+        $name_anexo = 0;
         if($this->UserRole != 'user'){
             return redirect('logout');
         }
-        return view('/agente');
+
+        $Anexos = Anexo::select('name')->where('user_id','=',$this->UserId )->get()->toArray();
+        if(count($Anexos) != 0){
+            $name_anexo = $Anexos[0]['name'];
+        };
+        return view('/agente')->with(array('anexo'=>$name_anexo));
     }
 }

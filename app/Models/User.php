@@ -48,4 +48,8 @@
 
         }
 
+        public function agente(){
+            return $this->belongsTo('Cosapi\Models\Agentes');
+        }
+
     }

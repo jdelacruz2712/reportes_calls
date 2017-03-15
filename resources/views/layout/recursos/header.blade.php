@@ -20,11 +20,15 @@
             <ul class="nav navbar-nav">
                 <li>
                     <!-- Fecha Actual -->
-                    <h5 id="fecha_actual" class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Fecha Actual"></h5>
+                    <h5 class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Anexo Actual" style="color: white"><span class="fa fa-headphones"></span> (<font id="anexo">{{$anexo}}</font>)</h5>
+                </li>
+                <li>
+                    <!-- Fecha Actual -->
+                    <h5 id="fecha_actual" class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Fecha Actual" style="color: white"></h5>
                 </li>
                 <li>
                     <!-- Hora Actual -->
-                    <h5 id="hora_actual"  class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Hora Actual"></h5>
+                    <h5 id="hora_actual"  class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Hora Actual" style="color: white"></h5>
                 </li>
                 <li>
                 </li>

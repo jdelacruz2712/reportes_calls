@@ -416,6 +416,15 @@ function ajaxNodeJs(parameters, ruta, notificacion){
                     }]
                 });
             }
+
+            if(parameters['anexo']){
+                $('#anexo').text(parameters['anexo']);
+            }
+
+            if(parameters['type_action'] == 'release'){
+                $('#anexo').text(0);
+            }
+
         }else{
             $.each(BootstrapDialog.dialogs, function(id, dialog){
                 dialog.close();
@@ -583,19 +592,24 @@ function ceroIzquierda(numero){
     return numero;
 }
 function ModificarEstado(event_id,user_id,ip,name){
-    var columns = {
-        event_id        : event_id,
-        user_id         : user_id,
-        anexo           : 281,
-        ip              : ip,
-        type_action     : 'update'
-    };
+    var anexo   = $('#anexo').text();
+    if(anexo != 0){
+        var columns = {
+            event_id        : event_id,
+            user_id         : user_id,
+            anexo           : anexo,
+            ip              : ip,
+            type_action     : 'update'
+        };
 
-    $.each(BootstrapDialog.dialogs, function(id, dialog){
-        dialog.close();
-    });
+        $.each(BootstrapDialog.dialogs, function(id, dialog){
+            dialog.close();
+        });
 
-    ajaxNodeJs(columns,'/detalle_eventos/change_status',true);
+        ajaxNodeJs(columns,'/detalle_eventos/change_status',true);
+    }else{
+        mostrar_notificacion('error','No tiene un anexo asignado','Error');
+    }
 }
 
 function mostrar_notificacion(type, mensaje, titulo) {
@@ -849,16 +863,21 @@ function desconnect_agent(hour_exit){
     var user_id = $('#user_id').val();
     var ip      = $('#ip').val();
     var date    = $('#date').val();
-    var parameters = {
-        user_id     : user_id,
-        hour_exit   : date+' '+hour_exit,
-        anexo       : 281,
-        event_id    : 15,
-        ip          : ip,
-        type_action : 'disconnect'
-    };
-    console.log(parameters);
-    ajaxNodeJs(parameters,'/detalle_eventos/change_status',false);
+    var anexo   = $('#anexo').text();
+    if(anexo != 0){
+        var parameters = {
+            user_id     : user_id,
+            hour_exit   : date+' '+hour_exit,
+            anexo       : anexo,
+            event_id    : 15,
+            ip          : ip,
+            type_action : 'disconnect'
+        };
+        console.log(parameters);
+        ajaxNodeJs(parameters,'/detalle_eventos/change_status',false);
+    }else{
+        mostrar_notificacion('error','No tiene un anexo asignado','Error');
+    }
 }
 
 function liberar_anexos(){
@@ -872,9 +891,14 @@ function liberar_anexos(){
 
 function assignAnexxed(anexo_name){
     var user_id = $('#user_id').val();
-    var parameters = {
-        user_id     : user_id,
-        anexo       : anexo_name
-    };
-    ajaxNodeJs(parameters,'/anexos/set_anexo',true);
+    var anexo   = $('#anexo').text();
+    if(anexo == 0){
+        var parameters = {
+            user_id     : user_id,
+            anexo       : anexo_name
+        };
+        ajaxNodeJs(parameters,'/anexos/set_anexo',true);
+    }else{
+        mostrar_notificacion('error', 'Ya se encuentra asignado al anexo '+anexo+'.','Error');
+    }
 }
