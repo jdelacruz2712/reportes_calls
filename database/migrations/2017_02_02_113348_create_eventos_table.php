@@ -23,6 +23,8 @@ class CreateEventosTable extends Migration
              $table->integer('claro_eventos')->unsigned();
              $table->integer('estado_id')->unsigned();
              $table->timestamps();
+             $table->string('icon',50)->nullable();
+             $table->string('color',50)->nullable();
 
              /*creando las relaciones de las llaves foraneas*/
              $table->foreign('estado_id')
