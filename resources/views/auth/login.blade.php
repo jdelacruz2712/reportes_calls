@@ -17,14 +17,14 @@
                         {!! Form::password('password',   ['id' => 'inputPassword',  'placeholder' => "Ingrese su Contraseña",      'class' => 'form-control', 'required'])                                         !!}
                         <!-- {!! Form::text('anexo', null,    ['id' => 'inputAnexo',     'placeholder' => "Numero de Anexo", 'class' => 'form-control', 'type' => 'text',    'autocomplete'=>'off'])         !!} -->
 
-        <div id="remember" class="checkbox">
-            <label>
-                <input type="checkbox" value="remember-me"> Recuérdame 
-            </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Ingresar</button>
+                    <div id="remember" class="checkbox">
+                        <label>
+                            <input type="checkbox" value="remember-me"> Recuérdame
+                        </label>
+                    </div>
+                <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Ingresar</button>
 
-    </form>
+            </form>
 
     </div><!-- /card-container -->
     </div><!-- /container -->
