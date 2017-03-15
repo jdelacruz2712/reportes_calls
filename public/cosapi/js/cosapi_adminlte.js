@@ -10,6 +10,33 @@
  * @param  {String} data      [Nombre del tipo de porte a cargar]
  * @param  {String} route     [Ruta a la cual va a consultar los datos a cargar]
  */
+
+
+var AdminLTEOptions = {
+    sidebarExpandOnHover: true,
+    enableBSToppltip: true
+};
+
+$(document).ready(function() {
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+        }
+    });
+
+    var user_id =$('#user_id').val();
+    var hour =$('#hour').val();
+    var date =$('#date').val();
+
+    MarkAssitance(user_id,date,hour,"Entrada");
+
+    $('#statusAgent').click(function(){
+        PanelStatus();
+    });
+
+} );
+
 function dataTables_entrantes(nombreDIV, data, route){
 
     $('#'+nombreDIV).dataTable().fnDestroy();
@@ -73,108 +100,7 @@ function dataTables_lang_spanish(){
 }
 
 
-/**
- * [columns_datatable description]
- * @param  {String} route [Nombre del tipo de reporte]
- * @return {Array}        [Array con nombre de cada parametro que ira en las columnas de la tabla dl reporte]
- */
-function columns_datatable(route){
-    if(route == 'incoming_calls'){
-        var columns =   [
-            {"data" : "date"},
-            {"data" : "hour"},
-            {"data" : "telephone"},
-            {"data" : "agent"},
-            {"data" : "skill"},
-            {"data" : "duration"},
-            {"data" : "action"},
-            {"data" : "waittime"},
-            {"data" : "download"},
-            {"data" : "listen"}
-        ];
-    }
 
-    if(route == 'surveys'){
-        var columns =   [
-            {"data" : "Type Survey"},
-            {"data" : "Date"},
-            {"data" : "Hour"},
-            {"data" : "Username"},
-            {"data" : "Anexo"},
-            {"data" : "Telephone"},
-            {"data" : "Skill"},
-            {"data" : "Duration"},
-            {"data" : "Question_01"},
-            {"data" : "Answer_01"},
-            {"data" : "Question_02"},
-            {"data" : "Answer_02"},
-            {"data" : "Action"}
-        ];
-    }
-
-    if(route == 'consolidated_calls'){
-        var columns =   [
-            {"data":"Name"},
-            {"data":"Received"},
-            {"data":"Answered"},
-            {"data":"Abandoned"},
-            {"data":"Transferred"},
-            {"data":"Attended"},
-            {"data":"Answ 10s"},
-            {"data":"Answ 15s"},
-            {"data":"Answ 20s"},
-            {"data":"Answ 30s"},
-            {"data":"Aband 10s"},
-            {"data":"Aband 15s"},
-            {"data":"Aband 20s"},
-            {"data":"Aband 30s"},
-            {"data":"Wait Time"},
-            {"data":"Talk Time"},
-            {"data":"Avg Wait"},
-            {"data":"Avg Talk"},
-            {"data":"Answ"},
-            {"data":"Unansw"},
-            {"data":"Ro10"},
-            {"data":"Ro15"},
-            {"data":"Ro20"},
-            {"data":"Ro30"},
-            {"data":"Ns10"},
-            {"data":"Ns15"},
-            {"data":"Ns20"},
-            {"data":"Ns30"},
-            {"data":"Avh2 10"},
-            {"data":"Avh2 15"},
-            {"data":"Avh2 20"},
-            {"data":"Avh2 30"}
-        ];
-    }
-
-    if(route == 'events_detail'){
-        var columns =   [
-            {"data" : "nombre_agente"},
-            {"data" : "fecha"},
-            {"data" : "hora"},
-            {"data" : "evento"},
-            {"data" : "accion"}
-        ];
-    }
-
-    if(route == 'outgoing_calls'){
-        var columns =   [
-            {"data" : "date"},
-            {"data" : "hour"},
-            {"data" : "annexedorigin"},
-            {"data" : "username"},
-            {"data" : "destination"},
-            {"data" : "calltime"},
-            {"data" : "download"},
-            {"data" : "listen"}
-        ];
-    }
-
-
-    return columns;
-}
 
 /**
  * [show_tab_incoming Función que carga Llamadas Entrantes en el reporte]
@@ -463,3 +389,492 @@ function validar_sonido(){
     setTimeout('validar_sonido()', 4000);
 }
 
+function ajaxNodeJs(parameters, ruta, notificacion){
+
+    mySocket.get(ruta,parameters, (resData, jwRes) => {
+        console.log(jwRes);
+        console.log(resData);
+        if(resData['Response'] == 'success'){
+            //Cierra todos los modals abiertos
+            //Actualmente se usa para el cambio de Estados del Agente
+            if(notificacion == true){
+                mostrar_notificacion('success', 'El evento se realizo exitosamente!!!','Success');
+            }else{
+                BootstrapDialog.show({
+                    type      : 'type-danger',
+                    title     : 'Cosapi Dara S.A.' ,
+                    message   : 'El evento se realizo exitosamente!!!' ,
+                    closable  : false,
+
+                    buttons: [{
+                        label     : 'Salir',
+                        cssClass  : 'btn-danger',
+                        action: function(dialogRef){
+                            dialogRef.close();
+                            location.href="logout";
+                        }
+                    }]
+                });
+            }
+        }else{
+            $.each(BootstrapDialog.dialogs, function(id, dialog){
+                dialog.close();
+            });
+            mostrar_notificacion('error', resData['Message'],'Error');
+        }
+    });
+}
+
+function PanelStatus(){
+    $.ajax({
+        type: 'GET',
+        url : 'list_event',
+        cache       : false,
+        dataType    : 'HTML',
+        success: function(data){
+            BootstrapDialog.show({
+                type      : 'type-primary',
+                title     : 'Estados del Agente' ,
+                message   : data ,
+                buttons: [
+                    {
+                        label     : 'Cancelar',
+                        cssClass  : 'btn-danger',
+                        action: function(dialogRef){
+                            dialogRef.close();
+                        }
+                    }
+                ]
+            });
+        }
+    });
+}
+
+function MarkAssitance(user_id,day,hour_actually,action){
+    var token =  $('input[name=_token]').val();
+
+    $.ajax({
+        type        : 'POST',
+        url         : 'assistance',
+        data        :{
+            _token      : token,
+        },
+        success     : function(data){
+            var result = data.split('&');
+            if(result[0] == 'true'){
+                modalAssintance(user_id,day,hour_actually,action);
+            }else if(result[0] == 'stand_by'){
+                ModalStandBy(result[1]);
+            }
+        }
+    })
+}
+
+function modalAssintance(user_id,day,hour_actually,action){
+    rank_hours = rango_de_horas(hour_actually);
+    title     = 'Cosapi Data S.A.';
+    message   = 'Por favor de seleccionar la hora correspondiente a su ' + action + '.'+
+        '<br><br>'+
+        '<div class="row">'+
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="'+rank_hours[1]+'">'+rank_hours[1]+'</center></div>'+
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="'+rank_hours[2]+'">'+rank_hours[2]+'</center></div>'+
+        '</div>';
+
+    BootstrapDialog.show({
+        type      : 'type-primary',
+        title     : title ,
+        message   : message ,
+        closable  : false,
+        buttons: [
+            {
+                label     : 'Aceptar',
+                cssClass  : 'btn-primary',
+                action: function(dialogRef){
+                    if(typeof  $('input:radio[name=rbtnHour]:checked').val() == 'undefined'){
+                        alert('Porfavor de seleccionar una hora.');
+                    }else{
+                        dialogRef.close();
+                        hour_new    = $('input:radio[name=rbtnHour]:checked').val().trim();
+                        user_id     = user_id;
+                        var parameters = {
+                            new_date_event  : day+' '+hour_new,
+                            user_id         : user_id
+                        };
+                        ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true);
+
+                        if(hour_new >= rank_hours[1]){
+                            console.log(hour_new);
+
+                            ModalStandBy(hour_new);
+                        }
+                    }
+                }
+            }
+        ]
+    });
+}
+
+
+function ModalStandBy(hour_new){
+    var present_hour    = $('#hour').val();
+    console.log(present_hour);
+    var text_hour       = restarHoras(present_hour,hour_new);
+    var message = 'Bienvenido, para su entrada faltan :'+
+        '<br>'+
+        '<center><h1 id="prueba">'+text_hour+'</h1></center>';
+    BootstrapDialog.show({
+        type      : 'type-primary',
+        title     : 'Cosapi Data S.A.' ,
+        message   : message ,
+        closable  : false
+    });
+    CloseStandBy(hour_new);
+}
+
+function CloseStandBy(hour_new){
+    var present_hour    = $('#hour').val();
+    if( present_hour >= hour_new){
+        $.each(BootstrapDialog.dialogs, function(id, dialog){
+            dialog.close();
+        });
+    }else {
+        var text_hour       = restarHoras(present_hour,hour_new);
+        $('#prueba').text(text_hour);
+        setTimeout('CloseStandBy("'+hour_new+'")', 1000);
+    }
+}
+
+
+//Funcion que genera el rango de horas para la marcacion de salida del agente
+function rango_de_horas(hour_actually){
+    array_complete = hour_actually.split(':');
+    second_before  = '00';
+    second_after   = '00';
+    if(array_complete[1] >= 30){
+        if(array_complete[0] != 23){
+            minuto_before = '30';
+            minuto_after  = '00';
+            hour_after    = ceroIzquierda(parseInt(array_complete[0])+1);
+        }else{
+            minuto_before = '30';
+            minuto_after  = '59';
+            second_after  = '59';
+            hour_after    = '23';
+        }
+    }else{
+        minuto_before = '00';
+        minuto_after  = '30';
+        hour_after    = ceroIzquierda(parseInt(array_complete[0]));
+    }
+
+    before_hour = (array_complete[0]+':'+minuto_before+':'+second_before).trim();
+    hour        = hour_actually.trim();
+    after_hour  = (hour_after+':'+minuto_after+':'+second_after).trim();
+
+    return [before_hour,hour,after_hour];
+}
+
+//Funcion que completa con cero a la izquierda una variable
+function ceroIzquierda(numero){
+    if (numero <= 9){
+        numero = '0'+numero;
+    }
+
+    return numero;
+}
+function ModificarEstado(event_id,user_id,ip,name){
+    var columns = {
+        event_id        : event_id,
+        user_id         : user_id,
+        anexo           : 281,
+        ip              : ip,
+        type_action     : 'update'
+    };
+
+    $.each(BootstrapDialog.dialogs, function(id, dialog){
+        dialog.close();
+    });
+
+    ajaxNodeJs(columns,'/detalle_eventos/change_status',true);
+}
+
+function mostrar_notificacion(type, mensaje, titulo) {
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": true,
+        "progressBar": true,
+        "positionClass": "toast-bottom-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "800",
+        "timeOut": "2000",
+        "extendedTimeOut": "2000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    Command: toastr[type](mensaje, titulo)
+}
+
+//Muestra la hora actual del sistema cada 1 segundo
+function hora_actual(hora, minuto, segundo) {
+    segundo = segundo + 1;
+    if (segundo == 60) {
+        minuto = minuto + 1;
+        segundo = 0;
+        if (minuto == 60) {
+            minuto = 0;
+            hora = hora + 1;
+            if (hora == 24) {
+                hora = 0;
+            }
+        }
+    }
+
+    str_hora        = new String(hora);
+    str_minuto      = new String(minuto);
+    str_segundo     = new String(segundo);
+
+    if (str_hora.length == 1) {
+        hora = '0' + hora ;
+    }
+    if (str_minuto.length == 1) {
+        minuto = '0' + minuto;
+    }
+    if (str_segundo.length == 1) {
+        segundo = '0' + segundo;
+    }
+
+    var hora_actual = '<span class="glyphicon glyphicon-time"></span> ' + hora + ':' + minuto + ':' + segundo;
+    var present_hour = '<input type="hidden" value="' + hora + ':' + minuto + ':' + segundo+'" id="hour"/>';
+    document.getElementById('hora_actual').innerHTML = hora_actual;
+    document.getElementById('present_hour').innerHTML = present_hour;
+
+    setTimeout("hora_actual(" + hora + ", " + minuto + ", " + segundo + ")", 1000);
+}
+
+//Muestra la fecha actual en la cabecera del sistema.
+function fecha_actual(dia, mes, diaw) {
+
+    var fecha_actual = '<span class="glyphicon glyphicon-calendar"></span> ' + nombre_dia(diaw) + ' ' + dia + ' de ' + nombre_mes(mes);
+    document.getElementById('fecha_actual').innerHTML = fecha_actual;
+
+}
+
+//Funcion que retorna nombre del mes, en base al número enviado
+function nombre_mes(mes) {
+    var nombre_mes;
+    switch (mes) {
+        case 1  :
+            nombre_mes = 'Ene';
+            break;
+        case 2  :
+            nombre_mes = 'Feb';
+            break;
+        case 3  :
+            nombre_mes = 'Mar';
+            break;
+        case 4  :
+            nombre_mes = 'Abr';
+            break;
+        case 5  :
+            nombre_mes = 'May';
+            break;
+        case 6  :
+            nombre_mes = 'Jun';
+            break;
+        case 7  :
+            nombre_mes = 'Jul';
+            break;
+        case 8  :
+            nombre_mes = 'Ago';
+            break;
+        case 9  :
+            nombre_mes = 'Sep';
+            break;
+        case 10  :
+            nombre_mes = 'Oct';
+            break;
+        case 11 :
+            nombre_mes = 'Nov';
+            break;
+        case 12 :
+            nombre_mes = 'Dic';
+            break;
+    }
+    return  nombre_mes;
+}
+
+//Funcion que retorna nombre del día, en base al número enviado
+function nombre_dia(dia) {
+    console.log(dia);
+    var nombre_dia;
+    switch (dia) {
+        case 0  :
+            nombre_dia = 'Dom';
+            break;
+        case 1  :
+            nombre_dia = 'Lun';
+            break;
+        case 2  :
+            nombre_dia = 'Mar';
+            break;
+        case 3  :
+            nombre_dia = 'Mie';
+            break;
+        case 4  :
+            nombre_dia = 'Jue';
+            break;
+        case 5  :
+            nombre_dia = 'Vie';
+            break;
+        case 6  :
+            nombre_dia = 'Sab';
+            break;
+    }
+    return  nombre_dia;
+}
+
+function restarHoras(inicio,fin) {
+    inicio                      = inicio.split(':');
+    fin                         = fin.split(':');
+
+    var inicioHoras             = parseInt(inicio[0])*3600;
+    var inicioMinutos           = parseInt(inicio[1])*60
+    var inicioSegundos          = parseInt(inicio[2]);
+    var iniciototal             = inicioHoras+inicioMinutos+inicioSegundos;
+
+    var finHoras                = parseInt(fin[0])*3600;
+    var finMinutos              = parseInt(fin[1])*60;
+    var finSegundos             = parseInt(fin[2]);
+    var fintotal                = finHoras+finMinutos+finSegundos;
+
+    var diferenciatotal         = fintotal - iniciototal;
+
+    var diferenciaHoras         = parseInt(diferenciatotal/3600);
+    var diferenciaMinutos       = parseInt((diferenciatotal-(diferenciaHoras*3600))/60);
+    var diferenciaSegundos      = parseInt(diferenciatotal-((diferenciaHoras*3600)+(diferenciaMinutos*60)));
+
+    return ceroIzquierda(diferenciaHoras)+':'+ceroIzquierda(diferenciaMinutos)+':'+ceroIzquierda(diferenciaSegundos);
+
+}
+
+//Funcion que permite la desconeccion del agente del sistema
+function marcar_salida_agente(){
+    rank_hours = [];
+    var hour =$('#hour').val();
+    rank_hours   = rango_de_horas(hour.trim());
+    message_1     = 'Usted se retira de las oficinas ?';
+    message_2     = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
+        '<br><br>'+
+        '<div class="row">'+
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="'+hour+'">'+hour+'</center></div>'+
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="'+rank_hours[2]+'">'+rank_hours[2]+'</center></div>'+
+        '</div>';
+
+    BootstrapDialog.show({
+        type      : 'type-primary',
+        title     : 'Registrar Salida' ,
+        message   : message_1 ,
+        closable  : false,
+        buttons: [
+            {
+                label     : 'Si',
+                cssClass  : 'btn-primary',
+                action: function(dialogRef){
+                    dialogRef.close();
+                    //Registro de Salida
+                    BootstrapDialog.show({
+                        type      : 'type-danger',
+                        title     : 'Registrar Salida' ,
+                        message   : message_2 ,
+                        closable  : false,
+                        buttons: [
+                            {
+                                label     : 'Aceptar',
+                                cssClass  : 'btn-danger',
+                                action: function(dialogRef){
+                                    hour_exit = hour.trim();
+                                    if(typeof  $('input:radio[name=rbtnHour]:checked').val() == 'undefined'){
+                                        alert('Porfavor de seleccionar su hora de salida.');
+                                    }else{
+                                        dialogRef.close();
+                                        hour_exit = $('input:radio[name=rbtnHour]:checked').val().trim();
+                                        desconnect_agent(hour_exit);
+                                    }
+                                }
+                            },
+                            {
+                                label     : 'Cancelar',
+                                cssClass  : 'btn-danger',
+                                action: function(dialogRef){
+                                    dialogRef.close();
+                                }
+                            }
+                        ]
+                    });
+                }
+            },
+            {
+                label     : 'No',
+                cssClass  : 'btn-primary',
+                action: function(dialogRef){
+                    dialogRef.close();
+                    desconnect_agent(hour.trim());
+                }
+            },
+            {
+                label     : 'Cancelar',
+                cssClass  : 'btn-danger',
+                action: function(dialogRef){
+                    dialogRef.close();
+                }
+            }
+        ]
+    });
+
+}
+
+
+/**
+ * [Funcion para la desconeccion del agente sin marcar su hora salida]
+ * @param hour_exit
+ */
+function desconnect_agent(hour_exit){
+    var user_id = $('#user_id').val();
+    var ip      = $('#ip').val();
+    var date    = $('#date').val();
+    var parameters = {
+        user_id     : user_id,
+        hour_exit   : date+' '+hour_exit,
+        anexo       : 281,
+        event_id    : 15,
+        ip          : ip,
+        type_action : 'disconnect'
+    };
+    console.log(parameters);
+    ajaxNodeJs(parameters,'/detalle_eventos/change_status',false);
+}
+
+function liberar_anexos(){
+    var user_id = $('#user_id').val();
+    var parameters = {
+        user_id     : user_id,
+        type_action : 'release'
+    };
+    ajaxNodeJs(parameters,'/anexos/set_anexo',true);
+}
+
+function assignAnexxed(anexo_name){
+    var user_id = $('#user_id').val();
+    var parameters = {
+        user_id     : user_id,
+        anexo       : anexo_name
+    };
+    ajaxNodeJs(parameters,'/anexos/set_anexo',true);
+}

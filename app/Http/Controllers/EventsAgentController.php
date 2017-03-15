@@ -23,6 +23,20 @@ class EventsAgentController extends CosapiController
 {
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        if($request->ajax()){
+            $events = Eventos::select()->where('estado_visible_id','=',1)->get()->toArray();
+            //dd($events);
+            return view('layout/recursos/status')->with(array('events' => $events));
+        }
+    }
+
+    /**
      * [events_consolidated Función que retorna la vista o datos para el reporte de Consolidated Events]
      * @param  Request $request  [Recepciona datos enviado por POST]
      * @return [view]            [Vista o Datos para cargar en el reporte consolidated]
@@ -156,7 +170,6 @@ class EventsAgentController extends CosapiController
             $events_presents = $this->events_presents($days);
             $events_history  = $this->events_history($days);
             $detail_events   = array_merge($events_presents, $events_history);
-            //dd($detail_events);
         }
 
 
