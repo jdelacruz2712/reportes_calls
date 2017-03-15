@@ -56,3 +56,7 @@ Route::post('agents_queue/search_users'							, ['uses'=>'AgentsQueueController@
 Route::post('agents_queue/assign_queue'							, ['uses'=>'AgentsQueueController@assign_queue']);
 Route::post('agents_queue/mark'							        , ['uses'=>'AgentsQueueController@mark_form']);
 Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
+
+Route::post('agents_annexed'									, ['uses'=>'AgentsAnnexedController@index']);
+Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);
+Route::post('assistance'                                        , ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);

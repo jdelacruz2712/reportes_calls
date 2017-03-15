@@ -8,8 +8,8 @@
               <img src="cosapi/img/logo_cosapi.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-              <p>Cosapi Data</p>
-              <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+              <p>{{ ucwords(Session::get('UserName'))}}</p>
+              <a href="#" id="statusAgent"><i class="fa fa-circle text-success"></i> @{{ present_status }}</a>
             </div>
           </div>
           <!-- /.search form -->
@@ -51,6 +51,7 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="#" id="agents_queue"       class="reportes"><i class="fa fa-circle-o text-purple"></i> Assign Queue</a></li>
+                <li><a href="#" id="agents_annexed"     class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Annexed</a></li>
               </ul>
             </li>
           </ul>

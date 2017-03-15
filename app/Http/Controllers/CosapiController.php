@@ -255,4 +255,76 @@ class CosapiController extends Controller
             $this->desconexion_ami();
         }
     }
+
+    /**
+     * @param $evento_id : El id del evento de pausa que acciono el agente via web.
+     * @param $user_id   : Capturar el ID del usuario conectado.
+     */
+    public function register_event($evento_id,$user_id,$anexo = '',$fecha_evento = '',$observaciones = '',$date_really ='')
+    {
+
+        /** Guarda Eventos  */
+        if($fecha_evento == '')     { $fecha_evento = Carbon::now(); }else{ $fecha_evento = $fecha_evento; }
+        if($date_really  == null)   { $date_really  = null; }else{ $date_really  = Carbon::now(); }
+
+        \DB::table('detalle_eventos')->insert(array(
+            'evento_id'     => $evento_id,
+            'user_id'       => $user_id,
+            'fecha_evento'  => $fecha_evento,
+            'date_really'   => $date_really,
+            'anexo'         => $anexo,
+            'observaciones' => $observaciones,
+            'ip_cliente'    => $_SERVER['REMOTE_ADDR']
+        ));
+
+    }
+
+    /**
+     * [Function que devuelve datos de el primer logueo realizado por el usuario]
+     * @return array
+     */
+    protected function UltimateEventLogin(){
+        $users      = DetalleEventos::Select(DB::raw('count(*) as cant_event,id,date_really,fecha_evento'))
+            ->where('user_id','=',$this->UserId)
+            ->where('evento_id','=',11)
+            ->where(DB::raw('DATE(fecha_evento)'),'=',date('Y-m-d'))
+            ->orderBy('id', 'asc')
+            ->get();
+        foreach ($users as $user) {
+            $cant_event     = $user->cant_event;
+            $date_really    = $user->date_really;
+            $fecha_evento   = $user->fecha_evento;
+            $id             = $user->id;
+        }
+
+        return array($cant_event,$date_really, $fecha_evento, $id);
+    }
+
+    /**
+     * [Funcion que permite desconectar al agente tanto del sistema como del asterisk]
+     * @param $session_idanexo      [Id del anexo]
+     * @param $useragente           [Usuario del agente]
+     * @param $idevento             [Id del evento a ejecutar]
+     * @param $userid               [Id del usuario]
+     * @param $numberanexo          [Numero del anexo]
+     * @param string $datetime      [Fecha y Hora a registrar como hora de desconeccion]
+     * @param string $observations  [Comentarios sobre la desconeccion del agente del sistema]
+     * @return string
+     */
+    protected function desconnect_agent_asterisk($session_idanexo,$useragente,$idevento,$userid,$numberanexo,$datetime='',$observations=''){
+
+
+                /** Guardar Eventos  */
+                $this->register_event($idevento,$userid,$numberanexo,$datetime,$observations);
+
+                /** Liberar Anexo  */
+                $Anexos = Anexo::find($session_idanexo);
+                $Anexos->user_id = Null;
+                $Anexos->save();
+
+                return 'Success - Agent/'.$useragente.' Desconectado Correctamente ';
+
+
+
+    }
 }
