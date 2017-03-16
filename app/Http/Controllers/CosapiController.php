@@ -172,7 +172,7 @@ class CosapiController extends Controller
      * @return mixed         [Lista de usuarios que coinciden con la busqueda]
      */
     protected function query_user_search($nombre = ''){
-        $Users                  = User::select('id','primer_nombre','')
+        $Users                  = User::select('id','primer_nombre','apellido_paterno','apellido_materno')
                                         ->where(DB::raw('CONCAT(primer_nombre," ",apellido_paterno," ",apellido_materno)'), 'like', '%'.$nombre.'%')
                                         ->orderBy('primer_nombre')
                                         ->orderBy('apellido_paterno')
