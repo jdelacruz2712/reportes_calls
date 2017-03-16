@@ -159,7 +159,7 @@ class AgentsQueueController extends CosapiController
 
             $valid_users = [];
             foreach ($Users as $id => $User) {
-                $valid_users[] = ['id' => $User->id, 'text' => $User->primer_nombre];
+                $valid_users[] = ['id' => $User->id, 'text' => $User->primer_nombre.' '.$User->apellido_paterno.' '.$User->apellido_materno];
             }
 
             return response()->json($valid_users);
