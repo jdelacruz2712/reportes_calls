@@ -56,7 +56,7 @@ class AdminController extends Controller
 
     public function supervisor()
     {
-        $name_anexo = 0;
+        $name_anexo = 'Sin Anexo';
         if($this->UserRole != 'admin'){
             return redirect('logout');
         }
@@ -69,7 +69,7 @@ class AdminController extends Controller
 
     public function agente()
     {
-        $name_anexo = 0;
+        $name_anexo = 'Sin Anexo';
         if($this->UserRole != 'user'){
             return redirect('logout');
         }
@@ -79,5 +79,10 @@ class AdminController extends Controller
             $name_anexo = $Anexos[0]['name'];
         };
         return view('/agente')->with(array('anexo'=>$name_anexo));
+    }
+
+    public function working()
+    {
+        return view('/layout/recursos/working');
     }
 }

@@ -60,3 +60,4 @@ Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@lis
 Route::post('agents_annexed'									, ['uses'=>'AgentsAnnexedController@index']);
 Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);
 Route::post('assistance'                                        , ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);
+Route::post('working'                                           , ['uses'=>'AdminController@working'            ,    'as' => 'working']);

@@ -48,9 +48,9 @@
                             </p>
                         </li>
                         <!-- Menu Body -->
-                        <li class="user-body">
+                        <!--<li class="user-body">
                             <div class="col-xs-4 text-center">
-                                <a href="#">Followers</a>
+                                <a href="#">Queues</a>
                             </div>
                             <div class="col-xs-4 text-center">
                                 <a href="#">Sales</a>
@@ -58,11 +58,11 @@
                             <div class="col-xs-4 text-center">
                                 <a href="#">Friends</a>
                             </div>
-                        </li>
+                        </li>-->
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="#" class="btn btn-default btn-flat reportes" id="working" >Profile</a>
                             </div>
                             <div class="pull-right">
                                 <a href="#" onClick="javascript:marcar_salida_agente()" class="btn btn-default btn-flat">Sign out</a>

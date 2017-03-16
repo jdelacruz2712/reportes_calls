@@ -420,7 +420,7 @@ function ajaxNodeJs(parameters, ruta, notificacion){
             }
 
             if(parameters['type_action'] == 'release'){
-                $('#anexo').text(0);
+                $('#anexo').text('Sin Anexo');
             }
 
         }else{
@@ -885,7 +885,7 @@ function liberar_anexos(){
 function assignAnexxed(anexo_name){
     var user_id = $('#user_id').val();
     var anexo   = $('#anexo').text();
-    if(anexo == 0){
+    if(anexo == 'Sin Anexo'){
         var parameters = {
             user_id     : user_id,
             anexo       : anexo_name
