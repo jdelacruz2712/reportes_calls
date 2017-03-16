@@ -19,7 +19,6 @@
 <!-- Scripts -->
 {!!Html::script('vendor/jquery/jquery.js')!!}
 {!!Html::script('vendor/bootstrap/js/bootstrap.min.js')!!}
-{!!Html::script('cosapi/js/login.js')!!}
 {!!Html::script('extras/bootstrap-typeahead/js/bootstrap-typeahead.js')!!}
 
 </body>

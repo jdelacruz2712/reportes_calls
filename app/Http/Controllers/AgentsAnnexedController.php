@@ -4,9 +4,7 @@ namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Anexo;
 use Illuminate\Http\Request;
-
 use Cosapi\Http\Requests;
-use Cosapi\Http\Controllers\Controller;
 
 class AgentsAnnexedController extends CosapiController
 {

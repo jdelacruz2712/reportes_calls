@@ -4,19 +4,13 @@ namespace Cosapi\Http\Controllers;
 
 use Cosapi\Collector\Collector;
 use Illuminate\Http\Request;
-
-use Cosapi\Models\User;
 use Cosapi\Models\Eventos;
 use Cosapi\Models\DetalleEventosHistory;
 use Cosapi\Models\DetalleEventos;
-use Cosapi\Http\Controllers\CosapiController;
 
 use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
-use Cosapi\Http\Controllers\Controller;
 use Excel;
-use Yajra\Datatables\Facades\Datatables;
-use Cosapi\Http\Controllers\IncomingCallsController;
 
 
 class EventsAgentController extends CosapiController
@@ -31,7 +25,6 @@ class EventsAgentController extends CosapiController
     {
         if($request->ajax()){
             $events = Eventos::select()->where('estado_visible_id','=',1)->get()->toArray();
-            //dd($events);
             return view('layout/recursos/status')->with(array('events' => $events));
         }
     }

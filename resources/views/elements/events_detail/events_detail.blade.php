@@ -20,9 +20,9 @@
 <script type="text/javascript">
     $(document).ready(function(){
         buscar();
-    })
+    });
 
     function buscar(){
-        show_tab_detail_events('events_detail'); }
-
+        show_tab_detail_events('events_detail');
+    }
 </script>

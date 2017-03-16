@@ -95,7 +95,6 @@ class OutgoingCallsController extends CosapiController
      * @return [array]                        [Array modificado para la correcta visualización en el reporte]
      */
     protected function builderview($query_calls_outgoing,$type=''){
-        $action = '';
         $posicion = 0;
         foreach ($query_calls_outgoing as $query_call) {
 

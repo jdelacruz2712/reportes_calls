@@ -6,10 +6,6 @@ namespace Cosapi\Http\Controllers;
 use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\AgentesOnline;
-use Cosapi\Http\Controllers\Controller;
-use Cosapi\Collector\Collector;
-use Cosapi\Http\Controllers\CosapiController;
-
 use DB;
 use Illuminate\Support\Facades\Log;
 
@@ -62,6 +58,4 @@ class AgentsOnlineController extends CosapiController
                               
         return $query_agents_online;
     }
-    
-
 }

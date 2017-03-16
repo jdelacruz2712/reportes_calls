@@ -39,6 +39,7 @@ class AdminController extends Controller
         $this->UserSystem   = Session::get('UserSystem') ;
 
     }
+
 	/**
 	 * [index Función que carga la base del AdminLTE]
 	 * @return [view] [Returna la vista base del Admin LTE]

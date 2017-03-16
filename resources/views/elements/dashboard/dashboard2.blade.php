@@ -52,10 +52,10 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        prueba();
+        buscar();
     });
 
-    function prueba(){
+    function buscar(){
         var idevento = $('#hidReporttype').val();
         detalle_kpi_dashboard2(idevento);
         setTimeout('prueba()', 60000);

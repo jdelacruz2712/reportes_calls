@@ -3,14 +3,10 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Queue;
-use Cosapi\Models\User;
 use Cosapi\Models\User_Queue;
 use Illuminate\Http\Request;
-
 use Cosapi\Http\Requests;
-use Cosapi\Http\Controllers\CosapiController;
 use DB;
-use Illuminate\Support\Facades\Response;
 
 class AgentsQueueController extends CosapiController
 {

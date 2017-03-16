@@ -5,8 +5,6 @@ namespace Cosapi\Http\Controllers;
 use Illuminate\Http\Request;
 use Cosapi\Facades\phpAMI;
 use Cosapi\Http\Requests;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 use Cosapi\Models\User;
 use Cosapi\Models\Anexo;
 use Cosapi\Models\CallsQueueOnline;

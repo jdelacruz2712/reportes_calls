@@ -169,8 +169,8 @@ function get_data_filters(evento){
  * @return {[type]}               [description]
  */
 function exportar(format_export) {
-    var days = $('#texto').val();
-    var event =$('#hidEvent').val()
+    var days    = $('#texto').val();
+    var event   = $('#hidEvent').val()
     export_ajax('POST',event,format_export,days);
 }
 
@@ -392,8 +392,6 @@ function validar_sonido(){
 function ajaxNodeJs(parameters, ruta, notificacion){
 
     mySocket.get(ruta,parameters, (resData, jwRes) => {
-        console.log(jwRes);
-        console.log(resData);
         if(resData['Response'] == 'success'){
             //Cierra todos los modals abiertos
             //Actualmente se usa para el cambio de Estados del Agente
@@ -512,8 +510,6 @@ function modalAssintance(user_id,day,hour_actually,action){
                         ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true);
 
                         if(hour_new >= rank_hours[1]){
-                            console.log(hour_new);
-
                             ModalStandBy(hour_new);
                         }
                     }
@@ -526,7 +522,6 @@ function modalAssintance(user_id,day,hour_actually,action){
 
 function ModalStandBy(hour_new){
     var present_hour    = $('#hour').val();
-    console.log(present_hour);
     var text_hour       = restarHoras(present_hour,hour_new);
     var message = 'Bienvenido, para su entrada faltan :'+
         '<br>'+
@@ -726,7 +721,6 @@ function nombre_mes(mes) {
 
 //Funcion que retorna nombre del día, en base al número enviado
 function nombre_dia(dia) {
-    console.log(dia);
     var nombre_dia;
     switch (dia) {
         case 0  :
@@ -873,7 +867,6 @@ function desconnect_agent(hour_exit){
             ip          : ip,
             type_action : 'disconnect'
         };
-        console.log(parameters);
         ajaxNodeJs(parameters,'/detalle_eventos/change_status',false);
     }else{
         mostrar_notificacion('error','No tiene un anexo asignado','Error');

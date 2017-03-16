@@ -20,7 +20,6 @@ mySocket.on('connect', function onConnect () {
 
 //Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
 mySocket.on('status_agent', function (data) {
-    console.log(data.Message);
     present_status.present_status = data.Message;
 });
 

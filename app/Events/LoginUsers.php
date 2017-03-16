@@ -2,7 +2,6 @@
 
 namespace Cosapi\Events;
 
-use Cosapi\Events\Event;
 
 class LoginUsers extends Event
 {

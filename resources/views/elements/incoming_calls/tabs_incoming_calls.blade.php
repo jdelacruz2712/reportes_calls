@@ -42,12 +42,12 @@
 <script src="{{ asset('cosapi/js/cosapi_adminlte.js')}}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-        prueba();
+        buscar();
         $('.media').media();
         
     })
 
-    function prueba(){
+    function buscar(){
         show_tab_incoming('calls_completed');
     }
 

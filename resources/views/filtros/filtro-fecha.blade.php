@@ -1,7 +1,7 @@
 <label>&nbsp;&nbsp;&nbsp; Seleccione rango de fechas:</label>
 
+<!-- Date range -->
 <div class="box-body">
-  <!-- Date range -->
   <div class="form-group col-md-5">
     <div class="input-group">
       <div class="input-group-addon">

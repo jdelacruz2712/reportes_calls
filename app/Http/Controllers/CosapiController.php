@@ -1,14 +1,11 @@
 <?php
 
 namespace Cosapi\Http\Controllers;
-
-use Cosapi\Models\Anexo;
 use Cosapi\Models\Queue;
 use Cosapi\Models\User;
 use Illuminate\Http\Request;
 use Cosapi\Facades\phpAMI;
 use Cosapi\Http\Requests;
-use Cosapi\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\DB;
 use Cosapi\Models\DetalleEventos;
@@ -79,38 +76,6 @@ class CosapiController extends Controller
             });
 
         })->store($format,$location);
-    }
-
-
-    /**
-     * [conexion_ami Función que permite abrir conexion ami, hacia el asterisk a traves del puerto del manager.conf (Archivo Asterisk)]
-     * @return [boolean] [Mensaje de resultado de la conexion]
-     */
-    protected function conexion_ami()
-    {
-        $login = phpAMI::login(getenv('ASTERISK_HOST'));
-
-        if ($login == false) {
-            echo 'Error - Problemas de Socket a Nivel de Asterisk';
-        } else {
-            if ($login['Response'] == 'Success') {
-
-                return true;
-
-            } else {
-                echo 'Error - Problemas en el usuario y password de la Conexion Manager ';
-            }
-        }
-    }
-
-
-    /**
-     * [desconexion_ami Función para desconectar sesión del AMI]
-     *
-     */
-    protected function desconexion_ami()
-    {
-        phpAMI::logoff();
     }
 
     /**
@@ -207,7 +172,7 @@ class CosapiController extends Controller
      * @return mixed         [Lista de usuarios que coinciden con la busqueda]
      */
     protected function query_user_search($nombre = ''){
-        $Users                  = User::select('id','primer_nombre','apellido_paterno','apellido_materno')
+        $Users                  = User::select('id','primer_nombre','')
                                         ->where(DB::raw('CONCAT(primer_nombre," ",apellido_paterno," ",apellido_materno)'), 'like', '%'.$nombre.'%')
                                         ->orderBy('primer_nombre')
                                         ->orderBy('apellido_paterno')
@@ -245,16 +210,6 @@ class CosapiController extends Controller
         return $return_var;
     }
 
-
-    /**
-     * [Función para actualizar configuracion de servidor asterisk]
-     */
-    protected function queueReload(){
-       if ($this->conexion_ami()==true){
-            $prueba=phpAMI::command('reload');
-            $this->desconexion_ami();
-        }
-    }
 
     /**
      * @param $evento_id : El id del evento de pausa que acciono el agente via web.
@@ -298,33 +253,5 @@ class CosapiController extends Controller
         }
 
         return array($cant_event,$date_really, $fecha_evento, $id);
-    }
-
-    /**
-     * [Funcion que permite desconectar al agente tanto del sistema como del asterisk]
-     * @param $session_idanexo      [Id del anexo]
-     * @param $useragente           [Usuario del agente]
-     * @param $idevento             [Id del evento a ejecutar]
-     * @param $userid               [Id del usuario]
-     * @param $numberanexo          [Numero del anexo]
-     * @param string $datetime      [Fecha y Hora a registrar como hora de desconeccion]
-     * @param string $observations  [Comentarios sobre la desconeccion del agente del sistema]
-     * @return string
-     */
-    protected function desconnect_agent_asterisk($session_idanexo,$useragente,$idevento,$userid,$numberanexo,$datetime='',$observations=''){
-
-
-                /** Guardar Eventos  */
-                $this->register_event($idevento,$userid,$numberanexo,$datetime,$observations);
-
-                /** Liberar Anexo  */
-                $Anexos = Anexo::find($session_idanexo);
-                $Anexos->user_id = Null;
-                $Anexos->save();
-
-                return 'Success - Agent/'.$useragente.' Desconectado Correctamente ';
-
-
-
     }
 }

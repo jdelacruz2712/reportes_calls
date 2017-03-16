@@ -23,7 +23,7 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 
-		/* script para daterange y agregarle formato aÃ±o-mes-dia */
+		/* script para daterange y agregarle formato anio-mes-dia */
 	    $('input[name="fecha_evento"]').daterangepicker(
 	        {
 	            locale: {

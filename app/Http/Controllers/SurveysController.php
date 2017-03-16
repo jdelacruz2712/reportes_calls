@@ -6,9 +6,7 @@ use Illuminate\Http\Request;
 use Cosapi\Collector\Collector;
 
 use Cosapi\Http\Requests;
-use Cosapi\Http\Controllers\CosapiController;
 use Cosapi\Models\TipoEncuesta;
-use Cosapi\Models\Survey;
 use Excel;
 use DB;
 
@@ -111,7 +109,6 @@ class SurveysController extends CosapiController
     protected function builderesultado($resuldato_encuesta,$cantidad_preguntas){
         $builderesultado    = [];
         $secuencia          = 1;
-        $incrementador      = 1;
         foreach ($resuldato_encuesta as $resuldato) {
             if(!isset($builderesultado[$resuldato->encuesta_id])){
                 for ($incrementador = 1; $incrementador <= $cantidad_preguntas; $incrementador++) { 
