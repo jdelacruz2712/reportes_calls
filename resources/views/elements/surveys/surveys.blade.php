@@ -43,7 +43,6 @@
     </div>
 </div>
 
-<script src="{{ asset('cosapi/js/cosapi_adminlte.js')}}"></script>
 <script type="text/javascript">
     $(document).ready(function(){
         surveys();

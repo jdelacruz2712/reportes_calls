@@ -14,9 +14,17 @@ var present_status = new Vue({
 var mySocket = io.sails.connect('http://192.167.99.246:1338/');
 
 //Conecta con el Socket Server
-mySocket.on('connect', function onConnect () {
+mySocket.on('connect', function () {
+    $('#disconnection_nodejs').hide();
     console.log("Socket connected!");
 });
+
+mySocket.on('disconnect', function ()
+{
+    $('#disconnection_nodejs').show();
+    console.log('desconectado!');
+});
+
 
 //Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
 mySocket.on('status_agent', function (data) {

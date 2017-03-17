@@ -47,8 +47,11 @@
 
       <!-- Content Wrapper -->
       <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
+          <!-- mensaje de perdida de desconexion con servidor NodeJS -->
+          @include('layout.recursos.disconnect_nodejs')
+          <!-- Content Header (Page header) -->
           <section class="content-header">
+
             <h1>
               Dashboard
               <small>Panel de Control</small>
