@@ -15,8 +15,13 @@ class AdminController extends Controller
     protected $UserRole;
     protected $UserName;
     protected $UserSystem;
+    protected $UserPassword;
+    protected $UserAnexo;
 
     public function __construct(){
+
+        $type_password = 0;
+
         if (!Session::has('UserId')) {
             Session::put('UserId'   ,Auth::user()->id   );
         }
@@ -33,10 +38,30 @@ class AdminController extends Controller
             Session::put('UserSystem'   ,Auth::user()->username);
         }
 
-        $this->UserId       = Session::get('UserId');
-        $this->UserRole     = Session::get('UserRole') ;
-        $this->UserName     = Session::get('UserName') ;
-        $this->UserSystem   = Session::get('UserSystem') ;
+
+        // Tipo de password modificado
+        if(Auth::user()->password == '$2y$10$9TTAuZKJgHLvDfDlvt2fY.vWlj2EqwG6iGLJ.zuaxbqaA3.EBXPOW'){
+            $type_password = 1; // Tipo de password por defecto
+        }
+        Session::put('UserPassword'   ,$type_password);
+
+
+        $Anexos = Anexo::select('name')->where('user_id','=',Auth::user()->id )->get()->toArray();
+        if(count($Anexos) != 0){
+            $name_anexo = $Anexos[0]['name'];
+            Session::put('UserAnexo'   ,$name_anexo);
+        }else{
+            Session::put('UserAnexo'   ,'Sin Anexo'   );
+        }
+
+        $this->UserId       = Session::get('UserId')        ;
+        $this->UserRole     = Session::get('UserRole')      ;
+        $this->UserName     = Session::get('UserName')      ;
+        $this->UserSystem   = Session::get('UserSystem')    ;
+        $this->UserPassword = Session::get('UserPassword')  ;
+        $this->UserPassword = Session::get('UserPassword')  ;
+        $this->UserAnexo    = Session::get('UserAnexo')     ;
+
 
     }
 
@@ -60,11 +85,8 @@ class AdminController extends Controller
         if($this->UserRole != 'admin'){
             return redirect('logout');
         }
-        $Anexos = Anexo::select('name')->where('user_id','=',$this->UserId )->get()->toArray();
-        if(count($Anexos) != 0){
-            $name_anexo = $Anexos[0]['name'];
-        };
-        return view('/front-admin')->with(array('anexo'=>$name_anexo));
+
+        return view('/front-admin')->with(array('anexo'=>$this->UserAnexo,'password' => $this->UserPassword));
     }
 
     public function agente()
@@ -74,11 +96,7 @@ class AdminController extends Controller
             return redirect('logout');
         }
 
-        $Anexos = Anexo::select('name')->where('user_id','=',$this->UserId )->get()->toArray();
-        if(count($Anexos) != 0){
-            $name_anexo = $Anexos[0]['name'];
-        };
-        return view('/agente')->with(array('anexo'=>$name_anexo));
+        return view('/agente')->with(array('anexo'=>$this->UserAnexo,'password' => $this->UserPassword));
     }
 
     public function working()

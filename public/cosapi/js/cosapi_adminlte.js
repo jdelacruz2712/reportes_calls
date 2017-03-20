@@ -390,8 +390,7 @@ function validar_sonido(){
 }
 
 function ajaxNodeJs(parameters, ruta, notificacion){
-
-    mySocket.get(ruta,parameters, (resData, jwRes) => {
+    socketSails.get(ruta,parameters, (resData, jwRes) => {
         if(resData['Response'] == 'success'){
             //Cierra todos los modals abiertos
             //Actualmente se usa para el cambio de Estados del Agente
@@ -422,6 +421,8 @@ function ajaxNodeJs(parameters, ruta, notificacion){
             if(parameters['type_action'] == 'release'){
                 $('#anexo').text('Sin Anexo');
             }
+
+
 
         }else{
             $.each(BootstrapDialog.dialogs, function(id, dialog){
@@ -472,6 +473,8 @@ function MarkAssitance(user_id,day,hour_actually,action){
                 modalAssintance(user_id,day,hour_actually,action);
             }else if(result[0] == 'stand_by'){
                 ModalStandBy(result[1]);
+            }else{
+                checkPassword();
             }
         }
     })
@@ -509,8 +512,10 @@ function modalAssintance(user_id,day,hour_actually,action){
                         };
                         ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true);
 
-                        if(hour_new >= rank_hours[1]){
+                        if(hour_new > rank_hours[1]){
                             ModalStandBy(hour_new);
+                        }else{
+                            changePassword();
                         }
                     }
                 }
@@ -541,6 +546,8 @@ function CloseStandBy(hour_new){
         $.each(BootstrapDialog.dialogs, function(id, dialog){
             dialog.close();
         });
+
+        checkPassword();
     }else {
         var text_hour       = restarHoras(present_hour,hour_new);
         $('#prueba').text(text_hour);
@@ -586,9 +593,9 @@ function ceroIzquierda(numero){
 
     return numero;
 }
-function ModificarEstado(event_id,user_id,ip,name){
+function ModificarEstado(event_id,user_id,ip,name,pause){
     var anexo   = $('#anexo').text();
-    if(anexo != 0){
+    if(anexo != 'Sin Anexo'){
         var columns = {
             event_id        : event_id,
             user_id         : user_id,
@@ -894,4 +901,86 @@ function assignAnexxed(anexo_name){
     }else{
         mostrar_notificacion('error', 'Ya se encuentra asignado al anexo '+anexo+'.','Error');
     }
+}
+
+function checkPassword(){
+    var type_password = $('#type_password').val();
+    if(type_password == 1){
+        changePassword()
+    }
+}
+
+function changePassword(){
+    var token =  $('input[name=_token]').val();
+    var message = '<p>Cambiar Contraseña</p>'+
+                    '<br>'+
+                    '<div class="row">' +
+                        '<div class="col-md-7">'+
+                            '<div class="col-md-6" >'+
+                                'Nueva Contraseña:'+
+                            '</div>'+
+                            '<div class="col-md-6">'+
+                                '<input type="password" class="form-control" style="border-radius: 7px" id="newPassword">'+
+                            '</div>'+
+                            '<br>'+'<br>'+'<br>'+
+                            '<div class="col-md-6">'+
+                                'Confirma Contraseña:'+
+                            '</div>'+
+                            '<div class="col-md-6">'+
+                                '<input type="password" class="form-control" style="border-radius: 7px" id="confirmPassword">'+
+                            '</div>'+
+                        '</div>'+
+                        '<div class="col-md-5">'+
+                            '<div class="col-md-12">'+
+                                'Una contraseña segura está compuesta de 8 a 12 caracteres.<br>'+
+                                'Una diferencia entre mayuscula y minuscula.<br>'+
+                                'Permite números , letras y símbolos del teclado.'+
+                            '</div>'+
+                        '</div>'+
+                    '</div>';
+
+    BootstrapDialog.show({
+        type      : 'type-default',
+        title     : '<font style="color:red; text-align: center">Registra tu contraseña</font>' ,
+        message   : message ,
+        closable  : false,
+        buttons: [
+            {
+                label     : 'Aceptar',
+                cssClass  : 'btn-danger',
+                action: function(dialogRef){
+                    var newPassword     = $('#newPassword').val();
+                    var confirmPassword = $('#confirmPassword').val();
+
+
+                    if(confirmPassword != '' && newPassword != ''){
+                        if(confirmPassword == newPassword){
+                             $.ajax({
+                                 type        : 'POST',
+                                 url         : 'modifyPassword',
+                                 data        :{
+                                     _token      : token,
+                                     newPassword : newPassword
+                                 },
+                                 success     : function(data){
+                                     if(data == 1){
+                                         dialogRef.close();
+                                         mostrar_notificacion('success', 'El evento se realizo exitosamente!!!','Success');
+                                     }else{
+                                         mostrar_notificacion('error','Problemas de inserción a la base de datos','Error');
+                                     }
+                                 }
+                             })
+
+                        }else{
+                            alert('Las contraseñas ingresadas no coinciden')
+                        }
+                    }else{
+                        alert('Por favor de llenar todos los campos')
+                    }
+
+                }
+            }
+        ]
+    });
 }

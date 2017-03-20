@@ -7,9 +7,11 @@
             <div class="pull-left image">
               <img src="cosapi/img/logo_cosapi.jpg" class="img-circle" alt="User Image">
             </div>
-            <div class="pull-left info">
+            <div id="statusAgent" class="pull-left info">
+              <input type="hidden"  v-model="anexo" value="{{$anexo}}">
+              <input type="hidden"  v-model="present_status_id" id="present_status_id">
               <p>{{ ucwords(Session::get('UserName'))}}</p>
-              <a href="#" id="statusAgent"><i class="fa fa-circle text-success"></i> @{{ present_status }}</a>
+              <a href="#"><i class="fa fa-circle text-success"></i> @{{ present_status_name }}</a>
             </div>
           </div>
           <!-- /.search form -->

@@ -61,3 +61,4 @@ Route::post('agents_annexed'									, ['uses'=>'AgentsAnnexedController@index']
 Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);
 Route::post('assistance'                                        , ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);
 Route::post('working'                                           , ['uses'=>'AdminController@working'            ,    'as' => 'working']);
+Route::post('modifyPassword'                                    , ['uses'=>'UserController@modifyPassword'            ,    'as' => 'modifyPassword']);

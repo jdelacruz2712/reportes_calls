@@ -27,6 +27,7 @@
   </head>
 
   <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini ">
+    <input type="hidden" value="{{ Session::get('UserPassword')}}" id="type_password">
     <input type="hidden" value="{{ Session::get('UserId')}}" id="user_id">
     <input type="hidden" value="{{$_SERVER['REMOTE_ADDR']}}" id="ip">
     <font id="present_hour"><input type="hidden" value="" id="hour"></font>
@@ -99,11 +100,12 @@
     {!!Html::script('extras/bootstrap3-dialog/js/bootstrap-dialog.min.js')!!}
     {!!Html::script('plugins/adminLTE/js/app.min.js')!!}
     {!!Html::script('plugins/adminLTE/js/funcionalidades.js')!!}
-    {!!Html::script('cosapi/js/cosapi_adminlte.js')!!}
+    {!!Html::script('cosapi/js/cosapi_adminlte.js?version=2.1.4')!!}
     {!!Html::script('cosapi/js/datatables.js')!!}
     {!!Html::script('cosapi/js/vue.js')!!}
     {!!Html::script('cosapi/js/sails.io.js', array('autoConnect' => 'false'))!!}
-    {!!Html::script('cosapi/js/adminlte_vue.js')!!}
+    {!!Html::script('cosapi/js/adminlte_vue.js?version='.date('Y-D'))!!}
+    {!!Html::script('cosapi/js/socket.io.js')!!}
 
     @include('layout.recursos.fecha_hora')
 
