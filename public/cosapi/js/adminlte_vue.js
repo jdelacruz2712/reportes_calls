@@ -12,7 +12,7 @@ var present_status = new Vue({
         anexo               : '',
     }
 });
-console.log(present_status.$data.anexo)
+
 //Parámetro de conexion al Servidor NodeJs
 var socketSails = io.sails.connect('http://192.167.99.246:1338/');
 var socketAsterisk = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
@@ -37,12 +37,12 @@ socketSails.on('status_agent',  (data) => {
     present_status.present_status_id    = data.Event_id;
 })
 
-socketAsterisk.emit('join', '228')
+socketAsterisk.emit('join', $('#anexo').text())
 
 socketAsterisk.on('status_agent',  (data) => {
     console.log(data);
-    //present_status.present_status_name  = data.Name_Event;
-    //present_status.present_status_id    = data.Event_id;
+    present_status.present_status_name  = data.Name_Event;
+    present_status.present_status_id    = data.Event_id;
 })
 
 
