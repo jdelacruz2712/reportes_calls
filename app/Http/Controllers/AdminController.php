@@ -59,7 +59,6 @@ class AdminController extends Controller
         $this->UserName     = Session::get('UserName')      ;
         $this->UserSystem   = Session::get('UserSystem')    ;
         $this->UserPassword = Session::get('UserPassword')  ;
-        $this->UserPassword = Session::get('UserPassword')  ;
         $this->UserAnexo    = Session::get('UserAnexo')     ;
 
 
@@ -71,32 +70,11 @@ class AdminController extends Controller
 	 */
     public function index()
     {
-        if($this->UserRole == 'admin'){
-            return redirect('supervisor');
-        }else{
-            return redirect('agente');
-        }
-
-    }
-
-    public function supervisor()
-    {
-        $name_anexo = 'Sin Anexo';
-        if($this->UserRole != 'admin'){
-            return redirect('logout');
-        }
-
-        return view('/front-admin')->with(array('anexo'=>$this->UserAnexo,'password' => $this->UserPassword));
-    }
-
-    public function agente()
-    {
-        $name_anexo = 'Sin Anexo';
-        if($this->UserRole != 'user'){
-            return redirect('logout');
-        }
-
-        return view('/agente')->with(array('anexo'=>$this->UserAnexo,'password' => $this->UserPassword));
+        return view('/front-admin')->with(array(
+            'anexo'     =>  $this->UserAnexo,
+            'password'  =>  $this->UserPassword,
+            'role'      =>  $this->UserRole
+        ));
     }
 
     public function working()

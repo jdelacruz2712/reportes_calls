@@ -8,4 +8,15 @@ class DetalleEventosHistory extends DetalleEventos
 {
     protected $connection   = 'laravel';
     protected $table 		= 'detalle_eventos_history';
+
+
+    public function scopeFiltro_user_rol($query,$rol,$users)
+    {
+
+        if( $rol == 'user')
+        {
+            return    $query->where('user_id','=',$users);
+        }
+
+    }
 }

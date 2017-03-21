@@ -68,19 +68,15 @@ class ConsolidatedCallsController extends CosapiController
     protected function calls_inbound($fecha_evento, $evento, $rank_hour)
     {
         $groupby                            = '';
-        $users                              = '';
-        if(Session::get('UserRole') != 'admin'){
-            $users = 'Agent/'.Session::get('UserName');
-        }
-        $query_calls_inbound                = $this->query_calls_inbound($fecha_evento, ($rank_hour/60),$users);
+        $query_calls_inbound                = $this->query_calls_inbound($fecha_evento, ($rank_hour/60));
 
         switch($evento){
             case 'skills_group' :
-                $call_group                 = $this->calls_queue($fecha_evento,$users);
+                $call_group                 = $this->calls_queue($fecha_evento);
                 $groupby                    = 'queue';
                 break ;
             case 'agent_group'        :
-                $call_group                 = $this->calls_agents($fecha_evento,$users);
+                $call_group                 = $this->calls_agents($fecha_evento);
                 $groupby                    = 'agent';
                 break ;
             case 'day_group'          :
@@ -105,13 +101,13 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [date] $days  [Fecha de consulta]
      * @return [array]       [Retorna datos de las llamadas entrantes en determinada fecha]
      */
-    protected function query_calls_inbound ($fecha_evento,$rank_hour,$users)
+    protected function query_calls_inbound ($fecha_evento,$rank_hour)
     {
         $queues_proyect     = $this->queues_proyect();
         $days               = explode(' - ', $fecha_evento);
         $calls_inbound      = Queue_Log::select_fechamod($rank_hour)
+                                        ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                         ->filtro_days($days)
-                                        ->filtro_users($users)
                                         ->filtro_anexos()
                                         ->whereIn('queue', $queues_proyect)
                                         ->OrderBy('id')
@@ -126,13 +122,13 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [date] $days  [Fecha de consulta]
      * @return [Array]       [Retorna un Array con la lista de nombre de los Skills]
      */
-    protected function calls_queue ($fecha_evento,$users)
+    protected function calls_queue ($fecha_evento)
     {
         $queues_proyect = $this->queues_proyect();
         $days           = explode(' - ', $fecha_evento);
         $calls_queue    = Queue_Log::Select('queue')
+                                    ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                     ->filtro_days($days)
-                                    ->filtro_users($users)
                                     ->filtro_anexos()
                                     ->whereIn('queue', $queues_proyect)
                                     ->groupBy('queue')
@@ -147,14 +143,14 @@ class ConsolidatedCallsController extends CosapiController
      * @param  [date] $days  [Fecha de consulta]
      * @return [Array]       [Retorna un Array con la lista de nombre de los Agentes]
      */
-    protected function calls_agents ($fecha_evento,$users)
+    protected function calls_agents ($fecha_evento)
     {
         $queues_proyect = $this->queues_proyect();
         $days           = explode(' - ', $fecha_evento);
         $calls_agents   = Queue_Log::Select('agent')
+                                    ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                     ->filtro_days($days)
                                     ->filtro_anexos()
-                                    ->filtro_users($users)
                                     ->whereNotIn('agent', ['NONE'])
                                     ->whereIn('queue', $queues_proyect)
                                     ->groupBy('agent')

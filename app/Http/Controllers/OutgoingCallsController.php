@@ -38,11 +38,7 @@ class OutgoingCallsController extends CosapiController
      * @return [Array]                   [Retorna la lista del consolidado de llamadas]
      */
     public function list_calls_outgoing($fecha_evento){
-        $users = '';
-        if(Session::get('UserRole') != 'admin'){
-            $users = Session::get('UserName');
-        }
-        $query_calls_outgoing   = $this->query_calls_outgoing($fecha_evento, $users);
+        $query_calls_outgoing   = $this->query_calls_outgoing($fecha_evento);
         $builderview            = $this->builderview($query_calls_outgoing);
         $outgoingcollection     = $this->outgoingcollection($builderview);
         $list_call_outgoing     = $this->FormatDatatable($outgoingcollection);
@@ -70,6 +66,7 @@ class OutgoingCallsController extends CosapiController
         $tamano_anexo           = array (getenv('ANEXO_LENGTH'));
         $tamano_telefono        = array ('7','9');
         $query_calls_outgoing   = Cdr::Select()
+                                    ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                     ->filtro_users($users)
                                     ->whereIn(DB::raw('LENGTH(src)'),$tamano_anexo)
                                     ->whereIn(DB::raw('LENGTH(dst)'),$tamano_telefono)

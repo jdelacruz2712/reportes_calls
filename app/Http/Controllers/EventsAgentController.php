@@ -16,6 +16,7 @@ use Excel;
 class EventsAgentController extends CosapiController
 {
 
+
     /**
      * Display a listing of the resource.
      *
@@ -150,18 +151,17 @@ class EventsAgentController extends CosapiController
      * @return [array]       [Retorna datos para el Details Events]
      */
     protected function query_events($days){
-
         if($days[0] == date('Y-m-d') && $days[1] == date('Y-m-d')){
 
-            $detail_events   = $this->events_presents($days);
+            $detail_events   = $this->events_presents($days,$this->UserId,$this->UserRole);
 
         }else if($days[0] != date('Y-m-d') && $days[1] != date('Y-m-d')){
 
-            $detail_events   = $this->events_history($days);
+            $detail_events   = $this->events_history($days,$this->UserId,$this->UserRole);
         }else{
 
-            $events_presents = $this->events_presents($days);
-            $events_history  = $this->events_history($days);
+            $events_presents = $this->events_presents($days,$this->UserId,$this->UserRole);
+            $events_history  = $this->events_history($days,$this->UserId,$this->UserRole);
             $detail_events   = array_merge($events_presents, $events_history);
         }
 
@@ -174,9 +174,10 @@ class EventsAgentController extends CosapiController
      * [events_presents description]
      * @return [type] [description]
      */
-    protected function events_presents ($days){
+    protected function events_presents ($days,$user_id,$rol){
         $events_presents  = DetalleEventos::Select('user_id','evento_id','fecha_evento','observaciones')
                             ->with('evento','user')
+                            ->filtro_user_rol($rol,$user_id)
                             ->filtro_days($days)
                             ->OrderBy(DB::raw('user_id'), 'asc')
                             ->OrderBy(DB::raw('DATE(fecha_evento)'), 'asc')
@@ -191,9 +192,11 @@ class EventsAgentController extends CosapiController
      * @param $days [Rango de días a consultar]
      * @return mixed [Array con informacion obtenida de los eventos]
      */
-    protected function events_history($days){
+    protected function events_history($days,$user_id,$rol){
+
         $events_history  = DetalleEventosHistory::Select('user_id','evento_id','fecha_evento','observaciones')
                             ->with('evento','user')
+                            ->filtro_user_rol($rol,$user_id)
                             ->filtro_days($days)
                             ->OrderBy(DB::raw('user_id'), 'asc')
                             ->OrderBy(DB::raw('DATE(fecha_evento)'), 'asc')

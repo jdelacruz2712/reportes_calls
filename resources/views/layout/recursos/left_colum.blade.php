@@ -24,8 +24,11 @@
               </a>
               <ul class="treeview-menu">
                 <li><a href="#" id="events_detail"        class="reportes"><i class="fa fa-circle-o text-blue"></i> Detail Events</a></li>
-                <li><a href="#" id="events_consolidated"  class="reportes"><i class="fa fa-circle-o text-blue"></i> Consolidated Events</a></li>
-                <li><a href="#" id="level_of_occupation"  class="reportes"><i class="fa fa-circle-o text-blue"></i> Level Of Occupation</a></li>
+
+                @if($role == 'admin')
+                  <li><a href="#" id="events_consolidated"  class="reportes"><i class="fa fa-circle-o text-blue"></i> Consolidated Events</a></li>
+                  <li><a href="#" id="level_of_occupation"  class="reportes"><i class="fa fa-circle-o text-blue"></i> Level Of Occupation</a></li>
+                @endif
               </ul>
             </li>
             <li>
@@ -47,15 +50,17 @@
                 <li><a href="#" id="surveys"            class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Surveys</a></li>
               </ul>
             </li>
-            <li>
-              <a href="#">
-                <i class="fa fa-gears"></i> <span>ADMINISTRATOR</span> <i class="fa fa-angle-left pull-right"></i>
-              </a>
-              <ul class="treeview-menu">
-                <li><a href="#" id="agents_queue"       class="reportes"><i class="fa fa-circle-o text-purple"></i> Assign Queue</a></li>
-                <li><a href="#" id="agents_annexed"     class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Annexed</a></li>
-              </ul>
-            </li>
+            @if($role == 'admin')
+              <li>
+                <a href="#">
+                  <i class="fa fa-gears"></i> <span>ADMINISTRATOR</span> <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                  <li><a href="#" id="agents_queue"       class="reportes"><i class="fa fa-circle-o text-purple"></i> Assign Queue</a></li>
+                  <li><a href="#" id="agents_annexed"     class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Annexed</a></li>
+                </ul>
+              </li>
+            @endif
           </ul>
         </section>
         <!-- /.sidebar -->

@@ -27,4 +27,14 @@ class Cdr extends Model
             return    $query->where('accountcode','like','%'.$users.'%');
         }
     }
+
+    public function scopeFiltro_user_rol($query,$rol,$user_name)
+    {
+
+        if( $rol == 'user')
+        {
+            return    $query->where('accountcode','=',$user_name);
+        }
+
+    }
 }

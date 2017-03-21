@@ -52,11 +52,7 @@ class IncomingCallsController extends CosapiController
      * @return [array]                [Array con datos de las llamadas entrantes]
      */
     protected function calls_incoming($fecha_evento, $evento){
-        $users = '';
-        if(Session::get('UserRole') != 'admin'){
-            $users = 'Agent/'.Session::get('UserName');
-        }
-        $query_calls        = $this->query_calls($fecha_evento,$evento,$users);
+        $query_calls        = $this->query_calls($fecha_evento,$evento);
         $builderview        = $this->builderview($query_calls);
         $incomingcollection = $this->incomingcollection($builderview);
         $calls_incoming     = $this->FormatDatatable($incomingcollection);
@@ -78,6 +74,7 @@ class IncomingCallsController extends CosapiController
         $days           = explode(' - ', $days);
         $events         = $this->get_events($events);
         $query_calls    = Queue_Log::select_fechamod()
+                                        ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                         ->filtro_users($users)
                                         ->filtro_hours($hours)
                                         ->filtro_days($days)
