@@ -65,7 +65,7 @@
                                 <a href="#" class="btn btn-default btn-flat reportes" id="working" >Profile</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" onClick="javascript:marcar_salida_agente()" class="btn btn-default btn-flat">Sign out</a>
+                                <a href="#" onClick="javascript:disconnectAgent()" class="btn btn-default btn-flat">Sign out</a>
                             </div>
                         </li>
                     </ul>

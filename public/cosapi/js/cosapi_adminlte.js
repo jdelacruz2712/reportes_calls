@@ -25,17 +25,62 @@ $(document).ready(function() {
         }
     });
 
-    var user_id =$('#user_id').val();
-    var hour =$('#hour').val();
-    var date =$('#date').val();
+    var user_id     =   $('#user_id').val();
+    var hour        =   $('#hour').val();
+    var date        =   $('#date').val();
+    var anexo       =   $('#anexo').text();
 
     MarkAssitance(user_id,date,hour,"Entrada");
+
+    if(anexo == 'Sin Anexo'){
+        loadModule('agents_annexed');
+    }
 
     $('#statusAgent').click(function(){
         PanelStatus();
     });
 
+    $(".reportes").on("click", function(e){
+        var anexo       =   $('#anexo').text();
+        if(anexo == 'Sin Anexo'){
+            mostrar_notificacion('warning','No tiene un anexo asignado','Error',10000, false, true);
+            loadModule('agents_annexed');
+        }else{
+            id = $(this).attr('id');
+            loadModule(id);
+        }
+    });
+
 } );
+
+function loadModule(idOptionMenu){
+    var url = idOptionMenu;
+
+    $.ajax({
+        type 	: "POST",
+        url 	: url,
+        data	:{
+            _token 	: $('input[name=_token]').val(),
+            url 	: url
+        },
+        beforedSend: function(data){
+            $('#loading').show();
+        },
+        success : function(data) {
+            $('#container').html (data);
+
+            // ARBOL UBICADO A LA DERECHA EN LA PARTE SUPERIOR
+            $('#urlsistema a').remove();
+            $('#urlsistema').append('<a href="#" id="'+url+'" class="reportes">'+$('#'+url).text()+'</a>');
+        },
+        error : function(data) {
+            $("#container").html ("problemas para actualizar");
+        },
+        complete: function(){
+            $('#loading').hide();
+        }
+    });
+}
 
 function dataTables_entrantes(nombreDIV, data, route){
 
@@ -395,7 +440,7 @@ function ajaxNodeJs(parameters, ruta, notificacion){
             //Cierra todos los modals abiertos
             //Actualmente se usa para el cambio de Estados del Agente
             if(notificacion == true){
-                mostrar_notificacion('success', 'El evento se realizo exitosamente!!!','Success');
+                mostrar_notificacion('success', 'El evento se realizo exitosamente!!!','Success',2000, false, true);
             }else{
                 BootstrapDialog.show({
                     type      : 'type-danger',
@@ -428,7 +473,7 @@ function ajaxNodeJs(parameters, ruta, notificacion){
             $.each(BootstrapDialog.dialogs, function(id, dialog){
                 dialog.close();
             });
-            mostrar_notificacion('error', resData['Message'],'Error');
+            mostrar_notificacion('error', resData['Message'],'Error',10000, false, true);
         }
     });
 }
@@ -510,12 +555,16 @@ function modalAssintance(user_id,day,hour_actually,action){
                             new_date_event  : day+' '+hour_new,
                             user_id         : user_id
                         };
+
                         ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true);
 
                         if(hour_new > rank_hours[1]){
                             ModalStandBy(hour_new);
                         }else{
-                            changePassword();
+                            var type_password = $('#type_password').val();
+                            if(type_password == 1){
+                                changePassword()
+                            }
                         }
                     }
                 }
@@ -610,23 +659,23 @@ function ModificarEstado(event_id,user_id,ip,name,pause){
 
         ajaxNodeJs(columns,'/detalle_eventos/change_status',true);
     }else{
-        mostrar_notificacion('error','No tiene un anexo asignado','Error');
+        mostrar_notificacion('error','No tiene un anexo asignado','Error',10000, false, true);
     }
 }
 
-function mostrar_notificacion(type, mensaje, titulo) {
+function mostrar_notificacion(type, mensaje, titulo, time, duplicate, close) {
 
     toastr.options = {
-        "closeButton": false,
+        "closeButton": close,
         "debug": false,
         "newestOnTop": true,
         "progressBar": true,
         "positionClass": "toast-bottom-right",
-        "preventDuplicates": false,
+        "preventDuplicates": duplicate,
         "onclick": null,
         "showDuration": "300",
         "hideDuration": "800",
-        "timeOut": "2000",
+        "timeOut": time,
         "extendedTimeOut": "2000",
         "showEasing": "swing",
         "hideEasing": "linear",
@@ -779,8 +828,18 @@ function restarHoras(inicio,fin) {
 
 }
 
-//Funcion que permite la desconeccion del agente del sistema
-function marcar_salida_agente(){
+function disconnectAgent(){
+    var anexo       =   $('#anexo').text();
+    if(anexo == 'Sin Anexo'){
+        mostrar_notificacion('warning','No tiene un anexo asignado','Error',10000, false, true);
+        loadModule('agents_annexed');
+    }else{
+        markExit();
+    }
+}
+
+//Funcion que carga el modal se marcado de salida
+function markExit(){
     rank_hours = [];
     var hour =$('#hour').val();
     rank_hours   = rango_de_horas(hour.trim());
@@ -876,7 +935,7 @@ function desconnect_agent(hour_exit){
         };
         ajaxNodeJs(parameters,'/detalle_eventos/change_status',false);
     }else{
-        mostrar_notificacion('error','No tiene un anexo asignado','Error');
+        mostrar_notificacion('error','No tiene un anexo asignado','Error',10000, false, true);
     }
 }
 
@@ -899,7 +958,7 @@ function assignAnexxed(anexo_name){
         };
         ajaxNodeJs(parameters,'/anexos/set_anexo',true);
     }else{
-        mostrar_notificacion('error', 'Ya se encuentra asignado al anexo '+anexo+'.','Error');
+        mostrar_notificacion('error', 'Ya se encuentra asignado al anexo '+anexo+'.','Error',10000, false, true);
     }
 }
 
@@ -965,9 +1024,9 @@ function changePassword(){
                                  success     : function(data){
                                      if(data == 1){
                                          dialogRef.close();
-                                         mostrar_notificacion('success', 'El evento se realizo exitosamente!!!','Success');
+                                         mostrar_notificacion('success', 'El evento se realizo exitosamente!!!','Success',2000, false, true);
                                      }else{
-                                         mostrar_notificacion('error','Problemas de inserción a la base de datos','Error');
+                                         mostrar_notificacion('error','Problemas de inserción a la base de datos','Error',10000, false, true);
                                      }
                                  }
                              })

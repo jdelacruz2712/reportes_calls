@@ -37,7 +37,7 @@ class AssistanceController extends CosapiController
             //Redirecciona a la ventana de marcado de entrada
             if($ultimate_event_login[2] >= date('Y-m-d H:i:s')){
 
-                $date=date_create($ultimate_event_login[2]);
+                $date = date_create($ultimate_event_login[2]);
                 return 'stand_by&'.date_format($date,"H:i:s");
             }
             return 'false&';

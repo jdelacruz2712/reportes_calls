@@ -100,11 +100,11 @@
     {!!Html::script('extras/bootstrap3-dialog/js/bootstrap-dialog.min.js')!!}
     {!!Html::script('plugins/adminLTE/js/app.min.js')!!}
     {!!Html::script('plugins/adminLTE/js/funcionalidades.js')!!}
-    {!!Html::script('cosapi/js/cosapi_adminlte.js?version=2.1.4')!!}
+    {!!Html::script('cosapi/js/cosapi_adminlte.js?version='.date('YmdHms'))!!}
     {!!Html::script('cosapi/js/datatables.js')!!}
     {!!Html::script('cosapi/js/vue.js')!!}
     {!!Html::script('cosapi/js/sails.io.js', array('autoConnect' => 'false'))!!}
-    {!!Html::script('cosapi/js/adminlte_vue.js?version='.date('Y-D'))!!}
+    {!!Html::script('cosapi/js/adminlte_vue.js?version='.date('YmdHms'))!!}
     {!!Html::script('cosapi/js/socket.io.js')!!}
 
     @include('layout.recursos.fecha_hora')
