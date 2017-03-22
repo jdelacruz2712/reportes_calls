@@ -6,7 +6,7 @@ const vm = new Vue({
   }
 })
 
-const socket = io.connect('http://192.167.99.246:3363')
+var socket = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
 
 socket.emit('connect_dashboard')
 
@@ -17,23 +17,20 @@ socket.on('QueueMemberAdded', data => {
 socket.on('QueueMemberRemoved', data => {
   for (agent in vm.agents) {
     if (vm.agents.hasOwnProperty(agent)) {
-      if (vm.agents[agent]['number_annexed'] === data['QueueMemberRemoved']){
+      if (vm.agents[agent]['number_annexed'] === data['NumberAnnexed']){
         vm.agents.splice(agent, 1)
       }
     }
   }
 })
 
-socket.on('QueueMemberPause', data => {
+socket.on('QueueMemberChange', data => {
+  console.log(data)
   for (agent in vm.agents) {
     if (vm.agents.hasOwnProperty(agent)) {
-      if (vm.agents[agent]['number_annexed'] === data['QueueMemberPause']['number_annexed']){
-        vm.agents.splice(agent, 1, data['QueueMemberPause'])
+      if (vm.agents[agent]['number_annexed'] === data['NumberAnnexed']){
+        vm.agents.splice(agent, 1, data['QueueMemberChange'])
       }
     }
   }
-})
-
-socket.on('mensaje', data => {
-  console.log(data)
 })

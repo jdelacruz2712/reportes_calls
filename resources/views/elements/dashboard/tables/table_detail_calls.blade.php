@@ -20,7 +20,7 @@
             <td>
               @{{ agent.number_annexed }}
               <span class="pull-right-container">
-                <template v-if="agent.status_pause === '0'">
+                <template v-if="agent.status_pause == 0  ">
                   <span class="img img-circle pull-right bg-green">
                     <i class="fa fa-thumbs-up" style="padding: 3.5px; " aria-hidden="true"></i>
                   </span>
@@ -50,18 +50,12 @@
             </td>
           </tr>
         </template>
-
-
       </tbody>
     </table>
   </div>
-
   <pre>@{{ $data }}</pre>
-
 </div>
 
 @section('scripts')
-
-  {!!Html::script('cosapi/js/prueba.js')!!}
-
+  {!!Html::script('cosapi/js/dashboard_vue.js')!!}
 @endsection
