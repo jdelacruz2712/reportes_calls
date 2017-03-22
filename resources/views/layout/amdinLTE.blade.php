@@ -8,21 +8,19 @@
     <!-- para que la web sea responsive -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
-    <!--llamar a la hoja de estilo (css)-->
-    {!!Html::style('extras/toastr/toastr.min.css')!!}
-
     <!-- Bootstrap 3.3.5 -->
-    {!!Html::style('bootstrap/css/bootstrap.min.css')!!}
+    {!!Html::style('vendor/bootstrap/css/bootstrap.min.css')!!}
+    {!!Html::style('extras/toastr/toastr.min.css')!!}
     {!!Html::style('extras/bootstrap3-dialog/css/bootstrap-dialog.min.css')!!}
     <!-- para los iconos Font Awesome -->
-    {!!Html::style('plugins/adminLTE/css/font-awesome.css')!!}
+    {!!Html::style('vendor/fortawesome/css/font-awesome.min.css')!!}
     <!-- para el css de Adminlte -->
     {!!Html::style('plugins/adminLTE/css/AdminLTE.min.css')!!}
     <!-- para cambiar el color del panel de adminlte -->
     {!!Html::style('plugins/adminLTE/css/skins/_all-skins.min.css')!!}
     <!-- estilos para la imagen de cargando -->
     {!!Html::style('cosapi/css/preloader.css')!!}
-     <!--para incluir otros css-->
+    <!--para incluir otros css-->
      @yield('css')
   </head>
 
@@ -93,10 +91,10 @@
 
     <!--Todos los javascript del layout principal-->
     <!-- jQuery -->
-    {!!Html::script('plugins/jQuery/jQuery-2.1.4.min.js')!!}
+    {!!Html::script('vendor/jquery/jquery.min.js')!!}
     {!!Html::script('extras/toastr/toastr.min.js')!!}
     {!!Html::script('plugins/jQueryUI/jquery-ui.js')!!}
-    {!!Html::script('bootstrap/js/bootstrap.min.js')!!}
+    {!!Html::script('vendor/bootstrap/js/bootstrap.min.js')!!}
     {!!Html::script('extras/bootstrap3-dialog/js/bootstrap-dialog.min.js')!!}
     {!!Html::script('plugins/adminLTE/js/app.min.js')!!}
     {!!Html::script('plugins/adminLTE/js/funcionalidades.js')!!}

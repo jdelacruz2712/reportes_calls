@@ -7,12 +7,13 @@
     "require": {
         "php": ">=5.5.9",
         "nesbot/carbon": "^1.21",
-        "twbs/bootstrap": "3.3.5",
+        "predis/predis": "~1.1",
+        "twbs/bootstrap": "^3.3.5",
         "components/jquery": "^2.1",
         "driftyco/ionicons": "^2.0",
         "laravel/framework": "5.1.*",
         "maatwebsite/excel": "~2.1.0",
-        "arcanedev/log-viewer": "~3.0",
+        "arcanedev/log-viewer": "^4.2",
         "laravelcollective/html": "5.1.*",
         "FortAwesome/Font-Awesome": "^4.5",
         "barryvdh/laravel-debugbar": "^2.2",
@@ -70,11 +71,15 @@
         "post-create-project-cmd": [
             "php artisan key:generate"
         ],
+        "publish-logviewer": [
+            "php artisan log-viewer:publish --force"
+        ],
         "refresh": [
+            "composer dump-autoload",
             "php artisan config:cache",
             "php artisan route:cache",
-            "php artisan view:clear",
-            "php artisan cache:clear"
+            "php artisan cache:clear",
+            "php artisan view:clear"
         ]
     },
     "config": {
