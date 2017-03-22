@@ -246,18 +246,6 @@ class CosapiController extends Controller
     }
 
     /**
-     * [Función para sincronizar archivo queue_editor al servidor asterisk]
-     * @return array [valor con el resultado de la ejecuacion, devuelve cero si es correcto]
-     */
-    protected function rsync_queue_editor(){
-
-        exec('rsync -avz --delete '.getenv('EXPORTS_ROUTE').'queues_editor '.getenv('ASTERISK_HOST').'::archivos_asterisk',$output,$return_var);
-
-        return $return_var;
-    }
-
-
-    /**
      * @param $evento_id : El id del evento de pausa que acciono el agente via web.
      * @param $user_id   : Capturar el ID del usuario conectado.
      */

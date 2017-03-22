@@ -213,9 +213,6 @@ class AgentsQueueController extends CosapiController
         }
         //Cierra el archivo
         fclose($file);
-
-        $this->rsync_queue_editor();
-        $this->queueReload();
     }
 
     /**

@@ -43,7 +43,7 @@ $(document).ready(function() {
     $(".reportes").on("click", function(e){
         var anexo       =   $('#anexo').text();
         if(anexo == 'Sin Anexo'){
-            mostrar_notificacion('warning','No tiene un anexo asignado','Error',10000, false, true);
+            mostrar_notificacion('warning','No tiene un anexo asignado','Oops!!',10000, false, true);
             loadModule('agents_annexed');
         }else{
             id = $(this).attr('id');
@@ -434,18 +434,19 @@ function validar_sonido(){
     setTimeout('validar_sonido()', 4000);
 }
 
-function ajaxNodeJs(parameters, ruta, notificacion){
+function ajaxNodeJs(parameters, ruta, notificacion,message,time){
     socketSails.get(ruta,parameters, (resData, jwRes) => {
         if(resData['Response'] == 'success'){
+            console.log(resData);
             //Cierra todos los modals abiertos
             //Actualmente se usa para el cambio de Estados del Agente
             if(notificacion == true){
-                mostrar_notificacion('success', 'El evento se realizo exitosamente!!!','Success',2000, false, true);
+                mostrar_notificacion('success', message,'Success',time, false, true, 2000);
             }else{
                 BootstrapDialog.show({
                     type      : 'type-danger',
                     title     : 'Cosapi Dara S.A.' ,
-                    message   : 'El evento se realizo exitosamente!!!' ,
+                    message   : message ,
                     closable  : false,
 
                     buttons: [{
@@ -465,6 +466,8 @@ function ajaxNodeJs(parameters, ruta, notificacion){
 
             if(parameters['type_action'] == 'release'){
                 $('#anexo').text('Sin Anexo');
+                present_status.present_status_name  = 'Login';
+                present_status.present_status_id    = '11';
             }
 
 
@@ -473,7 +476,8 @@ function ajaxNodeJs(parameters, ruta, notificacion){
             $.each(BootstrapDialog.dialogs, function(id, dialog){
                 dialog.close();
             });
-            mostrar_notificacion('error', resData['Message'],'Error',10000, false, true);
+            mostrar_notificacion('error', resData['Message'],'Error',10000, false, true,2000);
+
         }
     });
 }
@@ -556,15 +560,12 @@ function modalAssintance(user_id,day,hour_actually,action){
                             user_id         : user_id
                         };
 
-                        ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true);
+                        ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true,'Se registro correctamente tu hora de entrada',2000);
 
                         if(hour_new > rank_hours[1]){
                             ModalStandBy(hour_new);
                         }else{
-                            var type_password = $('#type_password').val();
-                            if(type_password == 1){
-                                changePassword()
-                            }
+                            checkPassword()
                         }
                     }
                 }
@@ -643,9 +644,11 @@ function ceroIzquierda(numero){
     return numero;
 }
 function ModificarEstado(event_id,user_id,ip,name,pause){
-    var anexo   = $('#anexo').text();
+    var anexo           = $('#anexo').text();
+    var old_event_id    = $('#present_status_id').val();
     if(anexo != 'Sin Anexo'){
         var columns = {
+            old_event_id    : old_event_id,
             event_id        : event_id,
             user_id         : user_id,
             anexo           : anexo,
@@ -657,13 +660,13 @@ function ModificarEstado(event_id,user_id,ip,name,pause){
             dialog.close();
         });
 
-        ajaxNodeJs(columns,'/detalle_eventos/change_status',true);
+        ajaxNodeJs(columns,'/detalle_eventos/change_status',true,'El cambio de estado se realizó Correctamente.',2000);
     }else{
-        mostrar_notificacion('error','No tiene un anexo asignado','Error',10000, false, true);
+        mostrar_notificacion('error','No tiene un anexo asignado','Error',10000, false, true, 2000);
     }
 }
 
-function mostrar_notificacion(type, mensaje, titulo, time, duplicate, close) {
+function mostrar_notificacion(type, mensaje, titulo, time, duplicate, close, extendtime) {
 
     toastr.options = {
         "closeButton": close,
@@ -676,7 +679,7 @@ function mostrar_notificacion(type, mensaje, titulo, time, duplicate, close) {
         "showDuration": "300",
         "hideDuration": "800",
         "timeOut": time,
-        "extendedTimeOut": "2000",
+        "extendedTimeOut": extendtime,
         "showEasing": "swing",
         "hideEasing": "linear",
         "showMethod": "fadeIn",
@@ -831,7 +834,7 @@ function restarHoras(inicio,fin) {
 function disconnectAgent(){
     var anexo       =   $('#anexo').text();
     if(anexo == 'Sin Anexo'){
-        mostrar_notificacion('warning','No tiene un anexo asignado','Error',10000, false, true);
+        mostrar_notificacion('warning','No tiene un anexo asignado','Oops!!',10000, false, true);
         loadModule('agents_annexed');
     }else{
         markExit();
@@ -933,7 +936,7 @@ function desconnect_agent(hour_exit){
             ip          : ip,
             type_action : 'disconnect'
         };
-        ajaxNodeJs(parameters,'/detalle_eventos/change_status',false);
+        ajaxNodeJs(parameters,'/detalle_eventos/change_status',false, 'El agente fue desconectado Correctamente.',2000);
     }else{
         mostrar_notificacion('error','No tiene un anexo asignado','Error',10000, false, true);
     }
@@ -945,7 +948,8 @@ function liberar_anexos(){
         user_id     : user_id,
         type_action : 'release'
     };
-    ajaxNodeJs(parameters,'/anexos/set_anexo',true);
+    ajaxNodeJs(parameters,'/anexos/set_anexo',true, 'El anexo fue liberado Correctamente.', 2000);
+    loadModule('agents_annexed');
 }
 
 function assignAnexxed(anexo_name){
@@ -956,10 +960,11 @@ function assignAnexxed(anexo_name){
             user_id     : user_id,
             anexo       : anexo_name
         };
-        ajaxNodeJs(parameters,'/anexos/set_anexo',true);
+        ajaxNodeJs(parameters,'/anexos/set_anexo',true, 'El anexo fue asignado Correctamente.',2000);
     }else{
         mostrar_notificacion('error', 'Ya se encuentra asignado al anexo '+anexo+'.','Error',10000, false, true);
     }
+    loadModule('agents_annexed');
 }
 
 function checkPassword(){
