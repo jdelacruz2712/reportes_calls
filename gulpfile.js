@@ -12,5 +12,8 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss');
+    mix.styles([
+        'cosapi/css/cosapi.css',
+        'cosapi/css/login.css'
+    ],null,'public/');
 });
