@@ -395,19 +395,18 @@ function validar_sonido () {
   setTimeout('validar_sonido()', 4000)
 }
 
-function ajaxNodeJs(parameters, ruta, notificacion,message,time){
+function ajaxNodeJs(parameters, ruta, notificacion,time){
     socketSails.get(ruta,parameters, (resData, jwRes) => {
         if(resData['Response'] == 'success'){
-            console.log(resData);
             //Cierra todos los modals abiertos
             //Actualmente se usa para el cambio de Estados del Agente
             if(notificacion == true){
-                mostrar_notificacion('success', message,'Success',time, false, true, 2000);
+                mostrar_notificacion('success', resData['Message'],'Success',time, false, true, 2000);
             }else{
                 BootstrapDialog.show({
                     type      : 'type-danger',
                     title     : 'Cosapi Dara S.A.' ,
-                    message   : message ,
+                    message   : resData['Message'] ,
                     closable  : false,
 
                     buttons: [{
@@ -434,10 +433,15 @@ function ajaxNodeJs(parameters, ruta, notificacion,message,time){
 
 
         }else{
+            if(parameters['type_action'] == 'release'){
+                if(resData['Response'] == 'warning'){
+                    $('#anexo').text('Sin Anexo');
+                }
+            }
             $.each(BootstrapDialog.dialogs, function(id, dialog){
                 dialog.close();
             });
-            mostrar_notificacion('error', resData['Message'],'Error',10000, false, true,2000);
+            mostrar_notificacion(resData['Response'], resData['Message'],resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1),10000, false, true,2000);
 
         }
     });
@@ -521,7 +525,7 @@ function modalAssintance(user_id,day,hour_actually,action){
                             user_id         : user_id
                         };
 
-                        ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true,'Se registro correctamente tu hora de entrada',2000);
+                        ajaxNodeJs(parameters,'/detalle_eventos/register_assistence',true,2000);
 
                         if(hour_new > rank_hours[1]){
                             ModalStandBy(hour_new);
@@ -621,7 +625,7 @@ function ModificarEstado(event_id,user_id,ip,name,pause){
             dialog.close();
         });
 
-        ajaxNodeJs(columns,'/detalle_eventos/change_status',true,'El cambio de estado se realizó Correctamente.',2000);
+        ajaxNodeJs(columns,'/detalle_eventos/change_status',true,2000);
     }else{
         mostrar_notificacion('error','No tiene un anexo asignado','Error',10000, false, true, 2000);
     }
@@ -875,9 +879,7 @@ function markExit(){
             }
         ]
     });
-
 }
-
 
 /**
  * [Funcion para la desconeccion del agente sin marcar su hora salida]
@@ -897,7 +899,7 @@ function desconnect_agent(hour_exit){
             ip          : ip,
             type_action : 'disconnect'
         };
-        ajaxNodeJs(parameters,'/detalle_eventos/change_status',false, 'El agente fue desconectado Correctamente.',2000);
+        ajaxNodeJs(parameters,'/detalle_eventos/change_status',false,2000);
     }else{
         mostrar_notificacion('error','No tiene un anexo asignado','Error',10000, false, true);
     }
@@ -909,23 +911,35 @@ function liberar_anexos(){
         user_id     : user_id,
         type_action : 'release'
     };
-    ajaxNodeJs(parameters,'/anexos/set_anexo',true, 'El anexo fue liberado Correctamente.', 2000);
+    ajaxNodeJs(parameters,'/anexos/set_anexo',true, 2000);
     loadModule('agents_annexed');
 }
 
 function assignAnexxed(anexo_name){
     var user_id = $('#user_id').val();
     var anexo   = $('#anexo').text();
-    if(anexo == 'Sin Anexo'){
-        var parameters = {
-            user_id     : user_id,
-            anexo       : anexo_name
-        };
-        ajaxNodeJs(parameters,'/anexos/set_anexo',true, 'El anexo fue asignado Correctamente.',2000);
-    }else{
-        mostrar_notificacion('error', 'Ya se encuentra asignado al anexo '+anexo+'.','Error',10000, false, true);
-    }
-    loadModule('agents_annexed');
+    var token =  $('input[name=_token]').val();
+
+    $.ajax({
+        type        : 'POST',
+        url         : 'agents_annexed/user',
+        data        : {
+            _token      : token,
+            user_id     : user_id
+        },
+        success     : function(data){
+            if(data == 'Sin Anexo'){
+                var parameters = {
+                    user_id     : user_id,
+                    anexo       : anexo_name
+                };
+                ajaxNodeJs(parameters,'/anexos/set_anexo',true,2000);
+                loadModule('agents_annexed');
+            }else{
+                mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo '+anexo+'.','Warning',10000, false, true);
+            }
+        }
+    })
 }
 
 function checkPassword(){

@@ -19,11 +19,7 @@ class AgentsAnnexedController extends CosapiController
         $indice = 0;
         $contador = 0;
         if ($request->ajax()){
-            $list_annexed = Anexo::select()
-                                    ->with('user')
-                                    ->where('estado_id','=',1)
-                                    ->get()
-                                    ->toArray();
+            $list_annexed = $this->queryListAnexo();
             foreach($list_annexed as $key => $annexed){
                 if($contador > 5){
                     $contador = 0;
@@ -43,5 +39,20 @@ class AgentsAnnexedController extends CosapiController
 
             return view('elements/agents_annexed/index')->with(array('tabla_anexos' => $tabla_anexos));
         }
+    }
+
+    public function queryListAnexo($user = ''){
+        $list_annexed = Anexo::select()
+                            ->with('user')
+                            ->filtro_user($user)
+                            ->where('estado_id','=',1)
+                            ->get()
+                            ->toArray();
+        return $list_annexed;
+    }
+
+    public function getUserAnexo()
+    {
+        return $this->UserAnexo;
     }
 }
