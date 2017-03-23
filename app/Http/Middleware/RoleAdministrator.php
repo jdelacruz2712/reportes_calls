@@ -3,10 +3,17 @@
 namespace Cosapi\Http\Middleware;
 
 use Closure;
+use Illuminate\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
 
 class RoleAdministrator
 {
+    protected $auth;
+
+    public function __construct(Guard $auth)
+    {
+        $this->auth = $auth;
+    }
 
     /**
      * Handle an incoming request.

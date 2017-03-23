@@ -3,10 +3,18 @@
 namespace Cosapi\Http\Middleware;
 
 use Closure;
+use Illuminate\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
 
 class RoleUser
 {
+    protected $auth;
+
+    public function __construct(Guard $auth)
+    {
+        $this->auth = $auth;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -16,7 +24,7 @@ class RoleUser
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check() && Auth::user()->role == 'user') {
+        if(Auth::check() && (Auth::user()->role == 'user' || Auth::user()->role == 'supervisor' || Auth::user()->role == 'admin')) {
             return $next($request);
         }
         $request->session()->flash('alert-danger','Usted no cuenta con los permisos necesarios para este recurso');

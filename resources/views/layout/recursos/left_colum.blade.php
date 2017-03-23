@@ -25,7 +25,7 @@
               <ul class="treeview-menu">
                 <li><a href="#" id="events_detail"        class="reportes"><i class="fa fa-circle-o text-blue"></i> Detail Events</a></li>
 
-                @if($role == 'admin')
+                @if($role != 'user')
                   <li><a href="#" id="events_consolidated"  class="reportes"><i class="fa fa-circle-o text-blue"></i> Consolidated Events</a></li>
                   <li><a href="#" id="level_of_occupation"  class="reportes"><i class="fa fa-circle-o text-blue"></i> Level Of Occupation</a></li>
                 @endif
@@ -36,7 +36,9 @@
                 <i class="fa fa-phone-square"></i> <span>REPORTING CALLS</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li ><a tabindex="-1" href="#" id="agents_online" class="reportes"><i class="fa fa-circle-o text-red"></i> Agents Online</a></li>
+                @if($role != 'user')
+                  <li ><a tabindex="-1" href="#" id="agents_online" class="reportes"><i class="fa fa-circle-o text-red"></i> Agents Online</a></li>
+                @endif
                 <li><a href="#" id="incoming_calls"     class="reportes"><i class="fa fa-circle-o text-green"></i> Inbound Calls</a></li>
                 <li><a href="#" id="outgoing_calls"     class="reportes"><i class="fa fa-circle-o text-yellow"></i> Outbound Calls</a></li>
                 <li><a href="#" id="consolidated_calls" class="reportes"><i class="fa fa-circle-o text-blue"></i> Consolidated Calls</a></li>
@@ -50,7 +52,7 @@
                 <li><a href="#" id="surveys"            class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Surveys</a></li>
               </ul>
             </li>
-            @if($role == 'admin')
+            @if($role != 'user')
               <li>
                 <a href="#">
                   <i class="fa fa-gears"></i> <span>ADMINISTRATOR</span> <i class="fa fa-angle-left pull-right"></i>
