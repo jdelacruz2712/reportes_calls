@@ -23,11 +23,11 @@ class UserController extends CosapiController
         if ($request->ajax()){
             if ($request->newPassword){
                 $resultado = $request->user()->fill([
-                    'password' => Hash::make($request->newPassword)
+                    'password'          => Hash::make($request->newPassword),
+                    'change_password'   => 1
                 ])->save();
 
                 return (string)$resultado;
-                //return $this->agents_online($request->fecha_evento);
             }
         }
     }

@@ -20,8 +20,6 @@ class AdminController extends Controller
 
     public function __construct(){
 
-        $type_password = 0;
-
         if (!Session::has('UserId')) {
             Session::put('UserId'   ,Auth::user()->id   );
         }
@@ -39,11 +37,9 @@ class AdminController extends Controller
         }
 
 
-        // Tipo de password modificado
-        if(Auth::user()->password == '$2y$10$9TTAuZKJgHLvDfDlvt2fY.vWlj2EqwG6iGLJ.zuaxbqaA3.EBXPOW'){
-            $type_password = 1; // Tipo de password por defecto
+        if (!Session::has('UserPassword')) {
+            Session::put('UserPassword'   ,Auth::user()->change_password);
         }
-        Session::put('UserPassword'   ,$type_password);
 
 
         $Anexos = Anexo::select('name')->where('user_id','=',Auth::user()->id )->get()->toArray();

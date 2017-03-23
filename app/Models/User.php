@@ -24,7 +24,7 @@
          *
          * @var array
          */
-        protected $fillable = ['name', 'username', 'password'];
+        protected $fillable = ['name', 'username', 'password','change_password'];
 
         /**
          * The attributes excluded from the model's JSON form.

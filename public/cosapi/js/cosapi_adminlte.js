@@ -944,7 +944,7 @@ function assignAnexxed(anexo_name){
 
 function checkPassword(){
     var type_password = $('#type_password').val();
-    if(type_password == 1){
+    if(type_password == 0){
         changePassword()
     }
 }
