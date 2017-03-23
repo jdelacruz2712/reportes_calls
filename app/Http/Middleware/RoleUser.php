@@ -19,6 +19,7 @@ class RoleUser
         if(Auth::check() && Auth::user()->role == 'user') {
             return $next($request);
         }
-        return redirect('/');
+        $request->session()->flash('alert-danger','Usted no cuenta con los permisos necesarios para este recurso');
+        return redirect('/home');
     }
 }

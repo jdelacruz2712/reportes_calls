@@ -46,6 +46,7 @@
 
       <!-- Content Wrapper -->
       <div class="content-wrapper">
+        @include('layout.recursos.flash_message')
           <!-- mensaje de perdida de desconexion con servidor NodeJS -->
           @include('layout.recursos.disconnect_nodejs')
           <!-- Content Header (Page header) -->

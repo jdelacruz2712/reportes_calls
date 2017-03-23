@@ -11,20 +11,17 @@ Route::group ( ['middleware'=>['admin'], 'prefix'=>'supervisor' ], function(){
     Route::get('/'      , ['uses'=>'AdminController@supervisor'    ,    'as' => 'supervisor']);
 });
 
-Route::group ( ['middleware'=>['user'], 'prefix'=>'agente' ]    , function(){
+Route::group ( ['middleware'=>['supervisor'], 'prefix'=>'agente' ]    , function(){
     Route::get('/'      , ['uses'=>'AdminController@agente'        ,    'as' => 'agente'    ]);
 });
 
+Route::group (['middleware'=>['admin']], function(){
+	// Reportes de Eventos
+	Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);
+	Route::get('dashboard_02'   									, ['uses'=>'DashboardController@dashboard_02']);
+});
 
-// Reportes de Eventos
-Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);
-Route::get('dashboard_01/detail_agents'   						, ['uses'=>'DashboardController@detail_agents']);
-Route::get('dashboard_01/detail_encoladas'   					, ['uses'=>'DashboardController@detail_encoladas']);
-Route::get('dashboard_01/total_encoladas'   					, ['uses'=>'DashboardController@total_encoladas']);
-Route::get('dashboard_01/detail_kpi'   							, ['uses'=>'DashboardController@detail_kpi']);
-Route::get('dashboard_01/logoutagent/{anexo}/{username}'   		, ['uses'=>'DashboardController@desconectar_agente']);
-Route::get('dashboard_02'   									, ['uses'=>'DashboardController@dashboard_02']);
-Route::get('dashboard_02/detail_kpi/{evento}'   				, ['uses'=>'DashboardController@detail_kpi_dashboard_02']);
+
 
 // Reportes de Eventos
 Route::post('events_detail'         							, ['uses'=>'EventsAgentController@events_detail']);
