@@ -9,17 +9,7 @@
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
     <!-- Bootstrap 3.3.5 -->
-    {!!Html::style('vendor/bootstrap/css/bootstrap.min.css')!!}
-    {!!Html::style('extras/toastr/toastr.min.css')!!}
-    {!!Html::style('extras/bootstrap3-dialog/css/bootstrap-dialog.min.css')!!}
-    <!-- para los iconos Font Awesome -->
-    {!!Html::style('vendor/fortawesome/css/font-awesome.min.css')!!}
-    <!-- para el css de Adminlte -->
-    {!!Html::style('plugins/adminLTE/css/AdminLTE.min.css')!!}
-    <!-- para cambiar el color del panel de adminlte -->
-    {!!Html::style('plugins/adminLTE/css/skins/_all-skins.min.css')!!}
-    <!-- estilos para la imagen de cargando -->
-    {!!Html::style('cosapi/css/preloader.css')!!}
+    {!!Html::style('styles/css/all.css')!!}
     <!--para incluir otros css-->
      @yield('css')
   </head>
@@ -104,7 +94,7 @@
     {!!Html::script('cosapi/js/vue.js')!!}
     {!!Html::script('cosapi/js/sails.io.js', array('autoConnect' => 'false'))!!}
     {!!Html::script('cosapi/js/adminlte_vue.js?version='.date('YmdHms'))!!}
-    {!!Html::script('cosapi/js/socket.io.js')!!}
+    {!!Html::script('cosapi/js/socket.io.min.js')!!}
 
     @include('layout.recursos.fecha_hora')
 

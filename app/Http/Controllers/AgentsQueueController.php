@@ -138,8 +138,6 @@ class AgentsQueueController extends CosapiController
             }
         }
 
-        $this->generar_queue_editor();
-
     }
 
     /**
@@ -162,58 +160,6 @@ class AgentsQueueController extends CosapiController
         }
     }
 
-    /**
-     *[Función para la generación del archivo Queue_Editor para la asignación de colas]
-     * @param Request $request
-     * @return Lista de usuarios del proyecto
-     */
-    protected function generar_queue_editor(){
-        $queue_editors = [];
-
-        $file_queue     = 'exports/queues_editor';              // Ruta en donde se va a guardar el archivo generado
-        if (file_exists($file_queue)) { unlink($file_queue); }  // Consulta si el archivo existe
-        $file           = fopen($file_queue, "a");              // Crea el archivo "queues_editor"
-
-        //Consulta la información registrada en la Base de Datos
-        $UsersColas = User_Queue::select()->with('user')->get()->toArray();
-
-        $Colas     = $this->list_queue();
-        foreach($UsersColas as $UserCola ){
-            if(!isset($queue_editors[$UserCola['queue_id']])){
-                $queue_editors[$UserCola['queue_id']]['id']                      = $UserCola['queue_id'];
-            }
-            $queue_editors[$UserCola['queue_id']]['users'][$UserCola['user_id']] = array(
-                       'user_id'       => $UserCola['user_id'],
-                       'user_name'     => $UserCola['user']['username'],
-                       'priority'      => $UserCola['priority']
-            );
-        }
-        foreach($Colas as $Cola){
-            if(isset($queue_editors[$Cola['id']])){
-                //Creación de cabecera por cada Cola del proyecto
-                fwrite($file, '['.$Cola['name'].']'. PHP_EOL);
-                fwrite($file, 'musicclass       = '.getenv('MUSIC_CLASS_CONTEXT'). PHP_EOL);
-                fwrite($file, 'strategy         = '.$Cola['estrategia']. PHP_EOL);
-                fwrite($file, 'announce         = '.getenv('MUSIC_QUEUE_ROUTE').$Cola['vdn']. PHP_EOL);
-                fwrite($file, 'weight           = '.$Cola['prioridad']. PHP_EOL);
-                fwrite($file, 'joinempty        = yes'. PHP_EOL);
-                fwrite($file, 'leavewhenempty   = yes'. PHP_EOL);
-                fwrite($file, 'servicelevel     = 60'. PHP_EOL);
-                fwrite($file, 'wrapuptime       = 5'. PHP_EOL);
-                fwrite($file, 'timeout          = 60'. PHP_EOL);
-                fwrite($file, 'retry            = 5'. PHP_EOL);
-                fwrite($file, PHP_EOL);
-                foreach($queue_editors[$Cola['id']]['users'] as $queue_editor){
-                    //Registra miembros de la cola
-                    fwrite($file, 'member => Agent/'.$queue_editor['user_name'].','.$queue_editor['priority']. PHP_EOL);
-                }
-                //Ingresa un salto entre colas
-                fwrite($file, PHP_EOL);
-            }
-        }
-        //Cierra el archivo
-        fclose($file);
-    }
 
     /**
      * [Función para la conversion de la lista de Usuarios en una cadena textual]
