@@ -8,6 +8,7 @@
 /vendor
 /public
 /resources/assets/vendor/
+/resources/assets/node_modules/
 /resources/assets/exports/
 /node_modules
 
