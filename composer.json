@@ -78,7 +78,7 @@
             "php artisan log-viewer:publish --force"
         ],
         "publish-gulp": [
-            "gulp --production",
+            "gulp",
             "composer dump-autoload"
         ],
         "refresh": [
