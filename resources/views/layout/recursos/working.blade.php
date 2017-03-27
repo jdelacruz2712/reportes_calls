@@ -5,7 +5,7 @@
         </div><!-- /.box-header -->
         <div class="box-body">
             <center>
-                <img src="{{ asset('cosapi/img/working.png') }}" >
+                <img src="{{ asset('img/working.png') }}" >
             </center>
         </div><!-- /.box-body -->
     </div>

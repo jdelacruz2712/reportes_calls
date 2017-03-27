@@ -5,7 +5,7 @@
           <!-- Sidebar user panel -->
           <div class="user-panel">
             <div class="pull-left image">
-              <img src="cosapi/img/logo_cosapi.jpg" class="img-circle" alt="User Image">
+              <img src="img/logo_cosapi.jpg" class="img-circle" alt="User Image">
             </div>
             <div id="statusAgent" class="pull-left info">
               <input type="hidden"  v-model="anexo" value="{{$anexo}}">
@@ -67,4 +67,3 @@
         </section>
         <!-- /.sidebar -->
       </aside>
-      

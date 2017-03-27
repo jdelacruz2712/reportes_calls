@@ -53,17 +53,20 @@
             "php artisan vendor:publish --tag=public --force",
             "php artisan config:cache",
             "php artisan route:cache",
-            "php artisan cache:clear"
+            "php artisan cache:clear",
+            "composer publish-gulp"
         ],
         "pre-update-cmd": [
-            "php artisan clear-compiled"
+            "php artisan clear-compiled",
+            "composer publish-gulp"
         ],
         "post-update-cmd": [
             "php artisan optimize",
             "php artisan vendor:publish --tag=public --force",
             "php artisan config:cache",
             "php artisan route:cache",
-            "php artisan cache:clear"
+            "php artisan cache:clear",
+            "composer publish-gulp"
         ],
         "post-root-package-install": [
             "php -r \"copy('.env.example', '.env');\""
@@ -74,13 +77,17 @@
         "publish-logviewer": [
             "php artisan log-viewer:publish --force"
         ],
+        "publish-gulp": [
+            "gulp --production",
+            "composer dump-autoload"
+        ],
         "refresh": [
             "composer dump-autoload",
             "php artisan config:cache",
             "php artisan route:cache",
             "php artisan view:clear",
-            "gulp --production",
-            "composer dump-autoload"
+            "php artisan vendor:publish",
+            "composer publish-gulp"
         ]
     },
     "config": {

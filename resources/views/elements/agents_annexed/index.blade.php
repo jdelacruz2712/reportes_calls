@@ -1,5 +1,3 @@
-@include('layout.plugins.css-preloader')
-
 <div  class="col-md-12" id="container">
 	<div class="panel-body">
 		<div class="box box-solid box-primary">
@@ -23,7 +21,7 @@
 												<center>
 													<a href="#"  class='{{ $anexo['btn']  }}' onclick="assignAnexxed('{{ $anexo['name'] }}');" >
 														<center>
-															<img class="img-responsive" width="74" height="74" name={{ $anexo['name'] }}  src={{ asset('cosapi/img/'.$anexo['image']) }}  />
+															<img class="img-responsive" width="74" height="74" name={{ $anexo['name'] }}  src={{ asset('img/'.$anexo['image']) }}  />
 														</center>
 														<center>
 															<span style='color:black'>

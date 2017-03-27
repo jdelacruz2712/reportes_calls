@@ -41,14 +41,8 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function(){
-        buscar();
-        $('.media').media();
-        
-    })
-
-    function buscar(){
-        show_tab_incoming('calls_completed');
-    }
-
+$(document).ready(function(){
+    show_tab_incoming('calls_completed')
+    $('.media').media()
+})
 </script>

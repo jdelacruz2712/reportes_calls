@@ -35,13 +35,13 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="cosapi/img/logo_cosapi.jpg" class="user-image" alt="User Image">
+                        <img src="img/logo_cosapi.jpg" class="user-image" alt="User Image">
                         <span class="hidden-xs">Cosapi Data</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="cosapi/img/logo_cosapi.jpg" class="img-circle" alt="User Image">
+                            <img src="img/logo_cosapi.jpg" class="img-circle" alt="User Image">
                             <p>
                                 {{ ucwords(Session::get('UserName')).' - '.ucwords(Session::get('UserRole'))}}
                                 <small>{{date('j F Y')}}</small>

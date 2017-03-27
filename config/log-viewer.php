@@ -38,7 +38,7 @@ return [
         'attributes' => [
             'prefix'     => 'log-viewer',
 
-            'middleware' => ['auth','admin'],
+            'middleware' => null,
         ],
     ],
 
