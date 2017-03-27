@@ -5,15 +5,13 @@ namespace Cosapi\Http\Controllers;
 use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\Queue_Log;
-use Cosapi\Http\Controllers\CosapiController;
 use Cosapi\Collector\Collector;
-
 use DB;
 use Excel;
+use Session;
 
 class ConsolidatedCallsController extends CosapiController
 {
-
 
     /**
      * [index Función que retorna vista y datos del reporte de Calls Consolidated]
@@ -108,6 +106,7 @@ class ConsolidatedCallsController extends CosapiController
         $queues_proyect     = $this->queues_proyect();
         $days               = explode(' - ', $fecha_evento);
         $calls_inbound      = Queue_Log::select_fechamod($rank_hour)
+                                        ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                         ->filtro_days($days)
                                         ->filtro_anexos()
                                         ->whereIn('queue', $queues_proyect)
@@ -128,6 +127,7 @@ class ConsolidatedCallsController extends CosapiController
         $queues_proyect = $this->queues_proyect();
         $days           = explode(' - ', $fecha_evento);
         $calls_queue    = Queue_Log::Select('queue')
+                                    ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                     ->filtro_days($days)
                                     ->filtro_anexos()
                                     ->whereIn('queue', $queues_proyect)
@@ -148,6 +148,7 @@ class ConsolidatedCallsController extends CosapiController
         $queues_proyect = $this->queues_proyect();
         $days           = explode(' - ', $fecha_evento);
         $calls_agents   = Queue_Log::Select('agent')
+                                    ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                     ->filtro_days($days)
                                     ->filtro_anexos()
                                     ->whereNotIn('agent', ['NONE'])
@@ -275,7 +276,6 @@ class ConsolidatedCallsController extends CosapiController
      */
 protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$groupby,$list_user=''){
 
-        $time_standar       = array(10,20);
         $posicion           = 1;
         $Consolidateds      = [];
         for($j=0;$j<count($call_group);$j++){
@@ -359,15 +359,15 @@ protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$gro
 
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Answ']   =   convertDecimales(($Consolidateds[$posicion]['Answered']/ $Consolidateds[$posicion]['Received'] )*100,2);
+                    $Consolidateds[$posicion]['Answ']       =   convertDecimales(($Consolidateds[$posicion]['Answered']/ $Consolidateds[$posicion]['Received'] )*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Answ']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Answ']       = convertDecimales(0,2);
                 }
                 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Unansw'] =   convertDecimales((($Consolidateds[$posicion]['Abandoned'] )/ $Consolidateds[$posicion]['Received'] )*100,2);
+                    $Consolidateds[$posicion]['Unansw']     =   convertDecimales((($Consolidateds[$posicion]['Abandoned'] )/ $Consolidateds[$posicion]['Received'] )*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Unansw']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Unansw']     = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
@@ -383,79 +383,79 @@ protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$gro
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ro10']   =   convertDecimales((($Consolidateds[$posicion]['Answ 10s']+$Consolidateds[$posicion]['Aband 10s'])/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ro10']       =   convertDecimales((($Consolidateds[$posicion]['Answ 10s']+$Consolidateds[$posicion]['Aband 10s'])/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ro10']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ro10']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ro15']   =   convertDecimales((($Consolidateds[$posicion]['Answ 15s']+$Consolidateds[$posicion]['Aband 15s'])/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ro15']       =   convertDecimales((($Consolidateds[$posicion]['Answ 15s']+$Consolidateds[$posicion]['Aband 15s'])/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ro15']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ro15']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ro20']   =   convertDecimales((($Consolidateds[$posicion]['Answ 20s']+$Consolidateds[$posicion]['Aband 20s'])/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ro20']       =   convertDecimales((($Consolidateds[$posicion]['Answ 20s']+$Consolidateds[$posicion]['Aband 20s'])/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ro20']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ro20']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ro30']   =   convertDecimales((($Consolidateds[$posicion]['Answ 30s']+$Consolidateds[$posicion]['Aband 30s'])/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ro30']       =   convertDecimales((($Consolidateds[$posicion]['Answ 30s']+$Consolidateds[$posicion]['Aband 30s'])/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ro30']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ro30']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ns10']   =   convertDecimales(($Consolidateds[$posicion]['Answ 10s']/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ns10']       =   convertDecimales(($Consolidateds[$posicion]['Answ 10s']/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ns10']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ns10']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ns15']   =   convertDecimales(($Consolidateds[$posicion]['Answ 15s']/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ns15']       =   convertDecimales(($Consolidateds[$posicion]['Answ 15s']/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ns15']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ns15']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ns20']   =   convertDecimales(($Consolidateds[$posicion]['Answ 20s']/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ns20']       =   convertDecimales(($Consolidateds[$posicion]['Answ 20s']/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ns20']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ns20']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Received']!=0){
-                    $Consolidateds[$posicion]['Ns30']   =   convertDecimales(($Consolidateds[$posicion]['Answ 30s']/$Consolidateds[$posicion]['Received'])*100,2);
+                    $Consolidateds[$posicion]['Ns30']       =   convertDecimales(($Consolidateds[$posicion]['Answ 30s']/$Consolidateds[$posicion]['Received'])*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Ns30']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Ns30']       = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Attended'] !=0){
-                    $Consolidateds[$posicion]['Avh2 10']   =   convertDecimales(($Consolidateds[$posicion]['Answ 10s']/$Consolidateds[$posicion]['Attended'] )*100,2);
+                    $Consolidateds[$posicion]['Avh2 10']    =   convertDecimales(($Consolidateds[$posicion]['Answ 10s']/$Consolidateds[$posicion]['Attended'] )*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Avh2 10']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Avh2 10']    = convertDecimales(0,2);
                 }
 
                 if($Consolidateds[$posicion]['Attended'] !=0){
-                    $Consolidateds[$posicion]['Avh2 15']   =   convertDecimales(($Consolidateds[$posicion]['Answ 15s']/$Consolidateds[$posicion]['Attended'] )*100,2);
+                    $Consolidateds[$posicion]['Avh2 15']    =   convertDecimales(($Consolidateds[$posicion]['Answ 15s']/$Consolidateds[$posicion]['Attended'] )*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Avh2 15']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Avh2 15']    = convertDecimales(0,2);
                 } 
 
                 if($Consolidateds[$posicion]['Attended'] !=0){
-                    $Consolidateds[$posicion]['Avh2 20']   =   convertDecimales(($Consolidateds[$posicion]['Answ 20s']/$Consolidateds[$posicion]['Attended'] )*100,2);
+                    $Consolidateds[$posicion]['Avh2 20']    =   convertDecimales(($Consolidateds[$posicion]['Answ 20s']/$Consolidateds[$posicion]['Attended'] )*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Avh2 20']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Avh2 20']    = convertDecimales(0,2);
                 } 
 
                 if($Consolidateds[$posicion]['Attended'] !=0){
-                    $Consolidateds[$posicion]['Avh2 30']   =   convertDecimales(($Consolidateds[$posicion]['Answ 30s']/$Consolidateds[$posicion]['Attended'] )*100,2);
+                    $Consolidateds[$posicion]['Avh2 30']    =   convertDecimales(($Consolidateds[$posicion]['Answ 30s']/$Consolidateds[$posicion]['Attended'] )*100,2);
                 }else{
-                    $Consolidateds[$posicion]['Avh2 30']   = convertDecimales(0,2);
+                    $Consolidateds[$posicion]['Avh2 30']    = convertDecimales(0,2);
                 } 
 
 
-                $posicion                               =   $posicion + 1;
+                $posicion                                   =   $posicion + 1;
                 
             }else{
                 $name = $call_group[$j][$groupby];

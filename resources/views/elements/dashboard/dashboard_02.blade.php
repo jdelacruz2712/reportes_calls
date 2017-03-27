@@ -1,21 +1,14 @@
-
 @extends('layout.dashboard')
 @section('title', 'Dashboard 2')
-
-@include('layout.plugins.css-bootstrap3_dialog')
 @section('content')
-
-
 <style type="text/css">
     .highcharts-yaxis-grid .highcharts-grid-line {
 	    display : none;
     }
-
     .active{
         background-color: blue;
     }
 </style>
-  
 <div class="col-md-12 bg-green">
     <div class="col-md-1">
         <h4>Dashboard</h4>
@@ -41,20 +34,12 @@
         </ul>
     </div>
 </div>
-
 <br><br><br>
-
-
-<div id='detail_kpi'>
-
-</div>
-
+<div id='detail_kpi'></div>
 <script type="text/javascript">
     $(document).ready(function() {
-
         loading();
     });
-
     function loading(){
         var idevento = $('#hidReporttype').val();
         detalle_kpi_dashboard_02(idevento);
@@ -62,5 +47,3 @@
     }
 </script>
 @endSection
-
-

@@ -14,7 +14,7 @@ class BootstrapServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../vendor/twbs/bootstrap/dist' => public_path('vendor/bootstrap'),
+            __DIR__ . '/../../vendor/twbs/bootstrap/dist' => public_path('../resources/assets/vendor/bootstrap'),
         ], 'public');
     }
 

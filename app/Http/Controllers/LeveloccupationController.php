@@ -6,10 +6,8 @@ use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
 use Cosapi\Collector\Collector;
 use Cosapi\Models\DetalleEventosHistory;
-use Cosapi\Models\DetalleEventos;
 use Cosapi\Models\Eventos;
 use Cosapi\Models\User;
-use Cosapi\Http\Controllers\AgentsOnlineController;
 use Illuminate\Support\Facades\DB;
 
 class LeveloccupationController extends CosapiController

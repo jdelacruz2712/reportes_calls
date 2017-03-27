@@ -1,43 +1,67 @@
 <?php
-Route::get('/'													, ['as' => 'admin', 'uses'=>'AdminController@index']);
+Route::get ('/'		    , ['uses'=>'Auth\AuthController@getLogin'  ,   'as'=>'login'        ]);
+Route::post('/'		    , ['uses'=>'Auth\AuthController@postLogin' ,   'as'=>'login'        ]);
+Route::get ('logout'    , ['uses'=>'Auth\AuthController@getLogout' ,  'as'=>'logout'        ]);
 
-// Reportes de Eventos
-Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);
-Route::get('dashboard_01/detail_agents'   						, ['uses'=>'DashboardController@detail_agents']);
-Route::get('dashboard_01/detail_encoladas'   					, ['uses'=>'DashboardController@detail_encoladas']);
-Route::get('dashboard_01/total_encoladas'   					, ['uses'=>'DashboardController@total_encoladas']);
-Route::get('dashboard_01/detail_kpi'   							, ['uses'=>'DashboardController@detail_kpi']);
-Route::get('dashboard_01/logoutagent/{anexo}/{username}'   		, ['uses'=>'DashboardController@desconectar_agente']);
-Route::get('dashboard_02'   									, ['uses'=>'DashboardController@dashboard_02']);
-Route::get('dashboard_02/detail_kpi/{evento}'   				, ['uses'=>'DashboardController@detail_kpi_dashboard_02']);
+Route::group ( ['middleware'=>['auth'], 'prefix'=>'home' ]      , function(){
+    Route::get('/'      , ['uses'=>'AdminController@index'         ,    'as' => 'home'      ]);
+});
 
-// Reportes de Eventos
-Route::post('events_detail'         							, ['uses'=>'EventsAgentController@events_detail']);
-Route::post('events_consolidated'   							, ['uses'=>'EventsAgentController@events_consolidated']);
+Route::group (['middleware'=>['user']], function(){
+    Route::group ( ['middleware'=>['supervisor']]      , function(){
 
-// Reportes CALLS
-Route::post('incoming_calls'									, ['uses'=>'IncomingCallsController@index']);
-Route::post('outgoing_calls'									, ['uses'=>'OutgoingCallsController@index']);
-Route::post('consolidated_calls'								, ['uses'=>'ConsolidatedCallsController@index']);
+        // Dashboard
+        Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);
+        Route::get('dashboard_02'   									, ['uses'=>'DashboardController@dashboard_02']);
 
-Route::post('export_incoming'									, ['uses'=>'IncomingCallsController@export']);
-Route::post('export_outgoing'									, ['uses'=>'OutgoingCallsController@export']);
-Route::post('export_consolidated'								, ['uses'=>'ConsolidatedCallsController@export']);
-Route::post('export_events_detail'								, ['uses'=>'EventsAgentController@export']);
-Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
+        // Reportes de consolidado de eventos
+        Route::post('events_consolidated'   							, ['uses'=>'EventsAgentController@events_consolidated']);
 
-// reporte de llamadas salienes
-Route::post('agents_online'										, ['uses'=>'AgentsOnlineController@index']);
+        // Reporte de nivel de occupacion
+        Route::post('level_of_occupation'								, ['uses'=>'LeveloccupationController@index']);
 
-// Reporte de nivel de occupacion
-Route::post('level_of_occupation'								, ['uses'=>'LeveloccupationController@index']);
+        Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
 
-// Reporte de encuestaa
-Route::post('surveys'											, ['uses'=>'SurveysController@index']);
+        // Reporte de llamadas salienes
+        Route::post('agents_online'										, ['uses'=>'AgentsOnlineController@index']);
 
-// Asignar Cola
-Route::post('agents_queue'										, ['uses'=>'AgentsQueueController@index']);
-Route::post('agents_queue/search_users'							, ['uses'=>'AgentsQueueController@search_users']);
-Route::post('agents_queue/assign_queue'							, ['uses'=>'AgentsQueueController@assign_queue']);
-Route::post('agents_queue/mark'							        , ['uses'=>'AgentsQueueController@mark_form']);
-Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
+        // Reporte de encuestaa
+        Route::post('surveys'											, ['uses'=>'SurveysController@index']);
+
+        // Asignar Cola
+        Route::post('agents_queue'										, ['uses'=>'AgentsQueueController@index']);
+        Route::post('agents_queue/search_users'							, ['uses'=>'AgentsQueueController@search_users']);
+        Route::post('agents_queue/assign_queue'							, ['uses'=>'AgentsQueueController@assign_queue']);
+        Route::post('agents_queue/mark'							        , ['uses'=>'AgentsQueueController@mark_form']);
+        Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
+
+
+
+    });
+
+    // Reportes de eventos
+    Route::post('events_detail'         							, ['uses'=>'EventsAgentController@events_detail']);
+
+    // Lista de anexos
+    Route::post('agents_annexed'									, ['uses'=>'AgentsAnnexedController@index']);
+    Route::post('agents_annexed/user'									, ['uses'=>'AgentsAnnexedController@getUserAnexo']);
+
+    // Reportes calls
+    Route::post('incoming_calls'									, ['uses'=>'IncomingCallsController@index']);
+    Route::post('outgoing_calls'									, ['uses'=>'OutgoingCallsController@index']);
+    Route::post('consolidated_calls'								, ['uses'=>'ConsolidatedCallsController@index']);
+
+    // Rutas de exportacion
+    Route::post('export_incoming'									, ['uses'=>'IncomingCallsController@export']);
+    Route::post('export_outgoing'									, ['uses'=>'OutgoingCallsController@export']);
+    Route::post('export_consolidated'								, ['uses'=>'ConsolidatedCallsController@export']);
+    Route::post('export_events_detail'								, ['uses'=>'EventsAgentController@export']);
+
+    // Miscelaneas
+    Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);
+    Route::post('assistance'                                        , ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);
+    Route::post('working'                                           , ['uses'=>'AdminController@working'            ,    'as' => 'working']);
+    Route::post('modifyPassword'                                    , ['uses'=>'UserController@modifyPassword'            ,    'as' => 'modifyPassword']);
+});
+
+

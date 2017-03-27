@@ -137,7 +137,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-        
+
         /*
          * Application Service Providers...
          */
@@ -149,11 +149,12 @@ return [
         /**
          * Vendor Service Provider Propios Cosapi
          */
-        Cosapi\Providers\PHPAmiServiceProvider::class,
         Cosapi\Providers\BootstrapServiceProvider::class,
         Cosapi\Providers\JQueryServiceProvider::class,
         Cosapi\Providers\IoniconsServiceProvider::class,
         Cosapi\Providers\FortAwesomeServiceProvider::class,
+        Cosapi\Providers\SocketioServiceProvider::class,
+        Cosapi\Providers\SailsioServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,

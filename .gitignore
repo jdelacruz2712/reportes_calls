@@ -6,10 +6,10 @@
 .env
 .env.php
 /vendor
-/public/vendor/
-/public/exports/
-/public/cosapi/script_php/
-/public/cosapi/script_php
+/public
+/resources/assets/vendor/
+/resources/assets/node_modules/
+/resources/assets/exports/
 /node_modules
 
 # -- Composer

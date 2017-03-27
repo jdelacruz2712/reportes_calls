@@ -73,4 +73,14 @@ class 	Queue_Log extends Model
         return    $query->where(DB::raw("url"),'!=', 3);
     }
 
+    public function scopeFiltro_user_rol($query,$rol,$user_name)
+    {
+
+        if( $rol == 'user')
+        {
+            return    $query->where('agent','=','Agent/'.$user_name);
+        }
+
+    }
+
 }

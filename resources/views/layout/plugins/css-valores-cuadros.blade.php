@@ -1,10 +1,8 @@
 <style type="text/css">
-
      	.info-box-content2 {
 		    margin-left: 60px;
 		    padding: 5px 10px;
 		}
-
 		.info-box-icon2 {
 		    background: rgba(0, 0, 0, 0.2) none repeat scroll 0 0;
 		    border-radius: 2px 0 0 2px;

@@ -4,23 +4,31 @@ namespace Cosapi\Http\Controllers;
 
 use Cosapi\Collector\Collector;
 use Illuminate\Http\Request;
-
-use Cosapi\Models\User;
 use Cosapi\Models\Eventos;
 use Cosapi\Models\DetalleEventosHistory;
 use Cosapi\Models\DetalleEventos;
-use Cosapi\Http\Controllers\CosapiController;
 
 use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
-use Cosapi\Http\Controllers\Controller;
 use Excel;
-use Yajra\Datatables\Facades\Datatables;
-use Cosapi\Http\Controllers\IncomingCallsController;
 
 
 class EventsAgentController extends CosapiController
 {
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        if($request->ajax()){
+            $events = Eventos::select()->where('estado_visible_id','=',1)->get()->toArray();
+            return view('layout/recursos/status')->with(array('events' => $events));
+        }
+    }
 
     /**
      * [events_consolidated Función que retorna la vista o datos para el reporte de Consolidated Events]
@@ -143,20 +151,18 @@ class EventsAgentController extends CosapiController
      * @return [array]       [Retorna datos para el Details Events]
      */
     protected function query_events($days){
-
         if($days[0] == date('Y-m-d') && $days[1] == date('Y-m-d')){
 
-            $detail_events   = $this->events_presents($days);
+            $detail_events   = $this->events_presents($days,$this->UserId,$this->UserRole);
 
         }else if($days[0] != date('Y-m-d') && $days[1] != date('Y-m-d')){
 
-            $detail_events   = $this->events_history($days);
+            $detail_events   = $this->events_history($days,$this->UserId,$this->UserRole);
         }else{
 
-            $events_presents = $this->events_presents($days);
-            $events_history  = $this->events_history($days);
+            $events_presents = $this->events_presents($days,$this->UserId,$this->UserRole);
+            $events_history  = $this->events_history($days,$this->UserId,$this->UserRole);
             $detail_events   = array_merge($events_presents, $events_history);
-            //dd($detail_events);
         }
 
 
@@ -168,9 +174,10 @@ class EventsAgentController extends CosapiController
      * [events_presents description]
      * @return [type] [description]
      */
-    protected function events_presents ($days){
+    protected function events_presents ($days,$user_id,$rol){
         $events_presents  = DetalleEventos::Select('user_id','evento_id','fecha_evento','observaciones')
                             ->with('evento','user')
+                            ->filtro_user_rol($rol,$user_id)
                             ->filtro_days($days)
                             ->OrderBy(DB::raw('user_id'), 'asc')
                             ->OrderBy(DB::raw('DATE(fecha_evento)'), 'asc')
@@ -185,9 +192,11 @@ class EventsAgentController extends CosapiController
      * @param $days [Rango de días a consultar]
      * @return mixed [Array con informacion obtenida de los eventos]
      */
-    protected function events_history($days){
+    protected function events_history($days,$user_id,$rol){
+
         $events_history  = DetalleEventosHistory::Select('user_id','evento_id','fecha_evento','observaciones')
                             ->with('evento','user')
+                            ->filtro_user_rol($rol,$user_id)
                             ->filtro_days($days)
                             ->OrderBy(DB::raw('user_id'), 'asc')
                             ->OrderBy(DB::raw('DATE(fecha_evento)'), 'asc')

@@ -1,4 +1,3 @@
-@include('layout.plugins.css-preloader')
 @include('layout.plugins.css-datepicker')
 @include('layout.plugins.css-dateTables')
 @include('layout.plugins.js-datepicker')
@@ -14,7 +13,6 @@
 			<input type="hidden" id="hidEvent" value='export_surveys'>
 
 			@include('filtros.filtro-fecha')
-			</div>
 		</div>
 	{!! Form::close() !!}
 

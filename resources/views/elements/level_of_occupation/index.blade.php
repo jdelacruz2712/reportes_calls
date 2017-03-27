@@ -1,4 +1,3 @@
-@include('layout.plugins.css-preloader')
 @include('layout.plugins.css-datepicker')
 @include('layout.plugins.css-dateTables')
 @include('layout.plugins.js-datepicker')
@@ -14,7 +13,6 @@
 
 			@include('filtros.filtro-fecha')
 			@include('filtros.button-search')
-			</div>
 		</div>
 	{!! Form::close() !!}
 
@@ -24,19 +22,8 @@
 <script type="text/javascript">
 	$(document).ready(function(){
 
-		/* script para daterange y agregarle formato aÃ±o-mes-dia */
-	    $('input[name="fecha_evento"]').daterangepicker(
-	        {
-	            locale: {
-	                format: 'YYYY-MM-DD'
-	            }
-	        }
-	    );
-
 		buscar = function(){
-
 			$('#reporte-estados1').dataTable().fnDestroy();
-			
 			$('#reporte-estados1').DataTable({
 		        "responsive"        : true,
 		        "processing"        : true,
@@ -57,8 +44,8 @@
 		        "scrollCollapse"    : true,
 		        "select"            : true,
 		        "dom"             	: 'Bfrtip',
-                "buttons"           : ['copyHtml5', 'csvHtml5', 'excelHtml5'],		        
-		        "columns"			: [    
+                "buttons"           : ['copyHtml5', 'csvHtml5', 'excelHtml5'],
+		        "columns"			: [
 				                        {"data":"date"},
 				                        {"data":"hour"},
 										{"data":"indbound"},
@@ -69,10 +56,8 @@
 										{"data":"occupation_cosapi"}
 				                    ]
 		    });
-
 		}
-		
-	})	
+	})
 
 
 

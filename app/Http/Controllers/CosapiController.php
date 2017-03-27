@@ -1,17 +1,17 @@
 <?php
 
 namespace Cosapi\Http\Controllers;
-
 use Cosapi\Models\Anexo;
 use Cosapi\Models\Queue;
 use Cosapi\Models\User;
 use Illuminate\Http\Request;
 use Cosapi\Facades\phpAMI;
 use Cosapi\Http\Requests;
-use Cosapi\Http\Controllers\Controller;
 
 use Illuminate\Support\Facades\DB;
 use Cosapi\Models\DetalleEventos;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 use Datatables;
 use Excel;
@@ -19,6 +19,49 @@ use Carbon\Carbon;
 
 class CosapiController extends Controller
 {
+    function __construct()
+    {
+        $type_password = 0;
+
+        if (!Session::has('UserId')) {
+            Session::put('UserId'   ,Auth::user()->id   );
+        }
+
+        if (!Session::has('UserRole')) {
+            Session::put('UserRole'   ,Auth::user()->role   );
+        }
+
+        if (!Session::has('UserName')) {
+            Session::put('UserName'   ,Auth::user()->primer_nombre.' '.Auth::user()->apellido_paterno );
+        }
+
+        if (!Session::has('UserSystem')) {
+            Session::put('UserSystem'   ,Auth::user()->username);
+        }
+
+
+        // Tipo de password modificado
+        if(Auth::user()->password == '$2y$10$9TTAuZKJgHLvDfDlvt2fY.vWlj2EqwG6iGLJ.zuaxbqaA3.EBXPOW'){
+            $type_password = 1; // Tipo de password por defecto
+        }
+        Session::put('UserPassword'   ,$type_password);
+
+
+        $Anexos = Anexo::select('name')->where('user_id','=',Auth::user()->id )->get()->toArray();
+        if(count($Anexos) != 0){
+            $name_anexo = $Anexos[0]['name'];
+            Session::put('UserAnexo'   ,$name_anexo);
+        }else{
+            Session::put('UserAnexo'   ,'Sin Anexo'   );
+        }
+
+        $this->UserId       = Session::get('UserId')        ;
+        $this->UserRole     = Session::get('UserRole')      ;
+        $this->UserName     = Session::get('UserName')      ;
+        $this->UserSystem   = Session::get('UserSystem')    ;
+        $this->UserPassword = Session::get('UserPassword')  ;
+        $this->UserAnexo    = Session::get('UserAnexo')     ;
+    }
 
     /**
      * [MostrarFechaActual Función que permite obtener la Fecha Actual]
@@ -79,38 +122,6 @@ class CosapiController extends Controller
             });
 
         })->store($format,$location);
-    }
-
-
-    /**
-     * [conexion_ami Función que permite abrir conexion ami, hacia el asterisk a traves del puerto del manager.conf (Archivo Asterisk)]
-     * @return [boolean] [Mensaje de resultado de la conexion]
-     */
-    protected function conexion_ami()
-    {
-        $login = phpAMI::login(getenv('ASTERISK_HOST'));
-
-        if ($login == false) {
-            echo 'Error - Problemas de Socket a Nivel de Asterisk';
-        } else {
-            if ($login['Response'] == 'Success') {
-
-                return true;
-
-            } else {
-                echo 'Error - Problemas en el usuario y password de la Conexion Manager ';
-            }
-        }
-    }
-
-
-    /**
-     * [desconexion_ami Función para desconectar sesión del AMI]
-     *
-     */
-    protected function desconexion_ami()
-    {
-        phpAMI::logoff();
     }
 
     /**
@@ -207,7 +218,7 @@ class CosapiController extends Controller
      * @return mixed         [Lista de usuarios que coinciden con la busqueda]
      */
     protected function query_user_search($nombre = ''){
-        $Users                  = User::select('id','primer_nombre')
+        $Users                  = User::select('id','primer_nombre','apellido_paterno','apellido_materno')
                                         ->where(DB::raw('CONCAT(primer_nombre," ",apellido_paterno," ",apellido_materno)'), 'like', '%'.$nombre.'%')
                                         ->orderBy('primer_nombre')
                                         ->orderBy('apellido_paterno')
@@ -223,7 +234,10 @@ class CosapiController extends Controller
      */
     protected function list_queue(){
         $list_prioridad     = [];
-        $Colas              = Queue::select()->with('estrategia','prioridad')->get()->toArray();
+        $Colas              = Queue::select()
+                                    ->with('estrategia','prioridad')
+                                    ->where('estado_id','=',1)
+                                    ->get()->toArray();
         foreach($Colas as $Cola){
             $list_prioridad[$Cola['id']]['id']         = $Cola['id'];
             $list_prioridad[$Cola['id']]['name']       = $Cola['name'];
@@ -235,24 +249,46 @@ class CosapiController extends Controller
     }
 
     /**
-     * [Función para sincronizar archivo queue_editor al servidor asterisk]
-     * @return array [valor con el resultado de la ejecuacion, devuelve cero si es correcto]
+     * @param $evento_id : El id del evento de pausa que acciono el agente via web.
+     * @param $user_id   : Capturar el ID del usuario conectado.
      */
-    protected function rsync_queue_editor(){
+    public function register_event($evento_id,$user_id,$anexo = '',$fecha_evento = '',$observaciones = '',$date_really ='')
+    {
 
-        exec('rsync -avz --delete '.getenv('EXPORTS_ROUTE').'queues_editor '.getenv('ASTERISK_HOST').'::archivos_asterisk',$output,$return_var);
+        /** Guarda Eventos  */
+        if($fecha_evento == '')     { $fecha_evento = Carbon::now(); }else{ $fecha_evento = $fecha_evento; }
+        if($date_really  == null)   { $date_really  = null; }else{ $date_really  = Carbon::now(); }
 
-        return $return_var;
+        \DB::table('detalle_eventos')->insert(array(
+            'evento_id'     => $evento_id,
+            'user_id'       => $user_id,
+            'fecha_evento'  => $fecha_evento,
+            'date_really'   => $date_really,
+            'anexo'         => $anexo,
+            'observaciones' => $observaciones,
+            'ip_cliente'    => $_SERVER['REMOTE_ADDR']
+        ));
+
     }
 
-
     /**
-     * [Función para actualizar configuracion de servidor asterisk]
+     * [Function que devuelve datos de el primer logueo realizado por el usuario]
+     * @return array
      */
-    protected function queueReload(){
-       if ($this->conexion_ami()==true){
-            $prueba=phpAMI::command('reload');
-            $this->desconexion_ami();
+    protected function UltimateEventLogin(){
+        $users      = DetalleEventos::Select(DB::raw('count(*) as cant_event,id,date_really,fecha_evento'))
+            ->where('user_id','=',$this->UserId)
+            ->where('evento_id','=',11)
+            ->where(DB::raw('DATE(fecha_evento)'),'=',date('Y-m-d'))
+            ->orderBy('id', 'asc')
+            ->get();
+        foreach ($users as $user) {
+            $cant_event     = $user->cant_event;
+            $date_really    = $user->date_really;
+            $fecha_evento   = $user->fecha_evento;
+            $id             = $user->id;
         }
+
+        return array($cant_event,$date_really, $fecha_evento, $id);
     }
 }

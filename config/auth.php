@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'model' => Cosapi\User::class,
+    'model' => Cosapi\Models\User::class,
 
     /*
     |--------------------------------------------------------------------------

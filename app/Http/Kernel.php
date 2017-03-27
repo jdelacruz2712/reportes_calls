@@ -26,8 +26,11 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Cosapi\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'guest' => \Cosapi\Http\Middleware\RedirectIfAuthenticated::class,
+        'auth'          => \Cosapi\Http\Middleware\Authenticate::class,
+        'admin'         => \Cosapi\Http\Middleware\RoleAdministrator::class,
+        'user'          => \Cosapi\Http\Middleware\RoleUser::class,
+        'supervisor'    => \Cosapi\Http\Middleware\RoleSupervisor::class,
+        'auth.basic'    => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
+        'guest'         => \Cosapi\Http\Middleware\RedirectIfAuthenticated::class,
     ];
 }

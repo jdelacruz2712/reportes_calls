@@ -14,11 +14,11 @@ class IoniconsServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../vendor/driftyco/ionicons/css' => public_path('vendor/ionicons/css'),
+            __DIR__ . '/../../vendor/driftyco/ionicons/css' => public_path('../resources/assets/vendor/ionicons/css'),
         ], 'public');
 
         $this->publishes([
-                __DIR__ . '/../../vendor/driftyco/ionicons/fonts' => public_path('vendor/ionicons/fonts'),
+                __DIR__ . '/../../vendor/driftyco/ionicons/fonts' => public_path('../resources/assets/vendor/ionicons/fonts'),
             ], 'public');
     }
 

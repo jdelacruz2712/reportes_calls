@@ -3,16 +3,15 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Http\Requests;
-use Cosapi\Models\Queue;
 use Illuminate\Http\Request;
 use Cosapi\Models\Queue_Log;
-use Cosapi\Http\Controllers\CosapiController;
 use Cosapi\Collector\Collector;
 
 use DB;
 use Excel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Session;
 
 
 class IncomingCallsController extends CosapiController
@@ -75,6 +74,7 @@ class IncomingCallsController extends CosapiController
         $days           = explode(' - ', $days);
         $events         = $this->get_events($events);
         $query_calls    = Queue_Log::select_fechamod()
+                                        ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                         ->filtro_users($users)
                                         ->filtro_hours($hours)
                                         ->filtro_days($days)

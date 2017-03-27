@@ -392,7 +392,7 @@ function deletearray($value, $column, $array) {
  * [listHours Función para listar horas segun el parametro enviado.]
  * @return [Array] [Lista de horas creadas segun el parametro enviado]
  */
-function listHoursInterval($increment){
+function listHoursInterval($increment = '1800'){
     $array_hours = [];
     $time       = 0;
     $increment  = $increment;

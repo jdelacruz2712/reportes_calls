@@ -14,11 +14,11 @@ class FortAwesomeServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../../vendor/fortawesome/font-awesome/css' => public_path('vendor/fortawesome/css'),
+            __DIR__ . '/../../vendor/fortawesome/font-awesome/css' => public_path('../resources/assets/vendor/fortawesome/css'),
         ], 'public');
 
         $this->publishes([
-                __DIR__ . '/../../vendor/fortawesome/font-awesome/fonts' => public_path('vendor/fortawesome/fonts'),
+                __DIR__ . '/../../vendor/fortawesome/font-awesome/fonts' => public_path('../resources/assets/vendor/fortawesome/fonts'),
             ], 'public');
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-return array(
+return [
 
     /*
      |--------------------------------------------------------------------------
@@ -26,13 +26,13 @@ return array(
      | can also be used. For PDO, run the package migrations first.
      |
      */
-    'storage' => array(
+    'storage' => [
         'enabled'    => true,
         'driver'     => 'file', // redis, file, pdo, custom
         'path'       => storage_path('debugbar'), // For file driver
         'connection' => null,   // Leave null for default connection (Redis/PDO)
         'provider'   => '' // Instance of StorageInterface for custom driver
-    ),
+    ],
 
     /*
      |--------------------------------------------------------------------------
@@ -82,10 +82,10 @@ return array(
      |
      */
 
-    'collectors' => array(
+    'collectors' => [
         'phpinfo'         => true,  // Php version
         'messages'        => true,  // Messages
-        'time'            => false,  // Time Datalogger
+        'time'            => true,  // Time Datalogger
         'memory'          => true,  // Memory usage
         'exceptions'      => true,  // Exception displayer
         'log'             => true,  // Logs from Monolog (merged in messages if enabled)
@@ -99,11 +99,11 @@ return array(
         'mail'            => true,  // Catch mail messages
         'logs'            => false, // Add the latest log messages
         'files'           => false, // Show the included files
-        'config'          => true, // Display config settings
+        'config'          => false, // Display config settings
         'auth'            => false, // Display Laravel authentication status
         'gate'            => false, // Display Laravel Gate checks
         'session'         => true,  // Display session data
-    ),
+    ],
 
     /*
      |--------------------------------------------------------------------------
@@ -114,40 +114,40 @@ return array(
      |
      */
 
-    'options' => array(
-        'auth' => array(
+    'options' => [
+        'auth' => [
             'show_name' => false,   // Also show the users name/email in the debugbar
-        ),
-        'db' => array(
+        ],
+        'db' => [
             'with_params'       => true,   // Render SQL with the parameters substituted
             'timeline'          => false,  // Add the queries to the timeline
             'backtrace'         => false,  // EXPERIMENTAL: Use a backtrace to find the origin of the query in your files.
-            'explain' => array(            // EXPERIMENTAL: Show EXPLAIN output on queries
+            'explain' => [                 // EXPERIMENTAL: Show EXPLAIN output on queries
                 'enabled' => false,
-                'types' => array('SELECT'), // array('SELECT', 'INSERT', 'UPDATE', 'DELETE'); for MySQL 5.6.3+
-            ),
+                'types' => ['SELECT'],     // ['SELECT', 'INSERT', 'UPDATE', 'DELETE']; for MySQL 5.6.3+
+            ],
             'hints'             => true,    // Show hints for common mistakes
-        ),
-        'mail' => array(
+        ],
+        'mail' => [
             'full_log' => false
-        ),
-        'views' => array(
+        ],
+        'views' => [
             'data' => false,    //Note: Can slow down the application, because the data can be quite large..
-        ),
-        'route' => array(
+        ],
+        'route' => [
             'label' => true  // show complete route on bar
-        ),
-        'logs' => array(
+        ],
+        'logs' => [
             'file' => null
-        ),
-    ),
+        ],
+    ],
 
     /*
      |--------------------------------------------------------------------------
      | Inject Debugbar in Response
      |--------------------------------------------------------------------------
      |
-     | Usually, the debugbar is added just before <body>, by listening to the
+     | Usually, the debugbar is added just before </body>, by listening to the
      | Response after the App is done. If you disable this, you have to add them
      | in your template yourself. See http://phpdebugbar.com/docs/rendering.html
      |
@@ -167,4 +167,4 @@ return array(
      */
     'route_prefix' => '_debugbar',
 
-);
+];

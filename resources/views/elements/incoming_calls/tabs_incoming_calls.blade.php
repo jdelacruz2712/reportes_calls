@@ -39,16 +39,10 @@
         </div>
     </div>
 </div>
-<script src="{{ asset('cosapi/js/cosapi_adminlte.js')}}"></script>
+
 <script type="text/javascript">
-    $(document).ready(function(){
-        prueba();
-        $('.media').media();
-        
-    })
-
-    function prueba(){
-        show_tab_incoming('calls_completed');
-    }
-
+$(document).ready(function(){
+    show_tab_incoming('calls_completed')
+    $('.media').media()
+})
 </script>
