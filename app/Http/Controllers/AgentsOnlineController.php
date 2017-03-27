@@ -3,6 +3,7 @@
 namespace Cosapi\Http\Controllers;
 
 
+use Cosapi\Collector\Collector;
 use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\AgentesOnline;
@@ -24,12 +25,27 @@ class AgentsOnlineController extends CosapiController
             if ($request->fecha_evento){
                 return $this->agents_online($request->fecha_evento);
             }else{
-                return view('elements/agents_online/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.agents_online.agents-online',
+                    'titleReport'           => 'Report of Agent Online',
+                    'viewButtonSearch'      => true,
+                    'exportReport'          => 'export_agents_online',
+                    'nameRouteController'   => 'agents_online'
+                ));
             }
         }
         
     }
 
+    /**
+     * [export description]
+     * @param  Request $request [Dato para identifcar GET O POST]
+     * @return [type]           [description]
+     */
+    public function export(Request $request){
+        $export_outgoing  = call_user_func_array([$this,'export_'.$request->format_export], [$request->days]);
+        return $export_outgoing;
+    }
 
     /**
      * [agents_online Función que envia los datos del día para su respectica consulta a la base de datos.]
@@ -37,9 +53,12 @@ class AgentsOnlineController extends CosapiController
      * @return [array]                [retorna datos de los agentes en línea obtenidos]
      */
     public function agents_online($fecha_evento){
-        $days                   = explode(' - ', $fecha_evento);
-        $query_agents_online    = $this->query_agents_online($days);
-        return $query_agents_online;
+
+        $query_agents_online    = $this->query_agents_online($fecha_evento);
+        $builderview            = $this->builderview($query_agents_online);
+        $outgoingcollection     = $this->outgoingcollection($builderview);
+        $list_call_outgoing     = $this->FormatDatatable($outgoingcollection);
+        return $list_call_outgoing;
     }
 
 
@@ -48,14 +67,81 @@ class AgentsOnlineController extends CosapiController
      * @param  [array] $days [Rango de días a realizar la consulta]
      * @return [array]       [Retorna agentes en línea en base a la consulta realizada]
      */
-    public function query_agents_online($days){
+    public function query_agents_online($fecha_evento){
+        $days                   = explode(' - ', $fecha_evento);
         $events_ignored         = array (4,15,7);
         $query_agents_online    = AgentesOnline::select_fechamod()
                                         ->filtro_days($days)
                                         ->whereNotIn('evento_id',$events_ignored)
                                         ->groupBy('date_agent','hour_agent')
                                         ->get();
-                              
         return $query_agents_online;
     }
+
+    protected function builderview($query_agents_online,$type=''){
+        $posicion = 0;
+        foreach ($query_agents_online as $query) {
+            $builderview[$posicion]['date']     = $this->$query['date_agent'];
+            $builderview[$posicion]['hour']     = $this->$query['hour_agent'];
+            $builderview[$posicion]['agents']   = $query['quantity'];
+            $posicion ++;
+        }
+
+        if(!isset($builderview)){
+            $builderview = [];
+        }
+        return $builderview;
+    }
+
+
+    protected function outgoingcollection($builderview){
+        $outgoingcollection                 = new Collector();
+        foreach ($builderview as $view) {
+
+            $outgoingcollection->push([
+                'date'      => $view['date'],
+                'hour'      => $view['hour'],
+                'agents'    => $view['agents']
+            ]);
+
+        }
+        return $outgoingcollection;
+    }
+
+    /**
+     * [export_csv Function que retorna la ubicación de los datos a exportar en CSV]
+     * @param  [string] $days [Fecha de la consulta]
+     * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
+     */
+    protected function export_csv($days){
+
+        $builderview = $this->builderview($this->query_agents_online($days),'export');
+        $this->BuilderExport($builderview,'agents_online','csv','exports');
+
+        $data = [
+            'succes'    => true,
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/agents_online.csv']
+        ];
+
+        return $data;
+    }
+
+    /**
+     * [export_excel Function que retorna la ubicación de los datos a exportar en Excel]
+     * @param  [string] $days [Fecha de la consulta]
+     * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
+     */
+    protected function export_excel($days){
+
+        $builderview = $this->builderview($this->query_agents_online($days,'agents_online'),'export');
+        $this->BuilderExport($builderview,'agents_online','xlsx','exports');
+
+        $data = [
+            'succes'    => true,
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/agents_online.xlsx']
+        ];
+
+        return $data;
+    }
+
 }

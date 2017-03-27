@@ -25,7 +25,13 @@ class OutgoingCallsController extends CosapiController
             if ($request->fecha_evento){
                 return $this->list_calls_outgoing($request->fecha_evento);
             }else{
-                return view('elements/outgoing_calls/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.outgoing_calls.outgoing_calls',
+                    'titleReport'           => 'Report of Calls Outbound',
+                    'viewButtonSearch'      => true,
+                    'exportReport'          => 'export_outgoing',
+                    'nameRouteController'   => 'outgoing_calls'
+                ));
             }
         }
     }

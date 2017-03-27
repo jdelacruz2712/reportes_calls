@@ -23,7 +23,13 @@ class SurveysController extends CosapiController
             if ($request->fecha_evento){
                 return $this->list_surveys($request->fecha_evento, $request->evento);
             }else{
-                return view('elements/surveys/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.surveys.surveys',
+                    'titleReport'           => 'Report of Surveys',
+                    'viewButtonSearch'      => false,
+                    'exportReport'          => 'export_surveys',
+                    'nameRouteController'   => ''
+                ));
             }
         }
     }

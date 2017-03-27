@@ -44,7 +44,7 @@ Route::group (['middleware'=>['user']], function(){
 
     // Lista de anexos
     Route::post('agents_annexed'									, ['uses'=>'AgentsAnnexedController@index']);
-    Route::post('agents_annexed/user'									, ['uses'=>'AgentsAnnexedController@getUserAnexo']);
+    Route::post('agents_annexed/user'								, ['uses'=>'AgentsAnnexedController@getUserAnexo']);
 
     // Reportes calls
     Route::post('incoming_calls'									, ['uses'=>'IncomingCallsController@index']);
@@ -56,6 +56,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('export_outgoing'									, ['uses'=>'OutgoingCallsController@export']);
     Route::post('export_consolidated'								, ['uses'=>'ConsolidatedCallsController@export']);
     Route::post('export_events_detail'								, ['uses'=>'EventsAgentController@export']);
+    Route::post('export_agents_online'								, ['uses'=>'AgentsOnlineController@export']);
 
     // Miscelaneas
     Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);

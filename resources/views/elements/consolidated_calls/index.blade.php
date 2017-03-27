@@ -8,16 +8,20 @@
     <div class="box box-primary">
         <div class="box-header">
             <h3 class="box-title"><b>Consolidado de Llamadas</b></h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
         </div>
         <input type="hidden" id="url" value='listar_llamadas_contestadas'>
         <input type="hidden" name="_token" value="{!! csrf_token() !!}">
         <input type="hidden" id="hidEvent" value='export_consolidated'>
-
-        @include('filtros.filtro-fecha')
-        @include('filtros.filtro-hour')
+        <div class="box-body" style="display: block;">
+            <div class="row">
+                @include('filtros.filtro-fecha')
+                @include('filtros.filtro-hour')                
+            </div>
         </div>
     </div>
     {!! Form::close() !!}
-
-    @include('elements.consolidated_calls.tabs_consolidated_calls')
 </div>
+@include('elements.consolidated_calls.tabs_consolidated_calls')

@@ -6,7 +6,7 @@
  * Alan Cornejo
  */
 /**
- * [dataTables_entrantes Funcion para cargar datos en la tablas de los reportes]
+ * [dataTables Funcion para cargar datos en la tablas de los reportes]
  * @param  {String} nombreDIV [Nombre del div donde esta la tabla para agregar los datos]
  * @param  {String} data      [Nombre del tipo de porte a cargar]
  * @param  {String} route     [Ruta a la cual va a consultar los datos a cargar]
@@ -76,7 +76,7 @@ function loadModule (idOptionMenu) {
   })
 }
 
-function dataTables_entrantes (nombreDIV, data, route) {
+function dataTables (nombreDIV, data, route) {
   $('#' + nombreDIV).dataTable().fnDestroy()
 
   $('#' + nombreDIV).DataTable({
@@ -141,7 +141,7 @@ function dataTables_lang_spanish () {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_incoming (evento) {
-  dataTables_entrantes('table-incoming', get_data_filters(evento), 'incoming_calls')
+  dataTables('table-incoming', get_data_filters(evento), 'incoming_calls')
 }
 
 /**
@@ -149,7 +149,7 @@ function show_tab_incoming (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_surveys (evento) {
-  dataTables_entrantes('table-surveys', get_data_filters(evento), 'surveys')
+  dataTables('table-surveys', get_data_filters(evento), 'surveys')
 }
 
 /**
@@ -157,7 +157,7 @@ function show_tab_surveys (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_consolidated (evento) {
-  dataTables_entrantes('table-consolidated', get_data_filters(evento), 'consolidated_calls')
+  dataTables('table-consolidated', get_data_filters(evento), 'consolidated_calls')
 }
 
 /**
@@ -165,7 +165,15 @@ function show_tab_consolidated (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_detail_events (evento) {
-  dataTables_entrantes('table-detail-events', get_data_filters(evento), 'events_detail')
+  dataTables('table-detail-events', get_data_filters(evento), 'events_detail')
+}
+
+/**
+ * [show_tab_angetOnline Función que carga los datos de los agentes online]
+ * @param  {String} evento [Tipo de reporte a cargar en la vista]
+ */
+function show_tab_agentOnline (evento) {
+  dataTables('table-agentOnline', get_data_filters(evento), 'agents_online')
 }
 
 /**
@@ -173,7 +181,7 @@ function show_tab_detail_events (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_outgoing (evento) {
-  dataTables_entrantes('table-outgoing', get_data_filters(evento), 'outgoing_calls')
+  dataTables('table-outgoing', get_data_filters(evento), 'outgoing_calls')
 }
 
 /**
@@ -269,7 +277,7 @@ function downloadURL (url, index) {
  */
 function cargar_dialog (new_type, title, message, closable) {
   var message = $('<div></div>')
-  message.append('<center><b>Porfavor no cerrar la ventana</b></br><img src="../cosapi/img/loading_bar_cicle.gif" /></center>')
+  message.append('<center><b>Porfavor no cerrar la ventana</b></br><img src="../img/loading_bar_cicle.gif" /></center>')
 
   var dialog = new BootstrapDialog({
     size: BootstrapDialog.SIZE_SMALL,
@@ -1107,5 +1115,14 @@ function columnsDatatable (route) {
       {'data': 'listen'}
     ]
   }
+
+  if (route === 'agents_online') {
+    columns = [
+      {"data":"date"},
+      {"data":"hour"},
+      {"data":"agents"}
+    ]
+  }
+
   return columns
 }

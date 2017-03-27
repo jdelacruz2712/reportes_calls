@@ -28,7 +28,13 @@ class IncomingCallsController extends CosapiController
             if ($request->evento){
                 return $this->calls_incoming($request->fecha_evento, $request->evento);
             }else{
-                return view('elements/incoming_calls/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.incoming_calls.tabs_incoming_calls',
+                    'titleReport'           => 'Report of Calls Inbound',
+                    'viewButtonSearch'      => false,
+                    'exportReport'          => 'export_incoming',
+                    'nameRouteController'   => ''
+                ));
             }
         }
     }

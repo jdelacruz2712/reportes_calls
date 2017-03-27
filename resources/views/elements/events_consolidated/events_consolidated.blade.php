@@ -59,7 +59,7 @@
                 format: 'YYYY-MM-DD'
             }
         });
-        
+
         buscar();
     });
 
@@ -102,12 +102,6 @@
             "scrollX"           : true,
             "scrollCollapse"    : true,
             "select"            : true,
-            "dom": 'Bfrtip',
-            "buttons": [
-                'copy',
-                'csv',
-                'excel'
-            ],
             fixedColumns:   {
                 leftColumns: 1
             },

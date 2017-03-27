@@ -19,7 +19,6 @@
     <input type="hidden" id="hidDefaultEvent" value="calls_completed">
     <div class="panel-body" >
         <div class="tab-pane fade active in" id="panel-report">
-            @include('filtros.export')
             <table id="table-surveys" class="table table-bordered display nowrap table-responsive" cellspacing="0" width="100%">
                 <thead>                
                     <tr>
