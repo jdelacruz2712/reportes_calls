@@ -484,13 +484,13 @@ function MarkAssitance (user_id, day, hour_actually, action) {
 }
 
 function modalAssintance (user_id, day, hour_actually, action) {
-  rank_hours = rangoHoras(hour_actually)
-  title = 'Cosapi Data S.A.'
-  message = 'Por favor de seleccionar la hora correspondiente a su ' + action + '.' +
+  let rankHours = rangoHoras(hour_actually)
+  let title = 'Cosapi Data S.A.'
+  let message = 'Por favor de seleccionar la hora correspondiente a su ' + action + '.' +
         '<br><br>' +
         '<div class="row">' +
-        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + rank_hours[1] + '">' + rank_hours[1] + '</center></div>' +
-        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + rankHours[1] + '">' + rankHours[1] + '</center></div>' +
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rankHours[2] + '">' + rankHours[2] + '</center></div>' +
         '</div>'
 
   BootstrapDialog.show({
@@ -504,20 +504,20 @@ function modalAssintance (user_id, day, hour_actually, action) {
         cssClass: 'btn-primary',
         action: function (dialogRef) {
           if (typeof $('input:radio[name=rbtnHour]:checked').val() === 'undefined') {
-            alert('Porfavor de seleccionar una hora.')
+            alert('Por favor seleccionar una hora.')
           } else {
             dialogRef.close()
-            hour_new = $('input:radio[name=rbtnHour]:checked').val().trim()
-            user_id = user_id
-            var parameters = {
-              new_date_event: day + ' ' + hour_new,
-              user_id: user_id
+            let newHour = $('input:radio[name=rbtnHour]:checked').val().trim()
+            let userID = user_id
+            let parameters = {
+              new_date_event: day + ' ' + newHour,
+              user_id: userID
             }
 
             ajaxNodeJs(parameters, '/detalle_eventos/register_assistence', true, 2000)
 
-            if (hour_new > rank_hours[1]) {
-              ModalStandBy(hour_new)
+            if (newHour > rankHours[1]) {
+              ModalStandBy(newHour)
             } else {
               checkPassword()
             }
