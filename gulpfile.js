@@ -34,7 +34,18 @@ elixir(function(mix) {
         'plugins/adminLTE/css/AdminLTE.min.css',
         'plugins/adminLTE/css/skins/_all-skins.min.css',
         'cosapi/css/preloader.css'
-    ],'public/css/cosapi_adminlte.min.css','resources/assets/');
+    ],'public/css/cosapi_adminlte.min.css','resources/assets/')
+
+    /**
+    Generando el archivo cosapi_dashboard.min.css para el Layout AdminLTE
+    */
+    .styles([
+        'vendor/fortawesome/css/font-awesome.min.css',
+        'vendor/bootstrap/css/bootstrap.min.css',
+        'extras/toastr/toastr.min.css',
+        'plugins/adminLTE/css/AdminLTE.min.css',
+        'cosapi/css/preloader.css'
+    ],'public/css/cosapi_dashboard.min.css','resources/assets/');
 });
 
 elixir(function(mix) {
@@ -68,9 +79,24 @@ elixir(function(mix) {
   Generando el archivo cosapi_realtime.min.js para mostrar data realtime en panel
   */
   .scripts([
-      'cosapi/js/cosapi_adminlte.js',
-      'cosapi/js/adminlte_vue.js'
-  ],'public/js/cosapi_realtime.min.js','resources/assets/');
+      'cosapi/js/helper.js',
+      'cosapi/js/frontVue.js'
+  ],'public/js/cosapi.min.js','resources/assets/')
+
+  /**
+  Generando el archivo cosapi_dashboard.min.js para mostrar data realtime en panel
+  */
+  .scripts([
+    'vendor/jquery/jquery.min.js',
+    'vendor/bootstrap/js/bootstrap.min.js',
+    'extras/toastr/toastr.js',
+    'cosapi/js/cosapi_adminlte.js',
+    'cosapi/js/vue.js',
+    'node_modules/socket.io-client/socket.io.min.js',
+  ],'public/js/cosapi_dashboard.min.js','resources/assets/')
+  .scripts([
+    'cosapi/js/dashboard_vue.js'
+  ],'public/js/dashboard_vue.min.js','resources/assets/');
 
   /** Versionando archivos css y js
   mix.version([

@@ -1,4 +1,3 @@
-
 const vm = new Vue({
   el: '#detail_agents',
   data: {
@@ -7,7 +6,6 @@ const vm = new Vue({
 })
 
 var socket = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
-
 socket.emit('connect_dashboard')
 
 socket.on('QueueMemberAdded', data => {

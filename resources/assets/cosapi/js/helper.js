@@ -29,11 +29,7 @@ $(document).ready(function () {
   var anexo = $('#anexo').text()
 
   MarkAssitance(user_id, date, hour, 'Entrada')
-
-  if (anexo == 'Sin Anexo') {
-    loadModule('agents_annexed')
-  }
-
+  if (anexo === 'Sin Anexo') loadModule('agents_annexed')
   $('#statusAgent').click(function () {
     PanelStatus()
   })
@@ -46,6 +42,8 @@ $(document).ready(function () {
       loadModule($(this).attr('id'))
     }
   })
+
+
 })
 
 function loadModule (idOptionMenu) {

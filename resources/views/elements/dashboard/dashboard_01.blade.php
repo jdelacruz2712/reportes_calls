@@ -2,15 +2,11 @@
 @extends('layout.dashboard')
 @section('title', 'Dashboard')
 @section('content')
-
 	<p>
-
 	<div class="row-fluid">
 		<div id='detail_kpi'></div>
 	    <div id='total_encoladas'></div>
 	</div>
-
-
 	<!-- Panel de Llamadas en Cola -->
 	<div class="row-fluid">
 		<div class="col-md-12">
@@ -38,9 +34,7 @@
 		        		</button>
 		      		</div>
 		    	</div>
-
 				@include('elements.dashboard.tables.table_detail_calls')
-
 		  	</div>
 		</div>
 	</div>

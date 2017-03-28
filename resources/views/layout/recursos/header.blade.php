@@ -20,7 +20,9 @@
             <ul class="nav navbar-nav">
                 <li>
                     <!-- Fecha Actual -->
-                    <h5 class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Anexo Actual" style="color: white"><span class="fa fa-headphones"></span> (<font id="anexo">{{$anexo}}</font>)</h5>
+                    <h5 class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Anexo Actual" style="color: white">
+                      <span class="fa fa-headphones"></span> Anexo: <font id="anexo">{{$anexo}}</font>
+                    </h5>
                 </li>
                 <li>
                     <!-- Fecha Actual -->

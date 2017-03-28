@@ -57,5 +57,5 @@
 </div>
 
 @section('scripts')
-  {!!Html::script('cosapi/js/dashboard_vue.js')!!}
+  {!!Html::script('js/dashboard_vue.min.js')!!}
 @endsection

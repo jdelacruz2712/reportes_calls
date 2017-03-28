@@ -2,9 +2,7 @@
 @extends('layout.dashboard')
 @section('title', 'Dashboard')
 @section('content')
-
 	<p>
-
 	<div class="row-fluid">
 		<div id='detail_kpi'>
 	    	<div class="loading" id="loading">
