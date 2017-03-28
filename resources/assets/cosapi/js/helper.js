@@ -6,7 +6,7 @@
  * Alan Cornejo
  */
 /**
- * [dataTables_entrantes Funcion para cargar datos en la tablas de los reportes]
+ * [dataTables Funcion para cargar datos en la tablas de los reportes]
  * @param  {String} nombreDIV [Nombre del div donde esta la tabla para agregar los datos]
  * @param  {String} data      [Nombre del tipo de porte a cargar]
  * @param  {String} route     [Ruta a la cual va a consultar los datos a cargar]
@@ -43,9 +43,81 @@ $(document).ready(function () {
     }
   })
 
-
+  //Modificacion del Rol a User para los agentes de BackOffice
+  $('#activate_calls').click(function(){
+      if ($('#anexo').text() === 'Sin Anexo') {
+          mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Oops!!', 10000, false, true)
+          loadModule('agents_annexed')
+      } else {
+          let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+              '<br>' +
+              '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "ACD", porfavor de leer las ' +
+              'notificaiones para saber que el cambio se realizo exitosamente. En caso de que no le entren llamadas por favor' +
+              'de verificar que se le han asignado a las colas correctamente.</p>'
+          BootstrapDialog.show({
+              type: 'type-primary',
+              title: 'Cosapidata S.A.',
+              message: message,
+              closable: true,
+              buttons: [
+                  {
+                      label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
+                      cssClass: 'btn-success',
+                      action: function (dialogRef) {
+                          console.log('Hola 1')
+                          activeCalls('user')
+                      }
+                  },
+                  {
+                      label: '<i class="fa fa-times" aria-hidden="true"></i> No',
+                      cssClass: 'btn-danger',
+                      action: function (dialogRef) {
+                          activeCalls('backoffice')
+                      }
+                  },
+                  {
+                      label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
+                      cssClass: 'btn-primary',
+                      action: function (dialogRef) {
+                          dialogRef.close()
+                      }
+                  }
+              ]
+          })
+      }
+  })
 })
-
+function activeCalls(nameRole){
+    $.ajax({
+        type: 'POST',
+        url: 'modifyRole',
+        data: {
+            _token: $('input[name=_token]').val(),
+            nameRole: nameRole
+        },
+        success: function (data) {
+            if (data == 1) {
+                $.each(BootstrapDialog.dialogs, function (id, dialog) {
+                    dialog.close()
+                })
+                mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
+                mostrar_notificacion('info', 'Se procedera a realizar la conexion al asterisk', 'Info', 5000, false, true)
+                let parameters = {
+                    old_event_id: 11,
+                    event_id: 1,
+                    user_id: $('#user_id').val(),
+                    anexo: $('#anexo').text(),
+                    ip: $('#ip').val(),
+                    type_action: 'update'
+                }
+                console.log(parameters)
+                ajaxNodeJs(parameters, '/detalle_eventos/change_status', true, 2000)
+            } else {
+                mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+            }
+        }
+    })
+}
 function loadModule (idOptionMenu) {
   var url = idOptionMenu
 
@@ -74,7 +146,7 @@ function loadModule (idOptionMenu) {
   })
 }
 
-function dataTables_entrantes (nombreDIV, data, route) {
+function dataTables (nombreDIV, data, route) {
   $('#' + nombreDIV).dataTable().fnDestroy()
 
   $('#' + nombreDIV).DataTable({
@@ -139,7 +211,7 @@ function dataTables_lang_spanish () {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_incoming (evento) {
-  dataTables_entrantes('table-incoming', get_data_filters(evento), 'incoming_calls')
+  dataTables('table-incoming', get_data_filters(evento), 'incoming_calls')
 }
 
 /**
@@ -147,7 +219,7 @@ function show_tab_incoming (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_surveys (evento) {
-  dataTables_entrantes('table-surveys', get_data_filters(evento), 'surveys')
+  dataTables('table-surveys', get_data_filters(evento), 'surveys')
 }
 
 /**
@@ -155,7 +227,7 @@ function show_tab_surveys (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_consolidated (evento) {
-  dataTables_entrantes('table-consolidated', get_data_filters(evento), 'consolidated_calls')
+  dataTables('table-consolidated', get_data_filters(evento), 'consolidated_calls')
 }
 
 /**
@@ -163,7 +235,15 @@ function show_tab_consolidated (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_detail_events (evento) {
-  dataTables_entrantes('table-detail-events', get_data_filters(evento), 'events_detail')
+  dataTables('table-detail-events', get_data_filters(evento), 'events_detail')
+}
+
+/**
+ * [show_tab_angetOnline Función que carga los datos de los agentes online]
+ * @param  {String} evento [Tipo de reporte a cargar en la vista]
+ */
+function show_tab_agentOnline (evento) {
+  dataTables('table-agentOnline', get_data_filters(evento), 'agents_online')
 }
 
 /**
@@ -171,7 +251,7 @@ function show_tab_detail_events (evento) {
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
 function show_tab_outgoing (evento) {
-  dataTables_entrantes('table-outgoing', get_data_filters(evento), 'outgoing_calls')
+  dataTables('table-outgoing', get_data_filters(evento), 'outgoing_calls')
 }
 
 /**
@@ -267,7 +347,7 @@ function downloadURL (url, index) {
  */
 function cargar_dialog (new_type, title, message, closable) {
   var message = $('<div></div>')
-  message.append('<center><b>Porfavor no cerrar la ventana</b></br><img src="../cosapi/img/loading_bar_cicle.gif" /></center>')
+  message.append('<center><b>Porfavor no cerrar la ventana</b></br><img src="../img/loading_bar_cicle.gif" /></center>')
 
   var dialog = new BootstrapDialog({
     size: BootstrapDialog.SIZE_SMALL,
@@ -389,6 +469,7 @@ function validar_sonido () {
 function ajaxNodeJs (parameters, ruta, notificacion, time) {
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     if (resData['Response'] == 'success') {
+        console.log(resData);
             // Cierra todos los modals abiertos
             // Actualmente se usa para el cambio de Estados del Agente
       if (notificacion == true) {
@@ -825,7 +906,7 @@ function markExit () {
                 label: 'Aceptar',
                 cssClass: 'btn-danger',
                 action: function (dialogRef) {
-                  hour_exit = hour.trim()
+                  let hour_exit = hour.trim()
                   if (typeof $('input:radio[name=rbtnHour]:checked').val() === 'undefined') {
                     alert('Porfavor de seleccionar su hora de salida.')
                   } else {
@@ -1105,5 +1186,14 @@ function columnsDatatable (route) {
       {'data': 'listen'}
     ]
   }
+
+  if (route === 'agents_online') {
+    columns = [
+      {"data":"date"},
+      {"data":"hour"},
+      {"data":"agents"}
+    ]
+  }
+
   return columns
 }

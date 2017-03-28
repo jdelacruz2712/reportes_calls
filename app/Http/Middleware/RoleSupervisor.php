@@ -24,7 +24,7 @@ class RoleSupervisor
      */
     public function handle($request, Closure $next)
     {
-        if(Auth::check() && (Auth::user()->role == 'supervisor' || Auth::user()->role == 'admin')) {
+        if(Auth::check() && (Auth::user()->role == 'supervisor' || Auth::user()->role == 'admin' || Auth::user()->role == 'backoffice')) {
             return $next($request);
         }
         $request->session()->flash('alert-danger','Usted no cuenta con los permisos necesarios para este recurso');

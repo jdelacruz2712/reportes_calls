@@ -41,7 +41,13 @@ class EventsAgentController extends CosapiController
             if ($request->fecha_evento){
                 return $this->list_state_agents($request->fecha_evento);
             }else{
-                return view('elements/events_consolidated/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.events_consolidated.events_consolidated',
+                    'titleReport'           => 'Report of Events Consolidateds',
+                    'viewButtonSearch'      => true,
+                    'exportReport'          => 'export_events_consolidated',
+                    'nameRouteController'   => ''
+                ));
             }
         }
 
@@ -66,7 +72,13 @@ class EventsAgentController extends CosapiController
                 return $detail_events;
 
             }else{
-                return view('elements/events_detail/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.events_detail.events_detail',
+                    'titleReport'           => 'Report of Events',
+                    'viewButtonSearch'      => true,
+                    'exportReport'          => 'export_events_detail',
+                    'nameRouteController'   => ''
+                ));
             }
         }
     }
