@@ -24,7 +24,13 @@ class LeveloccupationController extends CosapiController
             if ($request->fecha_evento){
                 return $this->NivelOcupationHour($request->fecha_evento);
             }else{
-                return view('elements/level_of_occupation/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.level_of_occupation.level_of_occupation',
+                    'titleReport'           => 'Report of Level Occupation',
+                    'viewButtonSearch'      => true,
+                    'exportReport'          => 'export_level_occupation',
+                    'nameRouteController'   => 'level_of_occupation'
+                ));
             }
         }
     }

@@ -46,8 +46,82 @@ $(document).ready(function () {
       loadModule($(this).attr('id'))
     }
   })
-})
 
+  //Modificacion del Rol a User para los agentes de BackOffice
+  $('#activate_calls').click(function(){
+      if ($('#anexo').text() === 'Sin Anexo') {
+          mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Oops!!', 10000, false, true)
+          loadModule('agents_annexed')
+      } else {
+          let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+              '<br>' +
+              '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "ACD", porfavor de leer las ' +
+              'notificaiones para saber que el cambio se realizo exitosamente. En caso de que no le entren llamadas por favor' +
+              'de verificar que se le han asignado a las colas correctamente.</p>'
+          BootstrapDialog.show({
+              type: 'type-primary',
+              title: 'Cosapidata S.A.',
+              message: message,
+              closable: true,
+              buttons: [
+                  {
+                      label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
+                      cssClass: 'btn-success',
+                      action: function (dialogRef) {
+                          console.log('Hola 1')
+                          activeCalls('user')
+                      }
+                  },
+                  {
+                      label: '<i class="fa fa-times" aria-hidden="true"></i> No',
+                      cssClass: 'btn-danger',
+                      action: function (dialogRef) {
+                          activeCalls('backoffice')
+                      }
+                  },
+                  {
+                      label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
+                      cssClass: 'btn-primary',
+                      action: function (dialogRef) {
+                          dialogRef.close()
+                      }
+                  }
+              ]
+          })
+      }
+  })
+})
+function activeCalls(nameRole){
+    $.ajax({
+        type: 'POST',
+        url: 'modifyRole',
+        data: {
+            _token: $('input[name=_token]').val(),
+            nameRole: nameRole
+        },
+        success: function (data) {
+            if (data == 1) {
+                $.each(BootstrapDialog.dialogs, function (id, dialog) {
+                    dialog.close()
+                })
+                mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
+                mostrar_notificacion('info', 'Se procedera a realizar la conexion al asterisk', 'Info', 5000, false, true)
+                let parameters = {
+                    old_event_id: 11,
+                    event_id: 1,
+                    user_id: $('#user_id').val(),
+                    anexo: $('#anexo').text(),
+                    ip: $('#ip').val(),
+                    type_action: 'update'
+                }
+                console.log(parameters)
+                ajaxNodeJs(parameters, '/detalle_eventos/change_status', true, 2000)
+            } else {
+                mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+            }
+        }
+    })
+}
 function loadModule (idOptionMenu) {
   var url = idOptionMenu
 
@@ -399,6 +473,7 @@ function validar_sonido () {
 function ajaxNodeJs (parameters, ruta, notificacion, time) {
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     if (resData['Response'] == 'success') {
+        console.log(resData);
             // Cierra todos los modals abiertos
             // Actualmente se usa para el cambio de Estados del Agente
       if (notificacion == true) {
@@ -835,7 +910,7 @@ function markExit () {
                 label: 'Aceptar',
                 cssClass: 'btn-danger',
                 action: function (dialogRef) {
-                  hour_exit = hour.trim()
+                  let hour_exit = hour.trim()
                   if (typeof $('input:radio[name=rbtnHour]:checked').val() === 'undefined') {
                     alert('Porfavor de seleccionar su hora de salida.')
                   } else {

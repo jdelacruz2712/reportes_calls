@@ -62,7 +62,9 @@ Route::group (['middleware'=>['user']], function(){
     Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);
     Route::post('assistance'                                        , ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);
     Route::post('working'                                           , ['uses'=>'AdminController@working'            ,    'as' => 'working']);
-    Route::post('modifyPassword'                                    , ['uses'=>'UserController@modifyPassword'            ,    'as' => 'modifyPassword']);
+    Route::post('modifyPassword'                                    , ['uses'=>'UserController@modifyPassword'      ,    'as' => 'modifyPassword']);
+    Route::post('modifyRole'                                        , ['uses'=>'UserController@modifyRole'          ,    'as' => 'modifyRole']);
+
 });
 
 
