@@ -27,7 +27,6 @@ $(document).ready(function () {
   var hour = $('#hour').val()
   var date = $('#date').val()
   var anexo = $('#anexo').text()
-
   MarkAssitance(user_id, date, hour, 'Entrada')
   if (anexo === 'Sin Anexo') loadModule('agents_annexed')
   $('#statusAgent').click(function () {
@@ -64,7 +63,6 @@ $(document).ready(function () {
                       label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
                       cssClass: 'btn-success',
                       action: function (dialogRef) {
-                          console.log('Hola 1')
                           activeCalls('user')
                       }
                   },
@@ -110,7 +108,6 @@ function activeCalls(nameRole){
                     ip: $('#ip').val(),
                     type_action: 'update'
                 }
-                console.log(parameters)
                 ajaxNodeJs(parameters, '/detalle_eventos/change_status', true, 2000)
             } else {
                 mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
@@ -469,7 +466,6 @@ function validar_sonido () {
 function ajaxNodeJs (parameters, ruta, notificacion, time) {
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     if (resData['Response'] == 'success') {
-        console.log(resData);
             // Cierra todos los modals abiertos
             // Actualmente se usa para el cambio de Estados del Agente
       if (notificacion == true) {
@@ -498,8 +494,8 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
 
       if (parameters['type_action'] == 'release') {
         $('#anexo').text('Sin Anexo')
-        present_status.present_status_name = 'Login'
-        present_status.present_status_id = '11'
+        vueFront.present_status_name = 'Login'
+        vueFront.present_status_id = '11'
       }
     } else {
       if (parameters['type_action'] == 'release') {

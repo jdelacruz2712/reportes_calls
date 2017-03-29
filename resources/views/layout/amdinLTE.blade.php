@@ -31,8 +31,8 @@
       @include('layout.recursos.right_colum')
       <div class="control-sidebar-bg"></div>
     </div>
-    {!!Html::script('js/cosapi_adminlte.min.js')!!}
-    {!!Html::script('js/cosapi.min.js')!!}
+    {!!Html::script('js/cosapi_adminlte.min.js?version='.date('YmdHis'))!!}
+    {!!Html::script('js/cosapi.min.js?version='.date('YmdHis'))!!}
     @include('layout.recursos.fecha_hora')
     @yield('scripts')
   </body>

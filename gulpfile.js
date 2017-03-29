@@ -90,7 +90,7 @@ elixir(function(mix) {
     'vendor/jquery/jquery.min.js',
     'vendor/bootstrap/js/bootstrap.min.js',
     'extras/toastr/toastr.js',
-    'cosapi/js/cosapi_adminlte.js',
+    'cosapi/js/helper.js',
     'cosapi/js/vue.js',
     'node_modules/socket.io-client/socket.io.min.js',
   ],'public/js/cosapi_dashboard.min.js','resources/assets/')
@@ -169,11 +169,11 @@ elixir(function(mix) {
 /**
  Generando un solo archivo js para descarga de audios
 */
-elixir(function(mix) {
+/*elixir(function(mix) {
   mix.scripts([
       'cosapi/js/jquery.media.js'
   ],'public/js/jquery.media.min.js','resources/assets/');
-});
+});*/
 
 
 

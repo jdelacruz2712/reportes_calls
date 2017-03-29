@@ -29,14 +29,13 @@ class AssistanceController extends CosapiController
     {
         $ultimate_event_login   = $this->UltimateEventLogin();
 
-        //Validacion al momento de ingresar el agente al sistema
         if($ultimate_event_login[0] == 1 && $ultimate_event_login[1]== null){
-            //Ya existe un marcado de hora de entrada
+            //Redirecciona a la ventan de marcaciones
             return 'true&';
         }else{
-            //Redirecciona a la ventana de marcado de entrada
-            if($ultimate_event_login[2] >= date('Y-m-d H:i:s')){
 
+            if($ultimate_event_login[2] >= date('Y-m-d H:i:s')){
+                //Redirecciona a la ventana de espera
                 $date = date_create($ultimate_event_login[2]);
                 return 'stand_by&'.date_format($date,"H:i:s");
             }
