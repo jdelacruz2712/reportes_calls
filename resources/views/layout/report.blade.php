@@ -12,7 +12,7 @@
 		<input type="hidden" id="hidDefaultEvent" value="{{$nameRouteController}}">
         <div class="box-body" style="display: block;">
             <div class="row">
-            	<div class="col-md-6">
+            	<div class="col-md-4">
 					<!-- Date range -->
 					<div class="box-body">
 			    		<div class="input-group">
@@ -23,10 +23,33 @@
 			   			</div>				   		
 				  	</div>
 				</div>
+
+				@if($viewHourSearch == true)
+					<div class="col-md-2">
+						<!-- Date range -->
+						<div class="box-body">
+							<div class="input-group">
+								<div class="input-group-addon">
+									<i class="fa fa-calendar"></i>
+								</div>
+								<select class="form-control" name="rankHour" id="rankHour">
+									<option value="1800">30 minutos</option>
+									<option value="3600">1 hora</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				@else
+					<div class="col-md-2"></div>
+				@endif
+
+
 				<div class="col-md-6">
 				 	<div class="box-body">
 				 		@if($viewButtonSearch == true)
-						<div class="col-md-6"><a onclick="buscar();"  class="btn btn-primary"><span class="fa fa-search" aria-hidden="true"></span> Search</a></div>
+							<div class="col-md-6"><a onclick="buscar();"  class="btn btn-primary"><span class="fa fa-search" aria-hidden="true"></span> Search</a></div>
+						@else
+							<div class="col-md-6"></div>
 						@endif
 						<div class="col-md-3"><a onclick="exportar('csv');" class="btn btn-success"><span class="fa fa-file-code-o" aria-hidden="true"></span> Export Csv</a></div>
 						<div class="col-md-3"><a onclick="exportar('excel');" class="btn btn-success"><span class="fa fa-file-excel-o" aria-hidden="true"></span> Export Excel</a></div> 

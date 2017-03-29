@@ -278,9 +278,13 @@ function get_data_filters (evento) {
  * @return {[type]}               [description]
  */
 function exportar (format_export) {
-  var days = $('#texto').val()
-  var event = $('#hidEvent').val()
-  export_ajax('POST', event, format_export, days)
+  var days      = $('#texto').val()
+  var event     = $('#hidEvent').val()
+  let rankHour  = 1800
+  if($('#rankHour').length >0 ){
+    rankHour = $('#rankHour').val()
+  }
+  export_ajax('POST', event, format_export, days,rankHour)
 }
 
 /**
@@ -290,7 +294,7 @@ function exportar (format_export) {
  * @param  {String} format_export [Formato en el cual se va a exportar el archivo]
  * @param  {String} days          [Fecha de consulta de datos]
  */
-function export_ajax (type, url, format_export = '', days = '') {
+function export_ajax (type, url, format_export = '', days = '',rankHour = 1800) {
   var dialog = cargar_dialog('primary', 'Cosapi Data', 'Cargando el Excel', false)
 
   var token = $('input[name=_token]').val()
@@ -300,9 +304,10 @@ function export_ajax (type, url, format_export = '', days = '') {
     url: url,
     cache: false,
     data: {
-      _token: token,
-      format_export: format_export,
-      days: days
+      _token          : token,
+      format_export   : format_export,
+      days            : days,
+      rank_hour       : rankHour
     },
 
     beforeSend: function (data) {

@@ -29,6 +29,7 @@ class AgentsOnlineController extends CosapiController
                     'routeReport'           => 'elements.agents_online.agents-online',
                     'titleReport'           => 'Report of Agent Online',
                     'viewButtonSearch'      => true,
+                    'viewHourSearch'        => false,
                     'exportReport'          => 'export_agents_online',
                     'nameRouteController'   => 'agents_online'
                 ));

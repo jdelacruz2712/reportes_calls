@@ -27,6 +27,7 @@ class SurveysController extends CosapiController
                     'routeReport'           => 'elements.surveys.surveys',
                     'titleReport'           => 'Report of Surveys',
                     'viewButtonSearch'      => false,
+                    'viewHourSearch'        => false,
                     'exportReport'          => 'export_surveys',
                     'nameRouteController'   => ''
                 ));

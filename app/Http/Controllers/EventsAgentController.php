@@ -45,6 +45,7 @@ class EventsAgentController extends CosapiController
                     'routeReport'           => 'elements.events_consolidated.events_consolidated',
                     'titleReport'           => 'Report of Events Consolidateds',
                     'viewButtonSearch'      => true,
+                    'viewHourSearch'        => false,
                     'exportReport'          => 'export_events_consolidated',
                     'nameRouteController'   => ''
                 ));
@@ -76,6 +77,7 @@ class EventsAgentController extends CosapiController
                     'routeReport'           => 'elements.events_detail.events_detail',
                     'titleReport'           => 'Report of Events',
                     'viewButtonSearch'      => true,
+                    'viewHourSearch'        => false,
                     'exportReport'          => 'export_events_detail',
                     'nameRouteController'   => ''
                 ));

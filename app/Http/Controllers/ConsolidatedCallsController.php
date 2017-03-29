@@ -24,7 +24,14 @@ class ConsolidatedCallsController extends CosapiController
             if ($request->evento){
                 return $this->calls_consolidated($request->fecha_evento, $request->evento, $request->rank_hour);
             }else{
-                return view('elements/consolidated_calls/index');
+                return view('elements/index')->with(array(
+                    'routeReport'           => 'elements.consolidated_calls.tabs_consolidated_calls',
+                    'titleReport'           => 'Report of Consolidated Calls',
+                    'viewButtonSearch'      => false,
+                    'viewHourSearch'        => true,
+                    'exportReport'          => 'export_consolidated',
+                    'nameRouteController'   => ''
+                ));
             }
         }
     }
@@ -36,7 +43,7 @@ class ConsolidatedCallsController extends CosapiController
      * @return [array]          [Retornar archivo de exportación]
      */
     public function export(Request $request){
-        $export_contestated  = call_user_func_array([$this,'export_'.$request->format_export], [$request->days]);
+        $export_contestated  = call_user_func_array([$this,'export_'.$request->format_export], [$request->days,$request->rank_hour]);
         return $export_contestated;
     }
 
@@ -560,12 +567,12 @@ protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$gro
      * @param  [date]  $days [Días de consulta]
      * @return [array]       [Array con datos de las rutas donde estas los CSV generados]
      */
-    protected function export_csv($days){
+    protected function export_csv($days, $rank_hour){
 
         $events = ['skills_group','agent_group','day_group','hour_group'];
 
         for($i=0;$i<count($events);$i++){
-            $builderview = $this->calls_inbound($days,$events[$i]);
+            $builderview = $this->calls_inbound($days,$events[$i],$rank_hour);
             $this->BuilderExport($builderview,$events[$i],'csv','exports');
         }
     
@@ -589,23 +596,23 @@ protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$gro
      * @param  [date]  $days [Días de consulta]
      * @return [array]       [Array con datos de las rutas donde estas los Excel generados]
      */
-    protected function export_excel($days){
-        Excel::create('consolidated_calls', function($excel) use($days) {
+    protected function export_excel($days,$rank_hour){
+        Excel::create('consolidated_calls', function($excel) use($days,$rank_hour) {
 
-            $excel->sheet('Skills', function($sheet) use($days) {
-                $sheet->fromArray($this->calls_inbound($days,'skills_group'));
+            $excel->sheet('Skills', function($sheet) use($days,$rank_hour) {
+                $sheet->fromArray($this->calls_inbound($days,'skills_group',$rank_hour));
             });
 
-            $excel->sheet('Agentes', function($sheet) use($days) {
-                $sheet->fromArray($this->calls_inbound($days,'agent_group'));
+            $excel->sheet('Agentes', function($sheet) use($days,$rank_hour) {
+                $sheet->fromArray($this->calls_inbound($days,'agent_group',$rank_hour));
             });
 
-            $excel->sheet('Dias', function($sheet) use($days) {
-                $sheet->fromArray($this->calls_inbound($days,'day_group'));
+            $excel->sheet('Dias', function($sheet) use($days,$rank_hour) {
+                $sheet->fromArray($this->calls_inbound($days,'day_group',$rank_hour));
             });
 
-            $excel->sheet('Horas', function($sheet) use($days) {
-                $sheet->fromArray($this->calls_inbound($days,'hour_group'));
+            $excel->sheet('Horas', function($sheet) use($days,$rank_hour) {
+                $sheet->fromArray($this->calls_inbound($days,'hour_group',$rank_hour));
             });
 
 

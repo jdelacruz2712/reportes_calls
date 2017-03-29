@@ -32,6 +32,7 @@ class IncomingCallsController extends CosapiController
                     'routeReport'           => 'elements.incoming_calls.tabs_incoming_calls',
                     'titleReport'           => 'Report of Calls Inbound',
                     'viewButtonSearch'      => false,
+                    'viewHourSearch'        => false,
                     'exportReport'          => 'export_incoming',
                     'nameRouteController'   => ''
                 ));

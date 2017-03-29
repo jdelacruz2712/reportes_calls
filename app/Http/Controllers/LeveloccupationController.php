@@ -28,6 +28,7 @@ class LeveloccupationController extends CosapiController
                     'routeReport'           => 'elements.level_of_occupation.level_of_occupation',
                     'titleReport'           => 'Report of Level Occupation',
                     'viewButtonSearch'      => true,
+                    'viewHourSearch'        => false,
                     'exportReport'          => 'export_level_occupation',
                     'nameRouteController'   => 'level_of_occupation'
                 ));
