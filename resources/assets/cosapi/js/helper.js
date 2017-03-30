@@ -956,7 +956,7 @@ function desconnect_agent (hour_exit) {
   var ip = $('#ip').val()
   var date = $('#date').val()
   var anexo = $('#anexo').text()
-  if (anexo != 0) {
+  if (anexo != 'Sin Anexo') {
     var parameters = {
       user_id: user_id,
       hour_exit: date + ' ' + hour_exit,
@@ -973,12 +973,19 @@ function desconnect_agent (hour_exit) {
 
 function liberar_anexos () {
   var user_id = $('#user_id').val()
-  var parameters = {
-    user_id: user_id,
-    type_action: 'release'
+  var anexo = $('#anexo').text()
+  console.log(anexo)
+  if (anexo != 'Sin Anexo') {
+    var parameters = {
+      user_id: user_id,
+      anexo: anexo,
+      type_action: 'release'
+    }
+    ajaxNodeJs(parameters, '/anexos/set_anexo', true, 2000)
+    loadModule('agents_annexed')
+  } else {
+    mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true)
   }
-  ajaxNodeJs(parameters, '/anexos/set_anexo', true, 2000)
-  loadModule('agents_annexed')
 }
 
 function assignAnexxed (anexo_name) {
