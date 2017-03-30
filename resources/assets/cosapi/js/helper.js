@@ -470,50 +470,103 @@ function validar_sonido () {
 
 function ajaxNodeJs (parameters, ruta, notificacion, time) {
   socketSails.get(ruta, parameters, function (resData, jwRes) {
-    if (resData['Response'] == 'success') {
-            // Cierra todos los modals abiertos
-            // Actualmente se usa para el cambio de Estados del Agente
-      if (notificacion == true) {
-        mostrar_notificacion('success', resData['Message'], 'Success', time, false, true, 2000)
-      } else {
-        BootstrapDialog.show({
-          type: 'type-danger',
-          title: 'Cosapi Dara S.A.',
-          message: resData['Message'],
-          closable: false,
+    if(notificacion == false){
+        modalLogut(resData)
+    }else {
+        if (typeof resData['Message'] != 'string') {
+            let arrayMessage = resData['Message']
+            let messageSuccess = ''
+            let messageError = ''
+            for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
+                if (arrayMessage[posicion]['Response'] == 'Success') {
+                    messageSuccess = messageSuccess + arrayMessage[posicion]['Message']
+                    if (posicion != ((arrayMessage.length) - 1)) {
+                        messageSuccess = messageSuccess + '<br>'
+                    }
+                } else {
+                    messageError = messageError + arrayMessage[posicion]['Message']
+                    if (posicion != ((arrayMessage.length) - 1)) {
+                        messageError = messageError + '<br>'
+                    }
+                }
 
-          buttons: [{
+                console.log(arrayMessage[posicion])
+                console.log(arrayMessage[posicion]['Message'])
+            }
+
+            if (messageSuccess != '') {
+                mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
+            }
+
+            if (messageError != '') {
+                mostrar_notificacion('error', messageError, 'Error', time, false, true, 2000)
+            }
+
+        } else {
+
+            mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), 10000, false, true, 2000)
+
+            if (resData['Response'] == 'success') {
+
+                if (parameters['anexo']) {
+                    $('#anexo').text(parameters['anexo'])
+                }
+
+                if (parameters['type_action'] == 'release') {
+                    $('#anexo').text('Sin Anexo')
+                    vueFront.present_status_name = 'Login'
+                    vueFront.present_status_id = '11'
+                }
+
+            } else {
+
+                if (parameters['type_action'] == 'release') {
+                    if (resData['Response'] == 'warning') {
+                        $('#anexo').text('Sin Anexo')
+                    }
+                }
+
+                $.each(BootstrapDialog.dialogs, function (id, dialog) {
+                    dialog.close()
+                })
+
+            }
+        }
+    }
+  })
+}
+
+function modalLogut(resData){
+    let arrayMessage = resData['Message']
+    let message = ''
+    for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
+        message = message +'<b>'+ arrayMessage[posicion]['Response']+ ' : </b>'+arrayMessage[posicion]['Message']
+        if (posicion != ((arrayMessage.length) - 1)) {
+            message = message + '<br>'
+        }
+        console.log(arrayMessage[posicion])
+        console.log(arrayMessage[posicion]['Message'])
+    }
+
+    BootstrapDialog.show({
+        type: 'type-danger',
+        title: 'Cosapi Dara S.A.',
+        message: message,
+        closable: false,
+        buttons: [{
             label: 'Salir',
             cssClass: 'btn-danger',
             action: function (dialogRef) {
-              dialogRef.close()
-              location.href = 'logout'
+                dialogRef.close()
+                location.href = 'logout'
             }
-          }]
-        })
-      }
+        }]
+    })
 
-      if (parameters['anexo']) {
+    if (parameters['anexo']) {
         $('#anexo').text(parameters['anexo'])
-      }
-
-      if (parameters['type_action'] == 'release') {
-        $('#anexo').text('Sin Anexo')
-        vueFront.present_status_name = 'Login'
-        vueFront.present_status_id = '11'
-      }
-    } else {
-      if (parameters['type_action'] == 'release') {
-        if (resData['Response'] == 'warning') {
-          $('#anexo').text('Sin Anexo')
-        }
-      }
-      $.each(BootstrapDialog.dialogs, function (id, dialog) {
-        dialog.close()
-      })
-      mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), 10000, false, true, 2000)
     }
-  })
+
 }
 
 function PanelStatus () {
@@ -974,7 +1027,6 @@ function desconnect_agent (hour_exit) {
 function liberar_anexos () {
   var user_id = $('#user_id').val()
   var anexo = $('#anexo').text()
-  console.log(anexo)
   if (anexo != 'Sin Anexo') {
     var parameters = {
       user_id: user_id,
