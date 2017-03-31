@@ -64,6 +64,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('working'                                           , ['uses'=>'AdminController@working'            ,    'as' => 'working']);
     Route::post('modifyPassword'                                    , ['uses'=>'UserController@modifyPassword'      ,    'as' => 'modifyPassword']);
     Route::post('modifyRole'                                        , ['uses'=>'UserController@modifyRole'          ,    'as' => 'modifyRole']);
+    Route::post('setQueueAdd'                                       , ['uses'=>'AdminController@setQueueAdd'        ,    'as' => 'setQueueAdd']);
 
 });
 

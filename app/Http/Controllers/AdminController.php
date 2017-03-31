@@ -18,6 +18,7 @@ class AdminController extends Controller
     protected $UserSystem;
     protected $UserPassword;
     protected $UserAnexo;
+    protected $QueueAdd;
 
     public function __construct(){
 
@@ -37,12 +38,18 @@ class AdminController extends Controller
             Session::put('UserAnexo'     ,'Sin Anexo'   );
         }
 
+
+        if (!Session::has('QueueAdd')) {
+            Session::put('QueueAdd'     ,'false'   );
+        }
+
         $this->UserId       = Session::get('UserId')        ;
         $this->UserRole     = Session::get('UserRole')      ;
         $this->UserName     = Session::get('UserName')      ;
         $this->UserSystem   = Session::get('UserSystem')    ;
         $this->UserPassword = Session::get('UserPassword')  ;
         $this->UserAnexo    = Session::get('UserAnexo')     ;
+        $this->QueueAdd     = Session::get('QueueAdd')     ;
 
     }
 
@@ -62,5 +69,17 @@ class AdminController extends Controller
     public function working()
     {
         return view('/layout/recursos/working');
+    }
+
+    public function setQueueAdd(Request $request)
+    {
+        if($request->ajax()){
+            if ($request->QueueAdd){
+                Session::put('QueueAdd'     ,$request->QueueAdd   );
+                $this->QueueAdd     = Session::get('QueueAdd')     ;
+
+                return $request->QueueAdd;
+            }
+        }
     }
 }

@@ -471,67 +471,78 @@ function validar_sonido () {
 function ajaxNodeJs (parameters, ruta, notificacion, time) {
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     if(notificacion == false){
-        modalLogut(resData)
+      modalLogut(resData)
     }else {
-        if (typeof resData['Message'] != 'string') {
-            let arrayMessage = resData['Message']
-            let messageSuccess = ''
-            let messageError = ''
-            for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
-                if (arrayMessage[posicion]['Response'] == 'Success') {
-                    messageSuccess = messageSuccess + arrayMessage[posicion]['Message']
-                    if (posicion != ((arrayMessage.length) - 1)) {
-                        messageSuccess = messageSuccess + '<br>'
-                    }
-                } else {
-                    messageError = messageError + arrayMessage[posicion]['Message']
-                    if (posicion != ((arrayMessage.length) - 1)) {
-                        messageError = messageError + '<br>'
-                    }
-                }
-
-                console.log(arrayMessage[posicion])
-                console.log(arrayMessage[posicion]['Message'])
+      if (typeof resData['Message'] != 'string') {
+        let arrayMessage = resData['Message']
+        let messageSuccess = ''
+        let messageError = ''
+        for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
+          if (arrayMessage[posicion]['Response'] == 'Success') {
+            messageSuccess = messageSuccess + arrayMessage[posicion]['Message']
+            if (posicion != ((arrayMessage.length) - 1)) {
+              messageSuccess = messageSuccess + '<br>'
             }
-
-            if (messageSuccess != '') {
-                mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
+          } else {
+            messageError = messageError + arrayMessage[posicion]['Message']
+            if (posicion != ((arrayMessage.length) - 1)) {
+              messageError = messageError + '<br>'
             }
+          }
+          console.log(arrayMessage[posicion])
+          console.log(arrayMessage[posicion]['Message'])
+        }
 
-            if (messageError != '') {
-                mostrar_notificacion('error', messageError, 'Error', time, false, true, 2000)
-            }
+        if (messageSuccess != '') {
+          mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
+          if (parameters['type_action'] == 'update') {
+            let token = $('input[name=_token]').val()
+            $.ajax({
+              type: 'POST',
+              url: 'setQueueAdd',
+              data: {
+                _token: token,
+                QueueAdd: 'true'
+              },
+              success: function (data) {
+                $('#queueAdd').val(data)
+              }
+            })
+          }
+        }
+
+        if (messageError != '') {
+          mostrar_notificacion('error', messageError, 'Error', time, false, true, 2000)
+        }
+
+        if (parameters['type_action'] == 'disconnect') {
+          location.href = 'logout'
+        }
+
+      } else {
+        mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), 10000, false, true, 2000)
+        if (resData['Response'] == 'success') {
+          if (parameters['anexo']) {
+            $('#anexo').text(parameters['anexo'])
+          }
+
+          if (parameters['type_action'] == 'release') {
+            $('#anexo').text('Sin Anexo')
+            vueFront.present_status_name = 'Login'
+            vueFront.present_status_id = '11'
+          }
 
         } else {
-
-            mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), 10000, false, true, 2000)
-
-            if (resData['Response'] == 'success') {
-
-                if (parameters['anexo']) {
-                    $('#anexo').text(parameters['anexo'])
-                }
-
-                if (parameters['type_action'] == 'release') {
-                    $('#anexo').text('Sin Anexo')
-                    vueFront.present_status_name = 'Login'
-                    vueFront.present_status_id = '11'
-                }
-
-            } else {
-
-                if (parameters['type_action'] == 'release') {
-                    if (resData['Response'] == 'warning') {
-                        $('#anexo').text('Sin Anexo')
-                    }
-                }
-
-                $.each(BootstrapDialog.dialogs, function (id, dialog) {
-                    dialog.close()
-                })
-
+          if (parameters['type_action'] == 'release') {
+            if (resData['Response'] == 'warning') {
+              $('#anexo').text('Sin Anexo')
             }
+          }
+          $.each(BootstrapDialog.dialogs, function (id, dialog) {
+            dialog.close()
+          })
         }
+      }
     }
   })
 }
@@ -1011,6 +1022,7 @@ function desconnect_agent (hour_exit) {
   var anexo = $('#anexo').text()
   if (anexo != 'Sin Anexo') {
     var parameters = {
+      old_event_id: 0,
       user_id: user_id,
       hour_exit: date + ' ' + hour_exit,
       anexo: anexo,
@@ -1018,22 +1030,37 @@ function desconnect_agent (hour_exit) {
       ip: ip,
       type_action: 'disconnect'
     }
-    ajaxNodeJs(parameters, '/detalle_eventos/change_status', false, 2000)
+    ajaxNodeJs(parameters, '/detalle_eventos/change_status', true, 2000)
   } else {
     mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true)
   }
 }
 
 function liberar_anexos () {
-  var user_id = $('#user_id').val()
-  var anexo = $('#anexo').text()
+  let user_id = $('#user_id').val()
+  let anexo = $('#anexo').text()
+  let queueAdd = $('#queueAdd').val()
+  let route = ''
+  let parameters
   if (anexo != 'Sin Anexo') {
-    var parameters = {
-      user_id: user_id,
-      anexo: anexo,
-      type_action: 'release'
+    //Tiene un anexo asignado
+    if(queueAdd == 'true'){
+      //Se encuentra agregado a colas
+      parameters = {
+        old_event_id: 0,
+        event_id: 11,
+        user_id: user_id,
+        anexo: anexo,
+        ip: $('#ip').val(),
+        type_action: 'release'
+      }
+      route = '/detalle_eventos/change_status'
+    }else{
+      //No se encuentra en ninguna cola
+
     }
-    ajaxNodeJs(parameters, '/anexos/set_anexo', true, 2000)
+    //ajaxNodeJs(parameters, '/anexos/set_anexo', true, 2000)
+    ajaxNodeJs(parameters, route, true, 2000)
     loadModule('agents_annexed')
   } else {
     mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true)
@@ -1042,9 +1069,10 @@ function liberar_anexos () {
 
 function assignAnexxed (anexo_name) {
   var user_id = $('#user_id').val()
-  var anexo = $('#anexo').text()
   var token = $('input[name=_token]').val()
-
+  var anexo = $('#anexo').text()
+  let parameters
+  let route = ''
   $.ajax({
     type: 'POST',
     url: 'agents_annexed/user',
@@ -1054,11 +1082,14 @@ function assignAnexxed (anexo_name) {
     },
     success: function (data) {
       if (data == 'Sin Anexo') {
-        var parameters = {
-          user_id: user_id,
-          anexo: anexo_name
+       //No se encuentra en ninguna cola
+        parameters = {
+         number_annexed : anexo_name,
+         user_id : user_id
         }
-        ajaxNodeJs(parameters, '/anexos/set_anexo', true, 2000)
+        console.log(parameters)
+        route = '/anexos/updateAnexo'
+        ajaxNodeJs(parameters, route, true, 2000)
         loadModule('agents_annexed')
       } else {
         mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo ' + anexo + '.', 'Warning', 10000, false, true)
