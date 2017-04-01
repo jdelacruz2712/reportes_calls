@@ -470,7 +470,6 @@ function validar_sonido () {
 
 function ajaxNodeJs (parameters, ruta, notificacion, time) {
   socketSails.get(ruta, parameters, function (resData, jwRes) {
-    console.log(resData)
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
     if(resData['DataQueue'] != null){
       let arrayMessage = resData['DataQueue']
@@ -491,7 +490,6 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
       }
 
       if (messageSuccess != '') {
-        console.log(parameters)
         mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
         if (parameters['type_action'] == 'update') {
           let token = $('input[name=_token]').val()
@@ -552,8 +550,6 @@ function modalLogut(resData){
         if (posicion != ((arrayMessage.length) - 1)) {
             message = message + '<br>'
         }
-        console.log(arrayMessage[posicion])
-        console.log(arrayMessage[posicion]['Message'])
     }
 
     BootstrapDialog.show({
@@ -748,19 +744,20 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
 
   //Estructura de parametros a enviar
   parameters = {
-      anexo : anexo,
-      eventId : event_id,
-      userId : user_id,
-      unserName : userName,
+      number_annexed : anexo,
+      event_id : event_id,
+      user_id : user_id,
+      unsername : userName,
+      ip : ip,
       type_action : 'update' //parametro usado para producir el cambio de estado de la variable queueAdd en la funcion ajaxNodeJs
   }
 
   if(userRole === 'user'){
     if(queueAdd === 'true'){
-      route = 'QueuePause'
+      route = '/detalle_eventos/QueuePause'
     }else{
       if(event_id === '1'){
-        route ='QueueAdd'
+        route ='/detalle_eventos/cambiarEstado'
       }else{
         //Restricciones
         mostrar_notificacion('warning', 'Porfavor de colocarse en ACD antes de seleccionar cualquier de otro estado', 'Warning', 10000, false, true, 2000)
@@ -770,7 +767,7 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
     if(queueAdd === 'true'){
       mostrar_notificacion('error', 'Error en el sistema porfavor de comunicarte con los especialistas', 'Error', 10000, false, true, 2000)
     }else{
-      route = 'RegisterDetail'
+      route = '/detalle_eventos/registrarDetalle'
     }
   }
 
@@ -778,6 +775,10 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
   if(route != ''){
     ajaxNodeJs(parameters, route, true, 2000)
   }
+
+  $.each(BootstrapDialog.dialogs, function (id, dialog) {
+    dialog.close()
+  })
 }
 
 function mostrar_notificacion (type, mensaje, titulo, time, duplicate, close, extendtime) {
@@ -1136,21 +1137,15 @@ function assignAnexxed (anexo_name) {
     },
     success: function (data) {
       if (data == 'Sin Anexo') {
-
-        if(queueAdd == 'true'){
-          //Se encuentra agregado a colas
-
-        }else{
           //No se encuentra en ninguna cola
           parameters = {
             number_annexed : anexo_name,
             user_id : user_id
           }
-          console.log(parameters)
           route = '/anexos/updateAnexo'
           ajaxNodeJs(parameters, route, true, 2000)
           loadModule('agents_annexed')
-        }
+
 
       } else {
         mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo ' + anexo + '.', 'Warning', 10000, false, true)
