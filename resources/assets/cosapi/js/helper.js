@@ -491,7 +491,7 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
       }
 
       if (messageSuccess != '') {
-          console.log(parameters)
+        console.log(parameters)
         mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
         if (parameters['type_action'] == 'update') {
           let token = $('input[name=_token]').val()
@@ -737,36 +737,71 @@ function ceroIzquierda (numero) {
   return numero
 }
 function ModificarEstado (event_id, user_id, ip, name, pause) {
-  var anexo = $('#anexo').text()
-  var old_event_id = $('#present_status_id').val()
-  if (anexo != 'Sin Anexo') {
-    var columns = {
-      old_event_id: old_event_id,
-      event_id: event_id,
-      user_id: user_id,
-      anexo: anexo,
-      ip: ip,
-      username: $('#user_name').val(),
-      type_action: 'update'
+  //Declaraciones de variables
+  let parameters
+  let userRole = $('#user_role').val()
+  let queueAdd = $('#queueAdd').val()
+  let eventPresentId = $('#present_status_id').val()
+  let anexo = $('#anexo').text()
+  let userName = $('#user_name').val()
+  let route = ''
+
+  //Estructura de parametros a enviar
+  parameters = {
+      anexo : anexo,
+      eventId : event_id,
+      userId : user_id,
+      unserName : userName,
+      type_action : 'update' //parametro usado para producir el cambio de estado de la variable queueAdd en la funcion ajaxNodeJs
+  }
+
+  if(userRole === 'user'){
+    if(queueAdd === 'true'){
+      route = 'QueuePause'
+    }else{
+      if(event_id === '1'){
+        route ='QueueAdd'
+      }else{
+        //Restricciones
+        mostrar_notificacion('warning', 'Porfavor de colocarse en ACD antes de seleccionar cualquier de otro estado', 'Warning', 10000, false, true, 2000)
+      }
     }
+  }else{
+    if(queueAdd === 'true'){
+      mostrar_notificacion('error', 'Error en el sistema porfavor de comunicarte con los especialistas', 'Error', 10000, false, true, 2000)
+    }else{
+      route = 'RegisterDetail'
+    }
+  }
 
-    $.each(BootstrapDialog.dialogs, function (id, dialog) {
-      dialog.close()
-    })
-
-    ajaxNodeJs(columns, '/detalle_eventos/change_status', true, 2000)
-  } else {
-    mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true, 2000)
+  //Envio de parametros
+  if(route != ''){
+    ajaxNodeJs(parameters, route, true, 2000)
   }
 }
 
 function mostrar_notificacion (type, mensaje, titulo, time, duplicate, close, extendtime) {
+  let position = ''
+  switch (type){
+    case 'success' :
+      position = 'toast-top-right'
+      break
+    case 'warning' :
+      position = 'toast-top-left'
+      break
+    case 'error' :
+      position = 'toast-top-center'
+      break
+    default :
+      position = 'toast-bottom-right'
+      break
+  }
   toastr.options = {
     'closeButton': close,
     'debug': false,
     'newestOnTop': true,
     'progressBar': true,
-    'positionClass': 'toast-bottom-right',
+    'positionClass': position,
     'preventDuplicates': duplicate,
     'onclick': null,
     'showDuration': '300',
