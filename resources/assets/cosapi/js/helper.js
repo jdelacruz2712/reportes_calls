@@ -517,31 +517,34 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
       }
 
       if (parameters['type_action'] == 'disconnect') {
-        location.href = 'logout'
+        setTimeout('eventLogout()', 4000)
       }
     }
 
     if(resData['Response'] == 'success'){
-        if (parameters['type_action'] == 'release') {
-            $('#anexo').text('Sin Anexo')
-            $('#queueAdd').val('false')
-        }else{
-            if (parameters['anexo']) {
-                $('#anexo').text(parameters['anexo'])
-            }
-
-            if (parameters['number_annexed']) {
-                $('#anexo').text(parameters['number_annexed'])
-            }
+      if (parameters['type_action'] == 'release') {
+        $('#anexo').text('Sin Anexo')
+        $('#queueAdd').val('false')
+      }else{
+        if (parameters['anexo']) {
+          $('#anexo').text(parameters['anexo'])
         }
 
-        if (parameters['type_action'] == 'disconnect') {
-            location.href = 'logout'
+        if (parameters['number_annexed']) {
+          $('#anexo').text(parameters['number_annexed'])
         }
+      }
+
+      if (parameters['type_action'] == 'disconnect') {
+        setTimeout('eventLogout()', 4000)
+      }
     }
   })
 }
 
+function eventLogout(){
+    location.href = 'logout'
+}
 function modalLogut(resData){
     let arrayMessage = resData['Message']
     let message = ''
@@ -742,6 +745,10 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
   let userName = $('#user_name').val()
   let route = ''
 
+  if(anexo === 'Sin Anexo'){
+    anexo = 0
+  }
+
   //Estructura de parametros a enviar
   parameters = {
       number_annexed : anexo,
@@ -757,7 +764,11 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
       route = '/detalle_eventos/QueuePause'
     }else{
       if(event_id === '1'){
-        route ='/detalle_eventos/cambiarEstado'
+        if(anexo != 0){
+          route ='/detalle_eventos/cambiarEstado'
+        }else{
+          mostrar_notificacion('warning', 'Primero seleccion un anexo', 'Warning', 10000, false, true)
+        }
       }else{
         //Restricciones
         mostrar_notificacion('warning', 'Porfavor de colocarse en ACD antes de seleccionar cualquier de otro estado', 'Warning', 10000, false, true, 2000)
@@ -963,9 +974,19 @@ function restarHoras (inicio, fin) {
 
 function disconnectAgent () {
   var anexo = $('#anexo').text()
+  let userRole = $('#user_role').val()
+  let queueAdd = $('#queueAdd').val()
   if (anexo == 'Sin Anexo') {
-    mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Oops!!', 10000, false, true)
-    loadModule('agents_annexed')
+    if(userRole === 'user'){
+      if(queueAdd === 'false'){
+        markExit()
+      }else{
+        mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Oops!!', 10000, false, true)
+        loadModule('agents_annexed')
+      }
+    }else{
+      markExit()
+    }
   } else {
     markExit()
   }
@@ -1055,28 +1076,33 @@ function desconnect_agent (hour_exit) {
   var date = $('#date').val()
   var anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
+  let userName = $('#user_name').val()
+  let userRole = $('#user_role').val()
   let parameters
   let route = ''
   if (anexo != 'Sin Anexo') {
 
-
     if(queueAdd == 'true'){
       //Se encuentra agregado a colas
+
       parameters = {
-        old_event_id: 0,
         user_id: user_id,
         hour_exit: date + ' ' + hour_exit,
-        anexo: anexo,
+        number_annexed: anexo,
+        unsername : userName,
         event_id: 15,
         ip: ip,
+        event_name : 'Desconectado',
         type_action: 'disconnect'
       }
-      route = '/detalle_eventos/change_status'
+      route = '/detalle_eventos/queueLogout'
+
     }else{
       parameters = {
         event_id : 15,
         user_id : user_id,
         ip : ip,
+        event_name : 'Desconectado',
         hour_exit : date + ' ' + hour_exit,
         number_annexed : anexo,
         type_action: 'disconnect'
@@ -1085,9 +1111,22 @@ function desconnect_agent (hour_exit) {
     }
     ajaxNodeJs(parameters, route, true, 2000)
 
-
   } else {
-    mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true)
+    if(userRole === 'user'){
+      mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true)
+    }else{
+      parameters = {
+        event_id : 15,
+        user_id : user_id,
+        ip : ip,
+        event_name : 'Desconectado',
+        hour_exit : date + ' ' + hour_exit,
+        number_annexed : 0,
+        type_action: 'disconnect'
+      }
+      route = '/anexos/Logout'
+      ajaxNodeJs(parameters, route, true, 2000)
+    }
   }
 }
 
@@ -1095,7 +1134,8 @@ function liberar_anexos () {
   let user_id = $('#user_id').val()
   let anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
-  let route = ''
+  let event_id = $('#present_status_id').val()
+  let ip = $('#ip').val()
   let parameters
   if (anexo != 'Sin Anexo') {
     //Tiene un anexo asignado
@@ -1105,13 +1145,19 @@ function liberar_anexos () {
         user_id : user_id,
         number_annexed: anexo,
         username: $('#user_name').val(),
-        type_action: 'release'
+        type_action: 'release',
+        event_id : 11,
+        event_name : 'Login',
+        ip : ip
       }
     }else{
       //No se encuentra en ninguna cola
       parameters = {
         user_id : user_id,
-        type_action: 'release'
+        type_action: 'release',
+        event_id : 11,
+        event_name : 'Login',
+        ip : ip
       }
     }
     ajaxNodeJs(parameters, '/anexos/liberarAnexo', true, 2000)
