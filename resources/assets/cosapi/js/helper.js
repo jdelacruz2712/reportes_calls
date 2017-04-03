@@ -758,7 +758,7 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
       number_annexed : anexo,
       event_id : event_id,
       user_id : user_id,
-      unsername : userName,
+      username : userName,
       ip : ip,
       type_action : 'update' //parametro usado para producir el cambio de estado de la variable queueAdd en la funcion ajaxNodeJs
   }
@@ -1094,7 +1094,7 @@ function desconnect_agent (hour_exit) {
         user_id: user_id,
         hour_exit: date + ' ' + hour_exit,
         number_annexed: anexo,
-        unsername : userName,
+        username : userName,
         event_id: 15,
         ip: ip,
         event_name : 'Desconectado',
