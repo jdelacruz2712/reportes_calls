@@ -19,6 +19,7 @@ class AdminController extends Controller
     protected $UserPassword;
     protected $UserAnexo;
     protected $QueueAdd;
+    protected $ChangeRole;
 
     public function __construct(){
 
@@ -26,6 +27,7 @@ class AdminController extends Controller
         Session::put('UserRole'     ,Auth::user()->role   );
         Session::put('UserName'     ,Auth::user()->primer_nombre.' '.Auth::user()->apellido_paterno );
         Session::put('UserSystem'   ,Auth::user()->username);
+        Session::put('ChangeRole'   ,Auth::user()->change_role);
 
         $Users = User::select('change_password')->where('id','=',Auth::user()->id )->get()->toArray();
         Session::put('UserPassword'     ,$Users[0]['change_password']);
@@ -49,7 +51,8 @@ class AdminController extends Controller
         $this->UserSystem   = Session::get('UserSystem')    ;
         $this->UserPassword = Session::get('UserPassword')  ;
         $this->UserAnexo    = Session::get('UserAnexo')     ;
-        $this->QueueAdd     = Session::get('QueueAdd')     ;
+        $this->QueueAdd     = Session::get('QueueAdd')      ;
+        $this->ChangeRole   = Session::get('ChangeRole')    ;
 
     }
 

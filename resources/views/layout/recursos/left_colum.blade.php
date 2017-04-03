@@ -60,6 +60,8 @@
                   <li><a href="#" id="agents_annexed"     class="reportes"><i class="fa fa-circle-o text-purple"></i> Assign Annexed</a></li>
                 @if($role != 'user')
                   <li><a href="#" id="agents_queue"       class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Queue</a></li>
+                @endif
+                @if(Session::get('ChangeRole') == 1)
                   <li><a href="#" id="activate_calls"     class="activate_calls"><i class="fa fa-circle-o text-orange"></i> Activate Calls</a></li>
                 @endif
                 </ul>

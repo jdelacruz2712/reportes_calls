@@ -27,6 +27,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->integer('change_password')->default(0)->unsigned();
+            $table->integer('change_role')->default(0)->unsigned();
 
             /*creando las relaciones entre tablas y llaves primarias*/
             $table->foreign('agente_id')

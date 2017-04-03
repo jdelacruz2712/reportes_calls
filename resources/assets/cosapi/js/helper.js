@@ -492,23 +492,12 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
       if (messageSuccess != '') {
         mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
         if (parameters['type_action'] == 'update') {
-          let token = $('input[name=_token]').val()
-          $.ajax({
-            type: 'POST',
-            url: 'setQueueAdd',
-            data: {
-              _token: token,
-              QueueAdd: 'true'
-            },
-            success: function (data) {
-              $('#queueAdd').val(data)
-            }
-          })
+          setQueueAdd('true')
         }
 
         if (parameters['type_action'] == 'release') {
+          setQueueAdd('false')
           $('#anexo').text('Sin Anexo')
-          $('#queueAdd').val('false')
         }
       }
 
@@ -524,7 +513,7 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
     if(resData['Response'] == 'success'){
       if (parameters['type_action'] == 'release') {
         $('#anexo').text('Sin Anexo')
-        $('#queueAdd').val('false')
+        setQueueAdd('false')
       }else{
         if (parameters['anexo']) {
           $('#anexo').text(parameters['anexo'])
@@ -538,6 +527,21 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
       if (parameters['type_action'] == 'disconnect') {
         setTimeout('eventLogout()', 4000)
       }
+    }
+  })
+}
+
+function setQueueAdd(queueAdd){
+  let token = $('input[name=_token]').val()
+  $.ajax({
+    type: 'POST',
+    url: 'setQueueAdd',
+    data: {
+      _token: token,
+      QueueAdd: queueAdd
+    },
+    success: function (data) {
+      $('#queueAdd').val(data)
     }
   })
 }
@@ -976,8 +980,9 @@ function disconnectAgent () {
   var anexo = $('#anexo').text()
   let userRole = $('#user_role').val()
   let queueAdd = $('#queueAdd').val()
-  if (anexo == 'Sin Anexo') {
+  if (anexo === 'Sin Anexo') {
     if(userRole === 'user'){
+      console.log(queueAdd)
       if(queueAdd === 'false'){
         markExit()
       }else{
@@ -1112,18 +1117,23 @@ function desconnect_agent (hour_exit) {
     ajaxNodeJs(parameters, route, true, 2000)
 
   } else {
+    parameters = {
+      event_id : 15,
+      user_id : user_id,
+      ip : ip,
+      event_name : 'Desconectado',
+      hour_exit : date + ' ' + hour_exit,
+      number_annexed : 0,
+      type_action: 'disconnect'
+    }
     if(userRole === 'user'){
-      mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true)
-    }else{
-      parameters = {
-        event_id : 15,
-        user_id : user_id,
-        ip : ip,
-        event_name : 'Desconectado',
-        hour_exit : date + ' ' + hour_exit,
-        number_annexed : 0,
-        type_action: 'disconnect'
+      if(queueAdd == 'false'){
+        route = '/anexos/Logout'
+        ajaxNodeJs(parameters, route, true, 2000)
+      }else{
+        mostrar_notificacion('error', 'No tiene un anexo asignado', 'Error', 10000, false, true)
       }
+    }else{
       route = '/anexos/Logout'
       ajaxNodeJs(parameters, route, true, 2000)
     }
