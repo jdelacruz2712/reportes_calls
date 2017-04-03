@@ -469,7 +469,11 @@ function validar_sonido () {
 }
 
 function ajaxNodeJs (parameters, ruta, notificacion, time) {
+  if(ruta != '/detalle_eventos/getstatus'){
+    $('#myModalLoading').modal('show')
+  }
   socketSails.get(ruta, parameters, function (resData, jwRes) {
+    $('#myModalLoading').modal('hide')
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
     if(resData['DataQueue'] != null){
       let arrayMessage = resData['DataQueue']
