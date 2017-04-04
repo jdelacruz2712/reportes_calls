@@ -45,7 +45,7 @@
                         <li class="user-header">
                             <img src="img/logo_cosapi.jpg" class="img-circle" alt="User Image">
                             <p>
-                                {{ ucwords(Session::get('UserName')).' - '.ucwords(Session::get('UserRole'))}}
+                                {{ ucwords(Session::get('UserName')).' - '}}<font id="UserNameRole">{{ucwords(Session::get('UserRole'))}}</font>
                                 <small>{{date('j F Y')}}</small>
                             </p>
                         </li>

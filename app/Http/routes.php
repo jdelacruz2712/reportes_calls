@@ -20,13 +20,8 @@ Route::group (['middleware'=>['user']], function(){
         // Reporte de nivel de occupacion
         Route::post('level_of_occupation'								, ['uses'=>'LeveloccupationController@index']);
 
-        Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
-
         // Reporte de llamadas salienes
         Route::post('agents_online'										, ['uses'=>'AgentsOnlineController@index']);
-
-        // Reporte de encuestaa
-        Route::post('surveys'											, ['uses'=>'SurveysController@index']);
 
         // Asignar Cola
         Route::post('agents_queue'										, ['uses'=>'AgentsQueueController@index']);
@@ -38,6 +33,9 @@ Route::group (['middleware'=>['user']], function(){
 
 
     });
+
+    // Reporte de encuestaa
+    Route::post('surveys'											, ['uses'=>'SurveysController@index']);
 
     // Reportes de eventos
     Route::post('events_detail'         							, ['uses'=>'EventsAgentController@events_detail']);
@@ -57,6 +55,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('export_consolidated'								, ['uses'=>'ConsolidatedCallsController@export']);
     Route::post('export_events_detail'								, ['uses'=>'EventsAgentController@export']);
     Route::post('export_agents_online'								, ['uses'=>'AgentsOnlineController@export']);
+    Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
 
     // Miscelaneas
     Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);

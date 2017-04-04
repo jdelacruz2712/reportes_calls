@@ -34,86 +34,102 @@ $(document).ready(function () {
   })
 
   $('.reportes').on('click', function (e) {
-    if ($('#anexo').text() === 'Sin Anexo') {
-      mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Oops!!', 10000, false, true)
-      loadModule('agents_annexed')
-    } else {
-      loadModule($(this).attr('id'))
-    }
+    loadModule($(this).attr('id'))
   })
 
   //Modificacion del Rol a User para los agentes de BackOffice
   $('#activate_calls').click(function(){
-      if ($('#anexo').text() === 'Sin Anexo') {
-          mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Oops!!', 10000, false, true)
-          loadModule('agents_annexed')
-      } else {
-          let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
-              '<br>' +
-              '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "ACD", porfavor de leer las ' +
-              'notificaiones para saber que el cambio se realizo exitosamente. En caso de que no le entren llamadas por favor' +
-              'de verificar que se le han asignado a las colas correctamente.</p>'
-          BootstrapDialog.show({
-              type: 'type-primary',
-              title: 'Cosapidata S.A.',
-              message: message,
-              closable: true,
-              buttons: [
-                  {
-                      label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
-                      cssClass: 'btn-success',
-                      action: function (dialogRef) {
-                          activeCalls('user')
-                      }
-                  },
-                  {
-                      label: '<i class="fa fa-times" aria-hidden="true"></i> No',
-                      cssClass: 'btn-danger',
-                      action: function (dialogRef) {
-                          activeCalls('backoffice')
-                      }
-                  },
-                  {
-                      label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
-                      cssClass: 'btn-primary',
-                      action: function (dialogRef) {
-                          dialogRef.close()
-                      }
-                  }
-              ]
-          })
-      }
+    let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+                  '<br>' +
+                  '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "ACD", porfavor de leer las ' +
+                  'notificaiones para saber que el cambio se realizo exitosamente. En caso de que no le entren llamadas por favor' +
+                  'de verificar que se le han asignado a las colas correctamente.</p>'
+    BootstrapDialog.show({
+      type: 'type-primary',
+      title: 'Cosapidata S.A.',
+      message: message,
+      closable: true,
+      buttons: [
+        {
+          label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
+          cssClass: 'btn-success',
+          action: function (dialogRef) {
+            activeCalls('user')
+          }
+        },
+        {
+          label: '<i class="fa fa-times" aria-hidden="true"></i> No',
+          cssClass: 'btn-danger',
+          action: function (dialogRef) {
+            activeCalls('backoffice')
+          }
+        },
+          {
+            label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
+            cssClass: 'btn-primary',
+            action: function (dialogRef) {
+            dialogRef.close()
+          }
+        }
+      ]
+    })
   })
 })
 function activeCalls(nameRole){
-    $.ajax({
-        type: 'POST',
-        url: 'modifyRole',
-        data: {
-            _token: $('input[name=_token]').val(),
-            nameRole: nameRole
-        },
-        success: function (data) {
-            if (data == 1) {
-                $.each(BootstrapDialog.dialogs, function (id, dialog) {
-                    dialog.close()
-                })
-                mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
-                mostrar_notificacion('info', 'Se procedera a realizar la conexion al asterisk', 'Info', 5000, false, true)
-                let parameters = {
-                    old_event_id: 11,
-                    event_id: 1,
-                    user_id: $('#user_id').val(),
-                    anexo: $('#anexo').text(),
-                    ip: $('#ip').val(),
-                    type_action: 'update'
-                }
-                ajaxNodeJs(parameters, '/detalle_eventos/change_status', true, 2000)
-            } else {
-                mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+  let queueAdd = $('#queueAdd').val()
+  let anexo = $('#anexo').text()
+  let username = $('#user_name').val()
+  let ip = $('#ip').val()
+  let user_id = $('#user_id').val()
+  let user_role = $('#user_role').text()
+  $.ajax({
+    type: 'POST',
+    url: 'modifyRole',
+    data: {
+      _token: $('input[name=_token]').val(),
+      nameRole: nameRole
+    },
+    success: function (data) {
+      if (data == 1) {
+        $('#UserNameRole').text(nameRole.charAt(0).toUpperCase() + nameRole.slice(1))
+        $('#user_role').val(nameRole)
+        $.each(BootstrapDialog.dialogs, function (id, dialog) {
+          dialog.close()
+        })
+        mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
+
+        //Tiene un anexo asignado
+        if(queueAdd == 'true'){
+          mostrar_notificacion('info', 'Se procedera a realizar la conexion al asterisk', 'Info', 5000, false, true)
+          //Se encuentra agregado a colas
+          parameters = {
+            user_id : user_id,
+            number_annexed: anexo,
+            username: username,
+            type_action: 'release',
+            event_id : 11,
+            event_name : 'Login',
+            ip : ip
+          }
+        }else{
+          //No se encuentra en ninguna cola
+          if(anexo != 'Sin Anexo'){
+            parameters = {
+              user_id : user_id,
+              type_action: 'release',
+              event_id : 11,
+              event_name : 'Login',
+              ip : ip
             }
+            ajaxNodeJs(parameters, '/anexos/liberarAnexo', true, 2000)
+            loadModule('agents_annexed')
+          }
         }
-    })
+      } else {
+        mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+      }
+    }
+  })
 }
 function loadModule (idOptionMenu) {
   var url = idOptionMenu
@@ -473,17 +489,24 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
     $('#myModalLoading').modal('show')
   }
   socketSails.get(ruta, parameters, function (resData, jwRes) {
+    console.log(resData)
     $('#myModalLoading').modal('hide')
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
     if(resData['DataQueue'] != null){
       let arrayMessage = resData['DataQueue']
       let messageSuccess = ''
       let messageError = ''
+      let messageWarning = ''
       for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
         if (arrayMessage[posicion]['Response'] == 'Success') {
           messageSuccess = messageSuccess + arrayMessage[posicion]['Message']
           if (posicion != ((arrayMessage.length) - 1)) {
             messageSuccess = messageSuccess + '<br>'
+          }
+        }else if (arrayMessage[posicion]['Response'] == 'Warning') {
+          messageWarning = messageWarning + arrayMessage[posicion]['Message']
+          if (posicion != ((arrayMessage.length) - 1)) {
+            messageWarning = messageWarning + '<br>'
           }
         } else {
           messageError = messageError + arrayMessage[posicion]['Message']
@@ -506,7 +529,11 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
       }
 
       if (messageError != '') {
-        mostrar_notificacion('error', messageError, 'Error', time, false, true, 2000)
+        mostrar_notificacion('error', messageError, 'Error', 0, false, true, 0)
+      }
+
+      if (messageWarning != '') {
+        mostrar_notificacion('warning', messageWarning, 'Warning', 0, false, true, 0)
       }
 
       if (parameters['type_action'] == 'disconnect') {
@@ -776,6 +803,7 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
           route ='/detalle_eventos/cambiarEstado'
         }else{
           mostrar_notificacion('warning', 'Primero seleccion un anexo', 'Warning', 10000, false, true)
+          loadModule('agents_annexed')
         }
       }else{
         //Restricciones
