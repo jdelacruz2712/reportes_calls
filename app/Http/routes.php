@@ -56,6 +56,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('export_events_detail'								, ['uses'=>'EventsAgentController@export']);
     Route::post('export_agents_online'								, ['uses'=>'AgentsOnlineController@export']);
     Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
+    Route::post('export_level_occupation'	    					, ['uses'=>'LeveloccupationController@export']);
 
     // Miscelaneas
     Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);
