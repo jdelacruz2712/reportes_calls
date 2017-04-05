@@ -252,6 +252,14 @@ function show_tab_detail_events (evento) {
 }
 
 /**
+ * [show_tab_detail_events Función que carga los datos detallados de los Eventos del Agente]
+ * @param  {String} evento [Tipo de reporte a cargar en la vista]
+ */
+function show_tab_level_occupation (evento) {
+  dataTables('table-level-occupation', get_data_filters(evento), 'level_of_occupation')
+}
+
+/**
  * [show_tab_angetOnline Función que carga los datos de los agentes online]
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
@@ -1427,6 +1435,19 @@ function columnsDatatable (route) {
       {"data":"date"},
       {"data":"hour"},
       {"data":"agents"}
+    ]
+  }
+
+  if (route === 'level_of_occupation') {
+    columns = [
+      {"data":"date"},
+      {"data":"hour"},
+      {"data":"indbound"},
+      {"data":"acw"},
+      {"data":"outbound"},
+      {"data":"auxiliares"},
+      {"data":"logueo"},
+      {"data":"occupation_cosapi"}
     ]
   }
 
