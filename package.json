@@ -2,7 +2,7 @@
   "private": true,
   "devDependencies": {
     "aliasify": "^2.1.0",
-    "gulp": "^3.8.8"
+    "gulp": "^3.9.1"
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
@@ -10,6 +10,7 @@
     "laravel-elixir": "^5.0.0",
     "sails.io.js": "^1.1.9",
     "socket.io": "^1.7.3",
-    "socket.io-client": "^1.7.3"
+    "socket.io-client": "^1.7.3",
+    "vue": "^2.0.0"
   }
 }
