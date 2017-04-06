@@ -83,4 +83,14 @@ class 	Queue_Log extends Model
 
     }
 
+    public function scopeFiltro_Time($query, $time,$evet){
+        if($time == 'true'){
+            $kpis = Kpis::select()->where('name',$evet)->get()->toArray();
+            $simbolo = $kpis[0]['simbolo'];
+            $tiempo = $kpis[0]['time'];
+            return $query->where('info1',$simbolo, $tiempo);
+        }
+
+    }
+
 }

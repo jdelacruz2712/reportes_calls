@@ -111,6 +111,8 @@ function activeCalls(nameRole){
             event_name : 'Login',
             ip : ip
           }
+          ajaxNodeJs(parameters, '/anexos/liberarAnexo', true, 2000)
+          loadModule('agents_annexed')
         }else{
           //No se encuentra en ninguna cola
           if(anexo != 'Sin Anexo'){
@@ -531,8 +533,8 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
         }
 
         if (parameters['type_action'] == 'release') {
-          setQueueAdd('false')
           $('#anexo').text('Sin Anexo')
+          setQueueAdd('false')
         }
       }
 
