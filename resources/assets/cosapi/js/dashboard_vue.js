@@ -1,4 +1,4 @@
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value');
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 
 const vm = new Vue({
   el: '#detail_agents',
@@ -10,12 +10,16 @@ const vm = new Vue({
 var kpi = new Vue({
   el: '#kpi',
   data: {
-    answered: 0,
-    answeredTime: 0,
-    abandonedTime: 0,
-    abandoned: 0,
-    slaDay: 0,
-    queue: 0
+    answered: '-',
+    answeredTime: '-',
+    abandonedTime: '-',
+    abandoned: '-',
+    slaDay: '-',
+    queue: '-',
+    abandonedSimbolo: '',
+    abandonedSecond: '',
+    answeredSimbolo: '',
+    answeredSecond: ''
   },
   mounted(){
     this.loadAnswered()
@@ -27,39 +31,47 @@ var kpi = new Vue({
   },
   methods:{
     loadAnswered: function(){
+      this.answered = '-'
       let parameters = {type : 'calls_completed'}
-      this.$http.post('dashboard_01/getAnswered',parameters).then(response => {
+      this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.answered = response.data.message
       },response =>{
         console.log(response.body.message)
       })
     },
     loadAbandoned: function(){
+      this.abandoned = '-'
       let parameters = {type : 'calls_abandone'}
-      this.$http.post('dashboard_01/getAnswered',parameters).then(response => {
+      this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.abandoned = response.data.message
       },response =>{
         console.log(response.body.message)
       })
     },
     loadAnsweredTime: function(){
+      this.answeredTime = '-'
       let parameters = {
         type : 'calls_completed',
         time : 'true'
       }
-      this.$http.post('dashboard_01/getAnswered',parameters).then(response => {
+      this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.answeredTime = response.data.message
+        this.answeredSecond = response.data.time
+        this.answeredSimbolo = response.data.simbolo
       },response =>{
         console.log(response.body.message)
       })
     },
     loadAbandonedTime: function(){
+      this.abandonedTime = '-'
       let parameters = {
         type : 'calls_abandone',
         time : 'true'
       }
-      this.$http.post('dashboard_01/getAnswered',parameters).then(response => {
+      this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.abandonedTime = response.data.message
+        this.abandonedSecond = response.data.time
+        this.abandonedSimbolo = response.data.simbolo
       },response =>{
         console.log(response.body.message)
       })

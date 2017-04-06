@@ -1,5 +1,5 @@
 @include('elements.dashboard.pictures_kpi.answered')
-@include('elements.dashboard.pictures_kpi.answered_high_20')
+@include('elements.dashboard.pictures_kpi.answered_time')
 @include('elements.dashboard.pictures_kpi.abandoned')
-@include('elements.dashboard.pictures_kpi.unaswered_high_20')
-@include('elements.dashboard.pictures_kpi.sla_day_20')
+@include('elements.dashboard.pictures_kpi.abandoned_time')
+@include('elements.dashboard.pictures_kpi.sla_day')
