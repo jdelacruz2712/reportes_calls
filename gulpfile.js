@@ -92,7 +92,8 @@ elixir(function(mix) {
     'extras/toastr/toastr.js',
     'cosapi/js/helper.js',
     'cosapi/js/vue.js',
-    'node_modules/socket.io-client/socket.io.min.js',
+    'node_modules/vue-resource/vue-resource.min.js',
+    'node_modules/socket.io-client/socket.io.min.js'
   ],'public/js/cosapi_dashboard.min.js','resources/assets/')
   .scripts([
     'cosapi/js/dashboard_vue.js'
@@ -116,7 +117,6 @@ elixir(function(mix) {
       'plugins/daterangepicker/css/daterangepicker.css'
   ],'public/css/daterangepicker.min.css','resources/assets/')
   .scripts([
-      'plugins/daterangepicker/js/moment.js',
       'plugins/daterangepicker/js/moment.min.js',
       'plugins/daterangepicker/js/daterangepicker.js'
   ],'public/js/daterangepicker.min.js','resources/assets/');

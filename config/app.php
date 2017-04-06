@@ -154,6 +154,7 @@ return [
         Cosapi\Providers\IoniconsServiceProvider::class,
         Cosapi\Providers\FortAwesomeServiceProvider::class,
         Cosapi\Providers\SocketioServiceProvider::class,
+        Cosapi\Providers\VuejsServiceProvider::class,
         Cosapi\Providers\SailsioServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,

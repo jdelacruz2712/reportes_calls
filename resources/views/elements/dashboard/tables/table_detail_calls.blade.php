@@ -57,5 +57,5 @@
 </div>
 
 @section('scripts')
-  {!!Html::script('js/dashboard_vue.min.js')!!}
+  {!!Html::script('js/dashboard_vue.min.js?version='.date('YmdHis'))!!}
 @endsection

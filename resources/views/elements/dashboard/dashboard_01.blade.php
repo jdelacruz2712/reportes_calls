@@ -2,10 +2,15 @@
 @extends('layout.dashboard')
 @section('title', 'Dashboard')
 @section('content')
+	<input id="tokenId" type="hidden" name="_token" value="{{ csrf_token() }}">
 	<p>
-	<div class="row-fluid">
-		<div id='detail_kpi'></div>
-	    <div id='total_encoladas'></div>
+	<div class="row-fluid" id="kpi">
+		<div id='detail_kpi'>
+			@include('elements.dashboard.pictures_kpi.index')
+		</div>
+	    <div id='total_encoladas'>
+			@include('elements.dashboard.pictures_kpi.queue')
+		</div>
 	</div>
 	<!-- Panel de Llamadas en Cola -->
 	<div class="row-fluid">

@@ -10,6 +10,7 @@
     "laravel-elixir": "^5.0.0",
     "sails.io.js": "^1.1.9",
     "socket.io": "^1.7.3",
-    "socket.io-client": "^1.7.3"
+    "socket.io-client": "^1.7.3",
+    "vue-resource": "^1.2.1"
   }
 }
