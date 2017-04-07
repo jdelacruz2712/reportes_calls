@@ -166,6 +166,10 @@ return [
         /** DataTable  **/
         Yajra\Datatables\DatatablesServiceProvider::class,
 
+
+        /** Blade Pagination **/
+        Styde\BladePagination\ServiceProvider::class,
+
     ],
 
     /*
@@ -227,7 +231,6 @@ return [
 
         /** DataTable **/
         'Datatables'=> Yajra\Datatables\Facades\Datatables::class,
-
 
     ],
 
