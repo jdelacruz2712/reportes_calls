@@ -27,7 +27,10 @@ $(document).ready(function () {
   var hour = $('#hour').val()
   var date = $('#date').val()
   var anexo = $('#anexo').text()
-  MarkAssitance(user_id, date, hour, 'Entrada')
+
+  if($('#assistence_user').val().split('&') == 'false'){
+    MarkAssitance(user_id, date, hour, 'Entrada')
+  }
   if (anexo === 'Sin Anexo') loadModule('agents_annexed')
   $('#statusAgent').click(function () {
     PanelStatus()
@@ -565,6 +568,7 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
     if(resData['Response'] == 'success'){
       if (parameters['type_action'] == 'release') {
         $('#anexo').text('Sin Anexo')
+        vueFront.anexo = ''
         setQueueAdd('false')
       }else{
         if (parameters['anexo']) {
@@ -572,6 +576,8 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
         }
 
         if (parameters['number_annexed']) {
+          vueFront.anexo = parameters['number_annexed']
+          socketAsterisk.emit('updateAnexo',{anexo: vueFront.anexo, username: $('#user_name').val()})
           $('#anexo').text(parameters['number_annexed'])
         }
       }
@@ -658,25 +664,14 @@ function PanelStatus () {
 }
 
 function MarkAssitance (user_id, day, hour_actually, action) {
-  var token = $('input[name=_token]').val()
+  if (result[0] == 'true') {
+    modalAssintance(user_id, day, hour_actually, action)
+  } else if (result[0] == 'stand_by') {
+    ModalStandBy(result[1])
+  } else {
+    checkPassword()
+  }
 
-  $.ajax({
-    type: 'POST',
-    url: 'assistance',
-    data: {
-      _token: token
-    },
-    success: function (data) {
-      var result = data.split('&')
-      if (result[0] == 'true') {
-        modalAssintance(user_id, day, hour_actually, action)
-      } else if (result[0] == 'stand_by') {
-        ModalStandBy(result[1])
-      } else {
-        checkPassword()
-      }
-    }
-  })
 }
 
 function modalAssintance (user_id, day, hour_actually, action) {
@@ -1282,6 +1277,7 @@ function assignAnexxed (anexo_name,user_id) {
   var token = $('input[name=_token]').val()
   var anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
+  let username = $('#user_name').val()
   let parameters
   let route = ''
   $.ajax({
@@ -1298,7 +1294,8 @@ function assignAnexxed (anexo_name,user_id) {
           //No se encuentra en ninguna cola
           parameters = {
             number_annexed : anexo_name,
-            user_id : user_id
+            user_id : user_id,
+            username: username
           }
           route = '/anexos/updateAnexo'
           ajaxNodeJs(parameters, route, true, 2000)

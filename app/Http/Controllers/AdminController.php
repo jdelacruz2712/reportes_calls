@@ -3,6 +3,7 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Anexo;
+use Cosapi\Models\DetalleEventos;
 use Cosapi\Models\User;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use DB;
 use Illuminate\Support\Facades\Session;
 
-class AdminController extends Controller
+class AdminController extends CosapiController
 {
     protected $UserId;
     protected $UserRole;
@@ -20,6 +21,7 @@ class AdminController extends Controller
     protected $UserAnexo;
     protected $QueueAdd;
     protected $ChangeRole;
+    protected $AssistanceUser;
 
     public function __construct(){
 
@@ -45,14 +47,30 @@ class AdminController extends Controller
             Session::put('QueueAdd'     ,'false'   );
         }
 
-        $this->UserId       = Session::get('UserId')        ;
-        $this->UserRole     = Session::get('UserRole')      ;
-        $this->UserName     = Session::get('UserName')      ;
-        $this->UserSystem   = Session::get('UserSystem')    ;
-        $this->UserPassword = Session::get('UserPassword')  ;
-        $this->UserAnexo    = Session::get('UserAnexo')     ;
-        $this->QueueAdd     = Session::get('QueueAdd')      ;
-        $this->ChangeRole   = Session::get('ChangeRole')    ;
+        if (!Session::has('AssistanceUser')) {
+            $ultimate_event_login = $this->UltimateEventLogin();
+            if($ultimate_event_login[0] == 1 && $ultimate_event_login[1]== null){
+                //Redirecciona a la ventan de marcaciones
+                Session::put('AssistanceUser'    , 'true&');
+            }else{
+                if($ultimate_event_login[2] >= date('Y-m-d H:i:s')){
+                    //Redirecciona a la ventana de espera
+                    $date = date_create($ultimate_event_login[2]);
+                    Session::put('AssistanceUser'    , 'stand_by&'.date_format($date,"H:i:s"));
+                }
+                Session::put('AssistanceUser'    , 'false&');
+            }
+        }
+
+        $this->UserId           = Session::get('UserId')        ;
+        $this->UserRole         = Session::get('UserRole')      ;
+        $this->UserName         = Session::get('UserName')      ;
+        $this->UserSystem       = Session::get('UserSystem')    ;
+        $this->UserPassword     = Session::get('UserPassword')  ;
+        $this->UserAnexo        = Session::get('UserAnexo')     ;
+        $this->QueueAdd         = Session::get('QueueAdd')      ;
+        $this->ChangeRole       = Session::get('ChangeRole')    ;
+        $this->AssistanceUser   = Session::get('AssistanceUser');
 
     }
 

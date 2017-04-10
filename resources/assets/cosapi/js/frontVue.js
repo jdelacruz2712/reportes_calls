@@ -15,14 +15,16 @@ socketSails.reconnection = true
 socketSails.reconnectionDelayMax = 5
 // socketSails.timeout = 10
 // socketSails.reconnectionDelay = 20
-/*
+
 const socketAsterisk = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
-socketAsterisk.emit('join', $('#anexo').text())
+if($('#anexo').text() == ''){
+  socketAsterisk.emit('join', $('#anexo').text())
+}
+
 socketAsterisk.on('status_agent',  (data) => {
-    present_status.present_status_name  = data.Name_Event;
-    present_status.present_status_id    = data.Event_id;
+  vueFront.present_status_name  = data.Name_Event
+  vueFront.present_status_id    = data.Event_id
 })
-*/
 
 socketSails.on('connect', function () {
   $('#loading').hide()
