@@ -16,9 +16,9 @@ var kpi = new Vue({
     abandoned: '-',
     slaDay: '-',
     queue: '-',
-    abandonedSimbolo: '',
+    abandonedSymbol: '',
     abandonedSecond: '',
-    answeredSimbolo: '',
+    answeredSymbol: '',
     answeredSecond: ''
   },
   mounted(){
@@ -26,10 +26,22 @@ var kpi = new Vue({
     this.loadAbandoned()
     this.loadAnsweredTime()
     this.loadAbandonedTime()
-    //this.loadSlaDay()
+    this.loadSlaDay()
     //this.loadQueue()
   },
   methods:{
+    loadSlaDay: function(){
+      this.slaDay = '-'
+      let answered = this.answered
+      let abandoned = this.abandoned
+      let answeredTime = this.answeredTime
+      let abandonedTime = this.abandonedTime
+      if(answered != '-' && abandoned != '-' && answeredTime != '-' && abandonedTime != '-') {
+        this.slaDay = (answeredTime * 100)/answered
+      }else{
+        this.slaDay = '-'
+      }
+    },
     loadAnswered: function(){
       this.answered = '-'
       let parameters = {type : 'calls_completed'}
@@ -57,7 +69,7 @@ var kpi = new Vue({
       this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.answeredTime = response.data.message
         this.answeredSecond = response.data.time
-        this.answeredSimbolo = response.data.simbolo
+        this.answeredsymbol = response.data.symbol
       },response =>{
         console.log(response.body.message)
       })
@@ -71,13 +83,10 @@ var kpi = new Vue({
       this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.abandonedTime = response.data.message
         this.abandonedSecond = response.data.time
-        this.abandonedSimbolo = response.data.simbolo
+        this.abandonedsymbol = response.data.symbol
       },response =>{
         console.log(response.body.message)
       })
-    },
-    loadSlaDay: function(){
-      //this.slaDay = 14
     },
     loadQueue: function(){
       //this.queue = 15

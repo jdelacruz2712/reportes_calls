@@ -8,7 +8,7 @@
 			<span class="info-box-number2">@{{ answered }}</span>
 		</div>
 	</div>
-    <div v-else>
+    <div @click="loadAnswered" v-else>
 		@include('layout.recursos.loading_bar')
 	</div>
 </div>

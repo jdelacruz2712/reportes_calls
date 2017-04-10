@@ -85,7 +85,7 @@ class 	Queue_Log extends Model
 
     public function scopeFiltro_Time($query, $metrica){
         if($metrica['action'] == 'true'){
-            return $query->where('info1',$metrica['simbolo'], $metrica['time']);
+            return $query->where('info1',$metrica['symbol'], $metrica['time']);
         }
 
     }

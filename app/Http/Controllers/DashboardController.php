@@ -25,15 +25,15 @@ class DashboardController extends IncomingCallsController
         $action   = 'false';
         $metrica  = array(
             'action'  => $action,
-            'simbolo' => '',
+            'symbol' => '',
             'time'    => ''
         );
 
         if($request->time){
           $action             = 'true';
-          $kpis               = Kpis::select()->where('name',$request->type)->get()->toArray();
+          $kpis               = Kpis::select()->where('name',$request->type.'_time')->get()->toArray();
           $metrica['action']  = $action;
-          $metrica['simbolo'] = $kpis[0]['simbolo'];
+          $metrica['symbol'] = $kpis[0]['symbol'];
           $metrica['time']    = $kpis[0]['time'];
         }
 
@@ -44,7 +44,7 @@ class DashboardController extends IncomingCallsController
 
         return response()->json([
             'message' => $answered,
-            'simbolo' => $metrica['simbolo'],
+            'symbol' => $metrica['symbol'],
             'time'    => $metrica['time']
         ], 200);
 
