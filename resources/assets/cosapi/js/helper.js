@@ -269,6 +269,26 @@ function show_tab_outgoing (evento) {
   dataTables('table-outgoing', get_data_filters(evento), 'outgoing_calls')
 }
 
+let show_tab_annexed = (event) => {
+  let token = $('input[name=_token]').val()
+  let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
+  $.ajax({
+    type: 'POST',
+    url: 'agents_annexed/list_annexed',
+    cache: false,
+    data: {
+      _token : token,
+      event : event
+    },
+    beforeSend : () => {
+      $('#divListAnnexed').html(imageLoading)
+    },
+    success: (data) =>{
+      $('#divListAnnexed').html(data)
+    }
+  })
+}
+
 /**
  * [get_data_filters Función que configura datos a enviar en las consultas]
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
@@ -491,7 +511,6 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
     $('#myModalLoading').modal('show')
   }
   socketSails.get(ruta, parameters, function (resData, jwRes) {
-    console.log(resData)
     $('#myModalLoading').modal('hide')
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
     if(resData['DataQueue'] != null){
@@ -1016,7 +1035,6 @@ function disconnectAgent () {
   let queueAdd = $('#queueAdd').val()
   if (anexo === 'Sin Anexo') {
     if(userRole === 'user'){
-      console.log(queueAdd)
       if(queueAdd === 'false'){
         markExit()
       }else{
@@ -1175,15 +1193,45 @@ function desconnect_agent (hour_exit) {
 }
 
 function liberar_anexos () {
-  let user_id = $('#user_id').val()
-  let anexo = $('#anexo').text()
+  BootstrapDialog.show({
+    type: 'type-primary',
+    title: 'CosapiData S.A.',
+    message: '¿Desea liberar su anexo?',
+    closable: true,
+    buttons: [
+      {
+        label: 'Aceptar',
+        cssClass: 'btn-success',
+        action: function (dialogRef) {
+          if (anexo != 'Sin Anexo') {
+            freeAnnexedAjax()
+          } else {
+            mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
+          }
+          dialogRef.close()
+        }
+      },
+      {
+        label: 'Cancelar',
+        cssClass: 'btn-danger',
+        action: function (dialogRef) {
+          dialogRef.close()
+        }
+      }
+    ]
+  })
+}
+
+let freeAnnexedAjax = (anexo = '', user_id = '') =>{
   let queueAdd = $('#queueAdd').val()
-  let event_id = $('#present_status_id').val()
   let ip = $('#ip').val()
   let parameters
-  if (anexo != 'Sin Anexo') {
+  if(user_id == ''){
+    anexo = $('#anexo').text()
+    user_id = $('#user_id').val()
     //Tiene un anexo asignado
-    if(queueAdd == 'true'){
+    if(queueAdd == 'true' ){
+
       //Se encuentra agregado a colas
       parameters = {
         user_id : user_id,
@@ -1195,6 +1243,7 @@ function liberar_anexos () {
         ip : ip
       }
     }else{
+
       //No se encuentra en ninguna cola
       parameters = {
         user_id : user_id,
@@ -1204,15 +1253,32 @@ function liberar_anexos () {
         ip : ip
       }
     }
-    ajaxNodeJs(parameters, '/anexos/liberarAnexo', true, 2000)
-    loadModule('agents_annexed')
-  } else {
-    mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
+  }else{
+    //Liberar otro anexo que no se encuentre en una cola
+    if(user_id != $('#user_id').val()){
+      parameters = {
+        user_id : user_id,
+        event_id : 11,
+        event_name : 'Login',
+        ip : ip
+      }
+    }else{
+      parameters = {
+        user_id : user_id,
+        type_action: 'release',
+        event_id : 11,
+        event_name : 'Login',
+        ip : ip
+      }
+    }
+
   }
+
+  ajaxNodeJs(parameters, '/anexos/liberarAnexo', true, 2000)
+  loadModule('agents_annexed')
 }
 
-function assignAnexxed (anexo_name) {
-  var user_id = $('#user_id').val()
+function assignAnexxed (anexo_name,user_id) {
   var token = $('input[name=_token]').val()
   var anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
@@ -1223,10 +1289,12 @@ function assignAnexxed (anexo_name) {
     url: 'agents_annexed/user',
     data: {
       _token: token,
-      user_id: user_id
+      user_id: $('#user_id').val()
     },
     success: function (data) {
       if (data == 'Sin Anexo') {
+        if(user_id == ''){
+          user_id = $('#user_id').val()
           //No se encuentra en ninguna cola
           parameters = {
             number_annexed : anexo_name,
@@ -1235,10 +1303,15 @@ function assignAnexxed (anexo_name) {
           route = '/anexos/updateAnexo'
           ajaxNodeJs(parameters, route, true, 2000)
           loadModule('agents_annexed')
-
-
+        }else{
+          freeAnnexedAjax(anexo_name,user_id)
+        }
       } else {
-        mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo ' + anexo + '.', 'Warning', 10000, false, true)
+        if(user_id == ''){
+          mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo ' + anexo + '.', 'Warning', 10000, false, true)
+        }else{
+          freeAnnexedAjax(anexo_name,user_id)
+        }
       }
     }
   })

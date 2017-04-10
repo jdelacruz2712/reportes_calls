@@ -44,6 +44,7 @@ Route::group (['middleware'=>['user']], function(){
     // Lista de anexos
     Route::post('agents_annexed'									, ['uses'=>'AgentsAnnexedController@index']);
     Route::post('agents_annexed/user'								, ['uses'=>'AgentsAnnexedController@getUserAnexo']);
+    Route::post('agents_annexed/list_annexed'						, ['uses'=>'AgentsAnnexedController@getListAnnexed']);
 
     // Reportes calls
     Route::post('incoming_calls'									, ['uses'=>'IncomingCallsController@index']);

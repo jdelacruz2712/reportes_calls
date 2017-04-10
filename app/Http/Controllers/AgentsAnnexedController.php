@@ -15,36 +15,14 @@ class AgentsAnnexedController extends CosapiController
      */
     public function index(Request $request)
     {
-        $tabla_anexos = [];
-        $indice = 0;
-        $contador = 0;
         if ($request->ajax()){
-            $list_annexed = $this->queryListAnexo();
-            foreach($list_annexed as $key => $annexed){
-                if($contador > 5){
-                    $contador = 0;
-                    $indice++;
-                }
-                $list_annexed[$key]['image']        = 'phone-green.png';
-                $list_annexed[$key]['btn']          = 'btn disabled';
-                $list_annexed[$key]['StatusAnexo']  = 'Conectado';
-                if($annexed['user'] == null){
-                    $list_annexed[$key]['image']        = 'phone-yellow.png';
-                    $list_annexed[$key]['btn']          = 'btn';
-                    $list_annexed[$key]['StatusAnexo']  = 'Anexo Libre';
-                }
-                $tabla_anexos[$indice][$contador] = $list_annexed[$key];
-                $contador++;
-            }
-
-            return view('elements/agents_annexed/index')->with(array('tabla_anexos' => $tabla_anexos));
+            return view('elements/agents_annexed/index');
         }
     }
 
-    public function queryListAnexo($user = ''){
+    public function queryListAnexo(){
         $list_annexed = Anexo::select()
                             ->with('user')
-                            ->filtro_user($user)
                             ->where('estado_id','=',1)
                             ->get()
                             ->toArray();
@@ -54,5 +32,51 @@ class AgentsAnnexedController extends CosapiController
     public function getUserAnexo()
     {
         return $this->UserAnexo;
+    }
+
+    public function getListAnnexed(Request $request){
+        $tabla_anexos = [];
+        $indice = 0;
+        $contador = 0;
+        if ($request->ajax()){
+            if($request->event) {
+                $list_annexed = $this->queryListAnexo($request->event);
+                foreach ($list_annexed as $key => $annexed) {
+
+
+                    if($request->event == 'free'){
+                        if ($annexed['user'] == null) {
+                            if ($contador > 5) {
+                                $contador = 0;
+                                $indice++;
+                            }
+                            $list_annexed[$key]['image'] = 'phone-yellow.png';
+                            $list_annexed[$key]['btn'] = 'btn';
+                            $list_annexed[$key]['StatusAnexo'] = 'Anexo Libre';
+                            $list_annexed[$key]['user']['id'] = '';
+                            $tabla_anexos[$indice][$contador] = $list_annexed[$key];
+                            $contador++;
+                        }
+                    }else{
+                        if($annexed['user']['role']){
+                            if ($annexed['user']['role'] == $request->event) {
+                                if ($contador > 5) {
+                                    $contador = 0;
+                                    $indice++;
+                                }
+                                $list_annexed[$key]['image'] = 'phone-green.png';
+                                $list_annexed[$key]['btn'] = 'btn disabled';
+                                if($this->UserRole == 'admin' or $this->UserRole == 'supervisor') $list_annexed[$key]['btn'] = 'btn';
+                                $list_annexed[$key]['StatusAnexo'] = 'Conectado';
+                                $tabla_anexos[$indice][$contador] = $list_annexed[$key];
+                                $contador++;
+                            }
+                        }
+                    }
+
+                }
+                return view('layout/recursos/annexed')->with(array('tabla_anexos' => $tabla_anexos));
+            }
+        }
     }
 }
