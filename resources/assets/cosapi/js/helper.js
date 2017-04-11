@@ -27,12 +27,15 @@ $(document).ready(function () {
   var hour = $('#hour').val()
   var date = $('#date').val()
   var anexo = $('#anexo').text()
-
-  if($('#assistence_user').val().split('&') == 'false'){
-    MarkAssitance(user_id, date, hour, 'Entrada')
-  }else{
-    checkPassword()
+  if($('#assistence_user')){
+    let assistence_user = $('#assistence_user').val().split('&')
+    if(assistence_user[0] == 'true'){
+      MarkAssitance(user_id, date, hour, 'Entrada', assistence_user)
+    }else{
+      checkPassword()
+    }
   }
+
 
   if (anexo === 'Sin Anexo') loadModule('agents_annexed')
   $('#statusAgent').click(function () {
@@ -659,7 +662,7 @@ function PanelStatus () {
   })
 }
 
-function MarkAssitance (user_id, day, hour_actually, action) {
+function MarkAssitance (user_id, day, hour_actually, action, result) {
   if (result[0] == 'true') {
     modalAssintance(user_id, day, hour_actually, action)
   } else if (result[0] == 'stand_by') {

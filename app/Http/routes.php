@@ -32,7 +32,7 @@ Route::group (['middleware'=>['user']], function(){
         Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
 
         // List users
-        Route::post('list_users'                                        , ['uses'=>'ListUsersController@index']);
+        Route::post('list_users'                                        , ['uses'=>'UserController@index']);
 
     });
 

@@ -42,6 +42,6 @@
 <script type="text/javascript">
 $(document).ready(function(){
     show_tab_incoming('calls_completed')
-    DataTableHide('table-incoming',[8,9],$('#user_role').val())
+    DataTableHide('table-incoming',[8,9],'{{Session::get('UserRole')}}')
 })
 </script>
