@@ -42,12 +42,20 @@ class AdminController extends CosapiController
             Session::put('UserAnexo'     ,'Sin Anexo'   );
         }
 
-
         if (!Session::has('QueueAdd')) {
             Session::put('QueueAdd'     ,'false'   );
         }
 
-        if (!Session::has('AssistanceUser')) {
+        $this->UserId           = Session::get('UserId')        ;
+        $this->UserRole         = Session::get('UserRole')      ;
+        $this->UserName         = Session::get('UserName')      ;
+        $this->UserSystem       = Session::get('UserSystem')    ;
+        $this->UserPassword     = Session::get('UserPassword')  ;
+        $this->UserAnexo        = Session::get('UserAnexo')     ;
+        $this->QueueAdd         = Session::get('QueueAdd')      ;
+        $this->ChangeRole       = Session::get('ChangeRole')    ;
+
+        if (!Session::has('AssistanceUser' or Session::get('AssistanceUser') != 'false&')) {
             $ultimate_event_login = $this->UltimateEventLogin();
             if($ultimate_event_login[0] == 1 && $ultimate_event_login[1]== null){
                 //Redirecciona a la ventan de marcaciones
@@ -61,15 +69,6 @@ class AdminController extends CosapiController
                 Session::put('AssistanceUser'    , 'false&');
             }
         }
-
-        $this->UserId           = Session::get('UserId')        ;
-        $this->UserRole         = Session::get('UserRole')      ;
-        $this->UserName         = Session::get('UserName')      ;
-        $this->UserSystem       = Session::get('UserSystem')    ;
-        $this->UserPassword     = Session::get('UserPassword')  ;
-        $this->UserAnexo        = Session::get('UserAnexo')     ;
-        $this->QueueAdd         = Session::get('QueueAdd')      ;
-        $this->ChangeRole       = Session::get('ChangeRole')    ;
         $this->AssistanceUser   = Session::get('AssistanceUser');
 
     }

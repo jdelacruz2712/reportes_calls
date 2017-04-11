@@ -29,5 +29,6 @@
     })
     function buscar(){
         show_tab_list_user('list_users')
+        DataTableHide('table-list-user',[0,8,9],'{{Session::get('UserRole')}}')
     }
 </script>

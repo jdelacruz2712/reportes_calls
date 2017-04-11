@@ -27,12 +27,15 @@ $(document).ready(function () {
   var hour = $('#hour').val()
   var date = $('#date').val()
   var anexo = $('#anexo').text()
-
-  if($('#assistence_user').val().split('&') == 'false'){
-    MarkAssitance(user_id, date, hour, 'Entrada')
-  }else{
-    checkPassword()
+  if($('#assistence_user').length > 0 ){
+    let assistence_user = $('#assistence_user').val().split('&')
+    if(assistence_user[0] == 'true'){
+      MarkAssitance(user_id, date, hour, 'Entrada', assistence_user)
+    }else{
+      checkPassword()
+    }
   }
+
 
   if (anexo === 'Sin Anexo') loadModule('agents_annexed')
   $('#statusAgent').click(function () {
@@ -52,7 +55,7 @@ $(document).ready(function () {
                   'de verificar que se le han asignado a las colas correctamente.</p>'
     BootstrapDialog.show({
       type: 'type-primary',
-      title: 'Cosapidata S.A.',
+      title: 'Activar Llamadas',
       message: message,
       closable: true,
       buttons: [
@@ -81,35 +84,42 @@ $(document).ready(function () {
     })
   })
 })
-function activeCalls(nameRole){
+function activeCalls(nameRole, userId = ''){
   let queueAdd = $('#queueAdd').val()
   let anexo = $('#anexo').text()
   let username = $('#user_name').val()
   let ip = $('#ip').val()
-  let user_id = $('#user_id').val()
   let user_role = $('#user_role').text()
+
+  userId = (userId === '')? $('#user_id').val() : userId
+
   $.ajax({
     type: 'POST',
     url: 'modifyRole',
     data: {
       _token: $('input[name=_token]').val(),
-      nameRole: nameRole
+      nameRole: nameRole,
+      userId: userId
     },
     success: function (data) {
       if (data == 1) {
-        $('#UserNameRole').text(nameRole.charAt(0).toUpperCase() + nameRole.slice(1))
-        $('#user_role').val(nameRole)
+        if(userId === $('#user_id').val()){
+          $('#UserNameRole').text(nameRole.charAt(0).toUpperCase() + nameRole.slice(1))
+          $('#user_role').val(nameRole)
+        }
+
         $.each(BootstrapDialog.dialogs, function (id, dialog) {
           dialog.close()
         })
         mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
 
         //Tiene un anexo asignado
-        if(queueAdd == 'true'){
+        if(queueAdd === 'true' && userId === $('#user_id').val()){
+          userId = $('#user_id').val()
           mostrar_notificacion('info', 'Se procedera a realizar la conexion al asterisk', 'Info', 5000, false, true)
           //Se encuentra agregado a colas
           parameters = {
-            user_id : user_id,
+            user_id : userId,
             number_annexed: anexo,
             username: username,
             type_action: 'release',
@@ -121,9 +131,9 @@ function activeCalls(nameRole){
           loadModule('agents_annexed')
         }else{
           //No se encuentra en ninguna cola
-          if(anexo != 'Sin Anexo'){
+          if(anexo != 'Sin Anexo' && userId === $('#user_id').val()){
             parameters = {
-              user_id : user_id,
+              user_id : userId,
               type_action: 'release',
               event_id : 11,
               event_name : 'Login',
@@ -355,7 +365,7 @@ function exportar (format_export) {
  * @param  {String} days          [Fecha de consulta de datos]
  */
 function export_ajax (type, url, format_export = '', days = '',rankHour = 1800) {
-  var dialog = cargar_dialog('primary', 'Cosapi Data', 'Cargando el Excel', false)
+  var dialog = cargar_dialog('primary', 'Download', 'Cargando el Excel', false)
 
   var token = $('input[name=_token]').val()
 
@@ -625,36 +635,6 @@ function setQueueAdd(queueAdd){
 function eventLogout(){
     location.href = 'logout'
 }
-function modalLogut(resData){
-    let arrayMessage = resData['Message']
-    let message = ''
-    for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
-        message = message +'<b>'+ arrayMessage[posicion]['Response']+ ' : </b>'+arrayMessage[posicion]['Message']
-        if (posicion != ((arrayMessage.length) - 1)) {
-            message = message + '<br>'
-        }
-    }
-
-    BootstrapDialog.show({
-        type: 'type-danger',
-        title: 'Cosapi Dara S.A.',
-        message: message,
-        closable: false,
-        buttons: [{
-            label: 'Salir',
-            cssClass: 'btn-danger',
-            action: function (dialogRef) {
-                dialogRef.close()
-                location.href = 'logout'
-            }
-        }]
-    })
-
-    if (parameters['anexo']) {
-        $('#anexo').text(parameters['anexo'])
-    }
-
-}
 
 function PanelStatus () {
   $.ajax({
@@ -681,7 +661,7 @@ function PanelStatus () {
   })
 }
 
-function MarkAssitance (user_id, day, hour_actually, action) {
+function MarkAssitance (user_id, day, hour_actually, action, result) {
   if (result[0] == 'true') {
     modalAssintance(user_id, day, hour_actually, action)
   } else if (result[0] == 'stand_by') {
@@ -694,7 +674,7 @@ function MarkAssitance (user_id, day, hour_actually, action) {
 
 function modalAssintance (user_id, day, hour_actually, action) {
   let rankHours = rangoHoras(hour_actually)
-  let title = 'Cosapi Data S.A.'
+  let title = 'Marcación de Asistencia'
   let message = 'Por favor de seleccionar la hora correspondiente a su ' + action + '.' +
         '<br><br>' +
         '<div class="row">' +
@@ -745,7 +725,7 @@ function ModalStandBy (hour_new) {
         '<center><h1 id="prueba">' + text_hour + '</h1></center>'
   BootstrapDialog.show({
     type: 'type-primary',
-    title: 'Cosapi Data S.A.',
+    title: 'Panel de Espera',
     message: message,
     closable: false
   })
@@ -1208,7 +1188,7 @@ function desconnect_agent (hour_exit) {
 function liberar_anexos () {
   BootstrapDialog.show({
     type: 'type-primary',
-    title: 'CosapiData S.A.',
+    title: 'Liberación de Anexo',
     message: '¿Desea liberar su anexo?',
     closable: true,
     buttons: [
@@ -1296,6 +1276,7 @@ function assignAnexxed (anexo_name,user_id) {
   var anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
   let username = $('#user_name').val()
+  let userRol = $('#user_role').val()
   let parameters
   let route = ''
   $.ajax({
@@ -1313,7 +1294,8 @@ function assignAnexxed (anexo_name,user_id) {
           parameters = {
             number_annexed : anexo_name,
             user_id : user_id,
-            username: username
+            username: username,
+            userRol: userRol
           }
           route = '/anexos/updateAnexo'
           ajaxNodeJs(parameters, route, true, 2000)
@@ -1339,11 +1321,10 @@ function checkPassword () {
   }
 }
 
-function changePassword (userId = '') {
+function changePassword (userId = '',closable = false) {
   if(userId === '') userId = $('#user_id').val()
   var token = $('input[name=_token]').val()
-  var message = '<p>Cambiar Contraseña</p>' +
-                    '<br>' +
+  var message = '<br>' +
                     '<div class="row">' +
                         '<div class="col-md-7">' +
                             '<div class="col-md-6" >' +
@@ -1371,9 +1352,9 @@ function changePassword (userId = '') {
 
   BootstrapDialog.show({
     type: 'type-default',
-    title: '<font style="color:red; text-align: center">Registra tu contraseña</font>',
+    title: '<font style="color:red; text-align: center">Cambiar Contraseña</font>',
     message: message,
-    closable: false,
+    closable: closable,
     buttons: [
       {
         label: 'Aceptar',
@@ -1412,6 +1393,44 @@ function changePassword (userId = '') {
     ]
   })
 }
+
+const changeStatus = (userId)=>{
+  let message = 'Seleccione el rol que quiere asignar al usuario :'+
+                '<br><br>'+
+                '<div class="row">'+
+                '<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>'+
+                '<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>'+
+                '<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>'+
+                '</div>'+
+                '<br>'+
+                '<b>Nota :</b> Utilizar esta opcion siempre y cuando el usuario no se encuentre en una cola.'
+
+  BootstrapDialog.show({
+    type: 'type-primary',
+    title: 'Cambiar Rol',
+    message: message,
+    closable: true,
+    buttons: [
+      {
+        label: 'Aceptar',
+        cssClass: 'btn-success',
+        action:  (dialogRef) => {
+          let nameRole = $('input:radio[name=nameRole]:checked').val()
+          activeCalls(nameRole,userId)
+          show_tab_list_user('list_users')
+        }
+      },
+      {
+        label: 'Cancelar',
+        cssClass: 'btn-danger',
+        action:  (dialogRef) => {
+          dialogRef.close()
+        }
+      }
+    ]
+  })
+}
+
 /**
  * Created by dominguez on 10/03/2017.
  *
@@ -1551,4 +1570,28 @@ function columnsDatatable (route) {
   }
 
   return columns
+}
+/**
+ * Created by jdelacruzc on 11/04/2017.
+ *
+ * [RoleTableHide description]
+ * @return {Array} [Los roles con el cual me ocultaran las columnas]
+ */
+const RoleTableHide = () =>  ['user']
+
+/**
+ * Created by jdelacruzc on 11/04/2017.
+ *
+ * [DatableHide description]
+ * @param  {String} nombreDiv [Nombre del id de la tabla]
+ * @param {Array}  numeroColumnas[Se pasan los numeros de columnas que se desean ocultar]
+ * @return Oculta las columnas en el datatable
+ */
+const DataTableHide = (nombreDIV, numeroColumnas, roleUser) => {
+    let exist = RoleTableHide().indexOf(roleUser)
+    if(exist >= 0) {
+      let DataTableDiv = $('#' + nombreDIV).DataTable()
+      DataTableDiv.columns( numeroColumnas ).visible( false, false );
+      DataTableDiv.columns.adjust().draw( false );
+    }
 }
