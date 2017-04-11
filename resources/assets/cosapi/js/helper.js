@@ -259,6 +259,14 @@ function show_tab_detail_events (evento) {
 }
 
 /**
+ * [show_tab_detail_events Función que carga los datos detallados de los Eventos del Agente]
+ * @param  {String} evento [Tipo de reporte a cargar en la vista]
+ */
+function show_tab_level_occupation (evento) {
+  dataTables('table-level-occupation', get_data_filters(evento), 'level_of_occupation')
+}
+
+/**
  * [show_tab_angetOnline Función que carga los datos de los agentes online]
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  */
@@ -292,6 +300,14 @@ let show_tab_annexed = (event) => {
       $('#divListAnnexed').html(data)
     }
   })
+}
+
+/**
+ * [show_tab_list_user Función que carga los datos detallados de los usuarios]
+ * @param  {String} evento [Tipo de reporte a cargar en la vista]
+ */
+function show_tab_list_user (evento) {
+  dataTables('table-list-user', get_data_filters(evento), 'list_users')
 }
 
 /**
@@ -1503,6 +1519,34 @@ function columnsDatatable (route) {
       {"data":"date"},
       {"data":"hour"},
       {"data":"agents"}
+    ]
+  }
+
+  if (route === 'level_of_occupation') {
+    columns = [
+      {"data":"date"},
+      {"data":"hour"},
+      {"data":"indbound"},
+      {"data":"acw"},
+      {"data":"outbound"},
+      {"data":"auxiliares"},
+      {"data":"logueo"},
+      {"data":"occupation_cosapi"}
+    ]
+  }
+
+  if (route === 'list_users') {
+    columns = [
+      {"data":"Id"},
+      {"data":"First Name"},
+      {"data":"Second Name"},
+      {"data":"Last Name"},
+      {"data":"Second Last Name"},
+      {"data":"Username"},
+      {"data":"Role"},
+      {"data":"Estado"},
+      {"data":"Change Status"},
+      {"data":"Change Password"}
     ]
   }
 

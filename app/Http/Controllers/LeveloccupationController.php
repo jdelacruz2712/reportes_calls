@@ -22,7 +22,11 @@ class LeveloccupationController extends CosapiController
     {
         if ($request->ajax()){
             if ($request->fecha_evento){
-                return $this->NivelOcupationHour($request->fecha_evento);
+                $NivelOcupationHour         = $this->NivelOcupationHour($request->fecha_evento);
+                $nivelocupacionBuilderView  = $this->nivelocupacionBuilderView($NivelOcupationHour[0],$NivelOcupationHour[1],$NivelOcupationHour[2]);
+                $nivelocupacionCollection   = $this->nivelocupacionCollection($nivelocupacionBuilderView);
+                $list_level_occupation      = $this->FormatDatatable($nivelocupacionCollection);
+                return $list_level_occupation;
             }else{
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.level_of_occupation.level_of_occupation',
@@ -36,6 +40,15 @@ class LeveloccupationController extends CosapiController
         }
     }
 
+    /**
+     * [export Función que permite exportar los datos de la tabla]
+     * @param  Request $request [Recepciona datos enviado por POST]
+     * @return [array]          [Ubicaciones de los archivos a exportar]
+     */
+    public function export(Request $request){
+        $export_contestated  = call_user_func_array([$this,'export_'.$request->format_export], [$request->days]);
+        return $export_contestated;
+    }
 
     /**
      * [NivelOcupationHour Función que calcula la acantida de Tiempo entre horas para poder realiza el calculo del Level Of Occupation]
@@ -48,7 +61,7 @@ class LeveloccupationController extends CosapiController
         $before_hour                    = 0;
         $before_time                    = 0;
         $before_user                    = 0;
-
+        $ocupacion                      = [];
         $Listhour                       = listHoursInterval();
 
         $query_detalle_eventos          = DetalleEventosHistory::Select_fechamod()
@@ -66,233 +79,235 @@ class LeveloccupationController extends CosapiController
         $Array_days                     = ArrayDays($day_consult);
         $cantidad_detalles              = count($query_detalle_eventos);
 
-        foreach ( $query_detalle_eventos as $key => $detalle_eventos) {
-            $second_timemod    =  convertHourExactToSeconds($detalle_eventos['timemod']);
-            $array_hour        =  explode(':',$detalle_eventos['hourmod']);
-            $hour              =  $array_hour[0]*3600;
-            $minute            =  $array_hour[1]*60;
-            $second            =  $hour + $minute;
+        if($array_day_consult[0] < date('Y-m-d') && $array_day_consult[1] < date('Y-m-d')) {
+            foreach ($query_detalle_eventos as $key => $detalle_eventos) {
+                $second_timemod = convertHourExactToSeconds($detalle_eventos['timemod']);
+                $array_hour = explode(':', $detalle_eventos['hourmod']);
+                $hour = $array_hour[0] * 3600;
+                $minute = $array_hour[1] * 60;
+                $second = $hour + $minute;
 
-            if(!isset($new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']])){
+                if (!isset($new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']])) {
 
-                if(isset($new_detalle)){
-                    $new_detalle = $this->nivel_ocupacion($day_consult,$new_detalle,$Usuarios,$Eventos_Auxiliares,$Cosapi_Eventos,$Claro_Eventos,$Eventos,$before_hour,$before_user,$before_date);
-                }
+                    if (isset($new_detalle)) {
+                        $new_detalle = $this->nivel_ocupacion($day_consult, $new_detalle, $Usuarios, $Eventos_Auxiliares, $Cosapi_Eventos, $Claro_Eventos, $Eventos, $before_hour, $before_user, $before_date);
+                    }
 
-                $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_ini']=$detalle_eventos['evento_id'] ;
+                    $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_ini'] = $detalle_eventos['evento_id'];
 
-                $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = 0;
+                    $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = 0;
 
-                if($query_detalle_eventos[$key+1]['user_id'] != $detalle_eventos['user_id'] or $query_detalle_eventos[$key+1]['fechamod'] != $detalle_eventos['fechamod'] ){
-                    if($query_detalle_eventos[$key-1]['evento_id'] != 15 ){
-                        $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = 1800;
+                    if ($query_detalle_eventos[$key + 1]['user_id'] != $detalle_eventos['user_id'] or $query_detalle_eventos[$key + 1]['fechamod'] != $detalle_eventos['fechamod']) {
+                        if ($query_detalle_eventos[$key - 1]['evento_id'] != 15) {
+                            $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = 1800;
+                        }
+                    }
+
+
+                } else {
+
+                    if (!isset($new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']])) {
+                        $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_ini'] = $detalle_eventos['evento_id'];
+                        $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = $second_timemod - $second;
+                        $before_second_timemod = convertHourExactToSeconds($before_hour . ':00', 1800);
+
+                        if (!isset($new_detalle[$before_date][$before_user][$before_hour][$before_event])) {
+                            $new_detalle[$before_date][$before_user][$before_hour][$before_event] = 0;
+                        }
+
+                        $new_detalle[$before_date][$before_user][$before_hour][$before_event] = $new_detalle[$before_date][$before_user][$before_hour][$before_event] + ($before_second_timemod - $before_time);
+
+                        $new_detalle = $this->nivel_ocupacion($day_consult, $new_detalle, $Usuarios, $Eventos_Auxiliares, $Cosapi_Eventos, $Claro_Eventos, $Eventos, $before_hour, $before_user, $before_date);
+
+
+                    } else {
+                        if (!isset($new_detalle[$before_date][$before_user][$before_hour][$before_event])) {
+                            $new_detalle[$before_date][$before_user][$before_hour][$before_event] = 0;
+                        }
+
+                        $new_detalle[$before_date][$before_user][$before_hour][$before_event] = $new_detalle[$before_date][$before_user][$before_hour][$before_event] + ($second_timemod - $before_time);
+
                     }
                 }
 
-
-            }else{
-
-                if(!isset($new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']])){
-                    $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_ini']=$detalle_eventos['evento_id'] ;
-                    $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = $second_timemod - $second;
-                    $before_second_timemod                                                    =  convertHourExactToSeconds($before_hour.':00',1800);
-
-                    if(!isset($new_detalle[$before_date][$before_user][$before_hour][$before_event])){
-                        $new_detalle[$before_date][$before_user][$before_hour][$before_event] = 0;
-                    }
-
-                    $new_detalle[$before_date][$before_user][$before_hour][$before_event] = $new_detalle[$before_date][$before_user][$before_hour][$before_event] + ($before_second_timemod - $before_time);
-
-                    $new_detalle = $this->nivel_ocupacion($day_consult,$new_detalle,$Usuarios,$Eventos_Auxiliares,$Cosapi_Eventos,$Claro_Eventos,$Eventos,$before_hour,$before_user,$before_date);
-
-
-                }else{
-                    if(!isset($new_detalle[$before_date][$before_user][$before_hour][$before_event])){
-                        $new_detalle[$before_date][$before_user][$before_hour][$before_event] = 0;
-                    }
-
-                    $new_detalle[$before_date][$before_user][$before_hour][$before_event] = $new_detalle[$before_date][$before_user][$before_hour][$before_event] + ($second_timemod - $before_time);
-
+                if (($key + 1) == $cantidad_detalles) {
+                    $new_detalle = $this->nivel_ocupacion($day_consult, $new_detalle, $Usuarios, $Eventos_Auxiliares, $Cosapi_Eventos, $Claro_Eventos, $Eventos, $detalle_eventos['hourmod'], $detalle_eventos['user_id'], $detalle_eventos['fechamod']);
                 }
+
+                $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_fin'] = $detalle_eventos['evento_id'];
+                $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['hour'] = $detalle_eventos['hourmod'];
+                $before_event = $detalle_eventos['evento_id'];
+                $before_time = $second_timemod;
+                $before_date = $detalle_eventos['fechamod'];
+                $before_hour = $detalle_eventos['hourmod'];
+                $before_user = $detalle_eventos['user_id'];
+
             }
 
-            if(($key+1)==$cantidad_detalles){
-                $new_detalle = $this->nivel_ocupacion($day_consult,$new_detalle,$Usuarios,$Eventos_Auxiliares,$Cosapi_Eventos,$Claro_Eventos,$Eventos,$detalle_eventos['hourmod'],$detalle_eventos['user_id'],$detalle_eventos['fechamod']);
-            }
 
-            $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_fin'] = $detalle_eventos['evento_id'];
-            $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['hour'] = $detalle_eventos['hourmod'];
-            $before_event = $detalle_eventos['evento_id'];
-            $before_time  = $second_timemod;
-            $before_date  = $detalle_eventos['fechamod'];
-            $before_hour  = $detalle_eventos['hourmod'];
-            $before_user  = $detalle_eventos['user_id'];
+            foreach ($Array_days as $keyd => $days) {
+                foreach ($Usuarios as $keyu => $usuario) {
+                    $posicion = 0;
+                    foreach ($Listhour as $keyh => $hour) {
+                        //EXISTE REGISTRO
+                        if (isset($new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']])) {
+                            //COMIENZA CON UNA HORA DIFERENTE A 00:00
+                            if ($hour['hourmod'] != '00:00' and $posicion == 0) {
+                                $evento_ini = $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['evento_ini'];
+                                $listarentreHoras = listarentreHoras('00:00', $hour['hourmod']);
 
-        }
-
-
-        foreach($Array_days as $keyd => $days){
-            foreach($Usuarios as $keyu => $usuario){
-                $posicion = 0;
-                foreach($Listhour as $keyh => $hour){
-                    //EXISTE REGISTRO
-                    if(isset($new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']])){
-                        //COMIENZA CON UNA HORA DIFERENTE A 00:00
-                        if($hour['hourmod'] != '00:00' and $posicion==0){
-                            $evento_ini = $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['evento_ini'];
-                            $listarentreHoras = listarentreHoras('00:00',$hour['hourmod']);
-
-                            //EVENTO INICIAL DEL REGISTRO EXISTENTE ES DIFERENTE A "LOGUIN"
-                            if($evento_ini != 11){
-                                foreach($listarentreHoras as $hour_faltante){
-                                    foreach ($Eventos as $evento){
-                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][$evento['id']]= 0;
+                                //EVENTO INICIAL DEL REGISTRO EXISTENTE ES DIFERENTE A "LOGUIN"
+                                if ($evento_ini != 11) {
+                                    foreach ($listarentreHoras as $hour_faltante) {
+                                        foreach ($Eventos as $evento) {
+                                            $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][$evento['id']] = 0;
+                                        }
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][1] = 1800;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_ini'] = 1;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_fin'] = 1;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['logueo'] = 1800;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['outbound'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['acw'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['indbound'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['auxiliares'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['hour'] = $hour_faltante['hour'];
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['88'] = 0;
                                     }
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][1]= 1800;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_ini']= 1;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_fin']= 1;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['logueo']= 1800;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['outbound'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['acw'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['indbound'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['auxiliares'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['hour'] = $hour_faltante['hour'];
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['88'] = 0;
-                                }
-                            }else{
-                            // EVENTO INICIAL DEL REGISTRO ES IGUAL A "LOGIN"
-                                foreach($listarentreHoras as $hour_faltante){
-                                    foreach ($Eventos as $evento){
-                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][$evento['id']]= 0;
+                                } else {
+                                    // EVENTO INICIAL DEL REGISTRO ES IGUAL A "LOGIN"
+                                    foreach ($listarentreHoras as $hour_faltante) {
+                                        foreach ($Eventos as $evento) {
+                                            $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][$evento['id']] = 0;
+                                        }
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][15] = 1800;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_ini'] = 15;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_fin'] = 15;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['logueo'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['outbound'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['acw'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['indbound'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['auxiliares'] = 0;
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['hour'] = $hour_faltante['hour'];
+                                        $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['88'] = 0;
                                     }
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']][15] = 1800;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_ini']= 15;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['evento_fin']= 15;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['logueo']= 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['outbound'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['acw'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['indbound'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['auxiliares'] = 0;
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['hour'] = $hour_faltante['hour'];
-                                    $new_detalle[$days['fechamod']][$usuario['id']][$hour_faltante['hour']]['88'] = 0;
                                 }
-                            }
-                        }else{
+                            } else {
 
-                            //REGISTRO EXISTENTE CON HORA DIFERENTE A 23:30
-                            if ($hour['hourmod'] != '23:30'){
+                                //REGISTRO EXISTENTE CON HORA DIFERENTE A 23:30
+                                if ($hour['hourmod'] != '23:30') {
 
-                                //SIGUIENTE REGISTRO NO EXISTE
-                                if(!isset($new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]) ){
-                                   
+                                    //SIGUIENTE REGISTRO NO EXISTE
+                                    if (!isset($new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']])) {
+
                                         $evento_fin = $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['evento_fin'];
 
                                         //EL ULTIMO EVENTO DEL REGISTRO EXISTENTE ES "DESCONECTADO"
-                                        if($evento_fin == 15){
+                                        if ($evento_fin == 15) {
 
-                                            $datetime = $days['fechamod'].' '.$Listhour[$keyh+1]['hourmod'].':00';
+                                            $datetime = $days['fechamod'] . ' ' . $Listhour[$keyh + 1]['hourmod'] . ':00';
 
-                                            if($datetime <= date("Y-m-d H:i:s")){
+                                            if ($datetime <= date("Y-m-d H:i:s")) {
 
-                                                foreach ($Eventos as $evento){
-                                                    $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']][$evento['id']]= 0;
+                                                foreach ($Eventos as $evento) {
+                                                    $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']][$evento['id']] = 0;
                                                 }
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']][15] = 1800;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['evento_ini']= 15;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['evento_fin']= 15;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['logueo']= 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['outbound'] = 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['acw'] = 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['indbound'] = 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['auxiliares'] = 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['hour'] = $Listhour[$keyh+1]['hourmod'];
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['88'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']][15] = 1800;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['evento_ini'] = 15;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['evento_fin'] = 15;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['logueo'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['outbound'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['acw'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['indbound'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['auxiliares'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['hour'] = $Listhour[$keyh + 1]['hourmod'];
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['88'] = 0;
                                             }
-                                            
-                                        }else{
-                                        //EL ULTIMO EVENTO DEL REGISTRO EXISTENTE ES DIFERENTE A "DESCONECTADO"
 
-                                            $datetime = $days['fechamod'].' '.$Listhour[$keyh+1]['hourmod'].':00';
+                                        } else {
+                                            //EL ULTIMO EVENTO DEL REGISTRO EXISTENTE ES DIFERENTE A "DESCONECTADO"
 
-                                            if($datetime <= date("Y-m-d H:i:s")){
+                                            $datetime = $days['fechamod'] . ' ' . $Listhour[$keyh + 1]['hourmod'] . ':00';
 
-                                                foreach ($Eventos as $evento){
-                                                    $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']][$evento['id']]= 0;
+                                            if ($datetime <= date("Y-m-d H:i:s")) {
+
+                                                foreach ($Eventos as $evento) {
+                                                    $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']][$evento['id']] = 0;
                                                 }
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']][$evento_fin] = 1800;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['evento_ini']= $evento_fin;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['evento_fin']= $evento_fin;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['logueo']= 1800;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['outbound'] = 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['acw'] = 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['indbound'] = 0;
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['auxiliares'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']][$evento_fin] = 1800;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['evento_ini'] = $evento_fin;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['evento_fin'] = $evento_fin;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['logueo'] = 1800;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['outbound'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['acw'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['indbound'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['auxiliares'] = 0;
 
-                                                foreach ($Eventos_Auxiliares as $eventos_auxiliar){
-                                                    if($eventos_auxiliar['id']==$evento_fin){
-                                                        $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['auxiliares'] = 1800;
+                                                foreach ($Eventos_Auxiliares as $eventos_auxiliar) {
+                                                    if ($eventos_auxiliar['id'] == $evento_fin) {
+                                                        $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['auxiliares'] = 1800;
                                                     }
                                                 }
 
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['hour'] = $Listhour[$keyh+1]['hourmod'];
-                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh+1]['hourmod']]['88'] = 0;
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['hour'] = $Listhour[$keyh + 1]['hourmod'];
+                                                $new_detalle[$days['fechamod']][$usuario['id']][$Listhour[$keyh + 1]['hourmod']]['88'] = 0;
                                             }
                                         }
+                                    }
                                 }
                             }
+                            $posicion++;
                         }
-                        $posicion++;
+                    }
+                }
+            }
+
+            $ocupacion = [];
+            foreach ($Array_days as $days) {
+                foreach ($Listhour as $hour) {
+
+                    $datetime = $days['fechamod'] . ' ' . $hour['hourmod'] . ':00';
+
+                    if ($datetime <= date("Y-m-d H:i:s")) {
+
+                        foreach ($Usuarios as $usuario) {
+                            if (isset($new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']])) {
+                                if (!isset($ocupacion [$days['fechamod']][$hour['hourmod']])) {
+                                    $ocupacion[$days['fechamod']][$hour['hourmod']]['cantidad'] = 1;
+                                    $ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound'] = 0;
+                                    $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'] = 0;
+                                    $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw'] = 0;
+                                    $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'] = 0;
+                                    $ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares'] = 0;
+                                    $ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo'] = 0;
+                                }
+                                $ocupacion[$days['fechamod']][$hour['hourmod']]['cantidad'] = $ocupacion [$days['fechamod']][$hour['hourmod']]['cantidad'] + 1;
+                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound'] = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound'] + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['indbound'];
+                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw'] = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw'] + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['acw'];
+                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'] = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'] + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['outbound'];
+                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares'] = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares'] + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['auxiliares'];
+                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo'] = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo'] + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['logueo'];
+                            }
+                        }
+
+                        $formula_inferior = ($ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo'] - $ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares']);
+
+
+                        if ($formula_inferior != 0) {
+
+                            $ocupacion[$days['fechamod']][$hour['hourmod']]['total_cosapi'] = round(($ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound'] + $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'] + $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw']) / ($formula_inferior) * 100, 2);
+                        } else {
+                            $ocupacion[$days['fechamod']][$hour['hourmod']]['total_cosapi'] = round(0, 2);
+                        }
+                        $ocupacion[$days['fechamod']][$hour['hourmod']]['hora'] = $hour['hourmod'];
+                        $ocupacion[$days['fechamod']][$hour['hourmod']]['fecha'] = $days['fechamod'];
                     }
                 }
             }
         }
 
-        $ocupacion = [];
-        foreach($Array_days as $days){
-            foreach($Listhour as $hour){
+        //$nivelocupacion = $this->nivelocupacionCollection($ocupacion, $Array_days, $Listhour);
 
-                $datetime = $days['fechamod'].' '.$hour['hourmod'].':00';
-
-                if($datetime <= date("Y-m-d H:i:s")){
-
-                    foreach($Usuarios as $usuario){
-                        if(isset($new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']])){
-                            if(!isset($ocupacion [$days['fechamod']][$hour['hourmod']])){
-                                $ocupacion[$days['fechamod']][$hour['hourmod']]['cantidad']           = 1;
-                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound']     = 0;
-                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound']     = 0;
-                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw']          = 0;
-                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound']     = 0;
-                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares']   = 0;
-                                $ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo']       = 0;
-                            }
-                            $ocupacion[$days['fechamod']][$hour['hourmod']]['cantidad']         = $ocupacion [$days['fechamod']][$hour['hourmod']]['cantidad']        + 1;
-                            $ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound']   = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound']   + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['indbound'];
-                            $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw']        = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw']        + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['acw'];
-                            $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound']   = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound']   + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['outbound'];
-                            $ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares'] = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares'] + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['auxiliares'];
-                            $ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo']     = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo']     + $new_detalle[$days['fechamod']][$usuario['id']][$hour['hourmod']]['logueo'];
-                        }
-                    }
-                    
-                    $formula_inferior = ($ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo']-$ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares']);
-
-
-                    if($formula_inferior != 0){
-
-                        $ocupacion[$days['fechamod']][$hour['hourmod']]['total_cosapi']     = round(($ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound'] + $ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'] + $ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw'])/($formula_inferior)*100,2);
-                    }else{
-                        $ocupacion[$days['fechamod']][$hour['hourmod']]['total_cosapi']     = round(0,2);
-                    }
-                    $ocupacion[$days['fechamod']][$hour['hourmod']]['hora']             = $hour['hourmod'];
-                    $ocupacion[$days['fechamod']][$hour['hourmod']]['fecha']            = $days['fechamod'];
-                }    
-            }
-        }
-
-        $nivelocupacion = $this->nivelocupacionCollection($ocupacion,$Array_days,$Listhour);
-
-        return $nivelocupacion;
+        return array($ocupacion,$Array_days, $Listhour);
     }
 
 
@@ -415,40 +430,95 @@ class LeveloccupationController extends CosapiController
      * @param  [array]          $Listhour   [Array con rango de hora cada 30 minutos desde las 0 horas hasta las  23:30]
      * @return [colllection]                [Collection con datos para el reporte de Level Of Ocupation]
      */
-    protected function nivelocupacionCollection($ocupacion,$Array_days,$Listhour){
+    protected function nivelocupacionCollection($builderview){
+        $outgoingcollection                 = new Collector;
+        foreach ($builderview as $view) {
+            $outgoingcollection->push([
+                'date'                => $view['date'],
+                'hour'                => $view['hour'],
+                'indbound'            => $view['indbound'],
+                'acw'                 => $view['acw'],
+                'outbound'            => $view['outbound'],
+                'auxiliares'          => $view['auxiliares'],
+                'logueo'              => $view['logueo'],
+                'occupation_cosapi'   => $view['occupation_cosapi']
+            ]);
+        }
 
-        $nivelocupacionCollection = new Collector();
+        return $outgoingcollection;
+    }
+
+    protected function nivelocupacionBuilderView($ocupacion,$Array_days,$Listhour){
+        $posicion = 0;
         foreach($Array_days as $days){
             foreach($Listhour as $hour){
                 $datetime = $days['fechamod'].' '.$hour['hourmod'].':00';
 
-                if($datetime <= date("Y-m-d H:i:s")){    
-                    $nivelocupacionCollection->push([
-                        'date'              => $ocupacion[$days['fechamod']][$hour['hourmod']]['fecha'],
-                        'hour'              => $hour['name'],
-                        'indbound'          => conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound'], false),
-                        'acw'               => conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw'], false),
-                        'outbound'          => conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'], false),
-                        'auxiliares'        => conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares'], false),
-                        'logueo'            => conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo'], false),
-                        'occupation_cosapi' => $ocupacion[$days['fechamod']][$hour['hourmod']]['total_cosapi'],
-                    ]);
+                if($datetime <= date("Y-m-d H:i:s") && $ocupacion != []){
+                    $builderview[$posicion]['date']              = $ocupacion[$days['fechamod']][$hour['hourmod']]['fecha'];
+                    $builderview[$posicion]['hour']              = $hour['name'];
+                    $builderview[$posicion]['indbound']          = conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_indbound'], false);
+                    $builderview[$posicion]['acw']               = conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_acw'], false);
+                    $builderview[$posicion]['outbound']          = conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_outbound'], false);
+                    $builderview[$posicion]['auxiliares']        = conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_auxiliares'], false);
+                    $builderview[$posicion]['logueo']            = conversorSegundosHoras($ocupacion[$days['fechamod']][$hour['hourmod']]['total_logueo'], false);
+                    $builderview[$posicion]['occupation_cosapi'] = $ocupacion[$days['fechamod']][$hour['hourmod']]['total_cosapi'];
+
                 }else{
-                    $nivelocupacionCollection->push([
-                        'date'              => $days['fechamod'],
-                        'hour'              => $hour['name'],
-                        'indbound'          => conversorSegundosHoras(0, false),
-                        'acw'               => conversorSegundosHoras(0, false),
-                        'outbound'          => conversorSegundosHoras(0, false),
-                        'auxiliares'        => conversorSegundosHoras(0, false),
-                        'logueo'            => conversorSegundosHoras(0, false),
-                        'occupation_cosapi' => 0,
-                    ]);
+                    $builderview[$posicion]['date']              = $days['fechamod'];
+                    $builderview[$posicion]['hour']              = $hour['name'];
+                    $builderview[$posicion]['indbound']          =  conversorSegundosHoras(0, false);
+                    $builderview[$posicion]['acw']               = conversorSegundosHoras(0, false);
+                    $builderview[$posicion]['outbound']          = conversorSegundosHoras(0, false);
+                    $builderview[$posicion]['auxiliares']        = conversorSegundosHoras(0, false);
+                    $builderview[$posicion]['logueo']            = conversorSegundosHoras(0, false);
+                    $builderview[$posicion]['occupation_cosapi'] = 0;
                 }
+                $posicion ++;
             }
         }
 
-        return $nivelocupacionCollection;
+        if(!isset($builderview)){
+            $builderview = [];
+        }
+
+        return $builderview;
+    }
+
+    /**
+     * [export_csv Function que retorna la ubicación de los datos a exportar en CSV]
+     * @param  [string] $days [Fecha de la consulta]
+     * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
+     */
+    protected function export_csv($days){
+        $NivelOcupationHour=$this->NivelOcupationHour($days);
+        $builderview = $this->nivelocupacionBuilderView($NivelOcupationHour[0],$NivelOcupationHour[1],$NivelOcupationHour[2]);
+        $this->BuilderExport($builderview,'level_occupation','csv','exports');
+
+        $data = [
+            'succes'    => true,
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/level_occupation.csv']
+        ];
+
+        return $data;
+    }
+
+    /**
+     * [export_excel Function que retorna la ubicación de los datos a exportar en Excel]
+     * @param  [string] $days [Fecha de la consulta]
+     * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
+     */
+    protected function export_excel($days){
+        $NivelOcupationHour = $this->NivelOcupationHour($days);
+        $builderview = $this->nivelocupacionBuilderView($NivelOcupationHour[0],$NivelOcupationHour[1],$NivelOcupationHour[2]);
+        $this->BuilderExport($builderview,'level_occupation','xlsx','exports');
+
+        $data = [
+            'succes'    => true,
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/level_occupation.xlsx']
+        ];
+
+        return $data;
     }
 
 }

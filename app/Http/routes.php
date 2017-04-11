@@ -31,7 +31,8 @@ Route::group (['middleware'=>['user']], function(){
         Route::post('agents_queue/mark'							        , ['uses'=>'AgentsQueueController@mark_form']);
         Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
 
-
+        // List users
+        Route::post('list_users'                                        , ['uses'=>'ListUsersController@index']);
 
     });
 
@@ -58,6 +59,8 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('export_events_detail'								, ['uses'=>'EventsAgentController@export']);
     Route::post('export_agents_online'								, ['uses'=>'AgentsOnlineController@export']);
     Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
+    Route::post('export_level_occupation'	    					, ['uses'=>'LeveloccupationController@export']);
+    Route::post('export_list_user'								    , ['uses'=>'ListUsersController@export']);
 
     // Miscelaneas
     Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);

@@ -23,8 +23,8 @@
                 <i class="fa fa-dashboard"></i> <span>REPORTING EVENTS</span> <i class="fa fa-angle-left pull-right"></i>
               </a>
               <ul class="treeview-menu">
-                <li><a href="#" id="events_detail"        class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Events</a></li>
-
+                <li><a href="#" id="events_detail" class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Events</a></li>
+                <li><a href="#" id="list_users" class="reportes"><i class="fa fa-circle-o text-purple"></i> Listar Usuarios</a></li>
                 @if($role != 'user')
                   <li><a href="#" id="events_consolidated"  class="reportes"><i class="fa fa-circle-o text-yellow"></i> Consolidated Events</a></li>
                   <li><a href="#" id="level_of_occupation"  class="reportes"><i class="fa fa-circle-o text-red"></i> Level Of Occupation</a></li>
