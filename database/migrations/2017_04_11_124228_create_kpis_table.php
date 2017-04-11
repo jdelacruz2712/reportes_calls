@@ -14,11 +14,11 @@ class CreateKpisTable extends Migration
     {
         Schema::create('kpis', function (Blueprint $table){
 
-            $table->increments('id');
+            $table->integer('id');
             $table->string('name',50);
             $table->string('text',50);
             $table->string('symbol',5);
-            $table->integer('time',5);
+            $table->string('time',5);
             $table->string('color',50);
             $table->string('icon',50);
             $table->integer('estado_id',10)->unsigned();

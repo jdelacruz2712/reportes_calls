@@ -27,7 +27,7 @@ $(document).ready(function () {
   var hour = $('#hour').val()
   var date = $('#date').val()
   var anexo = $('#anexo').text()
-  if($('#assistence_user')){
+  if($('#assistence_user').length > 0 ){
     let assistence_user = $('#assistence_user').val().split('&')
     if(assistence_user[0] == 'true'){
       MarkAssitance(user_id, date, hour, 'Entrada', assistence_user)
@@ -596,18 +596,20 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
 
     if(resData['Response'] == 'success'){
       if (parameters['type_action'] == 'release') {
+        socketAsterisk.emit('leaveRoom', $('#anexo').text())
         $('#anexo').text('Sin Anexo')
         vueFront.anexo = ''
         setQueueAdd('false')
       }else{
         if (parameters['anexo']) {
           $('#anexo').text(parameters['anexo'])
+          socketAsterisk.emit('createRoom', $('#anexo').text())
         }
 
         if (parameters['number_annexed']) {
           vueFront.anexo = parameters['number_annexed']
-          socketAsterisk.emit('updateAnexo',{anexo: vueFront.anexo, username: $('#user_name').val()})
           $('#anexo').text(parameters['number_annexed'])
+          socketAsterisk.emit('createRoom', $('#anexo').text())
         }
       }
 
@@ -1187,33 +1189,34 @@ function desconnect_agent (hour_exit) {
 }
 
 function liberar_anexos () {
-  BootstrapDialog.show({
-    type: 'type-primary',
-    title: 'Liberación de Anexo',
-    message: '¿Desea liberar su anexo?',
-    closable: true,
-    buttons: [
-      {
-        label: 'Aceptar',
-        cssClass: 'btn-success',
-        action: function (dialogRef) {
-          if (anexo != 'Sin Anexo') {
+  let anexo = $('#anexo').text()
+  if (anexo != 'Sin Anexo') {
+    BootstrapDialog.show({
+      type: 'type-primary',
+      title: 'Liberación de Anexo',
+      message: '¿Desea liberar su anexo?',
+      closable: true,
+      buttons: [
+        {
+          label: 'Aceptar',
+          cssClass: 'btn-success',
+          action: function (dialogRef) {
             freeAnnexedAjax()
-          } else {
-            mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
+            dialogRef.close()
           }
-          dialogRef.close()
+        },
+        {
+          label: 'Cancelar',
+          cssClass: 'btn-danger',
+         action: function (dialogRef) {
+            dialogRef.close()
+          }
         }
-      },
-      {
-        label: 'Cancelar',
-        cssClass: 'btn-danger',
-        action: function (dialogRef) {
-          dialogRef.close()
-        }
-      }
-    ]
-  })
+      ]
+    })
+  }else {
+    mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
+  }
 }
 
 let freeAnnexedAjax = (anexo = '', user_id = '') =>{
@@ -1277,6 +1280,7 @@ function assignAnexxed (anexo_name,user_id) {
   var anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
   let username = $('#user_name').val()
+  let userRol = $('#user_role').val()
   let parameters
   let route = ''
   $.ajax({
@@ -1294,7 +1298,8 @@ function assignAnexxed (anexo_name,user_id) {
           parameters = {
             number_annexed : anexo_name,
             user_id : user_id,
-            username: username
+            username: username,
+            userRol: userRol
           }
           route = '/anexos/updateAnexo'
           ajaxNodeJs(parameters, route, true, 2000)

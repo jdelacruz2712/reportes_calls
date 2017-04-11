@@ -11,7 +11,7 @@
   </head>
   <body >
     @yield('content')
-    {!!Html::script('js/cosapi_dashboard.min.js')!!}
+    {!!Html::script('js/cosapi_dashboard.min.js?version='.date('YmdHis'))!!}
     @yield('scripts')
   </body>
 </html>
