@@ -12,7 +12,7 @@ Route::group (['middleware'=>['user']], function(){
 
         // Dashboard
         Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);
-        Route::post('dashboard_01/getAnswered'							, ['uses'=>'DashboardController@getAnswered']);
+        Route::post('dashboard_01/getEventKpi'							, ['uses'=>'DashboardController@getEventKpi']);
         Route::get('dashboard_02'   									, ['uses'=>'DashboardController@dashboard_02']);
 
         // Reportes de consolidado de eventos
@@ -31,7 +31,8 @@ Route::group (['middleware'=>['user']], function(){
         Route::post('agents_queue/mark'							        , ['uses'=>'AgentsQueueController@mark_form']);
         Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
 
-
+        // List users
+        Route::post('list_users'                                        , ['uses'=>'ListUsersController@index']);
 
     });
 
@@ -44,6 +45,7 @@ Route::group (['middleware'=>['user']], function(){
     // Lista de anexos
     Route::post('agents_annexed'									, ['uses'=>'AgentsAnnexedController@index']);
     Route::post('agents_annexed/user'								, ['uses'=>'AgentsAnnexedController@getUserAnexo']);
+    Route::post('agents_annexed/list_annexed'						, ['uses'=>'AgentsAnnexedController@getListAnnexed']);
 
     // Reportes calls
     Route::post('incoming_calls'									, ['uses'=>'IncomingCallsController@index']);
@@ -58,6 +60,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('export_agents_online'								, ['uses'=>'AgentsOnlineController@export']);
     Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
     Route::post('export_level_occupation'	    					, ['uses'=>'LeveloccupationController@export']);
+    Route::post('export_list_user'								    , ['uses'=>'ListUsersController@export']);
 
     // Miscelaneas
     Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);

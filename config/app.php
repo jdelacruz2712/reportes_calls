@@ -167,6 +167,7 @@ return [
         /** DataTable  **/
         Yajra\Datatables\DatatablesServiceProvider::class,
 
+
     ],
 
     /*
@@ -228,7 +229,6 @@ return [
 
         /** DataTable **/
         'Datatables'=> Yajra\Datatables\Facades\Datatables::class,
-
 
     ],
 

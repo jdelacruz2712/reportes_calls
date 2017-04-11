@@ -271,6 +271,17 @@ class CosapiController extends Controller
 
     }
 
+
+    public function register_agent_dashboard($user_name,$anexo)
+    {
+        \DB::table('agent_online')->insert(array(
+            'name_agent'     => 'Agent/'.$user_name,
+            'number_annexed' => $anexo,
+            'name_event'     => 'Login'
+        ));
+
+    }
+
     /**
      * [Function que devuelve datos de el primer logueo realizado por el usuario]
      * @return array

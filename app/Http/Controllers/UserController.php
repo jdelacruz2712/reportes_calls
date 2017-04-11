@@ -8,6 +8,7 @@ use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use DB;
 
 class UserController extends CosapiController
 {
@@ -24,10 +25,12 @@ class UserController extends CosapiController
     public function modifyPassword(Request $request){
         if ($request->ajax()){
             if ($request->newPassword){
-                $resultado = $request->user()->fill([
-                    'password'          => Hash::make($request->newPassword),
-                    'change_password'   => 1
-                ])->save();
+                $resultado = DB::table('users')
+                    ->where('id',$request->userId)
+                    ->update([
+                        'password'          => Hash::make($request->newPassword),
+                        'change_password'   => 1
+                    ]);
 
                 return (string)$resultado;
             }

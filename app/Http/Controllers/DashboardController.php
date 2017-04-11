@@ -1,6 +1,7 @@
 <?php
 
 namespace Cosapi\Http\Controllers;
+use Cosapi\Models\Kpis;
 use Cosapi\Models\Queue_Log;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
@@ -17,23 +18,39 @@ class DashboardController extends IncomingCallsController
     return view('elements/dashboard/dashboard_01');
   }
 
-  public function getAnswered(Request $request){
+  public function getEventKpi(Request $request){
     if($request->type){
-
       try {
-        $event = $this->get_events($request->type);
-        $time = 'false';
-        if($request->time){ $time = 'true'; }
-        $answered = Queue_Log::select()
-                             ->whereIn('event',$event)
-                             ->filtro_time($time,$request->type)
-                             ->count();
+        $event    = $this->get_events($request->type);
+        $action   = 'false';
+        $metrica  = array(
+            'action'  => $action,
+            'symbol' => '',
+            'time'    => ''
+        );
 
+        if($request->time){
+          $action             = 'true';
+          $kpis               = Kpis::select()->where('name',$request->type.'_time')->get()->toArray();
+          $metrica['action']  = $action;
+          $metrica['symbol'] = $kpis[0]['symbol'];
+          $metrica['time']    = $kpis[0]['time'];
+        }
 
-       return response()->json(['message' => $answered], 200);
+        $answered             = Queue_Log::select()
+                                            ->whereIn('event',$event)
+                                            ->filtro_time($metrica)
+                                            ->count();
+
+        return response()->json([
+            'message' => $answered,
+            'symbol' => $metrica['symbol'],
+            'time'    => $metrica['time']
+        ], 200);
+
       } catch (\Exception $e) {
-
         return response()->json(['message' => $e->getMessage()], 500);
+
       }
     }
   }
