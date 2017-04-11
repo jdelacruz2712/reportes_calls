@@ -596,17 +596,20 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
 
     if(resData['Response'] == 'success'){
       if (parameters['type_action'] == 'release') {
+        socketAsterisk.emit('leaveRoom', $('#anexo').text())
         $('#anexo').text('Sin Anexo')
         vueFront.anexo = ''
         setQueueAdd('false')
       }else{
         if (parameters['anexo']) {
           $('#anexo').text(parameters['anexo'])
+          socketAsterisk.emit('createRoom', $('#anexo').text())
         }
 
         if (parameters['number_annexed']) {
           vueFront.anexo = parameters['number_annexed']
           $('#anexo').text(parameters['number_annexed'])
+          socketAsterisk.emit('createRoom', $('#anexo').text())
         }
       }
 

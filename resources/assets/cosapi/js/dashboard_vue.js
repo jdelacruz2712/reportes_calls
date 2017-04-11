@@ -75,7 +75,7 @@ var kpi = new Vue({
         this.abandonedTime = response.data.message
         this.abandonedSecond = response.data.time
         this.abandonedsymbol = response.data.symbol
-        this.loadSlaDay()
+
       },response =>{
         console.log(response.body.message)
       })
