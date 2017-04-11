@@ -1570,12 +1570,24 @@ function columnsDatatable (route) {
 /**
  * Created by jdelacruzc on 11/04/2017.
  *
+ * [RoleTableHide description]
+ * @return {Array} [Los roles con el cual me ocultaran las columnas]
+ */
+const RoleTableHide = () =>  ['user']
+
+/**
+ * Created by jdelacruzc on 11/04/2017.
+ *
  * [DatableHide description]
  * @param  {String} nombreDiv [Nombre del id de la tabla]
- * @return {Array}  numeroColumnas[Se pasan los numeros de columnas que se desean ocultar]
+ * @param {Array}  numeroColumnas[Se pasan los numeros de columnas que se desean ocultar]
+ * @return Oculta las columnas en el datatable
  */
-function DatableHide(nombreDIV, numeroColumnas) {
-  var prueba = $('#' + nombreDIV).DataTable()
-  prueba.columns( numeroColumnas ).visible( false, false );
-  prueba.columns.adjust().draw( false );
+const DataTableHide = (nombreDIV, numeroColumnas, roleUser) => {
+    let exist = RoleTableHide().indexOf(roleUser)
+    if(exist >= 0) {
+      let DataTableDiv = $('#' + nombreDIV).DataTable()
+      DataTableDiv.columns( numeroColumnas ).visible( false, false );
+      DataTableDiv.columns.adjust().draw( false );
+    }
 }
