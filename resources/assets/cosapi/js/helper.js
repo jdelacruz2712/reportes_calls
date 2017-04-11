@@ -30,7 +30,10 @@ $(document).ready(function () {
 
   if($('#assistence_user').val().split('&') == 'false'){
     MarkAssitance(user_id, date, hour, 'Entrada')
+  }else{
+    checkPassword()
   }
+
   if (anexo === 'Sin Anexo') loadModule('agents_annexed')
   $('#statusAgent').click(function () {
     PanelStatus()
@@ -1337,7 +1340,8 @@ function checkPassword () {
   }
 }
 
-function changePassword () {
+function changePassword (userId = '') {
+  if(userId === '') userId = $('#user_id').val()
   var token = $('input[name=_token]').val()
   var message = '<p>Cambiar Contraseña</p>' +
                     '<br>' +
@@ -1386,7 +1390,8 @@ function changePassword () {
                 url: 'modifyPassword',
                 data: {
                   _token: token,
-                  newPassword: newPassword
+                  newPassword: newPassword,
+                  userId: userId
                 },
                 success: function (data) {
                   if (data == 1) {

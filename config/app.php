@@ -168,9 +168,6 @@ return [
         Yajra\Datatables\DatatablesServiceProvider::class,
 
 
-        /** Blade Pagination **/
-        Styde\BladePagination\ServiceProvider::class,
-
     ],
 
     /*
