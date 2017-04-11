@@ -596,7 +596,6 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
 
         if (parameters['number_annexed']) {
           vueFront.anexo = parameters['number_annexed']
-          socketAsterisk.emit('updateAnexo',{anexo: vueFront.anexo, username: $('#user_name').val()})
           $('#anexo').text(parameters['number_annexed'])
         }
       }

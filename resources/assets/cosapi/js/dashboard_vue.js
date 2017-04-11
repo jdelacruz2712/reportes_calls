@@ -99,26 +99,34 @@ var socket = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
 socket.emit('connect_dashboard')
 
 socket.on('QueueMemberAdded', data => {
-  vm.agents.push(data['QueueMemberAdded'])
+  let dataAgent = data['QueueMemberAdded']
+  let numberAnnexed = dataAgent.number_annexed
+  const actionPush = updateDataAgent(numberAnnexed, dataAgent)
+  if (actionPush === true) vm.agents.push(data['QueueMemberAdded'])
 })
 
 socket.on('QueueMemberRemoved', data => {
-  for (agent in vm.agents) {
-    if (vm.agents.hasOwnProperty(agent)) {
-      if (vm.agents[agent]['number_annexed'] === data['NumberAnnexed']){
-        vm.agents.splice(agent, 1)
-      }
-    }
-  }
+  updateDataAgent(data.NumberAnnexed, '')
 })
 
 socket.on('QueueMemberChange', data => {
-  console.log(data)
-  for (agent in vm.agents) {
-    if (vm.agents.hasOwnProperty(agent)) {
-      if (vm.agents[agent]['number_annexed'] === data['NumberAnnexed']){
-        vm.agents.splice(agent, 1, data['QueueMemberChange'])
+  let dataAgent = data['QueueMemberChange']
+  let numberAnnexed = dataAgent.number_annexed
+  updateDataAgent(numberAnnexed, dataAgent)
+})
+
+function updateDataAgent(numberAnnexed, dataAgent){
+  actionPush = true
+  vm.agents.forEach(item => {
+    if (item.number_annexed === numberAnnexed) {
+      actionPush = false
+      if (dataAgent){
+        vm.agents.splice(item, 1, dataAgent)
+      }else{
+        vm.agents.splice(item, 1)
       }
     }
-  }
-})
+  })
+
+  return actionPush
+}
