@@ -31,8 +31,7 @@ Route::group (['middleware'=>['user']], function(){
         Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
 
         // List users
-        Route::post('list_table'                                        , ['uses'=>'ListUsersController@index']);
-        Route::get('list_table/{per_page?}'                             , ['uses'=>'ListUsersController@index']);
+        Route::post('list_users'                                        , ['uses'=>'ListUsersController@index']);
 
     });
 

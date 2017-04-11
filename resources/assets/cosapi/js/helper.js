@@ -276,6 +276,14 @@ function show_tab_outgoing (evento) {
 }
 
 /**
+ * [show_tab_list_user Función que carga los datos detallados de los usuarios]
+ * @param  {String} evento [Tipo de reporte a cargar en la vista]
+ */
+function show_tab_list_user (evento) {
+  dataTables('table-list-user', get_data_filters(evento), 'list_users')
+}
+
+/**
  * [get_data_filters Función que configura datos a enviar en las consultas]
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  * @return {Array}         [Devuelve parametros configurados]
@@ -1448,6 +1456,21 @@ function columnsDatatable (route) {
       {"data":"auxiliares"},
       {"data":"logueo"},
       {"data":"occupation_cosapi"}
+    ]
+  }
+
+  if (route === 'list_users') {
+    columns = [
+      {"data":"Id"},
+      {"data":"First Name"},
+      {"data":"Second Name"},
+      {"data":"Last Name"},
+      {"data":"Second Last Name"},
+      {"data":"Username"},
+      {"data":"Role"},
+      {"data":"Estado"},
+      {"data":"Change Status"},
+      {"data":"Change Password"}
     ]
   }
 
