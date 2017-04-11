@@ -58,7 +58,7 @@
                 <ul class="treeview-menu">
                   <li><a href="#" id="agents_annexed"     class="reportes"><i class="fa fa-circle-o text-purple"></i> Assign Annexed</a></li>
                 @if($role != 'user')
-                  <li><a href="#" id="list_users"         class="reportes"><i class="fa fa-circle-o text-red"></i> Listar Usuarios</a></li>
+                  <li><a href="#" id="list_users"         class="reportes"><i class="fa fa-circle-o text-red"></i> List Users</a></li>
                   <li><a href="#" id="agents_queue"       class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Queue</a></li>
                 @endif
                 @if(Session::get('ChangeRole') == 1)

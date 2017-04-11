@@ -27,7 +27,7 @@ $(document).ready(function () {
   var hour = $('#hour').val()
   var date = $('#date').val()
   var anexo = $('#anexo').text()
-  if($('#assistence_user')){
+  if($('#assistence_user').length > 0 ){
     let assistence_user = $('#assistence_user').val().split('&')
     if(assistence_user[0] == 'true'){
       MarkAssitance(user_id, date, hour, 'Entrada', assistence_user)
@@ -1277,6 +1277,7 @@ function assignAnexxed (anexo_name,user_id) {
   var anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
   let username = $('#user_name').val()
+  let userRol = $('#user_role').val()
   let parameters
   let route = ''
   $.ajax({
@@ -1294,7 +1295,8 @@ function assignAnexxed (anexo_name,user_id) {
           parameters = {
             number_annexed : anexo_name,
             user_id : user_id,
-            username: username
+            username: username,
+            userRol: userRol
           }
           route = '/anexos/updateAnexo'
           ajaxNodeJs(parameters, route, true, 2000)
