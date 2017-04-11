@@ -30,23 +30,12 @@ var kpi = new Vue({
     //this.loadQueue()
   },
   methods:{
-    loadSlaDay: function(){
-      this.slaDay = '-'
-      let answered = this.answered
-      let abandoned = this.abandoned
-      let answeredTime = this.answeredTime
-      let abandonedTime = this.abandonedTime
-      if(answered != '-' && abandoned != '-' && answeredTime != '-' && abandonedTime != '-') {
-        this.slaDay = (answeredTime * 100)/answered
-      }else{
-        this.slaDay = '-'
-      }
-    },
     loadAnswered: function(){
       this.answered = '-'
       let parameters = {type : 'calls_completed'}
       this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.answered = response.data.message
+        this.loadSlaDay()
       },response =>{
         console.log(response.body.message)
       })
@@ -56,6 +45,7 @@ var kpi = new Vue({
       let parameters = {type : 'calls_abandone'}
       this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.abandoned = response.data.message
+        this.loadSlaDay()
       },response =>{
         console.log(response.body.message)
       })
@@ -70,6 +60,7 @@ var kpi = new Vue({
         this.answeredTime = response.data.message
         this.answeredSecond = response.data.time
         this.answeredsymbol = response.data.symbol
+        this.loadSlaDay()
       },response =>{
         console.log(response.body.message)
       })
@@ -84,9 +75,22 @@ var kpi = new Vue({
         this.abandonedTime = response.data.message
         this.abandonedSecond = response.data.time
         this.abandonedsymbol = response.data.symbol
+        this.loadSlaDay()
       },response =>{
         console.log(response.body.message)
       })
+    },
+    loadSlaDay: function(){
+      this.slaDay = '-'
+      let answered = this.answered
+      let abandoned = this.abandoned
+      let answeredTime = this.answeredTime
+      let abandonedTime = this.abandonedTime
+      if(answered != '-' && abandoned != '-' && answeredTime != '-' && abandonedTime != '-') {
+        this.slaDay = (answeredTime * 100)/answered
+      }else{
+        this.slaDay = '-'
+      }
     },
     loadQueue: function(){
       //this.queue = 15
