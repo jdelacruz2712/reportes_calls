@@ -1663,7 +1663,7 @@ function createUser () {
           '</div>' +
           '<div class="col-md-6">' +
             '<select class="form-control" style="border-radius: 7px" id="slRol">' +
-              '<option selected>Seleccionar Aqui</option>' +
+              '<option value="sinrol" selected>Seleccionar Aqui</option>' +
               '<option value="user">Usuario</option>' +
               '<option value="backoffice">BackOffice</option>' +
               '<option value="supervisor">Supervisor</option>' +
@@ -1691,7 +1691,7 @@ function createUser () {
           var email           = $('#email').val()
           var role            = $('#slRol').val()
 
-          if (primerNombre != '' && segundoNombre != '' && apellidoPaterno != '' && apellidoMaterno != '' && userName != '' && nuevaContraseña != '' && email != '' && role != '') {
+          if (primerNombre != '' && segundoNombre != '' && apellidoPaterno != '' && apellidoMaterno != '' && userName != '' && nuevaContraseña != '' && email != '' && role != 'sinrol') {
               $.ajax({
                 type: 'POST',
                 url: 'createUser',
@@ -1742,7 +1742,7 @@ function changeStatus (userId, status) {
   var token = $('input[name=_token]').val()
   var estado = ''
 
-  if(status === 0){
+  if(status === 'Inactivo'){
     estado = 1
   }else{
     estado = 0
