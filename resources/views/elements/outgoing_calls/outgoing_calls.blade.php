@@ -26,6 +26,7 @@
 
     function buscar(){
         show_tab_outgoing('outgoing_calls');
+        DataTableHide('table-outgoing',[6,7],$('#user_role').val())
     }
 </script>
 
