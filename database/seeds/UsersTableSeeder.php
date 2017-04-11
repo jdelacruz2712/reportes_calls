@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Seeder;
 
+use Illuminate\Support\Facades\Hash;
+
 class UsersTableSeeder extends Seeder
 {
     /**
@@ -17,10 +19,9 @@ class UsersTableSeeder extends Seeder
             'apellido_paterno'  =>  'Cosapitest',
             'apellido_materno'  =>  'Cosapitest',
             'username'          =>  'cosapitest',
-            'agente_id'         =>  '1',
             'email'             =>  'cosapitest@cosapidata.com.pe',
-            'password'          =>  bcrypt('C0s4pi+est+'),
-            'role'              =>  'analista'
+            'password'          =>  Hash::make('C0s4pi+est+'),
+            'role'              =>  'admin'
         ]);
     }
 }

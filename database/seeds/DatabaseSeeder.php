@@ -19,7 +19,6 @@ class DatabaseSeeder extends Seeder
         $this->call(EstadosCallsTableSeeder::class);
         $this->call(EventosTableSeeder::class);
         $this->call(AnexosTableSeeder::class);
-        $this->call(AgentesTableSeeder::class);
         $this->call(Queues_prioritysTableSeeder::class);
         $this->call(Queues_strategysTableSeeder::class);
         $this->call(QueuesTableSeeder::class);

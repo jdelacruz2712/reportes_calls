@@ -72,6 +72,26 @@ class UserController extends CosapiController
         }
     }
 
+    public function createUser(Request $request){
+        if ($request->ajax()){
+            if ($request->primerNombre){
+
+                $resultado = DB::table('users')->insert([
+                        'primer_nombre'    => $request->primerNombre,
+                        'segundo_nombre'   => $request->segundoNombre,
+                        'apellido_paterno' => $request->apellidoPaterno,
+                        'apellido_materno' => $request->apellidoMaterno,
+                        'username'         => $request->userName,
+                        'email'            => $request->email,
+                        'password'         => Hash::make($request->nuevaContraseña),
+                        'role'             => $request->role,
+                    ]);
+
+                return (string)$resultado;
+            }
+        }
+    }
+
     public function export(Request $request){
         $export_outgoing  = call_user_func_array([$this,'export_'.$request->format_export], [$request->days]);
         return $export_outgoing;
@@ -147,11 +167,11 @@ class UserController extends CosapiController
     protected function export_csv(){
 
         $builderview = $this->builderview($this->user_list_query(),'export');
-        $this->BuilderExport($builderview,'list_table','csv','exports');
+        $this->BuilderExport($builderview,'list_users','csv','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/list_table.csv']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/list_users.csv']
         ];
 
         return $data;
@@ -160,11 +180,11 @@ class UserController extends CosapiController
     protected function export_excel(){
 
         $builderview = $this->builderview($this->user_list_query(),'export');
-        $this->BuilderExport($builderview,'list_table','xlsx','exports');
+        $this->BuilderExport($builderview,'list_users','xlsx','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/list_table.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/list_users.xlsx']
         ];
 
         return $data;

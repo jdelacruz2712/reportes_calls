@@ -1430,6 +1430,8 @@ const changeStatus = (userId)=>{
   })
 }
 
+
+
 /**
  * Created by dominguez on 10/03/2017.
  *
@@ -1593,4 +1595,138 @@ const DataTableHide = (nombreDIV, numeroColumnas, roleUser) => {
       DataTableDiv.columns( numeroColumnas ).visible( false, false );
       DataTableDiv.columns.adjust().draw( false );
     }
+}
+
+/**
+ * Created by jdelacruzc on 11/04/2017.
+ *
+ * [createUser description]
+ * @return Crea un usuario nuevo y refersca el datatable listuser
+ */
+function createUser () {
+  var token = $('input[name=_token]').val()
+  var message = '<br>' +
+      '<div class="row">' +
+        '<div class="col-md-12">' +
+          '<div class="col-md-6" >' +
+            'Primer Nombre:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<input type="text" class="form-control" style="border-radius: 7px" id="primerNombre" placeholder="Test">' +
+          '</div>' +
+          '<br>' + '<br>' + '<br>' +
+          '<div class="col-md-6">' +
+            'Segundo Nombre:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<input type="text" class="form-control" style="border-radius: 7px" id="segundoNombre" placeholder="Test 2">' +
+          '</div>' +
+          '<br>' + '<br>' + '<br>' +
+          '<div class="col-md-6">' +
+            'Apellido Paterno:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoPaterno" placeholder="Cosapi">' +
+          '</div>' +
+          '<br>' + '<br>' + '<br>' +
+          '<div class="col-md-6">' +
+            'Apellido Materno:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoMaterno" placeholder="Cosapi 2">' +
+          '</div>' +
+          '<br>' + '<br>' + '<br>' +
+          '<div class="col-md-6">' +
+            'Username:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<input type="text" class="form-control" style="border-radius: 7px" id="userName" placeholder="testCosapi">' +
+          '</div>' +
+          '<br>' + '<br>' + '<br>' +
+          '<div class="col-md-6">' +
+            'Contraseña:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<input type="password" class="form-control" style="border-radius: 7px" id="nuevaContraseña" placeholder="xxxxxx">' +
+          '</div>' +
+          '<br>' + '<br>' + '<br>' +
+          '<div class="col-md-6">' +
+            'Correo:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<input type="text" class="form-control" style="border-radius: 7px" id="email" placeholder="cosapi@cosapidata.com.pe">' +
+          '</div>' +
+          '<br>' + '<br>' + '<br>' +
+          '<div class="col-md-6">' +
+            'Rol de Usuario:' +
+          '</div>' +
+          '<div class="col-md-6">' +
+            '<select class="form-control" style="border-radius: 7px" id="slRol">' +
+              '<option selected>Seleccionar Aqui</option>' +
+              '<option value="user">Usuario</option>' +
+              '<option value="backoffice">BackOffice</option>' +
+              '<option value="supervisor">Supervisor</option>' +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+
+  BootstrapDialog.show({
+    type: 'type-primary',
+    title: 'Crear Nuevo Usuario',
+    message: message,
+    closable: true,
+    buttons: [
+      {
+        label: 'Aceptar',
+        cssClass: 'btn-primary',
+        action: function (dialogRef) {
+          var primerNombre    = $('#primerNombre').val()
+          var segundoNombre   = $('#segundoNombre').val()
+          var apellidoPaterno = $('#apellidoPaterno').val()
+          var apellidoMaterno = $('#apellidoMaterno').val()
+          var userName        = $('#userName').val()
+          var nuevaContraseña = $('#nuevaContraseña').val()
+          var email           = $('#email').val()
+          var role            = $('#slRol').val()
+
+          if (primerNombre != '' && segundoNombre != '' && apellidoPaterno != '' && apellidoMaterno != '' && userName != '' && nuevaContraseña != '' && email != '' && role != '') {
+              $.ajax({
+                type: 'POST',
+                url: 'createUser',
+                data: {
+                  _token:           token,
+                  primerNombre:     primerNombre,
+                  segundoNombre:    segundoNombre,
+                  apellidoPaterno:  apellidoPaterno,
+                  apellidoMaterno:  apellidoMaterno,
+                  userName:         userName,
+                  nuevaContraseña:  nuevaContraseña,
+                  email:            email,
+                  role:             role
+                },
+                success: function (data) {
+                  if (data == 1) {
+                    show_tab_list_user('list_users')
+                    dialogRef.close()
+                    mostrar_notificacion('success', 'El usuario se registro correctamente!!!', 'Success', 2000, false, true)
+                  } else {
+                    mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+                  }
+                }
+              })
+          } else {
+            alert('Por favor de llenar todos los campos')
+          }
+        }
+      },
+      {
+        label: 'Cancelar',
+        cssClass: 'btn-primary',
+        action: function (dialogRef) {
+          dialogRef.close()
+        }
+      }
+    ]
+  })
 }

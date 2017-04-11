@@ -19,7 +19,6 @@ class CreateUsersTable extends Migration
             $table->string('apellido_paterno');
             $table->string('apellido_materno');
             $table->string('username')->unique();
-            $table->integer('agente_id')->unsigned();
             $table->integer('estado_id')->unsigned();
             $table->string('email')->unique();
             $table->string('password', 60);
@@ -30,10 +29,6 @@ class CreateUsersTable extends Migration
             $table->integer('change_role')->default(0)->unsigned();
 
             /*creando las relaciones entre tablas y llaves primarias*/
-            $table->foreign('agente_id')
-                  ->references('id')
-                  ->on('agentes');
-
             $table->foreign('estado_id')
                   ->references('id')
                   ->on('estados');
