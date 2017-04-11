@@ -21,8 +21,9 @@
                     <th>Username</th>
                     <th>Role</th>
                     <th>Estado</th>
-                    <th>Change Status</th>
+                    <th>Change Rol</th>
                     <th>Change Password</th>
+                    <th>Change Status</th>
                 </tr>
                 </thead>
             </table>
@@ -38,21 +39,4 @@
         show_tab_list_user('list_users')
         DataTableHide('table-list-user',[0,8,9],'{{Session::get('UserRole')}}')
     }
-
-    function insertarUser(){
-        //Crear un nuevo usuario
-        $.ajax({
-            type        : 'POST',
-            url         : 'list_users/create_user',
-            cache       : false,
-            data        : $('form[name=buscador]').serialize(),
-            success: function(data){
-                $('#plantilla_asignar_cola').html(data);
-            },
-            error : function(data) {
-                $("#plantilla_asignar_cola").html ("A ocurrido un Error, porfavor de comunicarse con el personal de TI !!!");
-            },
-        });
-    }
-
 </script>

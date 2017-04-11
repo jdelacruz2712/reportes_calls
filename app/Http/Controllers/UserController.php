@@ -72,6 +72,21 @@ class UserController extends CosapiController
         }
     }
 
+    public function changeStatus(Request $request){
+        if ($request->ajax()){
+            if ($request->userID){
+
+                $resultado = DB::table('users')
+                    ->where('id',$request->userID)
+                    ->update([
+                        'estado_id'    => $request->estadoID,
+                    ]);
+
+                return (string)$resultado;
+            }
+        }
+    }
+
     public function createUser(Request $request){
         if ($request->ajax()){
             if ($request->primerNombre){
@@ -122,7 +137,7 @@ class UserController extends CosapiController
             $builderview[$posicion]['Second Last Name']         = $query['apellido_materno'];
             $builderview[$posicion]['Role']                     = $query['role'];
             $builderview[$posicion]['Username']                 = $query['username'];
-            $builderview[$posicion]['Estado']                   = $estado;
+            $builderview[$posicion]['Estado']                   = $query['estado_id'];
             $posicion ++;
         }
 
@@ -146,8 +161,9 @@ class UserController extends CosapiController
                 'Username'              => $view['Username'],
                 'Role'                  => $view['Role'],
                 'Estado'                => $view['Estado'],
-                'Change Status'         => '<a class="btn btn-success btn-xs" onclick="changeStatus('. $view['Id'] .')"><i class="fa fa-refresh"></i></a>',
-                'Change Password'       => '<a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .',true)"><i class="fa fa-key"></i></a>'
+                'Change Rol'            => '<a class="btn btn-success btn-xs" onclick="changeRol('. $view['Id'] .')"><i class="fa fa-user"></i></a>',
+                'Change Password'       => '<a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .',true)"><i class="fa fa-key"></i></a>',
+                'Change Status'         => '<a class="btn btn-info btn-xs" onclick="changeStatus('. $view['Id'] .', '. $view['Estado'] .')"><i class="fa fa-refresh"></i></a>'
             ]);
 
         }

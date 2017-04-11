@@ -70,6 +70,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('modifyRole'                                        , ['uses'=>'UserController@modifyRole'          ,    'as' => 'modifyRole']);
     Route::post('setQueueAdd'                                       , ['uses'=>'AdminController@setQueueAdd'        ,    'as' => 'setQueueAdd']);
     Route::post('createUser'                                        , ['uses'=>'UserController@createUser'          ,    'as' => 'createUser']);
+    Route::post('changeStatus'                                      , ['uses'=>'UserController@changeStatus'        ,    'as' => 'changeStatus']);
 });
 
 

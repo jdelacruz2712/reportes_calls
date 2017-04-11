@@ -1393,7 +1393,7 @@ function changePassword (userId = '',closable = false) {
   })
 }
 
-const changeStatus = (userId)=>{
+const changeRol = (userId)=>{
   let message = 'Seleccione el rol que quiere asignar al usuario :'+
                 '<br><br>'+
                 '<div class="row">'+
@@ -1565,8 +1565,9 @@ function columnsDatatable (route) {
       {"data":"Username"},
       {"data":"Role"},
       {"data":"Estado"},
-      {"data":"Change Status"},
-      {"data":"Change Password"}
+      {"data":"Change Rol"},
+      {"data":"Change Password"},
+      {"data":"Change Status"}
     ]
   }
 
@@ -1728,5 +1729,66 @@ function createUser () {
         }
       }
     ]
+  })
+}
+
+/**
+ * Created by jdelacruzc on 11/04/2017.
+ *
+ * [createUser description]
+ * @return Crea un usuario nuevo y refersca el datatable listuser
+ */
+function changeStatus (userId, status) {
+  var token = $('input[name=_token]').val()
+  var estado = ''
+
+  if(status === 0){
+    estado = 1
+  }else{
+    estado = 0
+  }
+
+  let message = 'Deseas cambiar el estado del usuario ?' +
+      '<br>' +
+      '<b>Nota :</b> Esto afecta el estado (Activo o Inactivo).'
+
+  BootstrapDialog.show({
+      type: 'type-primary',
+      title: 'Cambiar Estado',
+      message: message,
+      closable: true,
+      buttons: [
+        {
+          label: 'Aceptar',
+          cssClass: 'btn-success',
+          action: function (dialogRef) {
+            $.ajax({
+              type: 'POST',
+              url: 'changeStatus',
+              data: {
+                _token:     token,
+                userID:     userId,
+                estadoID:   estado
+              },
+              success: function (data) {
+                if (data == 1) {
+                  show_tab_list_user('list_users')
+                  dialogRef.close()
+                  mostrar_notificacion('success', 'Se cambio el estado del usuario!!!', 'Success', 2000, false, true)
+                } else {
+                  mostrar_notificacion('error', 'Problemas al cambiar en la base de datos', 'Error', 10000, false, true)
+                }
+              }
+            })
+          }
+        },
+        {
+          label: 'Cancelar',
+          cssClass: 'btn-danger',
+          action: function (dialogRef) {
+            dialogRef.close()
+          }
+        }
+      ]
   })
 }
