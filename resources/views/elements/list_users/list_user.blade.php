@@ -29,5 +29,6 @@
     })
     function buscar(){
         show_tab_list_user('list_users')
+        DatableHide('table-list-user',[0,1])
     }
 </script>

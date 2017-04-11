@@ -1567,3 +1567,15 @@ function columnsDatatable (route) {
 
   return columns
 }
+/**
+ * Created by jdelacruzc on 11/04/2017.
+ *
+ * [DatableHide description]
+ * @param  {String} nombreDiv [Nombre del id de la tabla]
+ * @return {Array}  numeroColumnas[Se pasan los numeros de columnas que se desean ocultar]
+ */
+function DatableHide(nombreDIV, numeroColumnas) {
+  var prueba = $('#' + nombreDIV).DataTable()
+  prueba.columns( numeroColumnas ).visible( false, false );
+  prueba.columns.adjust().draw( false );
+}
