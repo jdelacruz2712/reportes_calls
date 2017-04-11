@@ -28,6 +28,7 @@ class SurveysController extends CosapiController
                     'titleReport'           => 'Report of Surveys',
                     'viewButtonSearch'      => false,
                     'viewHourSearch'        => false,
+                    'viewDateSearch'        => true,
                     'exportReport'          => 'export_surveys',
                     'nameRouteController'   => ''
                 ));

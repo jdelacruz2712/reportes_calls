@@ -12,9 +12,10 @@
 		<input type="hidden" id="hidDefaultEvent" value="{{$nameRouteController}}">
         <div class="box-body" style="display: block;">
             <div class="row">
+
             	<div class="col-md-4">
 					<!-- Date range -->
-					<div class="box-body">
+					<div class="box-body" @if($viewDateSearch == false) style="display: none" @endif>
 			    		<div class="input-group">
 			    			<div class="input-group-addon">
 			     				<i class="fa fa-calendar"></i>

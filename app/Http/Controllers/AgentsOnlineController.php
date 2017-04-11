@@ -30,6 +30,7 @@ class AgentsOnlineController extends CosapiController
                     'titleReport'           => 'Report of Agent Online',
                     'viewButtonSearch'      => true,
                     'viewHourSearch'        => false,
+                    'viewDateSearch'        => true,
                     'exportReport'          => 'export_agents_online',
                     'nameRouteController'   => 'agents_online'
                 ));
