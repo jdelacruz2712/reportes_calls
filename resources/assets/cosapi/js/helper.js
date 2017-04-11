@@ -1186,33 +1186,34 @@ function desconnect_agent (hour_exit) {
 }
 
 function liberar_anexos () {
-  BootstrapDialog.show({
-    type: 'type-primary',
-    title: 'Liberación de Anexo',
-    message: '¿Desea liberar su anexo?',
-    closable: true,
-    buttons: [
-      {
-        label: 'Aceptar',
-        cssClass: 'btn-success',
-        action: function (dialogRef) {
-          if (anexo != 'Sin Anexo') {
+  let anexo = $('#anexo').text()
+  if (anexo != 'Sin Anexo') {
+    BootstrapDialog.show({
+      type: 'type-primary',
+      title: 'Liberación de Anexo',
+      message: '¿Desea liberar su anexo?',
+      closable: true,
+      buttons: [
+        {
+          label: 'Aceptar',
+          cssClass: 'btn-success',
+          action: function (dialogRef) {
             freeAnnexedAjax()
-          } else {
-            mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
+            dialogRef.close()
           }
-          dialogRef.close()
+        },
+        {
+          label: 'Cancelar',
+          cssClass: 'btn-danger',
+         action: function (dialogRef) {
+            dialogRef.close()
+          }
         }
-      },
-      {
-        label: 'Cancelar',
-        cssClass: 'btn-danger',
-        action: function (dialogRef) {
-          dialogRef.close()
-        }
-      }
-    ]
-  })
+      ]
+    })
+  }else {
+    mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
+  }
 }
 
 let freeAnnexedAjax = (anexo = '', user_id = '') =>{
