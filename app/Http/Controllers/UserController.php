@@ -40,12 +40,17 @@ class UserController extends CosapiController
     public function modifyRole(Request $request){
         if ($request->ajax()){
             if ($request->nameRole){
-                $resultado = $request->user()->fill([
-                    'role'          => $request->nameRole,
-                ])->save();
-                if($resultado == true){
+
+                $resultado = DB::table('users')
+                    ->where('id',$request->userId)
+                    ->update([
+                        'role'    => $request->nameRole,
+                    ]);
+
+                if($resultado == true && $this->UserId ==  $request->userId){
                     Session::put('UserRole'   ,Auth::user()->role   );
                 }
+
                 return (string)$resultado;
             }
         }

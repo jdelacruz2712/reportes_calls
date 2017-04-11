@@ -87,7 +87,7 @@ class ListUsersController extends CosapiController
                 'Role'                  => $view['Role'],
                 'Estado'                => $view['Estado'],
                 'Change Status'         => '<a class="btn btn-success btn-xs" onclick="changeStatus('. $view['Id'] .')"><i class="fa fa-refresh"></i></a>',
-                'Change Password'       => '<a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .')"><i class="fa fa-key"></i></a>'
+                'Change Password'       => '<a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .',true)"><i class="fa fa-key"></i></a>'
             ]);
 
         }
