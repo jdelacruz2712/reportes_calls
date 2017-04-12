@@ -101,6 +101,7 @@ class UserController extends CosapiController
                         'email'            => $request->email,
                         'password'         => Hash::make($request->nuevaContraseña),
                         'role'             => $request->role,
+                        'estado_id'        => 1
                     ]);
 
                 return (string)$resultado;
