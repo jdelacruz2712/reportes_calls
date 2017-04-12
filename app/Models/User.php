@@ -52,4 +52,7 @@
             return $this->belongsTo('Cosapi\Models\Agentes');
         }
 
+        public function userProfile(){
+            return $this->hasOne('Cosapi\Models\UsersProfile');
+        }
     }
