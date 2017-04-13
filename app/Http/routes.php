@@ -31,8 +31,13 @@ Route::group (['middleware'=>['user']], function(){
         Route::post('agents_queue/mark'							        , ['uses'=>'AgentsQueueController@mark_form']);
         Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
 
-        // List users
+        // Lista de Usuarios
         Route::post('list_users'                                        , ['uses'=>'UserController@index']);
+
+        // Perfil de Usuario
+        Route::post('profile_users'                                     , ['uses'=>'UserController@changeProfile']);
+        Route::post('viewUsers'                                         , ['uses'=>'UserController@viewUser']);
+        Route::post('uploadAvatar'                                      , ['uses'=>'UserController@uploadAvatar']);
 
     });
 
