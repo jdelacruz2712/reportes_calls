@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAgentOnlineTable extends Migration
+class CreateAgentesOnlineTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,20 +12,24 @@ class CreateAgentOnlineTable extends Migration
      */
     public function up()
     {
-        Schema::create('agent_online', function (Blueprint $table)
+        Schema::create('agentes_online', function (Blueprint $table)
         {
-            $table->increments('id');
-            $table->string('number_annexed',10);
-            $table->string('name_agent',35);
-            $table->string('name_event',25);
-            $table->string('name_queue_inbound',50);
-            $table->string('phone_number_inbound',25);
-            $table->time('star_call_inbound');
-            $table->string('total_calls',4);
-            $table->string('name_queue',25);
-            $table->string('status_pause',1);
-            $table->string('penalty_agent',1);
-            $table->string('ringinuse_agent',20);
+            $table->increments('id')->unsigned();
+            $table->unsignedInteger('evento_id')->index('agents_online_evento_id_foreign');
+            $table->unsignedInteger('user_id')->index('agents_online_user_id_foreign');
+            $table->dateTime('fecha_evento');
+            $table->unique(['user_id','fecha_evento']);
+
+            /*creando las relaciones entre tablas y llaves primarias con la tabla eventos*/
+            $table->foreign('evento_id')
+                  ->references('id')
+                  ->on('eventos');
+
+            /*creando las relaciones entre tablas y llaves primarias con la tabla eventos*/
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
+
         });
     }
 
@@ -36,6 +40,6 @@ class CreateAgentOnlineTable extends Migration
      */
     public function down()
     {
-        schema::drop('agent_online');
+        Schema::drop('agentes_online');
     }
 }

@@ -13,15 +13,15 @@ class CreateEventosTable extends Migration
     public function up()
     {
         Schema::create ('eventos', function (Blueprint $table){
-             $table->increments('id');
+             $table->increments('id')->unsigned();
              $table->string('name',255)->unique();
 
-             $table->integer('estado_call_id')->unsigned();
-             $table->integer('estado_visible_id')->unsigned();
-             $table->integer('eventos_auxiliares')->unsigned();
-             $table->integer('cosapi_eventos')->unsigned();
-             $table->integer('claro_eventos')->unsigned();
-             $table->integer('estado_id')->unsigned();
+             $table->unsignedInteger('estado_call_id');
+             $table->unsignedInteger('estado_visible_id');
+             $table->unsignedInteger('eventos_auxiliares');
+             $table->unsignedInteger('cosapi_eventos');
+             $table->unsignedInteger('claro_eventos');
+             $table->unsignedTinyInteger('estado_id');
              $table->timestamps();
              $table->string('icon',50)->nullable();
              $table->string('color',50)->nullable();

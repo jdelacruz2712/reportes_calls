@@ -14,9 +14,9 @@ class CreateTipoEncuestasTable extends Migration
     {
        Schema::create('tipo_encuestas', function(Blueprint $table)
         {
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name', 60)->unique();
-            $table->integer('estado_id')->unsigned();
+            $table->unsignedTinyInteger('estado_id');
             $table->timestamps();
 
             /*fk tipo encuesta*/

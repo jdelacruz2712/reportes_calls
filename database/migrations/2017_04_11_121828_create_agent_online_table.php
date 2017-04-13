@@ -14,22 +14,18 @@ class CreateAgentOnlineTable extends Migration
     {
         Schema::create('agent_online', function (Blueprint $table)
         {
-            $table->increments('id')->unique()-> primary()->unsigned();
+            $table->increments('id')->unsigned();
             $table->string('number_annexed',10);
             $table->string('name_agent',35);
             $table->string('name_event',25);
             $table->string('name_queue_inbound',50);
             $table->string('phone_number_inbound',25);
             $table->time('star_call_inbound');
-            $table->integer('total_calls',4);
+            $table->string('total_calls',4);
             $table->string('name_queue',25);
-            $table->tinyInteger('status_pause',4);
+            $table->string('status_pause',1);
             $table->string('penalty_agent',1);
             $table->string('ringinuse_agent',20);
-
-
-
-
         });
     }
 

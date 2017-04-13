@@ -23,10 +23,10 @@ class CreateCdrConsolidadoTable extends Migration
             $table->string('dstchannel', 80)->default('');
             $table->string('lastapp', 80)->default('');
             $table->string('lastdata', 80)->default('');
-            $table->integer('duration')->default(0);
-            $table->integer('billsec')->default(0);
+            $table->unsignedInteger('duration')->default(0);
+            $table->unsignedInteger('billsec')->default(0);
             $table->string('disposition', 45)->default('');
-            $table->integer('amaflags')->default(0);
+            $table->unsignedInteger('amaflags')->default(0);
             $table->string('accountcode', 20)->default('');
             $table->string('uniqueid', 32)->default('');
             $table->string('userfield')->default('');

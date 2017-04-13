@@ -14,25 +14,25 @@ class CreateConsolidatedEventsTable extends Migration
     {
         Schema::create('consolidated_events', function(Blueprint $table)
         {
-            $table->integer('id', true);
+            $table->increments('id')->unsigned();
             $table->date('date')->index('search_date');
             $table->string('agente');
-            $table->integer('login');
-            $table->integer('acd');
-            $table->integer('break');
-            $table->integer('sshh');
-            $table->integer('refrigerio');
-            $table->integer('feedback');
-            $table->integer('capacitacion');
-            $table->integer('backoffice');
-            $table->integer('inbound');
-            $table->integer('outbound');
-            $table->integer('acw');
-            $table->integer('desconectado');
-            $table->integer('logueado');
-            $table->integer('auxiliar');
-            $table->integer('talk_time');
-            $table->integer('saliente_hablado');
+            $table->unsignedInteger('login');
+            $table->unsignedInteger('acd');
+            $table->unsignedInteger('break');
+            $table->unsignedInteger('sshh');
+            $table->unsignedInteger('refrigerio');
+            $table->unsignedInteger('feedback');
+            $table->unsignedInteger('capacitacion');
+            $table->unsignedInteger('backoffice');
+            $table->unsignedInteger('inbound');
+            $table->unsignedInteger('outbound');
+            $table->unsignedInteger('acw');
+            $table->unsignedInteger('desconectado');
+            $table->unsignedInteger('logueado');
+            $table->unsignedInteger('auxiliar');
+            $table->unsignedInteger('talk_time');
+            $table->unsignedInteger('saliente_hablado');
             $table->unique(['date','agente']);
         });
     }

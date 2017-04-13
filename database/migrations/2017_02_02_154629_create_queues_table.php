@@ -13,12 +13,12 @@ class CreateQueuesTable extends Migration
     public function up()
     {
         Schema::create('queues', function (Blueprint $table){
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name',70)->unique();
             $table->string('vdn',9)->unique();
-            $table->integer('queues_strategy_id')->unsigned();
-            $table->integer('queues_priority_id')->unsigned();
-            $table->integer('estado_id')->unsigned();
+            $table->unsignedInteger('queues_strategy_id');
+            $table->unsignedInteger('queues_priority_id');
+            $table->unsignedTinyInteger('estado_id');
             $table->unique(['name','vdn']);
             /*creando las relacion con tabla estrategia*/
             $table->foreign('queues_strategy_id')

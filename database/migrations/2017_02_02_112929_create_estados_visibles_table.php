@@ -13,7 +13,7 @@ class CreateEstadosVisiblesTable extends Migration
     public function up()
     {
         Schema::create ('estados_visibles', function (Blueprint $table){
-                $table->increments('id');
+                $table->increments('id')->unsigned();
                 $table->string('name',15)->unique();
                 $table->timestamps();
         });

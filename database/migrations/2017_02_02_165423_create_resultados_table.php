@@ -14,10 +14,10 @@ class CreateResultadosTable extends Migration
     {
         Schema::create('resultados', function(Blueprint $table)
         {
-            $table->increments('id');
-            $table->integer('encuesta_id')->unsigned();
-            $table->integer('pregunta_id')->unsigned();
-            $table->integer('tipo_encuesta_id')->unsigned();
+            $table->increments('id')->unsigned();
+            $table->unsignedInteger('encuesta_id');
+            $table->unsignedInteger('pregunta_id');
+            $table->unsignedInteger('tipo_encuesta_id');
             $table->string('respuesta', 60)->index('FK_resultados_respuesta');
             $table->date('fecha_encuesta');
             $table->timestamps();

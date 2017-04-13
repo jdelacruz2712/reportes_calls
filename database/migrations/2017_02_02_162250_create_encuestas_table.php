@@ -14,9 +14,9 @@ class CreateEncuestasTable extends Migration
     {
         Schema::create('encuestas', function(Blueprint $table)
         {
-            $table->increments('id');
-            $table->integer('user_id')->unsigned()->index('FK_encuesta_users');
-            $table->integer('anexo_id')->unsigned()->index('FK_encuesta_anexo');
+            $table->increments('id')->unsigned();
+            $table->unsignedInteger('user_id')->index('FK_encuesta_users');
+            $table->unsignedInteger('anexo_id')->index('FK_encuesta_anexo');
             $table->string('telefono_contacto', 15);
             $table->string('opcion_ivr', 35)->nullable();
             $table->integer('duracion')->nullable();

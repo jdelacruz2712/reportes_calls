@@ -13,9 +13,9 @@ class CreateUsersQueuesTable extends Migration
     public function up()
     {
         Schema::create('users_queues', function(Blueprint $table){
-                $table->increments('id');
-                $table->integer('user_id')->unsigned();
-                $table->integer('queue_id')->unsigned();
+                $table->increments('id')->unsigned();
+                $table->unsignedInteger('user_id');
+                $table->unsignedInteger('queue_id');
                 $table->enum('priority', array('1','2','3','4','5','7','8','9','10'))->default('1');
                 $table->unique(['user_id','queue_id']);
 
