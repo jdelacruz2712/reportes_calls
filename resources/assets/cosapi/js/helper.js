@@ -1764,7 +1764,7 @@ function changeStatus (userId, status) {
       closable: true,
       buttons: [
         {
-          label: 'Aceptar',
+          label: 'Si',
           cssClass: 'btn-success',
           action: function (dialogRef) {
             $.ajax({
@@ -1788,7 +1788,7 @@ function changeStatus (userId, status) {
           }
         },
         {
-          label: 'Cancelar',
+          label: 'No',
           cssClass: 'btn-danger',
           action: function (dialogRef) {
             dialogRef.close()

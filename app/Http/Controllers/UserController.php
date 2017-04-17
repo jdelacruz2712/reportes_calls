@@ -39,6 +39,27 @@ class UserController extends CosapiController
         }
     }
 
+    public function changeProfile(Request $request){
+        return view('elements/profile_users/profile_users');
+    }
+
+    public function uploadAvatar(Request $request){
+        $file = $request->file;
+        return $file;
+    }
+
+    public function viewUser(Request $request){
+        if ($request->ajax()) {
+            $resultado = User::Select()
+                ->with('userProfile')
+                ->where('id', $request->userID)
+                ->get()
+                ->toArray();
+        }
+
+        return $resultado;
+    }
+
     public function modifyPassword(Request $request){
         if ($request->ajax()){
             if ($request->newPassword){

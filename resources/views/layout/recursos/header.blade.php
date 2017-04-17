@@ -64,7 +64,7 @@
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat reportes" id="working" >Profile</a>
+                                <a href="#" class="btn btn-default btn-flat reportes" id="profile_users" >Profile</a>
                             </div>
                             <div class="pull-right">
                                 <a href="#" onClick="javascript:disconnectAgent()" class="btn btn-default btn-flat">Sign out</a>
