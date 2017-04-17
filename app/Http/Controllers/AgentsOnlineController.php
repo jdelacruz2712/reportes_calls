@@ -36,7 +36,7 @@ class AgentsOnlineController extends CosapiController
                 ));
             }
         }
-        
+
     }
 
     /**
@@ -83,8 +83,8 @@ class AgentsOnlineController extends CosapiController
     protected function builderview($query_agents_online,$type=''){
         $posicion = 0;
         foreach ($query_agents_online as $query) {
-            $builderview[$posicion]['date']     = $this->$query['date_agent'];
-            $builderview[$posicion]['hour']     = $this->$query['hour_agent'];
+            $builderview[$posicion]['date']     = $query['date_agent'];
+            $builderview[$posicion]['hour']     = $query['hour_agent'];
             $builderview[$posicion]['agents']   = $query['quantity'];
             $posicion ++;
         }

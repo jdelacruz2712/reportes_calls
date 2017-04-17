@@ -17,9 +17,15 @@ socketSails.reconnectionDelayMax = 5
 // socketSails.reconnectionDelay = 20
 
 const socketAsterisk = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
-socketAsterisk.on('status_agent',  (data) => {
-  vueFront.present_status_name  = data.Name_Event
-  vueFront.present_status_id    = data.Event_id
+socketAsterisk.on('connect', function() {
+   if ($('#anexo').text()) {
+     socketAsterisk.emit('createRoom', $('#anexo').text())
+   }
+});
+
+socketAsterisk.on('statusAgent',  (data) => {
+  vueFront.present_status_name  = data.NameEvent
+  vueFront.present_status_id    = data.EventId
 })
 
 socketSails.on('connect', function () {
