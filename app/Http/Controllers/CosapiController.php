@@ -302,4 +302,16 @@ class CosapiController extends Controller
 
         return array($cant_event,$date_really, $fecha_evento, $id);
     }
+
+    /**
+     * [Funcion para obtener el tamaño de los anexos]
+     */
+    protected function lengthAnnexed(){
+        $lengthAnnexed = Anexo::select(DB::raw('LENGTH(name) AS annexed_length'))
+                                ->groupBy(DB::raw('LENGTH(name)'))
+                                ->get()
+                                ->toArray();
+        return $lengthAnnexed;
+    }
+
 }

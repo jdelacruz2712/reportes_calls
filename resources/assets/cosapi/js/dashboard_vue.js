@@ -27,7 +27,6 @@ var kpi = new Vue({
     this.loadAnsweredTime()
     this.loadAbandonedTime()
     this.loadSlaDay()
-    //this.loadQueue()
   },
   methods:{
     loadAnswered: function(){
@@ -59,7 +58,7 @@ var kpi = new Vue({
       this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.answeredTime = response.data.message
         this.answeredSecond = response.data.time
-        this.answeredsymbol = response.data.symbol
+        this.abandonedSymbol = response.data.symbol
         this.loadSlaDay()
       },response =>{
         console.log(response.body.message)
@@ -74,7 +73,7 @@ var kpi = new Vue({
       this.$http.post('dashboard_01/getEventKpi',parameters).then(response => {
         this.abandonedTime = response.data.message
         this.abandonedSecond = response.data.time
-        this.abandonedsymbol = response.data.symbol
+        this.answeredSymbol = response.data.symbol
 
       },response =>{
         console.log(response.body.message)
@@ -97,7 +96,6 @@ var kpi = new Vue({
     }
   }
 })
-
 
 var socket = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
 socket.emit('connect_dashboard')

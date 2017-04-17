@@ -48,15 +48,6 @@ class 	Queue_Log extends Model
         return $query->Select(DB::raw("*,DATE(datetime) as fechamod, TIME(datetime) AS timemod,  DATE_FORMAT((DATE_SUB(DATETIME, INTERVAL ( MINUTE(DATETIME)%$rank_hour )MINUTE)), '%H:%i') AS hourmod, DATE_FORMAT((DATE_SUB(DATE_FORMAT(DATE_ADD(DATETIME, INTERVAL info2 SECOND), '%Y-%m-%d %H:%i:%s'),INTERVAL ( MINUTE( DATE_FORMAT(DATE_ADD(DATETIME, INTERVAL info2 SECOND), '%Y-%m-%d %H:%i:%s'))%$rank_hour) MINUTE)), '%H:%i') AS hour_final " ));
     }
 
-    public function scopeFiltro_users($query,$users)
-    {
-
-        if( ! empty($users))
-        {
-            return    $query->where('agent','like','%'.$users.'%');
-        }
-
-    }
 
     public function scopeFiltro_hours($query,$hours)
     {
@@ -68,10 +59,6 @@ class 	Queue_Log extends Model
 
     }
 
-    public function scopeFiltro_anexos($query)
-    {
-        return    $query->where(DB::raw("url"),'!=', 3);
-    }
 
     public function scopeFiltro_user_rol($query,$rol,$user_name)
     {

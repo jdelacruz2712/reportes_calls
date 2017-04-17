@@ -3,6 +3,7 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Http\Requests;
+use Cosapi\Models\Anexo;
 use Illuminate\Http\Request;
 use Cosapi\Models\Cdr;
 use Cosapi\Collector\Collector;
@@ -69,21 +70,18 @@ class OutgoingCallsController extends CosapiController
      * @param  [array] $fecha_evento [Rango de consulta, Ejem: '2016-10-22 - 20016-10-25']
      * @return [array]               [Array con los datos obtenidos de la consutla]
      */
-    protected function query_calls_outgoing($fecha_evento,$users=''){
+    protected function query_calls_outgoing($fecha_evento){
+
         $days                   = explode(' - ', $fecha_evento);
-        $tamano_anexo           = array (getenv('ANEXO_LENGTH'));
-        $tamano_telefono        = array ('7','9');
+        $range_annexed          = Anexo::select('name')->where('estado_id','1')->get()->toArray();
+        $tamano_anexo           = $this->lengthAnnexed();
         $query_calls_outgoing   = Cdr::Select()
                                     ->filtro_user_rol($this->UserRole,$this->UserSystem)
-                                    ->filtro_users($users)
                                     ->whereIn(DB::raw('LENGTH(src)'),$tamano_anexo)
-                                    ->whereIn(DB::raw('LENGTH(dst)'),$tamano_telefono)
                                     ->where('dst','not like','*%')
                                     ->where('disposition','=','ANSWERED')
                                     ->where('lastapp','=','Dial')
-                                    ->where(function ($query){
-                                            $query->whereBetween('src',array (getenv('ANEXO_RANK_INITIAL'),getenv('ANEXO_RANK_END')));
-                                        })
+                                    ->whereIn('src',$range_annexed)
                                     ->filtro_days($days)
                                     ->OrderBy('src')
                                     ->get()
@@ -212,7 +210,7 @@ class OutgoingCallsController extends CosapiController
      */
     protected function export_excel($days){
 
-        $builderview = $this->builderview($this->query_calls_outgoing($days,'outgoing_calls'),'export');
+        $builderview = $this->builderview($this->query_calls_outgoing($days),'export');
         $this->BuilderExport($builderview,'outgoing_calls','xlsx','exports');
 
         $data = [

@@ -83,11 +83,9 @@ class IncomingCallsController extends CosapiController
         $events         = $this->get_events($events);
         $query_calls    = Queue_Log::select_fechamod()
                                         ->filtro_user_rol($this->UserRole,$this->UserSystem)
-                                        ->filtro_users($users)
                                         ->filtro_hours($hours)
                                         ->filtro_days($days)
                                         ->filtro_events($events)
-                                        ->filtro_anexos()
                                         ->whereIn('queue', $queues_proyect)
                                         ->OrderBy('id')
                                         ->get()
