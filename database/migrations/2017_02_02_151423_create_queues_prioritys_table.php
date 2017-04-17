@@ -13,10 +13,10 @@ class CreateQueuesPrioritysTable extends Migration
     public function up()
     {
         Schema::create('queues_prioritys', function (Blueprint $table){
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name',70)->unique();
             $table->string('description',70);
-            $table->integer('estado_id')->unsigned();
+            $table->unsignedTinyInteger('estado_id');
 
             /*creando las relaciones con tablas estados*/
             $table->foreign('estado_id')

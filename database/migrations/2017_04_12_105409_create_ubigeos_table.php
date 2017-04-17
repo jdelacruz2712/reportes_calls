@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateQeventTable extends Migration
+class CreateUbigeosTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,10 +12,14 @@ class CreateQeventTable extends Migration
      */
     public function up()
     {
-        Schema::create('qevent', function(Blueprint $table)
+        Schema::create('ubigeos', function(Blueprint $table)
         {
-            $table->increments('event_id')->unsigned();
-            $table->string('event', 40)->nullable()->unique();
+            $table->string('ubigeo',6)->primary();
+            $table->string('departamento',15);
+            $table->string('provincia',25);
+            $table->string('distrito',50);
+
+
         });
     }
 
@@ -26,6 +30,6 @@ class CreateQeventTable extends Migration
      */
     public function down()
     {
-        Schema::drop('qevent');
+        Schema::drop('ubigeos');
     }
 }

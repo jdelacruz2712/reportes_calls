@@ -14,19 +14,19 @@ class CreateKpisTable extends Migration
     {
         Schema::create('kpis', function (Blueprint $table){
 
-            $table->integer('id');
+            $table->increments('id')->unsigned();
             $table->string('name',50);
             $table->string('text',50);
             $table->string('symbol',5);
-            $table->string('time',5);
+            $table->unsignedInteger('time');
             $table->string('color',50);
             $table->string('icon',50);
-            $table->integer('estado_id',10)->unsigned();
+            $table->TinyInteger('estado_id',false,true);
 
             // creando relaciones:
             $table->foreign('estado_id')
                 ->references('id')
-                ->on('users');
+                ->on('estados');
         });
     }
 

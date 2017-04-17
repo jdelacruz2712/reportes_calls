@@ -14,7 +14,7 @@ class CreateCdrTable extends Migration
     {
         Schema::create('cdr', function(Blueprint $table)
         {
-            $table->integer('id', true);
+            $table->unsignedInteger('id');
             $table->dateTime('calldate')->default('0000-00-00 00:00:00');
             $table->string('clid', 80)->default('');
             $table->string('src', 80)->default('');
@@ -24,10 +24,10 @@ class CreateCdrTable extends Migration
             $table->string('dstchannel', 80)->default('');
             $table->string('lastapp', 80)->default('');
             $table->string('lastdata', 80)->default('');
-            $table->integer('duration')->default(0);
-            $table->integer('billsec')->default(0);
+            $table->unsignedInteger('duration')->default(0);
+            $table->unsignedInteger('billsec')->default(0);
             $table->string('disposition', 45)->default('');
-            $table->integer('amaflags')->default(0);
+            $table->unsignedInteger('amaflags')->default(0);
             $table->string('accountcode', 20)->default('');
             $table->string('uniqueid', 32)->default('');
             $table->string('userfield')->default('');
