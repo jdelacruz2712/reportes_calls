@@ -14,7 +14,7 @@ class CreateQnameTable extends Migration
     {
         Schema::create('qname', function(Blueprint $table)
         {
-            $table->integer('queue_id', true);
+            $table->increments('queue_id')->unsigned();
             $table->string('queue', 40)->default('')->unique();
         });
     }

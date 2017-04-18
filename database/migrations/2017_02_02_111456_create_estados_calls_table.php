@@ -13,7 +13,7 @@ class CreateEstadosCallsTable extends Migration
     public function up()
     {
         Schema::create('estados_calls',function(Blueprint $table){
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name',25)->unique();
             $table->timestamps(); 
         });

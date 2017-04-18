@@ -13,9 +13,9 @@ class CreateQueuesStrategysTable extends Migration
     public function up()
     {
         schema::create('queues_strategys', function(Blueprint $table){
-            $table->increments('id');
+            $table->increments('id')->unsigned();
             $table->string('name',70)->unique();
-            $table->integer('estado_id')->unsigned();
+            $table->unsignedTinyInteger('estado_id');
             /*creando las relaciones con tablas estados*/
             $table->foreign('estado_id')
                   ->references('id')

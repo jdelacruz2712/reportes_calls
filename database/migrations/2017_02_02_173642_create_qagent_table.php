@@ -14,7 +14,7 @@ class CreateQagentTable extends Migration
     {
         Schema::create('qagent', function(Blueprint $table)
         {
-            $table->integer('agent_id', true);
+            $table->increments('agent_id')->unsigned();
             $table->string('agent', 40)->default('')->unique();
         });
     }

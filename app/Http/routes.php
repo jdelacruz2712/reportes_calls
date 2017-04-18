@@ -37,7 +37,8 @@ Route::group (['middleware'=>['user']], function(){
         // Perfil de Usuario
         Route::post('profile_users'                                     , ['uses'=>'UserController@changeProfile']);
         Route::post('viewUsers'                                         , ['uses'=>'UserController@viewUser']);
-        Route::post('uploadAvatar'                                      , ['uses'=>'UserController@uploadAvatar']);
+        Route::post('uploadPerfil'                                      , ['uses'=>'UserController@uploadPerfil']);
+        Route::post('viewUbigeos'                                       , ['uses'=>'UserController@viewUbigeos']);
 
     });
 

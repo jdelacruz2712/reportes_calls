@@ -44,3 +44,4 @@ $RECYCLE.BIN/
 !.gitignore
 !.htaccess
 *~
+phpunit.phar
