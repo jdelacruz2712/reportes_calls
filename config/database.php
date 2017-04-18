@@ -73,6 +73,17 @@ return [
             'prefix'    => '',
             'strict'    => false,
         ],
+        'sapia' => [
+            'driver'    => 'mysql',
+            'host'      => env('SAPIA_HOST', 'localhost'),
+            'database'  => env('SAPIA_DATABASE', 'forge'),
+            'username'  => env('SAPIA_USERNAME', 'forge'),
+            'password'  => env('SAPIA_PASSWORD', ''),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_general_ci',
+            'prefix'    => '',
+            'strict'    => false,
+        ],
 
     ],
 
