@@ -10,6 +10,7 @@ use Cosapi\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Image;
 use DB;
 use Excel;
 
@@ -43,9 +44,15 @@ class UserController extends CosapiController
         return view('elements/profile_users/profile_users');
     }
 
-    public function uploadAvatar(Request $request){
-        $file = $request->file;
-        return $file;
+    public function uploadPerfil(Request $request){
+        if ($request->ajax()) {
+            if(\Input::file('imgAvatar')){
+                $image = \Input::file('imgAvatar');
+                $filename = \Input::get('userName').'.jpg';
+                Image::make($image)->resize(520, 520)->save(public_path('storage/').$filename);
+            }
+        }
+        return 'Listo';
     }
 
     public function viewUser(Request $request){
