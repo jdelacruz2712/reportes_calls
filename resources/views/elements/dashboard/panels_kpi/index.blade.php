@@ -4,10 +4,7 @@
 <div class="col-md-3"> 	@include('elements.dashboard.panels_kpi.agentactivitysummary')  </div>
 <script type="text/javascript">
     $(document).ready(function() {
-
         LoadGraphicsPie();
         LoadGraphicsSummary();
-
     });
 </script>
-

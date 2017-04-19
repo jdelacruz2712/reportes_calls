@@ -76,16 +76,23 @@ class Queue_Log extends Model
 
     }
 
-    public function scopeFiltro_anexos($query){
-        $module_list = '';
-        $filters = Filter::select()->with('column','condition')->where('estado_id','1')->get()->toArray();
-        $modules = Module::select()->get()->toArray();
+    public function scopeFiltro_tabla($query){
+        $module_list    = '';
+        $filters        = Filter::select()->with('column','condition')->where('estado_id','1')->get()->toArray();
+        $modules        = Module::select()->get()->toArray();
 
         foreach ($modules as $module){ $module_list[$module['id']]=$module['name']; }
 
         foreach($filters as $key => $filter){
             if($module_list[$filter['column']['module_id']] == 'Queue_Log'){
-                $query = $query->where(DB::raw($filter['column']['name']), $filter['condition']['name'], $filter['value']);
+
+                //Funcion que se le aplica a la columna de la tabla
+                $column = ($filter['column']['apply'] != null)? $filter['column']['apply'].'('.$filter['column']['name'].')' : $filter['column']['name'];
+
+                //Funcion que aplica el usuario a la columna de la tabla
+                $column = ($filter['apply'] != null)? $filter['apply'].'('.$column.')' : $column;
+
+                $query  = $query->where(DB::raw($column), $filter['condition']['name'], $filter['value']);
             }
         }
 
