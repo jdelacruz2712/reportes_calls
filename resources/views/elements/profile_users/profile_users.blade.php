@@ -23,13 +23,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="primerNombre">Primer Nombre:</label>
-                                            <input type="text" id="primerNombre" class="form-control" style="border-radius: 7px;" v-model="primerNombre" onkeypress="return filterLetter(event)">
+                                            <input type="text" id="primerNombre" class="form-control" style="border-radius: 7px;" v-model="primerNombre" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="numDNI">DNI:</label>
-                                            <input type="text" id="numDNI" class="form-control" style="border-radius: 7px;" v-model="numDNI" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.keyCode == 8 || event.keyCode == 9">
+                                            <input type="text" id="numDNI" class="form-control" style="border-radius: 7px;" v-model="numDNI" onkeypress="return filterNumber(event)" onkeydown="return BlockCopyPaste(event)" maxlength="8">
                                         </div>
                                     </div>
                                 </div>
@@ -37,13 +37,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="segundoNombre">Segundo Nombre:</label>
-                                            <input type="text" id="segundoNombre" class="form-control" style="border-radius: 7px;" v-model="segundoNombre" onkeypress="return filterLetter(event)">
+                                            <input type="text" id="segundoNombre" class="form-control" style="border-radius: 7px;" v-model="segundoNombre" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="numTelefono">Telefono:</label>
-                                            <input type="text" id="numTelefono" class="form-control" style="border-radius: 7px;" v-model="numTelefono" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.keyCode == 8 || event.keyCode == 9">
+                                            <input type="text" id="numTelefono" class="form-control" style="border-radius: 7px;" v-model="numTelefono" onkeypress="return filterNumber(event)" onkeydown="return BlockCopyPaste(event)" maxlength="9">
                                         </div>
                                     </div>
                                 </div>
@@ -51,7 +51,7 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="apellidoPaterno">Apellido Paterno:</label>
-                                            <input type="text" id="apellidoPaterno" class="form-control" style="border-radius: 7px;" v-model="apellidoPaterno" onkeypress="return filterLetter(event)">
+                                            <input type="text" id="apellidoPaterno" class="form-control" style="border-radius: 7px;" v-model="apellidoPaterno" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
@@ -68,13 +68,13 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="apellidoMaterno">Apellido Materno:</label>
-                                            <input type="text" id="apellidoMaterno" class="form-control" style="border-radius: 7px;" v-model="apellidoMaterno" onkeypress="return filterLetter(event)">
+                                            <input type="text" id="apellidoMaterno" class="form-control" style="border-radius: 7px;" v-model="apellidoMaterno" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="fecNacimiento">Fecha de Nacimiento:</label>
-                                            <input type="date" id="fecNacimiento" class="form-control" style="border-radius: 7px;" v-model="fecNacimiento">
+                                            <input type="date" id="fecNacimiento" class="form-control" style="border-radius: 7px;" v-model="fecNacimiento" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                 </div>
@@ -125,7 +125,7 @@
                                 <div class="form-group">
                                     <label for="nomDepartamento">Departamento:</label>
                                     <select id="nomDepartamento" class="form-control" style="border-radius: 7px;">
-                                        <option selected="selected">Seleccionar Aqui</option>
+                                        <option value="15" selected>-</option>
                                     </select>
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                                 <div class="form-group">
                                     <label for="nomProvincia">Provincia:</label>
                                     <select id="nomProvincia" class="form-control" style="border-radius: 7px;">
-                                        <option selected="selected">-</option>
+                                        <option value="00" selected>-</option>
                                     </select>
                                 </div>
                             </div>
@@ -141,7 +141,7 @@
                                 <div class="form-group">
                                     <label for="nomDistrito">Distrito:</label>
                                     <select id="nomDistrito" class="form-control" style="border-radius: 7px;">
-                                        <option selected="selected">-</option>
+                                        <option value="00" selected>-</option>
                                     </select>
                                 </div>
                             </div>
@@ -158,89 +158,75 @@
     </div>
 </form>
 <script>
-    Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+  Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+  var ubigeoID = ''
 
-    var ubigeoID = ''
+  var vmProfile = new Vue({
+    el: '#divProfile',
+    data: {
+        primerNombre: '-',
+        numDNI: '-',
+        segundoNombre: '-',
+        numTelefono: '-',
+        apellidoPaterno: '-',
+        apellidoMaterno: '-',
+        fecNacimiento: '',
+        userName: '-',
+        passWord: '-',
+        srcAvatar: 'http://pcdoctorti.com.br/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png',
+        srcAvatarOriginal: '-',
+        idSexo: '-',
+        idProfile: '-'
+    },
+    mounted()  {
+        this.loadData()
+    },
+    methods:{
+      loadData: function() {
+        let userId = {{Session::get('UserId')}}
+        let parameters = { userID: userId }
+        this.$http.post('viewUsers',parameters).then(response => {
+          /* Data tabla users */
+          this.primerNombre = response.body[0].primer_nombre
+          this.segundoNombre = response.body[0].segundo_nombre
+          this.apellidoPaterno = response.body[0].apellido_paterno
+          this.apellidoMaterno = response.body[0].apellido_materno
+          this.userName = response.body[0].username
+          this.passWord = '-----------------------'
+          /* Data tabla users_profile */
+          let profile_user = response.body[0].user_profile
+          if(profile_user){
+            this.numDNI = profile_user.dni
+            this.numTelefono = profile_user.telefono
+            this.fecNacimiento = profile_user.fecha_nacimiento
+            this.fecNacimiento = profile_user.fecha_nacimiento
+            this.idSexo = profile_user.Sexo
+            this.srcAvatar = `storage/${profile_user.avatar}`
+            this.srcAvatarOriginal = profile_user.avatar
+            this.idProfile = profile_user.id
+            ubigeoID = profile_user.ubigeo_id
+          }
+          this.$nextTick( () => {
+            this.loadSelect()
+          })
+        },response => {
+            console.log(response.body)
+        })
+      },
+      loadSelect: function() {
+        let parameters = { idUbigeo: ubigeoID }
+        this.$http.post('viewUbigeos',parameters).then(response => {
 
-    var vmProfile = new Vue({
-        el: '#divProfile',
-        data: {
-            primerNombre: '-',
-            numDNI: '-',
-            segundoNombre: '-',
-            numTelefono: '-',
-            apellidoPaterno: '-',
-            apellidoMaterno: '-',
-            fecNacimiento: '',
-            userName: '-',
-            passWord: '-',
-            srcAvatar: 'http://pcdoctorti.com.br/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png',
-            srcAvatarOriginal: '-',
-            idSexo: '-',
-            idProfile: '-'
-        },
-        mounted: function(){
-            this.loadData()
-        },
-        methods:{
-            loadData: function(){
-                this.primerNombre = '-'
-                this.numDNI = '-'
-                this.segundoNombre = '-'
-                this.numTelefono = '-'
-                this.apellidoPaterno = '-'
-                this.apellidoMaterno = '-'
-                this.fecNacimiento = ''
-                this.userName = '-'
-                this.passWord = '-'
-                this.srcAvatar = 'http://pcdoctorti.com.br/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png'
-                this.srcAvatarOriginal = '-'
-                let id_user = {{Session::get('UserId')}}
-                let parameters = { userID: id_user }
-                this.$http.post('viewUsers',parameters).then(response => {
+        },response => {
+            console.log(response.body)
+        })
+      }
+    }
+  })
 
-                    /* Data tabla users */
-                    this.primerNombre = response.body[0].primer_nombre
-                    this.segundoNombre = response.body[0].segundo_nombre
-                    this.apellidoPaterno = response.body[0].apellido_paterno
-                    this.apellidoMaterno = response.body[0].apellido_materno
-                    this.userName = response.body[0].username
-                    this.passWord = '-----------------------'
-                    /* Data tabla users_profile */
-                    let profile_user = response.body[0].user_profile
-                    if(profile_user){
-                        this.numDNI = profile_user.dni
-                        this.numTelefono = profile_user.telefono
-                        this.fecNacimiento = profile_user.fecha_nacimiento
-                        this.fecNacimiento = profile_user.fecha_nacimiento
-                        this.idSexo = profile_user.Sexo
-                        this.srcAvatar = 'storage/' + profile_user.avatar
-                        this.srcAvatarOriginal = profile_user.avatar
-                        this.idProfile = profile_user.id
-                        ubigeoID = profile_user.ubigeo_id
-                    }
-
-                    this.$nextTick(function () {
-                        this.loadSelect()
-                    })
-                },response =>{
-                    console.log(response.body)
-                })
-            },
-            loadSelect: function(){
-                let parameters = { idUbigeo: ubigeoID }
-                this.$http.post('viewUbigeos',parameters).then(response => {
-                    console.log(response)
-                },response =>{
-                    console.log(response.body)
-                })
-            }
-        }
-    })
-
-    $('#formPerfil').submit(function(event) {
-        let userID = {{Session::get('UserId')}}
-        let form = new FormData()
+  $('#formPerfil').submit(function(event) {
+    const userID = {{Session::get('UserId')}}
+    let form = new FormData()
         form.append('userID', userID)
         form.append('primerNombre', $('input[id=primerNombre]').val())
         form.append('numDNI', $('input[id=numDNI]').val())
@@ -257,31 +243,28 @@
         form.append('nomProvincia', $('select[id=nomProvincia]').val())
         form.append('nomDistrito', $('select[id=nomDistrito]').val())
         form.append('idProfile', $('input[id=idProfile]').val())
-        $.ajax({
-            url: 'uploadPerfil',
-            data: form,
-            cache: false,
-            contentType: false,
-            processData: false,
-            type: 'POST',
-            beforeSend: (xhr) => {
-            const token = $('input[name=_token]').val()
-            if (token) {
-                return xhr.setRequestHeader('X-CSRF-TOKEN', token)
-            }
-        },
-        success: (data) => {
-            vmProfile.loadData()
-            mostrar_notificacion('success', 'Se edito tu perfil con exito !', 'Success', 2000, false, true)
+    $.ajax({
+      url: 'uploadPerfil',
+      data: form,
+      cache: false,
+      contentType: false,
+      processData: false,
+      type: 'POST',
+      beforeSend: (xhr) => {
+        const token = $('input[name=_token]').val()
+        if (token) {
+          return xhr.setRequestHeader('X-CSRF-TOKEN', token)
         }
+      },
+      success: (data) => {
+        if(data === 'Ok'){
+          vmProfile.loadData()
+          mostrar_notificacion('success', 'Se edito tu perfil con exito !', 'Success', 2000, false, true)
+        }else{
+          mostrar_notificacion('error', 'Hubo un error al editar, ', 'Success', 2000, false, true)
+        }
+      }
     })
-        event.preventDefault()
-    })
-
-    /*setTimeout(function() {
-        let splitDepartamento   = ubigeoID.substring(0,2)
-        let splitCiudad         = ubigeoID.substring(2,4)
-        let splitDistrito       = ubigeoID.substring(4)
-        console.log(splitDepartamento + ' ' + splitCiudad + ' ' + splitDistrito)
-    },5000)*/
+    event.preventDefault()
+  })
 </script>

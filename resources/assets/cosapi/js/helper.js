@@ -1805,20 +1805,43 @@ function changeStatus (userId, status) {
  * @return Solo permite letras y letras con acentos en los inputs
  */
 function filterLetter(e){
-  let key = e.keyCode || e.which
-  let tecla = String.fromCharCode(key).toLowerCase()
-  let letras = " áéíóúabcdefghijklmnñopqrstuvwxyz"
-  let especiales = "8-37-39-46"
+  const key = e.keyCode || e.which
+  const board = String.fromCharCode(key).toLowerCase()
+  const letter = " áéíóúabcdefghijklmnñopqrstuvwxyz"
+  const specials = "8-37-39-46"
 
-  let tecla_especial = false
-  for(var i in especiales){
-    if(key == especiales[i]){
-      tecla_especial = true
-      break;
+  let specialskey = false
+  for(let i in specials){
+    if(key === specials[i]){
+      specialskey = true
+      break
     }
   }
 
-  if(letras.indexOf(tecla)==-1 && !tecla_especial){
-    return false;
+  if(letter.indexOf(board) === -1 && !specialskey){
+    return false
   }
+}
+
+/**
+ * Created by jdelacruzc on 19/04/2017.
+ *
+ * [BlockCopyPaste description]
+ * @return Bloquea el Ctrl C y Ctrl V
+ */
+function BlockCopyPaste(e){
+  if(e.ctrlKey === true && (e.which === 118 || e.which === 86)){
+    return false
+  }
+}
+
+/**
+ * Created by jdelacruzc on 19/04/2017.
+ *
+ * [filterNumber description]
+ * @return Solo permite ingresar numeros
+ */
+function filterNumber(e){
+  let key = window.Event ? e.which : e.keyCode
+  return (key >= 48 && key <= 57 || key === 8 || key === 9)
 }

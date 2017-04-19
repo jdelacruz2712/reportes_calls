@@ -49,40 +49,55 @@ class UserController extends CosapiController
         if ($request->ajax()) {
 
             if(\Input::file('imgAvatar')){
-                $image_original = \Input::get('imgAvatarOriginal');
+                \File::makeDirectory(public_path().'/storage/', $mode = 0777, true, true);
+                $imageOriginal = \Input::get('imgAvatarOriginal');
                 $image = \Input::file('imgAvatar');
                 $filename = \Input::get('userName').time().'.jpg';
-                $filenamedelete = public_path('storage\\').$image_original;
+                $filenamedelete = public_path('storage\\').$imageOriginal;
                 \File::delete($filenamedelete);
                 Image::make($image)->resize(520, 520)->save(public_path('storage/').$filename);
             }else{
                 $filename = \Input::get('imgAvatarOriginal');
             }
 
-            $idProfile = \Input::get('idProfile');
-            $userID = \Input::get('userID');
-            $numDNI = \Input::get('numDNI');
-            $numTelefono = \Input::get('numTelefono');
-            $idSexo = \Input::get('idSexo');
-            $fecNacimiento = \Input::get('fecNacimiento');
-            $primerNombre = \Input::get('primerNombre');
-            $segundoNombre = \Input::get('segundoNombre');
-            $apellidoPaterno = \Input::get('apellidoPaterno');
-            $apellidoMaterno = \Input::get('apellidoMaterno');
+            $idProfile          = \Input::get('idProfile');
+            $userId             = \Input::get('userID');
+            $numberDni          = \Input::get('numDNI');
+            $numberTelephone    = \Input::get('numTelefono');
+            $idSex              = \Input::get('idSexo');
+            $birthdate          = \Input::get('fecNacimiento');
+            $firstName          = \Input::get('primerNombre');
+            $secondName         = \Input::get('segundoNombre');
+            $firstLastName      = \Input::get('apellidoPaterno');
+            $secondLastName     = \Input::get('apellidoMaterno');
 
             DB::table('users')
-            ->where('id',$userID)
+            ->where('id',$userId)
             ->update([
-                'primer_nombre'     => $primerNombre,
-                'segundo_nombre'    => $segundoNombre,
-                'apellido_paterno'  => $apellidoPaterno,
-                'apellido_materno'  => $apellidoMaterno
+                'primer_nombre'     => $firstName,
+                'segundo_nombre'    => $secondName,
+                'apellido_paterno'  => $firstLastName,
+                'apellido_materno'  => $secondLastName
             ]);
 
-            DB::statement("REPLACE INTO users_profile (id,user_id,dni,telefono,Sexo,fecha_nacimiento,avatar,ubigeo_id) VALUES ('".$idProfile."','".$userID."','".$numDNI."','".$numTelefono."','".$idSexo."','".$fecNacimiento."','".$filename."','1')");
+            DB::statement('REPLACE INTO users_profile (id,user_id,dni,telefono,Sexo,fecha_nacimiento,avatar,ubigeo_id)'
+                .' VALUES '
+                .'("'.$idProfile.'","'.$userId.'","'.$numberDni.'","'.$numberTelephone.'","'.$idSex.'","'.$birthdate.'","'.$filename.'","150000")');
 
         }
-        return 'Listo';
+        return 'Ok';
+    }
+
+    public function makeDirectory($path, $mode = 0777, $recursive = false, $force = false)
+    {
+        if ($force)
+        {
+            return @mkdir($path, $mode, $recursive);
+        }
+        else
+        {
+            return mkdir($path, $mode, $recursive);
+        }
     }
 
     public function viewUser(Request $request){
