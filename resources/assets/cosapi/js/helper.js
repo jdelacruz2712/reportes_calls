@@ -1740,8 +1740,8 @@ function createUser () {
 /**
  * Created by jdelacruzc on 11/04/2017.
  *
- * [createUser description]
- * @return Crea un usuario nuevo y refersca el datatable listuser
+ * [changeStatus description]
+ * @return Cambia el estado del usuario
  */
 function changeStatus (userId, status) {
   var token = $('input[name=_token]').val()
@@ -1796,4 +1796,52 @@ function changeStatus (userId, status) {
         }
       ]
   })
+}
+
+/**
+ * Created by jdelacruzc on 18/04/2017.
+ *
+ * [filterLetter description]
+ * @return Solo permite letras y letras con acentos en los inputs
+ */
+function filterLetter(e){
+  const key = e.keyCode || e.which
+  const board = String.fromCharCode(key).toLowerCase()
+  const letter = " áéíóúabcdefghijklmnñopqrstuvwxyz"
+  const specials = "8-37-39-46"
+
+  let specialskey = false
+  for(let i in specials){
+    if(key === specials[i]){
+      specialskey = true
+      break
+    }
+  }
+
+  if(letter.indexOf(board) === -1 && !specialskey){
+    return false
+  }
+}
+
+/**
+ * Created by jdelacruzc on 19/04/2017.
+ *
+ * [BlockCopyPaste description]
+ * @return Bloquea el Ctrl C y Ctrl V
+ */
+function BlockCopyPaste(e){
+  if(e.ctrlKey === true && (e.which === 118 || e.which === 86)){
+    return false
+  }
+}
+
+/**
+ * Created by jdelacruzc on 19/04/2017.
+ *
+ * [filterNumber description]
+ * @return Solo permite ingresar numeros
+ */
+function filterNumber(e){
+  let key = window.Event ? e.which : e.keyCode
+  return (key >= 48 && key <= 57 || key === 8 || key === 9)
 }

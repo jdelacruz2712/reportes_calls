@@ -3,10 +3,9 @@
 namespace Cosapi\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
 
-class 	Queue_Log extends Model
+class Queue_Log extends Model
 {
     protected $connection   = 'laravel';
     protected $table        = 'queue_stats_mv';
@@ -75,6 +74,29 @@ class 	Queue_Log extends Model
             return $query->where('info1',$metrica['symbol'], $metrica['time']);
         }
 
+    }
+
+    public function scopeFiltro_tabla($query){
+        $module_list    = '';
+        $filters        = Filter::select()->with('column','condition')->where('estado_id','1')->get()->toArray();
+        $modules        = Module::select()->get()->toArray();
+
+        foreach ($modules as $module){ $module_list[$module['id']]=$module['name']; }
+
+        foreach($filters as $key => $filter){
+            if($module_list[$filter['column']['module_id']] == 'Queue_Log'){
+
+                //Funcion que se le aplica a la columna de la tabla
+                $column = ($filter['column']['apply'] != null)? $filter['column']['apply'].'('.$filter['column']['name'].')' : $filter['column']['name'];
+
+                //Funcion que aplica el usuario a la columna de la tabla
+                $column = ($filter['apply'] != null)? $filter['apply'].'('.$column.')' : $column;
+
+                $query  = $query->where(DB::raw($column), $filter['condition']['name'], $filter['value']);
+            }
+        }
+
+        return $query;
     }
 
 }

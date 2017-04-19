@@ -7,9 +7,11 @@ use Illuminate\Http\Request;
 use Cosapi\Collector\Collector;
 use Cosapi\Http\Requests;
 use Cosapi\Models\User;
+use Cosapi\Models\Ubigeos;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Image;
 use DB;
 use Excel;
 
@@ -43,9 +45,59 @@ class UserController extends CosapiController
         return view('elements/profile_users/profile_users');
     }
 
-    public function uploadAvatar(Request $request){
-        $file = $request->file;
-        return $file;
+    public function uploadPerfil(Request $request){
+        if ($request->ajax()) {
+
+            if(\Input::file('imgAvatar')){
+                \File::makeDirectory(public_path().'/storage/', $mode = 0777, true, true);
+                $imageOriginal = \Input::get('imgAvatarOriginal');
+                $image = \Input::file('imgAvatar');
+                $filename = \Input::get('userName').time().'.jpg';
+                $filenamedelete = public_path('storage\\').$imageOriginal;
+                \File::delete($filenamedelete);
+                Image::make($image)->resize(520, 520)->save(public_path('storage/').$filename);
+            }else{
+                $filename = \Input::get('imgAvatarOriginal');
+            }
+
+            $idProfile          = \Input::get('idProfile');
+            $userId             = \Input::get('userID');
+            $numberDni          = \Input::get('numDNI');
+            $numberTelephone    = \Input::get('numTelefono');
+            $idSex              = \Input::get('idSexo');
+            $birthdate          = \Input::get('fecNacimiento');
+            $firstName          = \Input::get('primerNombre');
+            $secondName         = \Input::get('segundoNombre');
+            $firstLastName      = \Input::get('apellidoPaterno');
+            $secondLastName     = \Input::get('apellidoMaterno');
+
+            DB::table('users')
+            ->where('id',$userId)
+            ->update([
+                'primer_nombre'     => $firstName,
+                'segundo_nombre'    => $secondName,
+                'apellido_paterno'  => $firstLastName,
+                'apellido_materno'  => $secondLastName
+            ]);
+
+            DB::statement('REPLACE INTO users_profile (id,user_id,dni,telefono,Sexo,fecha_nacimiento,avatar,ubigeo_id)'
+                .' VALUES '
+                .'("'.$idProfile.'","'.$userId.'","'.$numberDni.'","'.$numberTelephone.'","'.$idSex.'","'.$birthdate.'","'.$filename.'","150000")');
+
+        }
+        return 'Ok';
+    }
+
+    public function makeDirectory($path, $mode = 0777, $recursive = false, $force = false)
+    {
+        if ($force)
+        {
+            return @mkdir($path, $mode, $recursive);
+        }
+        else
+        {
+            return mkdir($path, $mode, $recursive);
+        }
     }
 
     public function viewUser(Request $request){
@@ -53,6 +105,17 @@ class UserController extends CosapiController
             $resultado = User::Select()
                 ->with('userProfile')
                 ->where('id', $request->userID)
+                ->get()
+                ->toArray();
+        }
+
+        return $resultado;
+    }
+
+    public function viewUbigeos(Request $request){
+        if($request->ajax()) {
+            $resultado = Ubigeos::Select()
+                ->where('ubigeo', $request->idUbigeo)
                 ->get()
                 ->toArray();
         }

@@ -167,7 +167,8 @@ return [
         /** DataTable  **/
         Yajra\Datatables\DatatablesServiceProvider::class,
 
-
+        /** Intervention Image **/
+        Intervention\Image\ImageServiceProvider::class,
     ],
 
     /*
@@ -229,6 +230,9 @@ return [
 
         /** DataTable **/
         'Datatables'=> Yajra\Datatables\Facades\Datatables::class,
+
+        /** Image **/
+        'Image' => Intervention\Image\Facades\Image::class,
 
     ],
 
