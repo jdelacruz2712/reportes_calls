@@ -62,13 +62,13 @@ class UserController extends CosapiController
 
             $idProfile          = \Input::get('idProfile');
             $userId             = \Input::get('userID');
-            $numberDni          = \Input::get('numDNI');
-            $numberTelephone    = \Input::get('numTelefono');
-            $idSex              = \Input::get('idSexo');
-            $birthdate          = \Input::get('fecNacimiento');
-            $firstName          = \Input::get('primerNombre');
-            $secondName         = \Input::get('segundoNombre');
-            $firstLastName      = \Input::get('apellidoPaterno');
+            $numberDni          = \Input::get('numberDni');
+            $numberTelephone    = \Input::get('numberTelephone');
+            $idSex              = \Input::get('idSex');
+            $birthdate          = \Input::get('birthdate');
+            $firstName          = \Input::get('firstName');
+            $secondName         = \Input::get('secondName');
+            $firstLastName      = \Input::get('firstLastName');
             $secondLastName     = \Input::get('apellidoMaterno');
 
             DB::table('users')
@@ -88,18 +88,6 @@ class UserController extends CosapiController
         return 'Ok';
     }
 
-    public function makeDirectory($path, $mode = 0777, $recursive = false, $force = false)
-    {
-        if ($force)
-        {
-            return @mkdir($path, $mode, $recursive);
-        }
-        else
-        {
-            return mkdir($path, $mode, $recursive);
-        }
-    }
-
     public function viewUser(Request $request){
         if ($request->ajax()) {
             $resultado = User::Select()
@@ -115,7 +103,7 @@ class UserController extends CosapiController
     public function viewUbigeos(Request $request){
         if($request->ajax()) {
             $resultado = Ubigeos::Select()
-                ->where('ubigeo', $request->idUbigeo)
+                /*->where('ubigeo', $request->idUbigeo)*/
                 ->get()
                 ->toArray();
         }
