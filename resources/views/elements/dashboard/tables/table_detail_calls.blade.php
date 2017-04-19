@@ -41,9 +41,9 @@
             </td>
             <td align="center">@{{ agent.name_queue_inbound }}</td>
             <td align="center">@{{ agent.phone_number_inbound }}</td>
-            <td align="center">@{{ agent.star_call_inbound }}</td>
+            <td align="center">@{{ agent.timeElapsed }}</td>
             <td align="center">@{{ agent.total_calls }}</td>
-            <td align="center">
+            <td align="center">@{{ loadTimeElapsed(list_index) }}
               <button onclick="desloguear_agente('224','acornejo');">
                 <i class="fa fa-key" aria-hidden="true"></i>
               </button>
