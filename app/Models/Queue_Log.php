@@ -3,10 +3,9 @@
 namespace Cosapi\Models;
 
 use Illuminate\Database\Eloquent\Model;
-
 use DB;
 
-class 	Queue_Log extends Model
+class Queue_Log extends Model
 {
     protected $connection   = 'laravel';
     protected $table        = 'queue_stats_mv';
@@ -75,6 +74,22 @@ class 	Queue_Log extends Model
             return $query->where('info1',$metrica['symbol'], $metrica['time']);
         }
 
+    }
+
+    public function scopeFiltro_anexos($query){
+        $module_list = '';
+        $filters = Filter::select()->with('column','condition')->where('estado_id','1')->get()->toArray();
+        $modules = Module::select()->get()->toArray();
+
+        foreach ($modules as $module){ $module_list[$module['id']]=$module['name']; }
+
+        foreach($filters as $key => $filter){
+            if($module_list[$filter['column']['module_id']] == 'Queue_Log'){
+                $query = $query->where(DB::raw($filter['column']['name']), $filter['condition']['name'], $filter['value']);
+            }
+        }
+
+        return $query;
     }
 
 }
