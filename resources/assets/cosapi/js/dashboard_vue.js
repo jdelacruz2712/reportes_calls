@@ -1,6 +1,6 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 
-var socket = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
+var socket = io.connect(restApiDashboard, { 'forceNew': true })
 socket.emit('connect_dashboard')
 
 socket.on('QueueMemberAdded', data => {
