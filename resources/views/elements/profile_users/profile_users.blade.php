@@ -22,44 +22,44 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="primerNombre">Primer Nombre:</label>
-                                            <input type="text" id="primerNombre" class="form-control" style="border-radius: 7px;" v-model="primerNombre" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
+                                            <label for="firstName">Primer Nombre:</label>
+                                            <input type="text" id="firstName" class="form-control" style="border-radius: 7px;" v-model="firstName" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="numDNI">DNI:</label>
-                                            <input type="text" id="numDNI" class="form-control" style="border-radius: 7px;" v-model="numDNI" onkeypress="return filterNumber(event)" onkeydown="return BlockCopyPaste(event)" maxlength="8">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="segundoNombre">Segundo Nombre:</label>
-                                            <input type="text" id="segundoNombre" class="form-control" style="border-radius: 7px;" v-model="segundoNombre" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="numTelefono">Telefono:</label>
-                                            <input type="text" id="numTelefono" class="form-control" style="border-radius: 7px;" v-model="numTelefono" onkeypress="return filterNumber(event)" onkeydown="return BlockCopyPaste(event)" maxlength="9">
+                                            <label for="numberDni">DNI:</label>
+                                            <input type="text" id="numberDni" class="form-control" style="border-radius: 7px;" v-model="numberDni" onkeypress="return filterNumber(event)" onkeydown="return BlockCopyPaste(event)" maxlength="8">
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="apellidoPaterno">Apellido Paterno:</label>
-                                            <input type="text" id="apellidoPaterno" class="form-control" style="border-radius: 7px;" v-model="apellidoPaterno" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
+                                            <label for="secondName">Segundo Nombre:</label>
+                                            <input type="text" id="secondName" class="form-control" style="border-radius: 7px;" v-model="secondName" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="idSexo">Sexo:</label>
+                                            <label for="numberTelephone">Telefono:</label>
+                                            <input type="text" id="numberTelephone" class="form-control" style="border-radius: 7px;" v-model="numberTelephone" onkeypress="return filterNumber(event)" onkeydown="return BlockCopyPaste(event)" maxlength="9">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="firstLastName">Apellido Paterno:</label>
+                                            <input type="text" id="firstLastName" class="form-control" style="border-radius: 7px;" v-model="firstLastName" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label for="idSex">Sexo:</label>
                                             <div style="margin-top: 5px;">
-                                                <input type="radio" id="M" value="M" v-model="idSexo"> M
-                                                <input type="radio" id="F" value="F" v-model="idSexo"> F
+                                                <input type="radio" id="M" value="M" v-model="idSex"> M
+                                                <input type="radio" id="F" value="F" v-model="idSex"> F
                                             </div>
                                         </div>
                                     </div>
@@ -67,14 +67,14 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="apellidoMaterno">Apellido Materno:</label>
-                                            <input type="text" id="apellidoMaterno" class="form-control" style="border-radius: 7px;" v-model="apellidoMaterno" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
+                                            <label for="secondLastName">Apellido Materno:</label>
+                                            <input type="text" id="secondLastName" class="form-control" style="border-radius: 7px;" v-model="secondLastName" onkeypress="return filterLetter(event)" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label for="fecNacimiento">Fecha de Nacimiento:</label>
-                                            <input type="date" id="fecNacimiento" class="form-control" style="border-radius: 7px;" v-model="fecNacimiento" onkeydown="return BlockCopyPaste(event)">
+                                            <label for="birthdate">Fecha de Nacimiento:</label>
+                                            <input type="date" id="birthdate" class="form-control" style="border-radius: 7px;" v-model="birthdate" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                 </div>
@@ -84,7 +84,7 @@
                                     <img :src="srcAvatar"  class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
                                 </div>
                                 <div v-else>
-                                    <img src="http://pcdoctorti.com.br/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png" class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
+                                    <img src="storage/default_avatar.png" class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
                                 </div>
                                 <br>
                                 <input type="file" name="imgAvatar" class="form-control" style="border-radius: 7px;" accept="image/*">
@@ -124,25 +124,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nomDepartamento">Departamento:</label>
-                                    <select id="nomDepartamento" class="form-control" style="border-radius: 7px;">
-                                        <option value="15" selected>-</option>
-                                    </select>
+                                    <v-select id="nomDepartamento" :on-change="loadProvincia"  :value.sync="selectedD" :options="departamento" placeholder="Choose here..!!"></v-select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nomProvincia">Provincia:</label>
-                                    <select id="nomProvincia" class="form-control" style="border-radius: 7px;">
-                                        <option value="00" selected>-</option>
-                                    </select>
+                                    <v-select id="nomProvincia" :on-change="loadDistrito" :value.sync="selectedP" :options="provincia" placeholder="Choose here..!!"></v-select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nomDistrito">Distrito:</label>
-                                    <select id="nomDistrito" class="form-control" style="border-radius: 7px;">
-                                        <option value="00" selected>-</option>
-                                    </select>
+                                    <v-select id="nomDistrito" :on-change="getDistrito" :value.sync="selectedDi" :options="distrito" placeholder="Choose here..!!"></v-select>
                                 </div>
                             </div>
                         </div>
@@ -159,23 +153,33 @@
 </form>
 <script>
   Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+  Vue.component('v-select', VueSelect.VueSelect)
   var ubigeoID = ''
+  var idDepartamento = ''
+  var idProvincia = ''
+  var idDistrito = ''
 
   var vmProfile = new Vue({
     el: '#divProfile',
     data: {
-        primerNombre: '-',
-        numDNI: '-',
-        segundoNombre: '-',
-        numTelefono: '-',
-        apellidoPaterno: '-',
-        apellidoMaterno: '-',
-        fecNacimiento: '',
+        selectedD: null,
+        selectedP: null,
+        selectedDi: null,
+        departamento: [],
+        provincia: [],
+        distrito: [],
+        firstName: '-',
+        numberDni: '-',
+        secondName: '-',
+        numberTelephone: '-',
+        firstLastName: '-',
+        secondLastName: '-',
+        birthdate: '',
         userName: '-',
         passWord: '-',
-        srcAvatar: 'http://pcdoctorti.com.br/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png',
+        srcAvatar: 'storage/default_avatar.png',
         srcAvatarOriginal: '-',
-        idSexo: '-',
+        idSex: '-',
         idProfile: '-'
     },
     mounted()  {
@@ -187,39 +191,92 @@
         let parameters = { userID: userId }
         this.$http.post('viewUsers',parameters).then(response => {
           /* Data tabla users */
-          this.primerNombre = response.body[0].primer_nombre
-          this.segundoNombre = response.body[0].segundo_nombre
-          this.apellidoPaterno = response.body[0].apellido_paterno
-          this.apellidoMaterno = response.body[0].apellido_materno
+          this.firstName = response.body[0].primer_nombre
+          this.secondName = response.body[0].segundo_nombre
+          this.firstLastName = response.body[0].apellido_paterno
+          this.secondLastName = response.body[0].apellido_materno
           this.userName = response.body[0].username
           this.passWord = '-----------------------'
           /* Data tabla users_profile */
           let profile_user = response.body[0].user_profile
           if(profile_user){
-            this.numDNI = profile_user.dni
-            this.numTelefono = profile_user.telefono
-            this.fecNacimiento = profile_user.fecha_nacimiento
-            this.fecNacimiento = profile_user.fecha_nacimiento
-            this.idSexo = profile_user.Sexo
+            this.numberDni = profile_user.dni
+            this.numberTelephone = profile_user.telefono
+            this.birthdate = profile_user.fecha_nacimiento
+            this.birthdate = profile_user.fecha_nacimiento
+            this.idSex = profile_user.Sexo
             this.srcAvatar = `storage/${profile_user.avatar}`
             this.srcAvatarOriginal = profile_user.avatar
             this.idProfile = profile_user.id
             ubigeoID = profile_user.ubigeo_id
+            this.$nextTick( () => {
+              this.loadDepartamento()
+              this.loadSelect()
+            })
           }
-          this.$nextTick( () => {
-            this.loadSelect()
-          })
         },response => {
             console.log(response.body)
         })
       },
-      loadSelect: function() {
-        let parameters = { idUbigeo: ubigeoID }
-        this.$http.post('viewUbigeos',parameters).then(response => {
-
+      loadDepartamento: function() {
+        this.$http.post('viewDepartamento').then(response => {
+            let nameDepartamento = response.body
+            let textDepartamento = ''
+            let departamentolength = nameDepartamento.length
+            for (let i = 0; i < departamentolength; i++) {
+                textDepartamento += '&'+nameDepartamento[i].departamento
+            }
+            this.departamento = textDepartamento.substr(1).split('&')
+          },response => {
+            console.log(response.body)
+        })
+      },
+      loadProvincia: function(nameDepartamento) {
+          idDepartamento = nameDepartamento
+          let parameters = { Departamento: nameDepartamento }
+          this.$http.post('viewProvincia',parameters).then(response => {
+              let nameProvincia = response.body
+              let textProvincia = ''
+              let provincialength = nameProvincia.length
+              for (let i = 0; i < provincialength; i++) {
+                  textProvincia += '&'+nameProvincia[i].provincia
+              }
+              this.provincia = textProvincia.substr(1).split('&')
+              //this.selectedP = nameProvincia[1].provincia
+          },response => {
+              console.log(response.body)
+          })
+      },
+      loadDistrito: function(nameProvincia) {
+        idProvincia = nameProvincia
+        let parameters = { Provincia: nameProvincia }
+        this.$http.post('viewDistrito',parameters).then(response => {
+            let nameDistrito = response.body
+            let textDistrito = ''
+            let distritolength = nameDistrito.length
+            for (let i = 0; i < distritolength; i++) {
+                textDistrito += '&'+nameDistrito[i].distrito
+            }
+            this.distrito = textDistrito.substr(1).split('&')
+            //this.selectedDi = nameDistrito[1].distrito
         },response => {
             console.log(response.body)
         })
+      },
+      getDistrito: function(nameDistrito){
+          idDistrito = nameDistrito
+      },
+      loadSelect: function(){
+          let parameters = { idUbigeo: ubigeoID }
+          this.$http.post('viewUbigeo',parameters).then(response => {
+              if(response.body[0]){
+                  this.selectedD = response.body[0].departamento
+                  this.selectedP = response.body[0].provincia
+                  this.selectedDi = response.body[0].distrito
+              }
+          },response => {
+              console.log(response.body)
+          })
       }
     }
   })
@@ -227,21 +284,21 @@
   $('#formPerfil').submit(function(event) {
     const userID = {{Session::get('UserId')}}
     let form = new FormData()
-        form.append('userID', userID)
-        form.append('primerNombre', $('input[id=primerNombre]').val())
-        form.append('numDNI', $('input[id=numDNI]').val())
-        form.append('segundoNombre', $('input[id=segundoNombre]').val())
+        form.append('userId', userID)
+        form.append('firstName', $('input[id=firstName]').val())
+        form.append('numberDni', $('input[id=numberDni]').val())
+        form.append('secondName', $('input[id=secondName]').val())
         form.append('imgAvatar', $('input[name=imgAvatar]')[0].files[0])
         form.append('imgAvatarOriginal', $('input[name=imgAvatarOriginal]').val())
-        form.append('numTelefono', $('input[id=numTelefono]').val())
-        form.append('apellidoPaterno', $('input[id=apellidoPaterno]').val())
-        form.append('apellidoMaterno', $('input[id=apellidoMaterno]').val())
-        form.append('idSexo', $('input[type=radio]').val())
+        form.append('numberTelephone', $('input[id=numberTelephone]').val())
+        form.append('firstLastName', $('input[id=firstLastName]').val())
+        form.append('secondLastName', $('input[id=secondLastName]').val())
+        form.append('idSex', $('input[type=radio]').val())
         form.append('userName', $('input[id=userName]').val())
-        form.append('fecNacimiento', $('input[id=fecNacimiento]').val())
-        form.append('nomDepartamento', $('select[id=nomDepartamento]').val())
-        form.append('nomProvincia', $('select[id=nomProvincia]').val())
-        form.append('nomDistrito', $('select[id=nomDistrito]').val())
+        form.append('birthdate', $('input[id=birthdate]').val())
+        form.append('nameDepartamento', idDepartamento)
+        form.append('nameProvincia', idProvincia)
+        form.append('nameDistrito', idDistrito)
         form.append('idProfile', $('input[id=idProfile]').val())
     $.ajax({
       url: 'uploadPerfil',
