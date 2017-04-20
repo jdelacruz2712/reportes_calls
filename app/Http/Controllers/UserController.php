@@ -70,6 +70,10 @@ class UserController extends CosapiController
             $secondName         = \Input::get('secondName');
             $firstLastName      = \Input::get('firstLastName');
             $secondLastName     = \Input::get('apellidoMaterno');
+            $idDepartamento     = \Input::get('idDepartamento');
+
+            if(!\Input::get('idProvincia') || \Input::get('idProvincia') == '' || \Input::get('idProvincia') == null){ $idProvincia = '';  }else{ $idProvincia = \Input::get('idProvincia'); }
+            if(!\Input::get('idDistrito') || \Input::get('idDistrito') == '' || \Input::get('idDistrito') == null){ $idDistrito = '';  }else{ $idDistrito = \Input::get('idDistrito'); }
 
             DB::table('users')
             ->where('id',$userId)
@@ -80,9 +84,11 @@ class UserController extends CosapiController
                 'apellido_materno'  => $secondLastName
             ]);
 
+            $idUbigeo = $this->getUbigeo($idDepartamento,$idProvincia,$idDistrito);
+
             DB::statement('REPLACE INTO users_profile (id,user_id,dni,telefono,Sexo,fecha_nacimiento,avatar,ubigeo_id)'
                 .' VALUES '
-                .'("'.$idProfile.'","'.$userId.'","'.$numberDni.'","'.$numberTelephone.'","'.$idSex.'","'.$birthdate.'","'.$filename.'","150000")');
+                .'("'.$idProfile.'","'.$userId.'","'.$numberDni.'","'.$numberTelephone.'","'.$idSex.'","'.$birthdate.'","'.$filename.'","'.$idUbigeo[0]['ubigeo'].'")');
 
         }
         return 'Ok';
@@ -109,6 +115,17 @@ class UserController extends CosapiController
                 ->get()
                 ->toArray();
         }
+
+        return $resultado;
+    }
+
+    public function getUbigeo($departamento,$provincia,$distrito){
+        $resultado = Ubigeos::Select('ubigeo')
+            ->where('departamento','=',$departamento)
+            ->where('provincia','=',$provincia)
+            ->where('distrito','=',$distrito)
+            ->get()
+            ->toArray();
 
         return $resultado;
     }
