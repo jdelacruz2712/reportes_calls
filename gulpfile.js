@@ -70,8 +70,9 @@ elixir(function(mix) {
       'extras/toastr/toastr.js',
       'plugins/adminLTE/js/app.min.js',
       'plugins/adminLTE/js/funcionalidades.js',
-      'cosapi/js/vue.js',
+      'node_modules/vue/vue.js',
       'node_modules/vue-resource/vue-resource.min.js',
+      'node_modules/vue-select/vue-select.js',
       'node_modules/socket.io-client/socket.io.min.js',
       'node_modules/sails.io/sails.io.js'
   ],'public/js/cosapi_adminlte.min.js','resources/assets/')
@@ -92,8 +93,9 @@ elixir(function(mix) {
     'vendor/bootstrap/js/bootstrap.min.js',
     'extras/toastr/toastr.js',
     'cosapi/js/helper.js',
-    'cosapi/js/vue_dev.js',
+    'node_modules/vue/vue.js',
     'node_modules/vue-resource/vue-resource.min.js',
+    'node_modules/vue-select/vue-select.js',
     'node_modules/socket.io-client/socket.io.min.js'
   ],'public/js/cosapi_dashboard.min.js','resources/assets/')
   .scripts([

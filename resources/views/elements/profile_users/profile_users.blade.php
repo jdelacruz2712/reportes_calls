@@ -84,7 +84,7 @@
                                     <img :src="srcAvatar"  class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
                                 </div>
                                 <div v-else>
-                                    <img src="http://pcdoctorti.com.br/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png" class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
+                                    <img src="storage/default_avatar.png" class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
                                 </div>
                                 <br>
                                 <input type="file" name="imgAvatar" class="form-control" style="border-radius: 7px;" accept="image/*">
@@ -124,23 +124,19 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nomDepartamento">Departamento:</label>
-                                    <v-select id="nomDepartamento" :value.sync="selectedD" :options="departamento"></v-select>
+                                    <v-select id="nomDepartamento" :on-change="loadProvincia"  :value.sync="selectedD" :options="departamento" placeholder="Choose here..!!"></v-select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nomProvincia">Provincia:</label>
-                                    <select id="nomProvincia" class="form-control" style="border-radius: 7px;">
-                                        <option value="00" selected>-</option>
-                                    </select>
+                                    <v-select id="nomProvincia" :on-change="loadDistrito" :value.sync="selectedP" :options="provincia" placeholder="Choose here..!!"></v-select>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="nomDistrito">Distrito:</label>
-                                    <select id="nomDistrito" class="form-control" style="border-radius: 7px;">
-                                        <option value="00" selected>-</option>
-                                    </select>
+                                    <v-select id="nomDistrito" :on-change="getDistrito" :value.sync="selectedDi" :options="distrito" placeholder="Choose here..!!"></v-select>
                                 </div>
                             </div>
                         </div>
@@ -159,12 +155,19 @@
   Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
   Vue.component('v-select', VueSelect.VueSelect)
   var ubigeoID = ''
+  var idDepartamento = ''
+  var idProvincia = ''
+  var idDistrito = ''
 
   var vmProfile = new Vue({
     el: '#divProfile',
     data: {
         selectedD: null,
+        selectedP: null,
+        selectedDi: null,
         departamento: [],
+        provincia: [],
+        distrito: [],
         firstName: '-',
         numberDni: '-',
         secondName: '-',
@@ -174,7 +177,7 @@
         birthdate: '',
         userName: '-',
         passWord: '-',
-        srcAvatar: 'http://pcdoctorti.com.br/wp-content/plugins/all-in-one-seo-pack/images/default-user-image.png',
+        srcAvatar: 'storage/default_avatar.png',
         srcAvatarOriginal: '-',
         idSex: '-',
         idProfile: '-'
@@ -207,6 +210,7 @@
             this.idProfile = profile_user.id
             ubigeoID = profile_user.ubigeo_id
             this.$nextTick( () => {
+              this.loadDepartamento()
               this.loadSelect()
             })
           }
@@ -214,23 +218,65 @@
             console.log(response.body)
         })
       },
-      loadSelect: function() {
-        let parameters = { idUbigeo: ubigeoID }
-        this.$http.post('viewUbigeos',parameters).then(response => {
+      loadDepartamento: function() {
+        this.$http.post('viewDepartamento').then(response => {
             let nameDepartamento = response.body
-            let nameProvincia = response.body[0].provincia
-            let nameDistrito = response.body[0].distrito
-            let text = ''
+            let textDepartamento = ''
             let departamentolength = nameDepartamento.length
             for (let i = 0; i < departamentolength; i++) {
-              text += nameDepartamento[i].departamento;
+                textDepartamento += '&'+nameDepartamento[i].departamento
             }
-            console.log(text)
-            this.departamento = ['foo','bar','baz']
-            this.selectedD = 'bar'
+            this.departamento = textDepartamento.substr(1).split('&')
           },response => {
             console.log(response.body)
         })
+      },
+      loadProvincia: function(nameDepartamento) {
+          idDepartamento = nameDepartamento
+          let parameters = { Departamento: nameDepartamento }
+          this.$http.post('viewProvincia',parameters).then(response => {
+              let nameProvincia = response.body
+              let textProvincia = ''
+              let provincialength = nameProvincia.length
+              for (let i = 0; i < provincialength; i++) {
+                  textProvincia += '&'+nameProvincia[i].provincia
+              }
+              this.provincia = textProvincia.substr(1).split('&')
+              //this.selectedP = nameProvincia[1].provincia
+          },response => {
+              console.log(response.body)
+          })
+      },
+      loadDistrito: function(nameProvincia) {
+        idProvincia = nameProvincia
+        let parameters = { Provincia: nameProvincia }
+        this.$http.post('viewDistrito',parameters).then(response => {
+            let nameDistrito = response.body
+            let textDistrito = ''
+            let distritolength = nameDistrito.length
+            for (let i = 0; i < distritolength; i++) {
+                textDistrito += '&'+nameDistrito[i].distrito
+            }
+            this.distrito = textDistrito.substr(1).split('&')
+            //this.selectedDi = nameDistrito[1].distrito
+        },response => {
+            console.log(response.body)
+        })
+      },
+      getDistrito: function(nameDistrito){
+          idDistrito = nameDistrito
+      },
+      loadSelect: function(){
+          let parameters = { idUbigeo: ubigeoID }
+          this.$http.post('viewUbigeo',parameters).then(response => {
+              if(response.body[0]){
+                  this.selectedD = response.body[0].departamento
+                  this.selectedP = response.body[0].provincia
+                  this.selectedDi = response.body[0].distrito
+              }
+          },response => {
+              console.log(response.body)
+          })
       }
     }
   })
@@ -238,7 +284,7 @@
   $('#formPerfil').submit(function(event) {
     const userID = {{Session::get('UserId')}}
     let form = new FormData()
-        form.append('userID', userID)
+        form.append('userId', userID)
         form.append('firstName', $('input[id=firstName]').val())
         form.append('numberDni', $('input[id=numberDni]').val())
         form.append('secondName', $('input[id=secondName]').val())
@@ -250,9 +296,9 @@
         form.append('idSex', $('input[type=radio]').val())
         form.append('userName', $('input[id=userName]').val())
         form.append('birthdate', $('input[id=birthdate]').val())
-        form.append('nomDepartamento', $('select[id=nomDepartamento]').val())
-        form.append('nomProvincia', $('select[id=nomProvincia]').val())
-        form.append('nomDistrito', $('select[id=nomDistrito]').val())
+        form.append('nameDepartamento', idDepartamento)
+        form.append('nameProvincia', idProvincia)
+        form.append('nameDistrito', idDistrito)
         form.append('idProfile', $('input[id=idProfile]').val())
     $.ajax({
       url: 'uploadPerfil',

@@ -61,7 +61,7 @@ class UserController extends CosapiController
             }
 
             $idProfile          = \Input::get('idProfile');
-            $userId             = \Input::get('userID');
+            $userId             = \Input::get('userId');
             $numberDni          = \Input::get('numberDni');
             $numberTelephone    = \Input::get('numberTelephone');
             $idSex              = \Input::get('idSex');
@@ -100,10 +100,50 @@ class UserController extends CosapiController
         return $resultado;
     }
 
-    public function viewUbigeos(Request $request){
+    public function viewUbigeo(Request $request){
         if($request->ajax()) {
             $resultado = Ubigeos::Select()
-                /*->where('ubigeo', $request->idUbigeo)*/
+                ->where('ubigeo', $request->idUbigeo)
+                ->groupBy('departamento')
+                ->orderby('departamento','asc')
+                ->get()
+                ->toArray();
+        }
+
+        return $resultado;
+    }
+
+    public function viewDepartamento(Request $request){
+        if($request->ajax()) {
+            $resultado = Ubigeos::Select('departamento')
+                ->groupBy('departamento')
+                ->orderby('departamento','asc')
+                ->get()
+                ->toArray();
+        }
+
+        return $resultado;
+    }
+
+    public function viewProvincia(Request $request){
+        if($request->ajax()) {
+            $resultado = Ubigeos::Select('provincia')
+                ->where('departamento', $request->Departamento)
+                ->groupBy('provincia')
+                ->orderby('provincia','asc')
+                ->get()
+                ->toArray();
+        }
+
+        return $resultado;
+    }
+
+    public function viewDistrito(Request $request){
+        if($request->ajax()) {
+            $resultado = Ubigeos::Select('distrito')
+                ->where('provincia', $request->Provincia)
+                ->groupBy('distrito')
+                ->orderby('distrito','asc')
                 ->get()
                 ->toArray();
         }
