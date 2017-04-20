@@ -63,6 +63,7 @@ elixir(function(mix) {
   Generando el archivo cosapi_adminlte.min.js para el Layout adminLTE
   */
   .scripts([
+      'cosapi/js/env.js',
       'vendor/jquery/jquery.min.js',
       'plugins/jQueryUI/jquery-ui.min.js',
       'vendor/bootstrap/js/bootstrap.min.js',
@@ -89,6 +90,7 @@ elixir(function(mix) {
   Generando el archivo cosapi_dashboard.min.js para mostrar data realtime en panel
   */
   .scripts([
+    'cosapi/js/env.js',
     'vendor/jquery/jquery.min.js',
     'vendor/bootstrap/js/bootstrap.min.js',
     'extras/toastr/toastr.js',

@@ -8,15 +8,15 @@ const vueFront = new Vue({
   }
 })
 
-const socketIO = io.connect('http://192.167.99.246:1338/')
-const socketSails = io.sails.connect('http://192.167.99.246:1338/')
+const socketIO = io.connect(restApiSails)
+const socketSails = io.sails.connect(restApiSails)
 io.sails.autoConnect = false
 socketSails.reconnection = true
 socketSails.reconnectionDelayMax = 5
 // socketSails.timeout = 10
 // socketSails.reconnectionDelay = 20
 
-const socketAsterisk = io.connect('http://192.167.99.246:3363', { 'forceNew': true })
+const socketAsterisk = io.connect(restApiDashboard, { 'forceNew': true })
 socketAsterisk.on('connect', function() {
    if ($('#anexo').text()) {
      socketAsterisk.emit('createRoom', $('#anexo').text())
