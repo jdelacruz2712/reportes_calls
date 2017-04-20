@@ -213,5 +213,8 @@ elixir(function(mix) {
   Copiar imagenes en una sola carpeta
   */
   .copy('resources/assets/images'                                    , 'public/img')
-  .copy('resources/assets/cosapi/img'                                , 'public/img');
+  .copy('resources/assets/cosapi/img'                                , 'public/img')
+  .copy('resources/assets/images/default_avatar.png'                 , 'public/storage/default_avatar.png')
+
+
 });
