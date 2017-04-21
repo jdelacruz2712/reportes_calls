@@ -1,6 +1,6 @@
 @include('layout.plugins.css-valores-cuadros')
 @extends('layout.dashboard')
-@section('title', 'Dashboard')
+@section('title', 'Dashboard 01')
 @section('content')
 	<p>
 	<div class="row-fluid">

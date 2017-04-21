@@ -4,7 +4,15 @@ const vueFront = new Vue({
   data: {
     present_status_name: '',
     present_status_id: '',
-    anexo: ''
+    anexo: '',
+    srcAvatar:'default_avatar.png'
+  }
+})
+
+const vueMenuHeader = new Vue({
+  el:'#menuHeader',
+  data: {
+    srcAvatar:'default_avatar.png'
   }
 })
 
