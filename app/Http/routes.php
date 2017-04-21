@@ -34,15 +34,6 @@ Route::group (['middleware'=>['user']], function(){
         // Lista de Usuarios
         Route::post('list_users'                                        , ['uses'=>'UserController@index']);
 
-        // Perfil de Usuario
-        Route::post('profile_users'                                     , ['uses'=>'UserController@changeProfile']);
-        Route::post('viewUsers'                                         , ['uses'=>'UserController@viewUser']);
-        Route::post('uploadPerfil'                                      , ['uses'=>'UserController@uploadPerfil']);
-        Route::post('viewUbigeo'                                        , ['uses'=>'UserController@viewUbigeo']);
-        Route::post('viewDepartamento'                                  , ['uses'=>'UserController@viewDepartamento']);
-        Route::post('viewProvincia'                                     , ['uses'=>'UserController@viewProvincia']);
-        Route::post('viewDistrito'                                      , ['uses'=>'UserController@viewDistrito']);
-
     });
 
     // Reporte de encuestaa
@@ -70,6 +61,15 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
     Route::post('export_level_occupation'	    					, ['uses'=>'LeveloccupationController@export']);
     Route::post('export_list_user'								    , ['uses'=>'UserController@export']);
+
+    // Perfil de Usuario
+    Route::post('profile_users'                                     , ['uses'=>'UserController@changeProfile']);
+    Route::post('viewUsers'                                         , ['uses'=>'UserController@viewUser']);
+    Route::post('uploadPerfil'                                      , ['uses'=>'UserController@uploadPerfil']);
+    Route::post('viewUbigeo'                                        , ['uses'=>'UserController@viewUbigeo']);
+    Route::post('viewDepartamento'                                  , ['uses'=>'UserController@viewDepartamento']);
+    Route::post('viewProvincia'                                     , ['uses'=>'UserController@viewProvincia']);
+    Route::post('viewDistrito'                                      , ['uses'=>'UserController@viewDistrito']);
 
     // Miscelaneas
     Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);

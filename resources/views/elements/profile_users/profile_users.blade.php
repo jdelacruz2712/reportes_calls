@@ -1,18 +1,15 @@
+@include('layout.recursos.modal_loading')
+@include('layout.plugins.css-datepicker')
 <form id="formPerfil" enctype="multipart/form-data" method="POST">
     <input id="tokenId" type="hidden" name="_token" value="{{ csrf_token() }}">
     <div id="divProfile" class="box box-primary">
         <div role="tab" id="headingOne" class="box-header">
             <h4 class="box-title"><b>Edit Profile</b></h4>
-            <div role="group" aria-label="..." class="btn-group pull-right">
-                <div role="group" class="btn-group">
-                    <button role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-widget="collapse" class="btn btn-box-tool"><i class="fa fa-minus"></i></button>
-                </div>
-            </div>
         </div>
 
-        <div id="collapseOne" role="tabpanel" aria-labelledby="headingOne" class="panel-collapse collapse in">
+        <div class="panel-collapse collapse in">
             <div class="box-body">
-                <div class="panel panel-default">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <center><b>Datos Personales</b></center>
                     </div>
@@ -74,17 +71,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="birthdate">Fecha de Nacimiento:</label>
-                                            <input type="date" id="birthdate" class="form-control" style="border-radius: 7px;" v-model="birthdate" onkeydown="return BlockCopyPaste(event)">
+                                            <input name="birthdate" type="text" id="birthdate" class="id_fecha_conocimiento form-control" style="border-radius: 7px;" v-model="birthdate" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div v-if="srcAvatar != 'storage/-'">
-                                    <img :src="srcAvatar"  class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
-                                </div>
-                                <div v-else>
-                                    <img src="storage/default_avatar.png" class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
+                                <div>
+                                    <img :src="'storage/' + srcAvatar"  class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
                                 </div>
                                 <br>
                                 <input type="file" name="imgAvatar" class="form-control" style="border-radius: 7px;" accept="image/*">
@@ -94,7 +88,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <center><b>Credenciales</b></center>
                     </div>
@@ -115,7 +109,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <center><b>Ubigueo</b></center>
                     </div>
@@ -151,177 +145,5 @@
         </div>
     </div>
 </form>
-<script>
-  Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
-  Vue.component('v-select', VueSelect.VueSelect)
-  var ubigeoID = ''
-  var idDepartamento = ''
-  var idProvincia = ''
-  var idDistrito = ''
-
-  var vmProfile = new Vue({
-    el: '#divProfile',
-    data: {
-        selectedD: null,
-        selectedP: null,
-        selectedDi: null,
-        departamento: [],
-        provincia: [],
-        distrito: [],
-        firstName: '-',
-        numberDni: '-',
-        secondName: '-',
-        numberTelephone: '-',
-        firstLastName: '-',
-        secondLastName: '-',
-        birthdate: '',
-        userName: '-',
-        passWord: '-',
-        srcAvatar: 'storage/default_avatar.png',
-        srcAvatarOriginal: '-',
-        idSex: '-',
-        idProfile: '-'
-    },
-    mounted()  {
-        this.loadData()
-    },
-    methods:{
-      loadData: function() {
-        let userId = {{Session::get('UserId')}}
-        let parameters = { userID: userId }
-        this.$http.post('viewUsers',parameters).then(response => {
-          /* Data tabla users */
-          this.firstName = response.body[0].primer_nombre
-          this.secondName = response.body[0].segundo_nombre
-          this.firstLastName = response.body[0].apellido_paterno
-          this.secondLastName = response.body[0].apellido_materno
-          this.userName = response.body[0].username
-          this.passWord = '-----------------------'
-          /* Data tabla users_profile */
-          let profile_user = response.body[0].user_profile
-          if(profile_user){
-            this.numberDni = profile_user.dni
-            this.numberTelephone = profile_user.telefono
-            this.birthdate = profile_user.fecha_nacimiento
-            this.birthdate = profile_user.fecha_nacimiento
-            this.idSex = profile_user.Sexo
-            this.srcAvatar = `storage/${profile_user.avatar}`
-            this.srcAvatarOriginal = profile_user.avatar
-            this.idProfile = profile_user.id
-            ubigeoID = profile_user.ubigeo_id
-            this.$nextTick( () => {
-              this.loadDepartamento()
-              this.loadSelect()
-            })
-          }
-        },response => {
-            console.log(response.body)
-        })
-      },
-      loadDepartamento: function() {
-        this.$http.post('viewDepartamento').then(response => {
-            let nameDepartamento = response.body
-            let textDepartamento = ''
-            let departamentolength = nameDepartamento.length
-            for (let i = 0; i < departamentolength; i++) {
-                textDepartamento += '&'+nameDepartamento[i].departamento
-            }
-            this.departamento = textDepartamento.substr(1).split('&')
-          },response => {
-            console.log(response.body)
-        })
-      },
-      loadProvincia: function(nameDepartamento) {
-          idDepartamento = nameDepartamento
-          let parameters = { Departamento: nameDepartamento }
-          this.$http.post('viewProvincia',parameters).then(response => {
-              let nameProvincia = response.body
-              let textProvincia = ''
-              let provincialength = nameProvincia.length
-              for (let i = 0; i < provincialength; i++) {
-                  textProvincia += '&'+nameProvincia[i].provincia
-              }
-              this.provincia = textProvincia.substr(1).split('&')
-              //this.selectedP = nameProvincia[1].provincia
-          },response => {
-              console.log(response.body)
-          })
-      },
-      loadDistrito: function(nameProvincia) {
-        idProvincia = nameProvincia
-        let parameters = { Provincia: nameProvincia }
-        this.$http.post('viewDistrito',parameters).then(response => {
-            let nameDistrito = response.body
-            let textDistrito = ''
-            let distritolength = nameDistrito.length
-            for (let i = 0; i < distritolength; i++) {
-                textDistrito += '&'+nameDistrito[i].distrito
-            }
-            this.distrito = textDistrito.substr(1).split('&')
-            //this.selectedDi = nameDistrito[1].distrito
-        },response => {
-            console.log(response.body)
-        })
-      },
-      getDistrito: function(nameDistrito){
-          idDistrito = nameDistrito
-      },
-      loadSelect: function(){
-          let parameters = { idUbigeo: ubigeoID }
-          this.$http.post('viewUbigeo',parameters).then(response => {
-              if(response.body[0]){
-                  this.selectedD = response.body[0].departamento
-                  this.selectedP = response.body[0].provincia
-                  this.selectedDi = response.body[0].distrito
-              }
-          },response => {
-              console.log(response.body)
-          })
-      }
-    }
-  })
-
-  $('#formPerfil').submit(function(event) {
-    const userID = {{Session::get('UserId')}}
-    let form = new FormData()
-        form.append('userId', userID)
-        form.append('firstName', $('input[id=firstName]').val())
-        form.append('numberDni', $('input[id=numberDni]').val())
-        form.append('secondName', $('input[id=secondName]').val())
-        form.append('imgAvatar', $('input[name=imgAvatar]')[0].files[0])
-        form.append('imgAvatarOriginal', $('input[name=imgAvatarOriginal]').val())
-        form.append('numberTelephone', $('input[id=numberTelephone]').val())
-        form.append('firstLastName', $('input[id=firstLastName]').val())
-        form.append('secondLastName', $('input[id=secondLastName]').val())
-        form.append('idSex', $('input[type=radio]').val())
-        form.append('userName', $('input[id=userName]').val())
-        form.append('birthdate', $('input[id=birthdate]').val())
-        form.append('nameDepartamento', idDepartamento)
-        form.append('nameProvincia', idProvincia)
-        form.append('nameDistrito', idDistrito)
-        form.append('idProfile', $('input[id=idProfile]').val())
-    $.ajax({
-      url: 'uploadPerfil',
-      data: form,
-      cache: false,
-      contentType: false,
-      processData: false,
-      type: 'POST',
-      beforeSend: (xhr) => {
-        const token = $('input[name=_token]').val()
-        if (token) {
-          return xhr.setRequestHeader('X-CSRF-TOKEN', token)
-        }
-      },
-      success: (data) => {
-        if(data === 'Ok'){
-          vmProfile.loadData()
-          mostrar_notificacion('success', 'Se edito tu perfil con exito !', 'Success', 2000, false, true)
-        }else{
-          mostrar_notificacion('error', 'Hubo un error al editar, ', 'Success', 2000, false, true)
-        }
-      }
-    })
-    event.preventDefault()
-  })
-</script>
+{!!Html::script('js/profileuserVue.min.js')!!}
+@include('layout.plugins.js-datepicker')

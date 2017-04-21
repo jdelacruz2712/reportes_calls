@@ -50,12 +50,16 @@ class UserController extends CosapiController
 
             if(\Input::file('imgAvatar')){
                 \File::makeDirectory(public_path().'/storage/', $mode = 0777, true, true);
-                $imageOriginal = \Input::get('imgAvatarOriginal');
+                if(\Input::get('imgAvatarOriginal') == 'default_avatar.png') { $imageOriginal = ''; }else{ $imageOriginal = \Input::get('imgAvatarOriginal'); }
                 $image = \Input::file('imgAvatar');
-                $filename = \Input::get('userName').time().'.jpg';
-                $filenamedelete = public_path('storage\\').$imageOriginal;
-                \File::delete($filenamedelete);
-                Image::make($image)->resize(520, 520)->save(public_path('storage/').$filename);
+                if (strstr($image->getMimeType(), 'image/')) {
+                    $filename = \Input::get('userName') . time() . '.jpg';
+                    $filenamedelete = public_path('storage\\') . $imageOriginal;
+                    \File::delete($filenamedelete);
+                    Image::make($image)->resize(520, 520)->save(public_path('storage/') . $filename);
+                }else{
+                    return 'NotImage';
+                }
             }else{
                 $filename = \Input::get('imgAvatarOriginal');
             }
@@ -69,7 +73,11 @@ class UserController extends CosapiController
             $firstName          = \Input::get('firstName');
             $secondName         = \Input::get('secondName');
             $firstLastName      = \Input::get('firstLastName');
-            $secondLastName     = \Input::get('apellidoMaterno');
+            $secondLastName     = \Input::get('secondLastName');
+            $idDepartamento     = \Input::get('idDepartamento');
+
+            if(!\Input::get('idProvincia') || \Input::get('idProvincia') == '' || \Input::get('idProvincia') == null){ $idProvincia = '';  }else{ $idProvincia = \Input::get('idProvincia'); }
+            if(!\Input::get('idDistrito') || \Input::get('idDistrito') == '' || \Input::get('idDistrito') == null){ $idDistrito = '';  }else{ $idDistrito = \Input::get('idDistrito'); }
 
             DB::table('users')
             ->where('id',$userId)
@@ -80,9 +88,17 @@ class UserController extends CosapiController
                 'apellido_materno'  => $secondLastName
             ]);
 
+            $idUbigeo = $this->getUbigeo($idDepartamento,$idProvincia,$idDistrito);
+
+            if($idUbigeo){
+                $ubigeo = $idUbigeo[0]['ubigeo'];
+            }else{
+                $ubigeo = '10000';
+            }
+
             DB::statement('REPLACE INTO users_profile (id,user_id,dni,telefono,Sexo,fecha_nacimiento,avatar,ubigeo_id)'
                 .' VALUES '
-                .'("'.$idProfile.'","'.$userId.'","'.$numberDni.'","'.$numberTelephone.'","'.$idSex.'","'.$birthdate.'","'.$filename.'","150000")');
+                .'("'.$idProfile.'","'.$userId.'","'.$numberDni.'","'.$numberTelephone.'","'.$idSex.'","'.$birthdate.'","'.$filename.'","'.$ubigeo.'")');
 
         }
         return 'Ok';
@@ -109,6 +125,17 @@ class UserController extends CosapiController
                 ->get()
                 ->toArray();
         }
+
+        return $resultado;
+    }
+
+    public function getUbigeo($departamento,$provincia,$distrito){
+        $resultado = Ubigeos::Select('ubigeo')
+            ->where('departamento','=',$departamento)
+            ->where('provincia','=',$provincia)
+            ->where('distrito','=',$distrito)
+            ->get()
+            ->toArray();
 
         return $resultado;
     }
