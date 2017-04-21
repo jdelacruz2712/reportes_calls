@@ -56,7 +56,8 @@ elixir(function(mix) {
   .scripts([
       'vendor/jquery/jquery.min.js',
       'vendor/bootstrap/js/bootstrap.min.js',
-      'extras/bootstrap-typeahead/js/bootstrap-typeahead.min.js'
+      'extras/bootstrap-typeahead/js/bootstrap-typeahead.min.js',
+      'extras/jquery-backstretch/jquery.backstretch.min.js'
   ],'public/js/cosapidata_login.min.js','resources/assets/')
 
   /**
@@ -218,7 +219,9 @@ elixir(function(mix) {
   */
   .copy('resources/assets/images'                                    , 'public/img')
   .copy('resources/assets/cosapi/img'                                , 'public/img')
-  .copy('resources/assets/images/default_avatar.png'                 , 'public/storage/default_avatar.png')
 
-
+  .copy('resources/assets/cosapi/favicon'                            , 'public/favicon')
+  .copy('resources/assets/cosapi/background'                         , 'public/background')
+  .copy('resources/assets/images/default_avatar.png'                 , 'public/storage/default_avatar.png');
+    
 });

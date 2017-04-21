@@ -10,7 +10,7 @@
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
-    <nav class="navbar navbar-static-top" role="navigation">
+    <nav class="navbar navbar-static-top" role="navigation" id="menuHeader">
         <!-- Sidebar toggle button-->
         <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
             <span class="sr-only">Toggle navigation</span>
@@ -37,13 +37,13 @@
                 <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                        <img src="img/logo_cosapi.jpg" class="user-image" alt="User Image">
-                        <span class="hidden-xs">Cosapi Data</span>
+                        <img :src="'storage/' + srcAvatar" class="user-image" alt="User Image">
+                        <span class="hidden-xs">Sapia</span>
                     </a>
                     <ul class="dropdown-menu">
                         <!-- User image -->
                         <li class="user-header">
-                            <img src="img/logo_cosapi.jpg" class="img-circle" alt="User Image">
+                            <img :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
                             <p>
                                 {{ ucwords(Session::get('UserName')).' - '}}<font id="UserNameRole">{{ucwords(Session::get('UserRole'))}}</font>
                                 <small>{{date('j F Y')}}</small>

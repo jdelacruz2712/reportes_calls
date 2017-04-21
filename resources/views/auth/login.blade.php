@@ -3,16 +3,22 @@
 @section('content')
 <div class="container">
   @include('layout.recursos.error')
-  <div class="card card-container">
-    <img id="profile-img" class="profile-img-card" src="img/login.png" />
+  <div class="card card-container" style="background-color: transparent">
+    <center><img id="profile-img" class="profile-img-card" src="img/logo.svg" /></center>
+    <br>
     <p id="profile-name" class="profile-name-card"></p>
-    <form class="form-signin" role="form" method="POST" action="{{route('login')}}">
+    <form role="form" method="POST" action="{{route('login')}}">
       <input type="hidden" name="_token" value="{{ csrf_token() }}">
-       {!! Form::text('username', null, ['id' => 'inputUsername',  'placeholder' => "Ingrese su Usuario",         'class' => 'form-control', 'type' => 'text',    'required'=>'autofocus'])       !!}
-       {!! Form::password('password',   ['id' => 'inputPassword',  'placeholder' => "Ingrese su Contraseña",      'class' => 'form-control', 'required'])                                         !!}
-      <div id="remember" class="checkbox">
-        <label><input type="checkbox" value="remember-me"> Recuérdame</label>
+
+      <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3"><i class="fa fa-user"></i></span>
+        <input type="text" class="form-control" placeholder="Ingrese su Usuario" aria-describedby="sizing-addon3" id="inputUsername" required="autofocus" name="username">
       </div>
+      <div class="input-group input-group-sm">
+        <span class="input-group-addon" id="sizing-addon3"><i class="fa fa-lock"></i></span>
+        <input type="password" class="form-control" placeholder="Ingrese su Contraseña" aria-describedby="sizing-addon3" id="inputPassword" required="required" name="password">
+      </div>
+      <br>
       <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Ingresar</button>
     </form>
   </div><!-- /card-container -->

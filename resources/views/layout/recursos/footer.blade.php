@@ -8,5 +8,5 @@
           	?>
           </b>
         </div>
-        <strong>Copyright &copy; 2016 <a href="http://www.cosapidata.com.pe">Cosapi Data</a>.</strong> Derechos Reservados.
+        <strong>Copyright &copy; {{date('Y')}} <a href="http://www.sapia.com.pe" target="_blank">Sapia</a>.</strong> Derechos Reservados.
 </footer>
