@@ -113,7 +113,10 @@ class UserController extends CosapiController
                 ->toArray();
         }
 
+        if($resultado[0]['user_profile'] == null) $resultado[0]['user_profile']['avatar'] = 'default_avatar.png';
+
         return $resultado;
+
     }
 
     public function viewUbigeo(Request $request){
