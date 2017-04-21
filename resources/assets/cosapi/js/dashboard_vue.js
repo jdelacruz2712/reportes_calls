@@ -62,7 +62,9 @@ const vm = new Vue({
         setTimeout(function(){
             this.agents[list_index].timeElapsed = restarHoras((new Date()).getTime() - this.agents[list_index].star_call_inbound)
             this.loadTimeElapsed(list_index)
-        }.bind(this), 1200)
+        }.bind(this), 1000)
+      } else {
+        this.agents[list_index].timeElapsed = ''
       }
     }
   }

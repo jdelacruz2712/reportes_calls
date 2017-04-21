@@ -6,5 +6,21 @@ $(document).ready(function() {
             format: 'YYYY-MM-DD'
         }
     })
+
+    $('input[name=birthdate]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        alwaysShowCalendars: true,
+        autoUpdateInput: false,
+        opens: "right",
+        locale: {
+            format: 'YYYY-MM-DD'
+        }
+    })
+
+    $('input[name="birthdate"]').on('apply.daterangepicker', function (ev, picker) {
+        var startDate = picker.startDate;
+        $('input[name="birthdate"]').val(startDate.format('YYYY-MM-DD'));
+    })
 })
 </script>
