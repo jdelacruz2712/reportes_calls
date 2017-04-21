@@ -131,9 +131,9 @@ $('#formPerfil').submit(function(event) {
     form.append('idSex', $('input[type=radio]').val())
     form.append('userName', $('input[id=userName]').val())
     form.append('birthdate', $('input[id=birthdate]').val())
-    form.append('idDepartamentoProfile', idDepartamentoProfile)
-    form.append('idProvinciaProfile', idProvinciaProfile)
-    form.append('idDistritoProfile', idDistritoProfile)
+    form.append('idDepartamento', idDepartamentoProfile)
+    form.append('idProvincia', idProvinciaProfile)
+    form.append('idDistrito', idDistritoProfile)
     form.append('idProfile', $('input[id=idProfile]').val())
 
     $.ajax({

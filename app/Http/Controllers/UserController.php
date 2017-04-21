@@ -89,7 +89,7 @@ class UserController extends CosapiController
             ]);
 
             $idUbigeo = $this->getUbigeo($idDepartamento,$idProvincia,$idDistrito);
-
+            
             if($idUbigeo){
                 $ubigeo = $idUbigeo[0]['ubigeo'];
             }else{
