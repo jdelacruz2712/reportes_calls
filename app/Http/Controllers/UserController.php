@@ -56,7 +56,7 @@ class UserController extends CosapiController
                     $filename = \Input::get('userName') . time() . '.jpg';
                     $filenamedelete = public_path('storage\\') . $imageOriginal;
                     \File::delete($filenamedelete);
-                    Image::make($image)->resize(520, 520)->save(public_path('storage/') . $filename);
+                    Image::make($image)->resize(680, 680)->save(public_path('storage/') . $filename);
                 }else{
                     return 'NotImage';
                 }
