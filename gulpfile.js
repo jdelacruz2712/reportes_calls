@@ -86,6 +86,10 @@ elixir(function(mix) {
       'cosapi/js/frontVue.js'
   ],'public/js/cosapi.min.js','resources/assets/')
 
+  .scripts([
+      'cosapi/js/profileuserVue.js'
+  ],'public/js/profileuserVue.min.js','resources/assets/')
+
   /**
   Generando el archivo cosapi_dashboard.min.js para mostrar data realtime en panel
   */

@@ -1,0 +1,156 @@
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.component('v-select', VueSelect.VueSelect)
+var ubigeoID = ''
+var idDepartamento = ''
+var idProvincia = ''
+var idDistrito = ''
+
+var vmProfile = new Vue({
+    el: '#divProfile',
+    data: {
+        selectedD: null,
+        selectedP: null,
+        selectedDi: null,
+        departamento: [],
+        provincia: [],
+        distrito: [],
+        firstName: '-',
+        numberDni: '-',
+        secondName: '-',
+        numberTelephone: '-',
+        firstLastName: '-',
+        secondLastName: '-',
+        birthdate: '',
+        userName: '-',
+        passWord: '-',
+        srcAvatar: 'storage/default_avatar.png',
+        srcAvatarOriginal: '-',
+        idSex: '-',
+        idProfile: '-',
+        oldDepartamento: '',
+        oldProvincia: ''
+    },
+    mounted()  {
+        this.loadData()
+    },
+    methods:{
+        loadData: function() {
+            let userId = $('#user_id').val()
+            let parameters = { userID: userId }
+            this.$http.post('viewUsers',parameters).then(response => {
+                /* Data tabla users */
+                this.firstName = response.body[0].primer_nombre
+                this.secondName = response.body[0].segundo_nombre
+                this.firstLastName = response.body[0].apellido_paterno
+                this.secondLastName = response.body[0].apellido_materno
+                this.userName = response.body[0].username
+                this.passWord = '-----------------------'
+                /* Data tabla users_profile */
+                let profile_user = response.body[0].user_profile
+                if(profile_user){
+                    this.numberDni = profile_user.dni
+                    this.numberTelephone = profile_user.telefono
+                    this.birthdate = profile_user.fecha_nacimiento
+                    this.birthdate = profile_user.fecha_nacimiento
+                    this.idSex = profile_user.Sexo
+                    this.srcAvatar = `storage/${profile_user.avatar}`
+                    this.srcAvatarOriginal = profile_user.avatar
+                    this.idProfile = profile_user.id
+                    ubigeoID = profile_user.ubigeo_id
+                    this.$nextTick( () => {
+                        this.loadDepartamento()
+                        this.loadSelect()
+                    })
+                }
+            },response => {
+                console.log(response.body)
+            })
+        },
+        loadDepartamento: function() {
+            this.$http.post('viewDepartamento').then(response => {
+                let departamento = []
+                response.body.forEach((item, index) => departamento.push(item.departamento))
+                this.departamento = departamento
+            },response => console.log(response.body))
+        },
+        loadProvincia: function(nameDepartamento) {
+            if (this.oldDepartamento != nameDepartamento){ this.selectedP = '' }
+            idDepartamento = nameDepartamento
+            let parameters = { Departamento: nameDepartamento }
+            this.$http.post('viewProvincia',parameters).then(response => {
+                let provincia = []
+                response.body.forEach((item, index) => provincia.push(item.provincia))
+                this.provincia = provincia
+            },response => console.log(response.body))
+        },
+        loadDistrito: function(nameProvincia) {
+            if (this.oldProvincia != nameProvincia){ this.selectedDi = '' }
+            idProvincia = nameProvincia
+            let parameters = { Provincia: nameProvincia }
+            this.$http.post('viewDistrito',parameters).then(response => {
+                let distrito = []
+                response.body.forEach((item, index) => distrito.push(item.distrito))
+                this.distrito = distrito
+            },response => console.log(response.body))
+        },
+        getDistrito: function(nameDistrito){
+            idDistrito = nameDistrito
+        },
+        loadSelect: function(){
+            let parameters = { idUbigeo: ubigeoID }
+            this.$http.post('viewUbigeo',parameters).then(response => {
+                if(response.body[0]){
+                    this.oldDepartamento = response.body[0].departamento
+                    this.selectedD = response.body[0].departamento
+                    this.oldProvincia = response.body[0].provincia
+                    this.selectedP = response.body[0].provincia
+                    this.selectedDi = response.body[0].distrito
+                }
+            },response => console.log(response.body))
+        }
+    }
+})
+
+$('#formPerfil').submit(function(event) {
+    const userID = $('#user_id').val()
+    let form = new FormData()
+    form.append('userId', userID)
+    form.append('firstName', $('input[id=firstName]').val())
+    form.append('numberDni', $('input[id=numberDni]').val())
+    form.append('secondName', $('input[id=secondName]').val())
+    form.append('imgAvatar', $('input[name=imgAvatar]')[0].files[0])
+    form.append('imgAvatarOriginal', $('input[name=imgAvatarOriginal]').val())
+    form.append('numberTelephone', $('input[id=numberTelephone]').val())
+    form.append('firstLastName', $('input[id=firstLastName]').val())
+    form.append('secondLastName', $('input[id=secondLastName]').val())
+    form.append('idSex', $('input[type=radio]').val())
+    form.append('userName', $('input[id=userName]').val())
+    form.append('birthdate', $('input[id=birthdate]').val())
+    form.append('idDepartamento', idDepartamento)
+    form.append('idProvincia', idProvincia)
+    form.append('idDistrito', idDistrito)
+    form.append('idProfile', $('input[id=idProfile]').val())
+    $.ajax({
+        url: 'uploadPerfil',
+        data: form,
+        cache: false,
+        contentType: false,
+        processData: false,
+        type: 'POST',
+        beforeSend: (xhr) => {
+            const token = $('input[name=_token]').val()
+            if (token) {
+                return xhr.setRequestHeader('X-CSRF-TOKEN', token)
+            }
+        },
+        success: (data) => {
+            vmProfile.loadData()
+            if(data === 'Ok'){
+                mostrar_notificacion('success', 'Se edito tu perfil con exito !', 'Success', 2000, false, true)
+            }else{
+                mostrar_notificacion('error', 'Hubo un error al editar, ', 'Success', 2000, false, true)
+            }
+        }
+    })
+    event.preventDefault()
+})
