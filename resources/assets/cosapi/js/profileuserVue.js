@@ -1,9 +1,9 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 Vue.component('v-select', VueSelect.VueSelect)
 var ubigeoID = ''
-var idDepartamento = ''
-var idProvincia = ''
-var idDistrito = ''
+var idDepartamentoProfile = ''
+var idProvinciaProfile = ''
+var idDistritoProfile = ''
 
 var vmProfile = new Vue({
     el: '#divProfile',
@@ -23,8 +23,8 @@ var vmProfile = new Vue({
         birthdate: '',
         userName: '-',
         passWord: '-',
-        srcAvatar: 'storage/default_avatar.png',
-        srcAvatarOriginal: '-',
+        srcAvatar: 'default_avatar.png',
+        srcAvatarOriginal: 'default_avatar.png',
         idSex: '-',
         idProfile: '-',
         oldDepartamento: '',
@@ -45,6 +45,7 @@ var vmProfile = new Vue({
                 this.secondLastName = response.body[0].apellido_materno
                 this.userName = response.body[0].username
                 this.passWord = '-----------------------'
+                this.loadDepartamento()
                 /* Data tabla users_profile */
                 let profile_user = response.body[0].user_profile
                 if(profile_user){
@@ -53,12 +54,11 @@ var vmProfile = new Vue({
                     this.birthdate = profile_user.fecha_nacimiento
                     this.birthdate = profile_user.fecha_nacimiento
                     this.idSex = profile_user.Sexo
-                    this.srcAvatar = `storage/${profile_user.avatar}`
+                    this.srcAvatar = profile_user.avatar
                     this.srcAvatarOriginal = profile_user.avatar
                     this.idProfile = profile_user.id
                     ubigeoID = profile_user.ubigeo_id
                     this.$nextTick( () => {
-                        this.loadDepartamento()
                         this.loadSelect()
                     })
                 }
@@ -68,33 +68,36 @@ var vmProfile = new Vue({
         },
         loadDepartamento: function() {
             this.$http.post('viewDepartamento').then(response => {
-                let departamento = []
-                response.body.forEach((item, index) => departamento.push(item.departamento))
-                this.departamento = departamento
+                let arraydepartamento = []
+                let objectSearch = 'departamento'
+                objectToArray(response.body, arraydepartamento, objectSearch)
+                this.departamento = arraydepartamento
             },response => console.log(response.body))
         },
         loadProvincia: function(nameDepartamento) {
             if (this.oldDepartamento != nameDepartamento){ this.selectedP = '' }
-            idDepartamento = nameDepartamento
+            idDepartamentoProfile = nameDepartamento
             let parameters = { Departamento: nameDepartamento }
             this.$http.post('viewProvincia',parameters).then(response => {
-                let provincia = []
-                response.body.forEach((item, index) => provincia.push(item.provincia))
-                this.provincia = provincia
+                let arrayprovincia = []
+                let objectSearch = 'provincia'
+                objectToArray(response.body, arrayprovincia, objectSearch)
+                this.provincia = arrayprovincia
             },response => console.log(response.body))
         },
         loadDistrito: function(nameProvincia) {
             if (this.oldProvincia != nameProvincia){ this.selectedDi = '' }
-            idProvincia = nameProvincia
+            idProvinciaProfile = nameProvincia
             let parameters = { Provincia: nameProvincia }
             this.$http.post('viewDistrito',parameters).then(response => {
-                let distrito = []
-                response.body.forEach((item, index) => distrito.push(item.distrito))
-                this.distrito = distrito
+                let arraydistrito = []
+                let objectSearch = 'distrito'
+                objectToArray(response.body, arraydistrito, objectSearch)
+                this.distrito = arraydistrito
             },response => console.log(response.body))
         },
         getDistrito: function(nameDistrito){
-            idDistrito = nameDistrito
+            idDistritoProfile = nameDistrito
         },
         loadSelect: function(){
             let parameters = { idUbigeo: ubigeoID }
@@ -126,10 +129,11 @@ $('#formPerfil').submit(function(event) {
     form.append('idSex', $('input[type=radio]').val())
     form.append('userName', $('input[id=userName]').val())
     form.append('birthdate', $('input[id=birthdate]').val())
-    form.append('idDepartamento', idDepartamento)
-    form.append('idProvincia', idProvincia)
-    form.append('idDistrito', idDistrito)
+    form.append('idDepartamentoProfile', idDepartamentoProfile)
+    form.append('idProvinciaProfile', idProvinciaProfile)
+    form.append('idDistritoProfile', idDistritoProfile)
     form.append('idProfile', $('input[id=idProfile]').val())
+
     $.ajax({
         url: 'uploadPerfil',
         data: form,
@@ -145,12 +149,30 @@ $('#formPerfil').submit(function(event) {
         },
         success: (data) => {
             vmProfile.loadData()
+            $('#myModalLoading').modal('show')
             if(data === 'Ok'){
-                mostrar_notificacion('success', 'Se edito tu perfil con exito !', 'Success', 2000, false, true)
+                setTimeout(function() {
+                    mostrar_notificacion('success', 'Se edito tu perfil con exito !', 'Success', 2000, false, true)
+                    $('#myModalLoading').modal('hide')
+                },1500)
+            }else if(data === 'NotImage'){
+                mostrar_notificacion('error', 'Solo esta permitida la subida de imagenes en el avatar', 'Error', 4000, false, true)
+                $('#myModalLoading').modal('hide')
             }else{
-                mostrar_notificacion('error', 'Hubo un error al editar, ', 'Success', 2000, false, true)
+                mostrar_notificacion('error', 'Error al editar el perfil', 'Error', 2000, false, true)
+                $('#myModalLoading').modal('hide')
             }
         }
     })
     event.preventDefault()
 })
+
+$('#formPerfil').keypress(function(e) {
+    if (e.which == 13) {
+        return false
+    }
+});
+
+function objectToArray(object, array, value){
+    object.forEach((item, index) => array.push(item[value]))
+}

@@ -1,18 +1,15 @@
+@include('layout.recursos.modal_loading')
+@include('layout.plugins.css-datepicker')
 <form id="formPerfil" enctype="multipart/form-data" method="POST">
     <input id="tokenId" type="hidden" name="_token" value="{{ csrf_token() }}">
     <div id="divProfile" class="box box-primary">
         <div role="tab" id="headingOne" class="box-header">
             <h4 class="box-title"><b>Edit Profile</b></h4>
-            <div role="group" aria-label="..." class="btn-group pull-right">
-                <div role="group" class="btn-group">
-                    <button role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" data-widget="collapse" class="btn btn-box-tool"><i class="fa fa-minus"></i></button>
-                </div>
-            </div>
         </div>
 
-        <div id="collapseOne" role="tabpanel" aria-labelledby="headingOne" class="panel-collapse collapse in">
+        <div class="panel-collapse collapse in">
             <div class="box-body">
-                <div class="panel panel-default">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <center><b>Datos Personales</b></center>
                     </div>
@@ -74,17 +71,14 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label for="birthdate">Fecha de Nacimiento:</label>
-                                            <input type="date" id="birthdate" class="form-control" style="border-radius: 7px;" v-model="birthdate" onkeydown="return BlockCopyPaste(event)">
+                                            <input name="birthdate" type="text" id="birthdate" class="id_fecha_conocimiento form-control" style="border-radius: 7px;" v-model="birthdate" onkeydown="return BlockCopyPaste(event)">
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div v-if="srcAvatar != 'storage/-'">
-                                    <img :src="srcAvatar"  class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
-                                </div>
-                                <div v-else>
-                                    <img src="storage/default_avatar.png" class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
+                                <div>
+                                    <img :src="'storage/' + srcAvatar"  class="img-responsive img-rounded" style="margin: 0px auto; float: none !important;">
                                 </div>
                                 <br>
                                 <input type="file" name="imgAvatar" class="form-control" style="border-radius: 7px;" accept="image/*">
@@ -94,7 +88,7 @@
                     </div>
                 </div>
 
-                <div class="panel panel-default">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <center><b>Credenciales</b></center>
                     </div>
@@ -115,7 +109,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
+                <div class="panel panel-primary">
                     <div class="panel-heading">
                         <center><b>Ubigueo</b></center>
                     </div>
@@ -152,3 +146,4 @@
     </div>
 </form>
 {!!Html::script('js/profileuserVue.min.js')!!}
+@include('layout.plugins.js-datepicker')
