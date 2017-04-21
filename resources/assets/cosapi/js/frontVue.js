@@ -1,4 +1,5 @@
 'use strict'
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 const vueFront = new Vue({
   el: '#statusAgent',
   data: {
@@ -6,6 +7,19 @@ const vueFront = new Vue({
     present_status_id: '',
     anexo: '',
     srcAvatar:'default_avatar.png'
+  },
+  mounted(){
+    this.getAvatar()
+  },
+  methods:{
+    getAvatar: function (){
+      let userId = $('#user_id').val()
+      let parameters = { userID: userId }
+      this.$http.post('viewUsers', parameters).then(response => {
+        this.srcAvatar = response.body[0].user_profile.avatar
+        vueMenuHeader.srcAvatar = response.body[0].user_profile.avatar
+      },response => console.log(response.body))
+    }
   }
 })
 
