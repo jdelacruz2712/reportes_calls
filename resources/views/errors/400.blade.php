@@ -20,11 +20,19 @@
                 <div class="col-md-12 card">
                     <center>
                         <div class="col-md-12">
-                            <font style="font-size: 100px; color: #00acd6"><b>503</b></font>
+                            <font style="font-size: 100px; color: #00acd6"><b>400</b></font>
                         </div>
                         <div class="col-md-12">
                             <font style="font-size: 15px; color: #00acd6">
-                                CLOSED! Servidor no disponible
+                                WARNNING! Por favor de comunicarse con los especialistas
+                                <br>
+                                <strong>Ubication Error:</strong>
+                                <br>
+                                {{$error->getFile()}}
+                                <br>
+                                <strong>Line Error:</strong>
+                                <br>
+                                {{$error->getLine()}}
                                 <br>
                                 Copyright &copy; {{date('Y')}} <a href="http://www.sapia.com.pe" target="_blank">Sapia</a>. Derechos Reservados.
                                 <br><br>

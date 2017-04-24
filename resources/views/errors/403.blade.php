@@ -20,11 +20,11 @@
                 <div class="col-md-12 card">
                     <center>
                         <div class="col-md-12">
-                            <font style="font-size: 100px; color: #00acd6"><b>503</b></font>
+                            <font style="font-size: 100px; color: #00acd6"><b>403</b></font>
                         </div>
                         <div class="col-md-12">
                             <font style="font-size: 15px; color: #00acd6">
-                                CLOSED! Servidor no disponible
+                                FORBIDDEN! Usted no tiene permisos de acceso
                                 <br>
                                 Copyright &copy; {{date('Y')}} <a href="http://www.sapia.com.pe" target="_blank">Sapia</a>. Derechos Reservados.
                                 <br><br>
