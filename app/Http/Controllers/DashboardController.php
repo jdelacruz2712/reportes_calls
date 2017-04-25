@@ -5,6 +5,7 @@ use Cosapi\Models\Kpis;
 use Cosapi\Models\Queue_Log;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
+use Illuminate\Support\Facades\DB;
 use League\Flysystem\Exception;
 
 class DashboardController extends IncomingCallsController
@@ -39,9 +40,10 @@ class DashboardController extends IncomingCallsController
 
         $answered             = Queue_Log::select()
                                             ->whereIn('event',$event)
+                                            ->where(DB::raw('DATE(datetime)'),date('Y-m-d'))
                                             ->filtro_time($metrica)
                                             ->count();
-
+        
         return response()->json([
             'message' => $answered,
             'symbol' => $metrica['symbol'],

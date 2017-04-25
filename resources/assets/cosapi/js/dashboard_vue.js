@@ -149,7 +149,8 @@ var kpi = new Vue({
       let answeredTime = this.answeredTime
       let abandonedTime = this.abandonedTime
       if(answered != '-' && abandoned != '-' && answeredTime != '-' && abandonedTime != '-') {
-        this.slaDay = (answeredTime * 100)/answered
+        let slaDay = (answeredTime * 100)/answered
+        this.slaDay = (isNaN(slaDay))? 0 : slaDay
       }else{
         this.slaDay = '-'
       }
