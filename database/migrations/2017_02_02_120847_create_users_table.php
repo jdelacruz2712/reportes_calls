@@ -22,7 +22,7 @@ class CreateUsersTable extends Migration
             $table->unsignedTinyInteger('estado_id');
             $table->string('email')->unique();
             $table->string('password', 60);
-            $table->enum('role',['view','user','backoffice','calidad','supervisor','jefe del proyecto','jefe del servicio','administrador']);
+            $table->enum('role',['admin','backoffice','supervisor','user']);
             $table->rememberToken();
             $table->timestamps();
             $table->TinyInteger('change_password',false,true)->default(0);
