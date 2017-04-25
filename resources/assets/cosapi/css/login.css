@@ -10,6 +10,14 @@ body, html {
     /*background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));*/
 }
 
+#container-login {
+    -webkit-border-radius: 2px;
+    background-color: rgba(255, 255, 255, .1);
+    border: 10px solid rgba(255,255,255,.1);
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+}
+
 .card-container.card {
     max-width: 350px;
     padding: 40px 40px;
@@ -58,10 +66,16 @@ body, html {
     -moz-transition: all 0.218s;
     -webkit-transition: all 0.218s;
     transition: all 0.218s;
+    cursor: pointer;
 }
 
 .btn.btn-signin:hover,
 .btn.btn-signin:active,
 .btn.btn-signin:focus {
     background-color: rgb(12, 97, 33);
+}
+
+.fix_responsive {
+    margin: 0px auto;
+    margin-bottom: 20px;
 }

@@ -45,6 +45,10 @@ class UserController extends CosapiController
         return view('elements/profile_users/profile_users');
     }
 
+    public function table_type(Request $request){
+        return view('elements/table_type/table_type');
+    }
+
     public function uploadPerfil(Request $request){
         if ($request->ajax()) {
 

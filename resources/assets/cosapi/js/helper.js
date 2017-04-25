@@ -1750,7 +1750,7 @@ function changeStatus (userId, status) {
   if(status === 'Inactivo'){
     estado = 1
   }else{
-    estado = 0
+    estado = 2
   }
 
   let message = 'Deseas cambiar el estado del usuario ?' +

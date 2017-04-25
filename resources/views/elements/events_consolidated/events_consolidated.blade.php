@@ -28,23 +28,23 @@
                     <th class="th-centro th-2" colspan="6"><b>RESUMEN<b></th>
                 </tr>
                 <tr>
-                    <th >AGENTE</th>
-                    <th >LOGIN</th>
-                    <th >ACD</th>
-                    <th >BREAK</th>
-                    <th >SSHH</th>
-                    <th >REFRIGERIO</th>
-                    <th >FEEDBACK</th>
-                    <th >CAPACITACIÓN</th>
-                    <th >GESTIÓN BACKOFFICE</th>
-                    <th >INBOUND</th>
-                    <th >OUTBOUND</th>
-                    <th >ACW</th>
-                    <th >DESCONECTADO</th>
-                    <th >LOGUEADO</th>
-                    <th >TIEMPOS AUXILIARES</th>
-                    <th >TALK TIME</th>
-                    <th >SALIENTE HABLADO</th>
+                    <th>AGENTE</th>
+                    <th>LOGIN</th>
+                    <th>ACD</th>
+                    <th>BREAK</th>
+                    <th>SSHH</th>
+                    <th>REFRIGERIO</th>
+                    <th>FEEDBACK</th>
+                    <th>CAPACITACIÓN</th>
+                    <th>GESTIÓN BACKOFFICE</th>
+                    <th>INBOUND</th>
+                    <th>OUTBOUND</th>
+                    <th>ACW</th>
+                    <th>DESCONECTADO</th>
+                    <th>LOGUEADO</th>
+                    <th>TIEMPOS AUXILIARES</th>
+                    <th>TALK TIME</th>
+                    <th>SALIENTE HABLADO</th>
                 </tr>
             </thead>
         </table>
@@ -53,7 +53,6 @@
 </div>
 <script type="text/javascript">
     $(document).ready(function(){
-
         buscar();
     });
 
@@ -96,10 +95,8 @@
             "scrollX"           : true,
             "scrollCollapse"    : true,
             "select"            : true,
-            fixedColumns:   {
-                leftColumns: 1
-            },
-        });
+            fixedColumns        : true
+        })
     }
 
 </script>

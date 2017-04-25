@@ -33,7 +33,8 @@ elixir(function(mix) {
         'extras/bootstrap3-dialog/css/bootstrap-dialog.min.css',
         'plugins/adminLTE/css/AdminLTE.min.css',
         'plugins/adminLTE/css/skins/_all-skins.min.css',
-        'cosapi/css/preloader.css'
+        'cosapi/css/preloader.css',
+        'cosapi/css/adminlte.css'
     ],'public/css/cosapi_adminlte.min.css','resources/assets/')
 
     /**

@@ -1,0 +1,56 @@
+/* Fix Table Responsive */
+.table-overflow-x {
+    width: 100%;
+    margin-bottom: 15px;
+    overflow-y: hidden;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+.table-overflow-x > .table {
+    margin-bottom: 0;
+}
+.table-overflow-x > .table > thead > tr > th,
+.table-overflow-x > .table > tbody > tr > th,
+.table-overflow-x > .table > tfoot > tr > th,
+.table-overflow-x > .table > thead > tr > td,
+.table-overflow-x > .table > tbody > tr > td,
+.table-overflow-x > .table > tfoot > tr > td {
+    white-space: nowrap;
+}
+/* Fin Fix Table Responsive */
+
+/* Table type */
+.th-centro {
+    text-align: center;
+    font-weight: bold;
+}
+
+.th-primary {
+    background-color: #204d74;
+    color: #FFFFFF;
+}
+
+.th-warning {
+    background-color: #ec971f;
+    color: #FFFFFF;
+}
+
+.th-info {
+    background-color: #269abc;
+    color: #FFFFFF;
+}
+
+.th-succes {
+    background-color: #398439;
+    color: #FFFFFF;
+}
+
+.th-danger {
+    background-color: #ac2925;
+    color: #FFFFFF;
+}
+
+.tr-fix-center>tr>td{
+    text-align: center;
+}
+
+/* Fin Table type */

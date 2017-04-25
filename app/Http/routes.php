@@ -34,6 +34,9 @@ Route::group (['middleware'=>['user']], function(){
         // Lista de Usuarios
         Route::post('list_users'                                        , ['uses'=>'UserController@index']);
 
+        // Tabla Niveles
+        Route::post('table_type'                                        , ['uses'=>'UserController@table_type']);
+
     });
 
     // Reporte de encuestaa
