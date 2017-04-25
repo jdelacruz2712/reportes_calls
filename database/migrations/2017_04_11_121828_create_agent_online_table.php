@@ -15,7 +15,7 @@ class CreateAgentOnlineTable extends Migration
         Schema::create('agent_online', function (Blueprint $table)
         {
             $table->increments('id')->unsigned();
-            $table->string('number_annexed',10);
+            $table->string('number_annexed',8);
             $table->string('name_agent',35);
             $table->string('name_event',25);
             $table->string('name_queue_inbound',50);
@@ -26,6 +26,9 @@ class CreateAgentOnlineTable extends Migration
             $table->string('status_pause',1);
             $table->string('penalty_agent',1);
             $table->string('ringinuse_agent',20);
+            $table->TinyInteger('user_id',false,true);
+            $table->TinyInteger('event_id',false,true)->nullable();
+            $table->string('observaciones',50)->nullable();
         });
     }
 
