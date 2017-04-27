@@ -3,7 +3,7 @@
 		<span class="info-box-icon2">
 			<i class="fa fa-sign-out"></i>
 		</span>
-		<div class="info-box-content2" @click="loadAnsweredTime">
+		<div class="info-box-content2" @click="loadMetricasKpi">
 			<span class="info-box-text2">Answered @{{ answeredSymbol }} @{{ answeredSecond }} Seg</span>
 			<span class="info-box-number2">@{{ answeredTime }}</span>
 		</div>
