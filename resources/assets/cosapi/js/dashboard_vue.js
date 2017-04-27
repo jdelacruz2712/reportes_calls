@@ -1,7 +1,11 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 
 var socket = io.connect(restApiDashboard, { 'forceNew': true })
-socket.emit('listAgentConnect')
+
+//Refresca la informacion de la tabla de DetailsCalls
+const refreshDetailsCalls = () => socket.emit('listAgentConnect')
+
+refreshDetailsCalls()
 
 socket.on('QueueMemberAdded', data => {
   let dataAgent = data['QueueMemberAdded']

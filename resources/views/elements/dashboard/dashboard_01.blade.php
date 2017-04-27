@@ -35,7 +35,7 @@
 		    	<div class="box-header with-border ">
 		    		<h3 class="box-title"><b>Details Calls</b></h3>
 		      		<div class="box-tools pull-right">
-		        		<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+		        		<button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
 		        		</button>
 		      		</div>
 		    	</div>
