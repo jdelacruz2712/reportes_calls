@@ -72,7 +72,7 @@ elixir(function(mix) {
       'extras/toastr/toastr.js',
       'plugins/adminLTE/js/app.min.js',
       'plugins/adminLTE/js/funcionalidades.js',
-      'node_modules/vue/vue.js',
+      'node_modules/vue/vue.min.js',
       'node_modules/vue-resource/vue-resource.min.js',
       'node_modules/vue-select/vue-select.js',
       'node_modules/socket.io-client/socket.io.min.js',
@@ -100,7 +100,7 @@ elixir(function(mix) {
     'vendor/bootstrap/js/bootstrap.min.js',
     'extras/toastr/toastr.js',
     'cosapi/js/helper.js',
-    'node_modules/vue/vue.js',
+    'node_modules/vue/vue.min.js',
     'node_modules/vue-resource/vue-resource.min.js',
     'node_modules/vue-select/vue-select.js',
     'node_modules/socket.io-client/socket.io.min.js'
@@ -223,5 +223,5 @@ elixir(function(mix) {
   .copy('resources/assets/cosapi/favicon'                            , 'public/favicon')
   .copy('resources/assets/cosapi/background'                         , 'public/background')
   .copy('resources/assets/images/default_avatar.png'                 , 'public/storage/default_avatar.png');
-    
+
 });
