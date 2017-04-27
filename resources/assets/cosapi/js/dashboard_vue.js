@@ -1,7 +1,7 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 
 var socket = io.connect(restApiDashboard, { 'forceNew': true })
-socket.emit('connect_dashboard')
+socket.emit('listAgentConnect')
 
 socket.on('QueueMemberAdded', data => {
   let dataAgent = data['QueueMemberAdded']
@@ -58,11 +58,11 @@ const vm = new Vue({
   },
   methods:{
     loadTimeElapsed: function(list_index){
-      if (this.agents[list_index].event_id != 1 && this.agents[list_index].event_id ){
+      if (this.agents[list_index].event_id != 1 && this.agents[list_index].event_id != 13 && this.agents[list_index].event_id ){
         setTimeout(function(){
             this.agents[list_index].timeElapsed = restarHoras((new Date()).getTime() - this.agents[list_index].star_call_inbound)
             this.loadTimeElapsed(list_index)
-        }.bind(this), 1000)
+        }.bind(this), 1200)
       } else {
         this.agents[list_index].timeElapsed = ''
       }
