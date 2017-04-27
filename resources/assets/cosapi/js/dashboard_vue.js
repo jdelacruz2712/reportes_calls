@@ -48,10 +48,12 @@ const dashboard = new Vue({
       }
     },
     loadTimeElapsedEncoladas: function(index){
-      setTimeout(function(){
-          this.encoladas[index].timeElapsed = restarHoras((new Date()).getTime() - this.encoladas[index].start_call)
-          this.loadTimeElapsedEncoladas(index)
-      }.bind(this), 1000)
+      let calcular = () => {
+        let horaInicio =  (new Date()).getTime()
+        let horaFin = this.encoladas[index].start_call
+        this.encoladas[index].timeElapsed = restarHoras(horaInicio - horaFin)
+      }
+      setTimeout(calcular(), 1000)
     },
     sendUrlRequest: async function (url, type, actionTime = false){
       let parameters = {
