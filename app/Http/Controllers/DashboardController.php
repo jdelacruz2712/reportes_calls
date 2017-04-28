@@ -34,25 +34,24 @@ class DashboardController extends IncomingCallsController
           $action             = 'true';
           $kpis               = Kpis::select()->where('name',$request->type.'_time')->get()->toArray();
           $metrica['action']  = $action;
-          $metrica['symbol'] = $kpis[0]['symbol'];
+          $metrica['symbol']  = $kpis[0]['symbol'];
           $metrica['time']    = $kpis[0]['time'];
         }
 
         $answered             = Queue_Log::select()
-                                            ->whereIn('event',$event)
-                                            ->where(DB::raw('DATE(datetime)'),date('Y-m-d'))
-                                            ->filtro_time($metrica)
-                                            ->count();
-        
+                                ->whereIn('event',$event)
+                                ->where(DB::raw('DATE(datetime)'),date('Y-m-d'))
+                                ->filtro_time($metrica)
+                                ->count();
+
         return response()->json([
             'message' => $answered,
-            'symbol' => $metrica['symbol'],
+            'symbol'  => $metrica['symbol'],
             'time'    => $metrica['time']
         ], 200);
 
       } catch (\Exception $e) {
         return response()->json(['message' => $e->getMessage()], 500);
-
       }
     }
   }

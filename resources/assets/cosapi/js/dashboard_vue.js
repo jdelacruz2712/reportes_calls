@@ -21,15 +21,18 @@ const dashboard = new Vue({
     answeredSecond: ''
   },
   mounted(){
-    this.loadMetricasKpi()
+    this.loadMetricasKpi(true)
   },
   methods:{
-    loadMetricasKpi:  async function (){
-      this.answered = '-'
-      this.abandoned = '-'
-      this.answeredTime = '-'
-      this.abandonedTime = '-'
-      this.slaDay   = '-'
+    loadMetricasKpi:  async function (viewLoad){
+      if (viewLoad) {
+        this.answered = '-'
+        this.abandoned = '-'
+        this.answeredTime = '-'
+        this.abandonedTime = '-'
+        this.slaDay   = '-'
+      }
+      console.log('aaa')
 
       let answered = await this.loadAnswered()
       let abandoned = await this.loadAbandoned()
@@ -37,16 +40,16 @@ const dashboard = new Vue({
       let abandonedTime = await this.loadAbandonedTime()
       let slaDay = await this.loadSlaDay()
     },
+
     loadTimeElapsed: function(index){
-      if (this.agents[index].event_id != 1 && this.agents[index].event_id != 13 && this.agents[index].event_id ){
         setTimeout(function(){
-            this.agents[index].timeElapsed = restarHoras((new Date()).getTime() - this.agents[index].star_call_inbound)
-            this.loadTimeElapsed(index)
+          let horaInicio =  (new Date()).getTime()
+          let horaFin = this.agents[index].star_call_inbound
+          this.agents[index].timeElapsed = restarHoras(horaInicio - horaFin)
+          this.loadTimeElapsed(index)
         }.bind(this), 1000)
-      } else {
-        this.agents[index].timeElapsed = ''
-      }
     },
+
     loadTimeElapsedEncoladas: function(index){
       let calcular = () => {
         let horaInicio =  (new Date()).getTime()
@@ -55,6 +58,7 @@ const dashboard = new Vue({
       }
       setTimeout(calcular(), 1000)
     },
+
     sendUrlRequest: async function (url, type, actionTime = false){
       let parameters = {
         type : type,
@@ -78,14 +82,14 @@ const dashboard = new Vue({
       let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'calls_completed', 'true')
       this.answeredTime = response.message
       this.answeredSecond = response.time
-      this.abandonedSymbol = response.symbol
+      this.answeredSymbol = response.symbol
     },
 
     loadAbandonedTime: async function(){
       let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'calls_abandone', 'true')
       this.abandonedTime = response.message
       this.abandonedSecond = response.time
-      this.answeredSymbol = response.symbol
+      this.abandonedSymbol = response.symbol
     },
 
     loadSlaDay: function(){
@@ -100,9 +104,13 @@ const dashboard = new Vue({
   }
 })
 
+
 //Refresca la informacion de la tabla de DetailsCalls
 const refreshDetailsCalls = () => socket.emit('listAgentConnect')
 refreshDetailsCalls()
+
+socket.on('UpdateMetricasKpi', data => dashboard.loadMetricasKpi(false))
+socket.on('UpdateTotalCalls', data => dashboard.loadMetricasKpi(false))
 
 socket.on('AddCallWaiting', data => {
   dashboard.encoladas.push(data.CallWaiting)
@@ -122,6 +130,7 @@ socket.on('QueueMemberAdded', data => {
   let numberAnnexed = dataAgent.number_annexed
   const actionPush = updateDataAgent(numberAnnexed, dataAgent)
   if (actionPush === true) dashboard.agents.push(data.QueueMemberAdded)
+  if (dataAgent.event_id != 11) dashboard.loadTimeElapsed((dashboard.agents.length)-1)
 })
 
 socket.on('QueueMemberRemoved', data => {
@@ -132,6 +141,7 @@ socket.on('QueueMemberChange', data => {
   let dataAgent = data.QueueMemberChange
   let numberAnnexed = dataAgent.number_annexed
   updateDataAgent(numberAnnexed, dataAgent)
+  if (dataAgent.event_id != 11) dashboard.loadTimeElapsed((dashboard.agents.length)-1)
 })
 
 

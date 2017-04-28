@@ -14,6 +14,7 @@
           <table align="center" class="table table-responsive table-bordered table-condensed table-hover">
             <thead>
               <tr>
+                <th>#</th>
                 <th>Annexed</th>
                 <th>Agent</th>
                 <th>Status</th>
@@ -25,9 +26,10 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="(agent, list_index)   in agents ">
+              <template v-for="(agent, index)   in agents ">
                 <tr>
-                  <td>
+                  <td align="center">@{{ index + 1 }}</td>
+                  <td align="center">
                     @{{ agent.number_annexed }}
                     <span class="pull-right-container">
                       <template v-if="agent.status_pause == 0  ">
@@ -53,7 +55,7 @@
                   <td align="center">@{{ agent.phone_number_inbound }}</td>
                   <td align="center">@{{ agent.timeElapsed }}</td>
                   <td align="center">@{{ agent.total_calls }}</td>
-                  <td align="center">@{{ loadTimeElapsed(list_index) }}
+                  <td align="center">
                     <button onclick="desloguear_agente('224','acornejo');">
                       <i class="fa fa-key" aria-hidden="true"></i>
                     </button>
