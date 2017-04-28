@@ -40,8 +40,8 @@ const dashboard = new Vue({
     loadTimeElapsed: function(index){
       if (this.agents[index].event_id != 1 && this.agents[index].event_id != 13 && this.agents[index].event_id ){
         setTimeout(function(){
-            this.agents[index].timeElapsed = restarHoras((new Date()).getTime() - this.agents[index].star_call_inbound)
-            this.loadTimeElapsed(index)
+          this.agents[index].timeElapsed = restarHoras((new Date()).getTime() - this.agents[index].star_call_inbound)
+          this.loadTimeElapsed(index)
         }.bind(this), 1000)
       } else {
         this.agents[index].timeElapsed = ''
@@ -118,10 +118,15 @@ socket.on('RemoveCallWaiting', data => {
 })
 
 socket.on('QueueMemberAdded', data => {
-  let dataAgent = data.QueueMemberAdded
-  let numberAnnexed = dataAgent.number_annexed
-  const actionPush = updateDataAgent(numberAnnexed, dataAgent)
-  if (actionPush === true) dashboard.agents.push(data.QueueMemberAdded)
+  let getTotalCalls = async () =>{
+    let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed',data.QueueMemberAdded['name_agent'])
+    let dataAgent = data.QueueMemberAdded
+    dataAgent.total_calls = response.message
+    let numberAnnexed = dataAgent.number_annexed
+    const actionPush = updateDataAgent(numberAnnexed, dataAgent)
+    if (actionPush === true) dashboard.agents.push(data.QueueMemberAdded)
+  }
+  getTotalCalls()
 })
 
 socket.on('QueueMemberRemoved', data => {
