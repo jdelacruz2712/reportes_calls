@@ -161,7 +161,7 @@ class OutgoingCallsController extends CosapiController
                 $audio_name     = '&nameaudio='.$view['annexedorigin'].'-'.$view['destination'].'-'.$day->format('dmY').'-';
             }
             $hora           = '&hour='.$hour;
-            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/cosapi/script_php/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
+            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
 
             $download       = '<center><a target="_blank" href="'.$route_complete.'"><i class="fa fa-download" aria-hidden="true"></i></a></center>';
 
