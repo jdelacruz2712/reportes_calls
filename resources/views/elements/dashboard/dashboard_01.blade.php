@@ -8,7 +8,7 @@
 		@include('elements.dashboard.pictures_kpi.index')
 		@include('elements.dashboard.tables.table_detail_encoladas')
 		@include('elements.dashboard.tables.table_detail_calls')
-		<pre>@{{ $data }}</pre>
+		<!-- <pre>@{{ $data }}</pre> -->
 	</div>
 @endsection
 

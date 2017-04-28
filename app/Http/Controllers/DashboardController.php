@@ -55,4 +55,17 @@ class DashboardController extends IncomingCallsController
       }
     }
   }
+
+  public function getQuantityCalls(Request $request){
+
+    if($request->type){
+      try {
+        $query_calls = $this->query_calls(date('Y-m-d').' - '.date('Y-m-d'),$request->type,$request->time);
+        $QuantityCalls = count($query_calls);
+        return response()->json(['message' => $QuantityCalls], 200);
+      } catch (\Exception $e) {
+        return response()->json(['message' => $e->getMessage()], 500);
+      }
+    }
+  }
 }

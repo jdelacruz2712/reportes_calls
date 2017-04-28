@@ -71,9 +71,8 @@ class Queue_Log extends Model
 
     public function scopeFiltro_Time($query, $metrica){
         if($metrica['action'] == 'true'){
-            return $query->where('info1',$metrica['symbol'], $metrica['time']);
+            return $query->where(DB::raw('CAST(info1 AS INTEGER)'),$metrica["symbol"], $metrica["time"]);
         }
-
     }
 
     public function scopeFiltro_tabla($query){
@@ -99,4 +98,9 @@ class Queue_Log extends Model
         return $query;
     }
 
+    function scopeFiltro_usernameSearch($query, $username){
+        if($username != ''){
+            return    $query->where('agent','=','Agent/'.$username);
+        }
+    }
 }

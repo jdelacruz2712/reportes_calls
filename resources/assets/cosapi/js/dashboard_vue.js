@@ -32,7 +32,6 @@ const dashboard = new Vue({
         this.abandonedTime = '-'
         this.slaDay   = '-'
       }
-      console.log('aaa')
 
       let answered = await this.loadAnswered()
       let abandoned = await this.loadAbandoned()
@@ -45,8 +44,10 @@ const dashboard = new Vue({
         setTimeout(function(){
           let horaInicio =  (new Date()).getTime()
           let horaFin = this.agents[index].star_call_inbound
-          this.agents[index].timeElapsed = restarHoras(horaInicio - horaFin)
-          this.loadTimeElapsed(index)
+          if (horaFin) {
+            this.agents[index].timeElapsed = restarHoras(horaInicio - horaFin)
+            this.loadTimeElapsed(index)
+          }
         }.bind(this), 1000)
     },
 
@@ -126,11 +127,16 @@ socket.on('RemoveCallWaiting', data => {
 })
 
 socket.on('QueueMemberAdded', data => {
-  let dataAgent = data.QueueMemberAdded
-  let numberAnnexed = dataAgent.number_annexed
-  const actionPush = updateDataAgent(numberAnnexed, dataAgent)
-  if (actionPush === true) dashboard.agents.push(data.QueueMemberAdded)
-  if (dataAgent.event_id != 11) dashboard.loadTimeElapsed((dashboard.agents.length)-1)
+  let getTotalCalls = async () =>{
+    let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed',data.QueueMemberAdded['name_agent'])
+    let dataAgent = data.QueueMemberAdded
+    dataAgent.total_calls = response.message
+    let numberAnnexed = dataAgent.number_annexed
+    const actionPush = updateDataAgent(numberAnnexed, dataAgent)
+    if (actionPush === true) dashboard.agents.push(data.QueueMemberAdded)
+    if (dataAgent.event_id != 11) dashboard.loadTimeElapsed((dashboard.agents.length)-1)
+  }
+  getTotalCalls()
 })
 
 socket.on('QueueMemberRemoved', data => {
@@ -150,6 +156,15 @@ function updateDataAgent(numberAnnexed, dataAgent){
   dashboard.agents.forEach((item, index) => {
     if (item.number_annexed === numberAnnexed) {
       actionPush = false
+
+      let getTotalCalls = async () =>{
+        let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed',dataAgent.name_agent)
+        dataAgent.total_calls = response.message
+      }
+      getTotalCalls()
+
+      dashboard.loadMetricasKpi(false)
+
       if (dataAgent){
         dashboard.agents.splice(index, 1, dataAgent)
       }else{

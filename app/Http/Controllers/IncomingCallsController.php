@@ -76,12 +76,13 @@ class IncomingCallsController extends CosapiController
      * @param  [string] $hours  [Hora de de la llamda, Ejem: 18:52]
      * @return [array]          [Array con los datos de llamadas entrantes]
      */
-    public function query_calls($days,$events,$users ='', $hours ='')
+    public function query_calls($days,$events,$username ='', $hours ='')
     {
         $queues_proyect = $this->queues_proyect();
         $days           = explode(' - ', $days);
         $events         = $this->get_events($events);
         $query_calls    = Queue_Log::select_fechamod()
+                                        ->filtro_usernameSearch($username)
                                         ->filtro_user_rol($this->UserRole,$this->UserSystem)
                                         ->filtro_tabla()
                                         ->filtro_hours($hours)
@@ -179,7 +180,7 @@ class IncomingCallsController extends CosapiController
             $audio_name     = '&nameaudio='.$view['telephone'].'-'.$vdn.'-'.$day->format('dmY').'-';
             $proyecto       = '&proyect='.getenv('AUDIO_PROYECT');
             $hora           = '&hour='.$hour;
-            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/cosapi/script_php/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
+            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
             $download       = '<center><a target="_blank" href="'.$route_complete.'"><i class="fa fa-download" aria-hidden="true"></i></a></center>';
 
             if($bronswer["browser"] == 'FIREFOX'){
