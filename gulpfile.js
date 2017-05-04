@@ -64,22 +64,30 @@ elixir(function(mix) {
   Generando el archivo cosapi_adminlte.min.js para el Layout adminLTE
   */
   .scripts([
-      'cosapi/js/env.js',
       'vendor/jquery/jquery.min.js',
-      'plugins/jQueryUI/jquery-ui.min.js',
+      'plugins/jQueryUI/jquery-ui.min.js'
+  ],'public/js/adminlte_jquerys.min.js','resources/assets/')
+
+  .scripts([
       'vendor/bootstrap/js/bootstrap.min.js',
       'extras/bootstrap3-dialog/js/bootstrap-dialog.js',
       'extras/toastr/toastr.js',
-      'plugins/adminLTE/js/app.min.js',
-      'plugins/adminLTE/js/funcionalidades.js',
-      'node_modules/vue/vue.min.js',
-      'node_modules/vue-resource/vue-resource.min.js',
-      'node_modules/vue-select/vue-select.js',
-      'node_modules/socket.io-client/socket.io.min.js',
-      'node_modules/sails.io/sails.io.js'
-  ],'public/js/cosapi_adminlte.min.js','resources/assets/')
+  ],'public/js/adminlte_notifications.min.js','resources/assets/')
 
-  /**
+  .scripts([
+      'plugins/adminLTE/js/app.min.js',
+      'plugins/adminLTE/js/funcionalidades.js'
+  ],'public/js/adminlte_scripts.min.js','resources/assets/')
+
+  .scripts([
+       'cosapi/js/env.js',
+       'node_modules/vue/vue.min.js',
+       'node_modules/vue-resource/vue-resource.min.js',
+       'node_modules/socket.io-client/socket.io.min.js',
+       'node_modules/sails.io/sails.io.js'
+  ],'public/js/adminlte_vuesockets.min.js','resources/assets/')
+
+      /**
   Generando el archivo cosapi_realtime.min.js para mostrar data realtime en panel
   */
   .scripts([
@@ -90,6 +98,7 @@ elixir(function(mix) {
   ],'public/js/cosapi.min.js','resources/assets/')
 
   .scripts([
+      'node_modules/vue-select/vue-select.js',
       'cosapi/js/profileuserVue.js'
   ],'public/js/profileuserVue.min.js','resources/assets/')
 

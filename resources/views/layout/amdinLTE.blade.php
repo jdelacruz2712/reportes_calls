@@ -31,7 +31,10 @@
       @include('layout.recursos.right_colum')
       <div class="control-sidebar-bg"></div>
     </div>
-    {!!Html::script('js/cosapi_adminlte.min.js?version='.date('YmdHis'))!!}
+    {!!Html::script('js/adminlte_jquerys.min.js?version='.date('YmdHis'))!!}
+    {!!Html::script('js/adminlte_notifications.min.js?version='.date('YmdHis'))!!}
+    {!!Html::script('js/adminlte_scripts.min.js?version='.date('YmdHis'))!!}
+    {!!Html::script('js/adminlte_vuesockets.min.js?version='.date('YmdHis'))!!}
     {!!Html::script('js/cosapi.min.js?version='.date('YmdHis'))!!}
     @include('layout.recursos.fecha_hora')
     @yield('scripts')
