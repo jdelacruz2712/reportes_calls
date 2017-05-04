@@ -1,5 +1,4 @@
 
-<!--inicio Tiempo en espera -->
 	        <div class="col-md-2 " >
 	            <div class="info-box bg-aqua">
 					<span class="info-box-icon2">
@@ -11,4 +10,3 @@
 					</div>
 				</div>
 	        </div>
-<!-- fin Tiempo en espera -->

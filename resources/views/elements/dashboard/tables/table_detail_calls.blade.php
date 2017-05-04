@@ -1,6 +1,6 @@
-<div class="row-fluid" id='detailAgents'>
+<div class="row-fluid" id='detailAgents'  v-show="agents.length != 0">
   <div class="col-md-12">
-    <div class="box box-primary box-solid ">
+    <div class="box box-primary box-solid">
       <div class="box-header with-border ">
         <h3 class="box-title"><b>Details Calls</b></h3>
         <div class="box-tools pull-right">
@@ -11,7 +11,7 @@
 
       <div class="box-body">
         <div class="table-responsive" id =>
-          <table align="center" class="table table-responsive table-bordered table-condensed table-hover">
+          <table align="center" class="table table-responsive table-condensed table-hover">
             <thead>
               <tr>
                 <th>#</th>
@@ -26,11 +26,11 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="(agent, index)   in agents ">
+              <template v-for="(agent, index) in agents ">
                 <tr>
                   <td align="center">@{{ index + 1 }}</td>
                   <td align="center">
-                    @{{ agent.number_annexed }}
+                    @{{ agent.agent_annexed }}
                     <span class="pull-right-container">
                       <template v-if="agent.status_pause == 0  ">
                         <span class="img img-circle pull-right bg-green">
@@ -44,11 +44,11 @@
                       </template>
                     </span>
                   </td>
-                  <td>@{{ agent.name_agent }}</td>
+                  <td>@{{ agent.agent_name }}</td>
                   <td align="center">
                     <span class="label label-success">
                       <i class="fa fa-phone" style="padding: 1px;" aria-hidden="true"></i>
-                      @{{ agent.name_event }}
+                      @{{ agent.event_name }}
                     </span>
                   </td>
                   <td align="center">@{{ agent.name_queue_inbound }}</td>

@@ -1,5 +1,5 @@
 <div class="col-md-2" >
-  <div class="info-box bg-yellow" v-if="slaDay != '-'">
+  <div class="info-box bg-blue" v-if="slaDay != '-'">
     <span class="info-box-icon2">
     	<i class="fa fa-check"></i>
     </span>

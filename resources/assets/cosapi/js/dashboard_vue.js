@@ -5,6 +5,7 @@ const dashboard = new Vue({
   data: {
     agents: [],
     encoladas: [],
+    otherAgents: [],
 
     slaDay: '0',
     answered: '0',
@@ -40,24 +41,43 @@ const dashboard = new Vue({
       let slaDay = await this.loadSlaDay()
     },
 
-    loadTimeElapsed: function(index){
-        setTimeout(function(){
+    loadTimeElapsed: function(index, tableDashboard){
+      setInterval(async function(){
+        let horaFin = await this.getEventTime(index, tableDashboard)
+        if (horaFin) {
           let horaInicio =  (new Date()).getTime()
-          let horaFin = this.agents[index].star_call_inbound
-          if (horaFin) {
-            this.agents[index].timeElapsed = restarHoras(horaInicio - horaFin)
-            this.loadTimeElapsed(index)
-          }
-        }.bind(this), 1000)
+          let elapsed = restarHoras(horaInicio - horaFin)
+          //console.log(index + ' - ' +horaFin)
+          this.showTimeElapsed(index, elapsed, tableDashboard)
+        }
+      }.bind(this), 1000)
+    },
+
+    getEventTime: function (index, tableDashboard){
+      if (this.agents[index] || this.otherAgents[index]) {
+        if (tableDashboard) return this.agents[index].inbound_start
+        else return this.otherAgents[index].event_time
+      }
+    },
+
+    showTimeElapsed: function(index, elapsed, tableDashboard){
+      if (this.agents[index] || this.otherAgents[index] ){
+        if (tableDashboard) {
+          this.agents[index].timeElapsed = elapsed
+        } else {
+          this.otherAgents[index].timeElapsed = elapsed
+        }
+      }
     },
 
     loadTimeElapsedEncoladas: function(index){
       let calcular = () => {
+        console.log(index)
         let horaInicio =  (new Date()).getTime()
         let horaFin = this.encoladas[index].start_call
         this.encoladas[index].timeElapsed = restarHoras(horaInicio - horaFin)
       }
-      setTimeout(calcular(), 1000)
+      setInterval(calcular(), 1000)
     },
 
     sendUrlRequest: async function (url, type, actionTime = false){
@@ -96,6 +116,7 @@ const dashboard = new Vue({
     loadSlaDay: function(){
       answered      = this.answered
       answeredTime  = this.answeredTime
+      this.slaDay   = 0
       if (answered !== 0) this.slaDay = ((answeredTime * 100)/answered).toFixed(2)
     },
 
@@ -107,11 +128,13 @@ const dashboard = new Vue({
 
 
 //Refresca la informacion de la tabla de DetailsCalls
-const refreshDetailsCalls = () => socket.emit('listAgentConnect')
-refreshDetailsCalls()
+const refreshDetailsCalls = () => {
+  dashboard.agents = []
+  dashboard.otherAgents = []
+  socket.emit('listAgentConnect')
+}
 
-socket.on('UpdateMetricasKpi', data => dashboard.loadMetricasKpi(false))
-socket.on('UpdateTotalCalls', data => dashboard.loadMetricasKpi(false))
+refreshDetailsCalls()
 
 socket.on('AddCallWaiting', data => {
   dashboard.encoladas.push(data.CallWaiting)
@@ -126,49 +149,58 @@ socket.on('RemoveCallWaiting', data => {
   dashboard.callWaiting = (dashboard.encoladas).length
 })
 
+
 socket.on('QueueMemberAdded', data => {
   let getTotalCalls = async () =>{
     let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed',data.QueueMemberAdded['name_agent'])
     let dataAgent = data.QueueMemberAdded
     dataAgent.total_calls = response.message
-    let numberAnnexed = dataAgent.number_annexed
-    const actionPush = updateDataAgent(numberAnnexed, dataAgent)
-    if (actionPush === true) dashboard.agents.push(data.QueueMemberAdded)
-    if (dataAgent.event_id != 11) dashboard.loadTimeElapsed((dashboard.agents.length)-1)
+    let actionPush = await updateDataAgent(dataAgent)
+    if (actionPush === true)  addAgentDashboard(dataAgent)
   }
   getTotalCalls()
 })
 
 socket.on('QueueMemberRemoved', data => {
-  updateDataAgent(data.NumberAnnexed, '')
+  removeDataAgent(data.NumberAnnexed)
 })
 
 socket.on('QueueMemberChange', data => {
   let dataAgent = data.QueueMemberChange
-  let numberAnnexed = dataAgent.number_annexed
-  updateDataAgent(numberAnnexed, dataAgent)
+  updateDataAgent(dataAgent)
   if (dataAgent.event_id != 11) dashboard.loadTimeElapsed((dashboard.agents.length)-1)
 })
 
+function addAgentDashboard(data){
+  data.timeElapsed = 0
 
-function updateDataAgent(numberAnnexed, dataAgent){
-  actionPush = true
-  dashboard.agents.forEach((item, index) => {
-    if (item.number_annexed === numberAnnexed) {
+  if (data.event_id === 8 || data.event_id === 9)  {
+    let index = (dashboard.agents.length)-1
+    dashboard.agents.push(data)
+    dashboard.loadTimeElapsed(index,true)
+  }
+  else {
+    let index = (dashboard.otherAgents.length)
+    dashboard.otherAgents.push(data)
+    dashboard.loadTimeElapsed(index,false)
+  }
+}
+
+function updateDataAgent(dataAgent){
+  let actionPush = true
+  let agentAnnexed = dataAgent.agent_annexed
+  let eventId = dataAgent.event_id
+  dashboard.otherAgents.forEach((item, index) => {
+    if (item.agent_annexed === agentAnnexed) {
       actionPush = false
-
-      let getTotalCalls = async () =>{
-        let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed',dataAgent.name_agent)
-        dataAgent.total_calls = response.message
-      }
-      getTotalCalls()
-
-      dashboard.loadMetricasKpi(false)
-
-      if (dataAgent){
-        dashboard.agents.splice(index, 1, dataAgent)
-      }else{
-        dashboard.agents.splice(index, 1)
+      if (item.event_id != eventId) {
+        let getTotalCalls = async () =>{
+          let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed',dataAgent.name_agent)
+          dataAgent.total_calls = response.message
+        }
+        getTotalCalls()
+        dashboard.otherAgents.splice(index, 1, dataAgent)
+        dashboard.loadMetricasKpi(false)
       }
     }
   })
@@ -176,10 +208,14 @@ function updateDataAgent(numberAnnexed, dataAgent){
   return actionPush
 }
 
+function removeDataAgent (agentAnnexed) {
+  dashboard.otherAgents.forEach((item, index) => {
+    if (item.agent_annexed === agentAnnexed ) dashboard.otherAgents.splice(index, 1)
+  })
+}
+
 function restarHoras (s) {
-  function addZ(n) {
-    return (n<10? '0':'') + n
-  }
+  function addZ(n) { return (n<10? '0':'') + n }
 
   let ms = s % 1000
   s = (s - ms) / 1000

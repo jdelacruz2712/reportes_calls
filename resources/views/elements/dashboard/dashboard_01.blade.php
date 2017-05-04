@@ -6,8 +6,16 @@
 	<p>
 	<div id="dashboard">
 		@include('elements.dashboard.pictures_kpi.index')
-		@include('elements.dashboard.tables.table_detail_encoladas')
 		@include('elements.dashboard.tables.table_detail_calls')
+		<div class="row">
+			<div class="col-md-8">
+				@include('elements.dashboard.tables.table_detail_encoladas')
+				@include('elements.dashboard.tables.table_detail_agents')
+			</div>
+			<div class="col-md-4">
+				@include('elements.dashboard.panels_kpi.agentactivitysummary')
+			</div>
+		</div>
 		<!-- <pre>@{{ $data }}</pre> -->
 	</div>
 @endsection
