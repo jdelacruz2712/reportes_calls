@@ -5,86 +5,9 @@
  * Copyright 2015
  * Alan Cornejo
  */
-/**
- * [dataTables Funcion para cargar datos en la tablas de los reportes]
- * @param  {String} nombreDIV [Nombre del div donde esta la tabla para agregar los datos]
- * @param  {String} data      [Nombre del tipo de porte a cargar]
- * @param  {String} route     [Ruta a la cual va a consultar los datos a cargar]
- */
-var AdminLTEOptions = {
-  sidebarExpandOnHover: true,
-  enableBSToppltip: true
-}
-
-$(document).ready(function () {
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-    }
-  })
-
-  var user_id = $('#user_id').val()
-  var hour = $('#hour').val()
-  var date = $('#date').val()
-  var anexo = $('#anexo').text()
-  if($('#assistence_user').length > 0 ){
-    let assistence_user = $('#assistence_user').val().split('&')
-    if(assistence_user[0] == 'true'){
-      MarkAssitance(user_id, date, hour, 'Entrada', assistence_user)
-    }else{
-      checkPassword()
-    }
-  }
 
 
-  if (anexo === 'Sin Anexo') loadModule('agents_annexed')
-  $('#statusAgent').click(function () {
-    PanelStatus()
-  })
-
-  $('.reportes').on('click', function (e) {
-    loadModule($(this).attr('id'))
-  })
-
-  //Modificacion del Rol a User para los agentes de BackOffice
-  $('#activate_calls').click(function(){
-    let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
-                  '<br>' +
-                  '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "ACD", porfavor de leer las ' +
-                  'notificaiones para saber que el cambio se realizo exitosamente. En caso de que no le entren llamadas por favor' +
-                  'de verificar que se le han asignado a las colas correctamente.</p>'
-    BootstrapDialog.show({
-      type: 'type-primary',
-      title: 'Activar Llamadas',
-      message: message,
-      closable: true,
-      buttons: [
-        {
-          label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
-          cssClass: 'btn-success',
-          action: function (dialogRef) {
-            activeCalls('user')
-          }
-        },
-        {
-          label: '<i class="fa fa-times" aria-hidden="true"></i> No',
-          cssClass: 'btn-danger',
-          action: function (dialogRef) {
-            activeCalls('backoffice')
-          }
-        },
-          {
-            label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
-            cssClass: 'btn-primary',
-            action: function (dialogRef) {
-            dialogRef.close()
-          }
-        }
-      ]
-    })
-  })
-})
-function activeCalls(nameRole, userId = ''){
+const  activeCalls = (nameRole, userId = '') => {
   let queueAdd = $('#queueAdd').val()
   let anexo = $('#anexo').text()
   let username = $('#user_name').val()
@@ -149,8 +72,9 @@ function activeCalls(nameRole, userId = ''){
     }
   })
 }
-function loadModule (idOptionMenu) {
-  var url = idOptionMenu
+
+const loadModule = (idOptionMenu) => {
+  let url = idOptionMenu
 
   $.ajax({
     type: 'POST',
@@ -177,162 +101,20 @@ function loadModule (idOptionMenu) {
   })
 }
 
-function dataTables (nombreDIV, data, route) {
-  $('#' + nombreDIV).dataTable().fnDestroy()
 
-  $('#' + nombreDIV).DataTable({
-    'deferRender': true,
-    'responsive': false,
-    'processing': true,
-    'serverSide': true,
-    'ajax': {
-      url: route,
-      type: 'POST',
-      data: data
-    },
-    'order': [
-            [1, 'asc']
-    ],
-    'paging': true,
-    'pageLength': 100,
-    'lengthMenu': [100, 200, 300, 400, 500],
-    'scrollY': '300px',
-    'scrollX': true,
-    'scrollCollapse': true,
-    'select': true,
-    'language': dataTables_lang_spanish(),
-    'columns': columnsDatatable(route)
-  })
-}
 
-/**
- * [dataTables_lang_spanish Función que permite colocar el Datable en español]
- */
-function dataTables_lang_spanish () {
-  var lang = {
-    'sProcessing': 'Procesando...',
-    'sLengthMenu': 'Mostrar _MENU_ registros',
-    'sZeroRecords': 'No se encontraron resultados',
-    'sEmptyTable': 'Ningún dato disponible en esta tabla',
-    'sInfo': 'Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros',
-    'sInfoEmpty': 'Mostrando registros del 0 al 0 de un total de 0 registros',
-    'sInfoFiltered': '(filtrado de un total de _MAX_ registros)',
-    'sInfoPostFix': '',
-    'sSearch': 'Buscar:',
-    'sUrl': '',
-    'sInfoThousands': ',',
-    'sLoadingRecords': 'Cargando...',
-    'oPaginate': {
-      'sFirst': 'Primero',
-      'sLast': 'Último',
-      'sNext': 'Siguiente',
-      'sPrevious': 'Anterior'
-    },
-    'oAria': {
-      'sSortAscending': ': Activar para ordenar la columna de manera ascendente',
-      'sSortDescending': ': Activar para ordenar la columna de manera descendente'
-    }
-  }
 
-  return lang
-}
-
-/**
- * [show_tab_incoming Función que carga Llamadas Entrantes en el reporte]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_incoming (evento) {
-  dataTables('table-incoming', get_data_filters(evento), 'incoming_calls')
-}
-
-/**
- * [show_tab_surveys Función que carga los datos de las Encuenstas]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_surveys (evento) {
-  dataTables('table-surveys', get_data_filters(evento), 'surveys')
-}
-
-/**
- * [show_tab_consolidated Función que carga los datos del Consolidado]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_consolidated (evento) {
-  dataTables('table-consolidated', get_data_filters(evento), 'consolidated_calls')
-}
-
-/**
- * [show_tab_detail_events Función que carga los datos detallados de los Eventos del Agente]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_detail_events (evento) {
-  dataTables('table-detail-events', get_data_filters(evento), 'events_detail')
-}
-
-/**
- * [show_tab_detail_events Función que carga los datos detallados de los Eventos del Agente]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_level_occupation (evento) {
-  dataTables('table-level-occupation', get_data_filters(evento), 'level_of_occupation')
-}
-
-/**
- * [show_tab_angetOnline Función que carga los datos de los agentes online]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_agentOnline (evento) {
-  dataTables('table-agentOnline', get_data_filters(evento), 'agents_online')
-}
-
-/**
- * [show_tab_outgoing Función que carga los datos de las Llamadas Salientes]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_outgoing (evento) {
-  dataTables('table-outgoing', get_data_filters(evento), 'outgoing_calls')
-}
-
-let show_tab_annexed = (event) => {
-  let token = $('input[name=_token]').val()
-  let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
-  $.ajax({
-    type: 'POST',
-    url: 'agents_annexed/list_annexed',
-    cache: false,
-    data: {
-      _token : token,
-      event : event
-    },
-    beforeSend : () => {
-      $('#divListAnnexed').html(imageLoading)
-    },
-    success: (data) =>{
-      $('#divListAnnexed').html(data)
-    }
-  })
-}
-
-/**
- * [show_tab_list_user Función que carga los datos detallados de los usuarios]
- * @param  {String} evento [Tipo de reporte a cargar en la vista]
- */
-function show_tab_list_user (evento) {
-  dataTables('table-list-user', get_data_filters(evento), 'list_users')
-}
 
 /**
  * [get_data_filters Función que configura datos a enviar en las consultas]
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  * @return {Array}         [Devuelve parametros configurados]
  */
-function get_data_filters (evento) {
+const get_data_filters = (evento) => {
   let rankHour = 1800
-  if ($('select[name=rankHour]').length) {
-    rankHour = $('select[name=rankHour]').val()
-  }
+  if ($('select[name=rankHour]').length) rankHour = $('select[name=rankHour]').val()
 
-  var data = {
+  let data = {
     _token: $('input[name=_token]').val(),
     fecha_evento: $('input[name=fecha_evento]').val(),
     rank_hour: rankHour,
@@ -347,9 +129,9 @@ function get_data_filters (evento) {
  * @param  {[type]} format_export [description]
  * @return {[type]}               [description]
  */
-function exportar (format_export) {
-  var days      = $('#texto').val()
-  var event     = $('#hidEvent').val()
+const exportar = (format_export) => {
+  let days      = $('#texto').val()
+  let event     = $('#hidEvent').val()
   let rankHour  = 1800
   if($('#rankHour').length >0 ){
     rankHour = $('#rankHour').val()
@@ -364,10 +146,9 @@ function exportar (format_export) {
  * @param  {String} format_export [Formato en el cual se va a exportar el archivo]
  * @param  {String} days          [Fecha de consulta de datos]
  */
-function export_ajax (type, url, format_export = '', days = '',rankHour = 1800) {
-  var dialog = cargar_dialog('primary', 'Download', 'Cargando el Excel', false)
-
-  var token = $('input[name=_token]').val()
+const export_ajax = (type, url, format_export = '', days = '',rankHour = 1800) => {
+  const dialog = cargar_dialog('primary', 'Download', 'Cargando el Excel', false)
+  const token = $('input[name=_token]').val()
 
   $.ajax({
     type: type,
@@ -400,9 +181,9 @@ function export_ajax (type, url, format_export = '', days = '',rankHour = 1800) 
  * @param  {String} url   [Dirección en donde se encuentra el archivo descargado]
  * @param  {String} index [Indentificador de los frame, para que no tengan el mismo nombre como ID]
  */
-function downloadURL (url, index) {
-  var hiddenIFrameID = 'hiddenDownloader' + index
-  var iframe = document.createElement('iframe')
+const downloadURL = (url, index) => {
+  const hiddenIFrameID = `hiddenDownloader${index}`
+  let iframe = document.createElement('iframe')
   iframe.id = hiddenIFrameID
   iframe.style.display = 'none'
   document.body.appendChild(iframe)
@@ -417,11 +198,11 @@ function downloadURL (url, index) {
  * @param  {String} closable [Dato que nos indica que si podemos cerrar la ventana]
  * @return {[booleam]}          [description]
  */
-function cargar_dialog (new_type, title, message, closable) {
-  var message = $('<div></div>')
+const cargar_dialog = (new_type, title, messagedialog, closable) => {
+  let message = $('<div></div>')
   message.append('<center><b>Porfavor no cerrar la ventana</b></br><img src="../img/loading_bar_cicle.gif" /></center>')
 
-  var dialog = new BootstrapDialog({
+  const dialog = new BootstrapDialog({
     size: BootstrapDialog.SIZE_SMALL,
     type: 'type-' + new_type,
     title: title,
@@ -441,8 +222,8 @@ function cargar_dialog (new_type, title, message, closable) {
  * @param  {String}  msjError [Texto qu se mostrar si ocurre algún tipo de error a la hora de cargar los datos]
  * @param  {Boolean} before   [Datos que nos dira si se ebe mostrar la imagen de cargando]
  */
-function cargar_ajaxDIV (type, url, nameDiv, msjError, before = false) {
-  var image_loading = '<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>'
+const cargar_ajaxDIV = (type, url, nameDiv, msjError, before = false) => {
+  const image_loading = '<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>'
 
   $.ajax({
     type: type,
@@ -468,7 +249,7 @@ function cargar_ajaxDIV (type, url, nameDiv, msjError, before = false) {
  * [refresh_information Función que refresca la información del dahsboard 2]
  * @param  {String} evento [Tipo de reporte a visualizar: day, week, mounth]
  */
-function refresh_information (evento) {
+const refresh_information = (evento) => {
   BootstrapDialog.confirm('¿Está seguro que quieres actualizar los datos del monitor?', function (result) {
     if (result) {
       $('#hidReporttype').val(evento)
@@ -486,7 +267,7 @@ function refresh_information (evento) {
  * @param  {string} evento [Tipo de reporte que se quiere cargar: day, week, mounth]
  * @return {[view]}          [Vista con los datos dl reporte]
  */
-function detalle_kpi_dashboard_02 (evento) {
+const detalle_kpi_dashboard_02 = (evento) => {
   return cargar_ajaxDIV('GET', 'dashboard_02/detail_kpi/' + evento, 'detail_kpi', 'Problema para actualizar el KPI de agentes', true)
 }
 
@@ -494,15 +275,15 @@ function detalle_kpi_dashboard_02 (evento) {
  * [create_sound_bite Función que reproduce el audio para llamadas en cola]
  * @param  {String} sound [Ruta donde se encuentra ubicado nuestro audio]
  */
-function create_sound_bite (sound) {
-  var html5_audiotypes = {
+const create_sound_bite = (sound) => {
+  const html5_audiotypes = {
     'mp3': 'audio/mpeg',
     'mp4': 'audio/mp4',
     'ogg': 'audio/ogg',
     'wav': 'audio/wav'
   }
 
-  var html5audio = document.createElement('audio')
+  let html5audio = document.createElement('audio')
   if (html5audio.canPlayType) { // Comprobar soporte para audio HTML5
     for (var i = 0; i < arguments.length; i++) {
       var sourceel = document.createElement('source')
@@ -527,21 +308,15 @@ function create_sound_bite (sound) {
 /**
  * [validar_sonido Funcion que valida la cantidad de llamadas en cola par activar el sonido del monitor]
  */
-function validar_sonido () {
-  var click2 = create_sound_bite('/cosapi/sonidos/alerta_principal.mp3')
-  var encoladas = $('#count_encoladas').text()
-
-  if (encoladas >= 2) {
-    click2.playclip()
-  }
-
+const validar_sonido = () => {
+  let click2 = create_sound_bite('/cosapi/sonidos/alerta_principal.mp3')
+  let encoladas = $('#count_encoladas').text()
+  if (encoladas >= 2) click2.playclip()
   setTimeout('validar_sonido()', 4000)
 }
 
-function ajaxNodeJs (parameters, ruta, notificacion, time) {
-  if(ruta != '/detalle_eventos/getstatus'){
-    $('#myModalLoading').modal('show')
-  }
+const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
+  if(ruta != '/detalle_eventos/getstatus') $('#myModalLoading').modal('show')
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     $('#myModalLoading').modal('hide')
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
@@ -620,8 +395,8 @@ function ajaxNodeJs (parameters, ruta, notificacion, time) {
   })
 }
 
-function setQueueAdd(queueAdd){
-  let token = $('input[name=_token]').val()
+const setQueueAdd = (queueAdd) => {
+  const token = $('input[name=_token]').val()
   $.ajax({
     type: 'POST',
     url: 'setQueueAdd',
@@ -635,11 +410,9 @@ function setQueueAdd(queueAdd){
   })
 }
 
-function eventLogout(){
-    location.href = 'logout'
-}
+const eventLogout = () => location.href = 'logout'
 
-function PanelStatus () {
+const PanelStatus = () => {
   $.ajax({
     type: 'GET',
     url: 'list_event',
@@ -664,7 +437,7 @@ function PanelStatus () {
   })
 }
 
-function MarkAssitance (user_id, day, hour_actually, action, result) {
+const MarkAssitance = (user_id, day, hour_actually, action, result) => {
   if (result[0] == 'true') {
     modalAssintance(user_id, day, hour_actually, action)
   } else if (result[0] == 'stand_by') {
@@ -675,7 +448,7 @@ function MarkAssitance (user_id, day, hour_actually, action, result) {
 
 }
 
-function modalAssintance (user_id, day, hour_actually, action) {
+const modalAssintance = (user_id, day, hour_actually, action) => {
   let rankHours = rangoHoras(hour_actually)
   let title = 'Marcación de Asistencia'
   let message = 'Por favor de seleccionar la hora correspondiente a su ' + action + '.' +
@@ -720,12 +493,12 @@ function modalAssintance (user_id, day, hour_actually, action) {
   })
 }
 
-function ModalStandBy (hour_new) {
-  var present_hour = $('#hour').val()
-  var text_hour = restarHoras(present_hour, hour_new)
-  var message = 'Bienvenido, para su entrada faltan :' +
-        '<br>' +
-        '<center><h1 id="prueba">' + text_hour + '</h1></center>'
+const ModalStandBy = (hour_new) => {
+  let present_hour = $('#hour').val()
+  let text_hour = restarHoras(present_hour, hour_new)
+  const message = 'Bienvenido, para su entrada faltan :' +
+    '<br>' +
+    '<center><h1 id="prueba">' + text_hour + '</h1></center>'
   BootstrapDialog.show({
     type: 'type-primary',
     title: 'Panel de Espera',
@@ -735,8 +508,8 @@ function ModalStandBy (hour_new) {
   CloseStandBy(hour_new)
 }
 
-function CloseStandBy (hour_new) {
-  var present_hour = $('#hour').val()
+const CloseStandBy = (hour_new) => {
+  let present_hour = $('#hour').val()
   if (present_hour >= hour_new) {
     $.each(BootstrapDialog.dialogs, function (id, dialog) {
       dialog.close()
@@ -751,7 +524,7 @@ function CloseStandBy (hour_new) {
 }
 
 // Funcion que genera el rango de horas para la marcacion de salida del agente
-function rangoHoras (hour_actually) {
+const rangoHoras = (hour_actually) => {
   let array = hour_actually.split(':')
   let secondBefore, secondAfter = '00'
   let hour, beforeHour, afterHour, minutoBefore, minutoAfter, hourAfter = ''
@@ -781,13 +554,12 @@ function rangoHoras (hour_actually) {
 }
 
 // Funcion que completa con cero a la izquierda una variable
-function ceroIzquierda (numero) {
-  if (numero <= 9) {
-    numero = '0' + numero
-  }
+const ceroIzquierda = (numero) => {
+  if (numero <= 9) numero = '0' + numero
   return numero
 }
-function ModificarEstado (event_id, user_id, ip, name, pause) {
+
+const ModificarEstado = (event_id, user_id, ip, name, pause) => {
   //Declaraciones de variables
   let parameters
   let userRole = $('#user_role').val()
@@ -803,12 +575,12 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
 
   //Estructura de parametros a enviar
   parameters = {
-      number_annexed : anexo,
-      event_id : event_id,
-      user_id : user_id,
-      username : userName,
-      ip : ip,
-      type_action : 'update' //parametro usado para producir el cambio de estado de la variable queueAdd en la funcion ajaxNodeJs
+    number_annexed : anexo,
+    event_id : event_id,
+    user_id : user_id,
+    username : userName,
+    ip : ip,
+    type_action : 'update' //parametro usado para producir el cambio de estado de la variable queueAdd en la funcion ajaxNodeJs
   }
 
   if(userRole === 'user'){
@@ -845,7 +617,7 @@ function ModificarEstado (event_id, user_id, ip, name, pause) {
   })
 }
 
-function mostrar_notificacion (type, mensaje, titulo, time, duplicate, close, extendtime) {
+const mostrar_notificacion = (type, mensaje, titulo, time, duplicate, close, extendtime) => {
   let position = ''
   switch (type){
     case 'success' :
@@ -883,7 +655,7 @@ function mostrar_notificacion (type, mensaje, titulo, time, duplicate, close, ex
 }
 
 // Muestra la hora actual del sistema cada 1 segundo
-function horaActual (hora, minuto, segundo) {
+const horaActual = (hora, minuto, segundo) => {
   segundo = segundo + 1
   if (segundo == 60) {
     minuto = minuto + 1
@@ -924,14 +696,14 @@ function horaActual (hora, minuto, segundo) {
 }
 
 // Muestra la fecha actual en la cabecera del sistema.
-function fechaActual (dia, mes, diaw) {
+const fechaActual = (dia, mes, diaw) => {
   let fechaActual = '<span class="glyphicon glyphicon-calendar"></span> ' + nombre_dia(diaw) + ' ' + dia + ' de ' + nombre_mes(mes)
   document.getElementById('fecha_actual').innerHTML = fechaActual
 }
 
 // Funcion que retorna nombre del mes, en base al número enviado
-function nombre_mes (mes) {
-  var nombre_mes
+const nombre_mes = (mes) => {
+  let nombre_mes
   switch (mes) {
     case 1 :
       nombre_mes = 'Ene'
@@ -974,8 +746,8 @@ function nombre_mes (mes) {
 }
 
 // Funcion que retorna nombre del día, en base al número enviado
-function nombre_dia (dia) {
-  var nombre_dia
+const nombre_dia = (dia) => {
+  let nombre_dia
   switch (dia) {
     case 0 :
       nombre_dia = 'Dom'
@@ -1002,31 +774,31 @@ function nombre_dia (dia) {
   return nombre_dia
 }
 
-function restarHoras (inicio, fin) {
+const restarHoras = (inicio, fin) => {
   inicio = inicio.split(':')
   fin = fin.split(':')
 
-  var inicioHoras = parseInt(inicio[0]) * 3600
-  var inicioMinutos = parseInt(inicio[1]) * 60
-  var inicioSegundos = parseInt(inicio[2])
-  var iniciototal = inicioHoras + inicioMinutos + inicioSegundos
+  let inicioHoras = parseInt(inicio[0]) * 3600
+  let inicioMinutos = parseInt(inicio[1]) * 60
+  let inicioSegundos = parseInt(inicio[2])
+  let iniciototal = inicioHoras + inicioMinutos + inicioSegundos
 
-  var finHoras = parseInt(fin[0]) * 3600
-  var finMinutos = parseInt(fin[1]) * 60
-  var finSegundos = parseInt(fin[2])
-  var fintotal = finHoras + finMinutos + finSegundos
+  let finHoras = parseInt(fin[0]) * 3600
+  let finMinutos = parseInt(fin[1]) * 60
+  let finSegundos = parseInt(fin[2])
+  let fintotal = finHoras + finMinutos + finSegundos
 
-  var diferenciatotal = fintotal - iniciototal
+  let diferenciatotal = fintotal - iniciototal
 
-  var diferenciaHoras = parseInt(diferenciatotal / 3600)
-  var diferenciaMinutos = parseInt((diferenciatotal - (diferenciaHoras * 3600)) / 60)
-  var diferenciaSegundos = parseInt(diferenciatotal - ((diferenciaHoras * 3600) + (diferenciaMinutos * 60)))
+  let diferenciaHoras = parseInt(diferenciatotal / 3600)
+  let diferenciaMinutos = parseInt((diferenciatotal - (diferenciaHoras * 3600)) / 60)
+  let diferenciaSegundos = parseInt(diferenciatotal - ((diferenciaHoras * 3600) + (diferenciaMinutos * 60)))
 
   return ceroIzquierda(diferenciaHoras) + ':' + ceroIzquierda(diferenciaMinutos) + ':' + ceroIzquierda(diferenciaSegundos)
 }
 
-function disconnectAgent () {
-  var anexo = $('#anexo').text()
+const disconnectAgent = () => {
+  let anexo = $('#anexo').text()
   let userRole = $('#user_role').val()
   let queueAdd = $('#queueAdd').val()
   if (anexo === 'Sin Anexo') {
@@ -1046,16 +818,16 @@ function disconnectAgent () {
 }
 
 // Funcion que carga el modal se marcado de salida
-function markExit () {
+const markExit = () => {
   let hour = $('#hour').val()
   let rank_hours = rangoHoras(hour.trim())
-  let message_1 = 'Usted se retira de las oficinas ?'
-  let message_2 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
-        '<br><br>' +
-        '<div class="row">' +
-        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + hour + '">' + hour + '</center></div>' +
-        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
-        '</div>'
+  const message_1 = 'Usted se retira de las oficinas ?'
+  const message_2 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
+    '<br><br>' +
+    '<div class="row">' +
+    '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + hour + '">' + hour + '</center></div>' +
+    '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
+    '</div>'
 
   BootstrapDialog.show({
     type: 'type-primary',
@@ -1123,11 +895,11 @@ function markExit () {
  * [Funcion para la desconeccion del agente sin marcar su hora salida]
  * @param hour_exit
  */
-function desconnect_agent (hour_exit) {
-  var user_id = $('#user_id').val()
-  var ip = $('#ip').val()
-  var date = $('#date').val()
-  var anexo = $('#anexo').text()
+const desconnect_agent = (hour_exit) => {
+  let user_id = $('#user_id').val()
+  let ip = $('#ip').val()
+  let date = $('#date').val()
+  let anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
   let userName = $('#user_name').val()
   let userRole = $('#user_role').val()
@@ -1188,7 +960,7 @@ function desconnect_agent (hour_exit) {
   }
 }
 
-function liberar_anexos () {
+const liberar_anexos = () => {
   let anexo = $('#anexo').text()
   if (anexo != 'Sin Anexo') {
     BootstrapDialog.show({
@@ -1219,7 +991,7 @@ function liberar_anexos () {
   }
 }
 
-let freeAnnexedAjax = (anexo = '', user_id = '') =>{
+const freeAnnexedAjax = (anexo = '', user_id = '') => {
   let queueAdd = $('#queueAdd').val()
   let ip = $('#ip').val()
   let parameters
@@ -1270,14 +1042,13 @@ let freeAnnexedAjax = (anexo = '', user_id = '') =>{
     }
 
   }
-
   ajaxNodeJs(parameters, '/anexos/liberarAnexo', true, 2000)
   loadModule('agents_annexed')
 }
 
-function assignAnexxed (anexo_name,user_id) {
-  var token = $('input[name=_token]').val()
-  var anexo = $('#anexo').text()
+const assignAnexxed = (anexo_name,user_id) => {
+  const token = $('input[name=_token]').val()
+  let anexo = $('#anexo').text()
   let queueAdd = $('#queueAdd').val()
   let username = $('#user_name').val()
   let userRol = $('#user_role').val()
@@ -1318,17 +1089,12 @@ function assignAnexxed (anexo_name,user_id) {
   })
 }
 
-function checkPassword () {
-  var type_password = $('#type_password').val()
-  if (type_password == 0) {
-    changePassword()
-  }
-}
+const checkPassword = () => { if($('#type_password').val() == 0) changePassword() }
 
-function changePassword (userId = '',closable = false) {
+const changePassword = (userId = '',closable = false) => {
   if(userId === '') userId = $('#user_id').val()
-  var token = $('input[name=_token]').val()
-  var message = '<br>' +
+  const token = $('input[name=_token]').val()
+  const message = '<br>' +
                     '<div class="row">' +
                         '<div class="col-md-7">' +
                             '<div class="col-md-6" >' +
@@ -1398,16 +1164,16 @@ function changePassword (userId = '',closable = false) {
   })
 }
 
-const changeRol = (userId)=>{
-  let message = 'Seleccione el rol que quiere asignar al usuario :'+
-                '<br><br>'+
-                '<div class="row">'+
-                '<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>'+
-                '<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>'+
-                '<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>'+
-                '</div>'+
-                '<br>'+
-                '<b>Nota :</b> Utilizar esta opcion siempre y cuando el usuario no se encuentre en una cola.'
+const changeRol = (userId) => {
+  const message = 'Seleccione el rol que quiere asignar al usuario :'+
+    '<br><br>'+
+    '<div class="row">'+
+    '<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>'+
+    '<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>'+
+    '<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>'+
+    '</div>'+
+    '<br>'+
+    '<b>Nota :</b> Utilizar esta opcion siempre y cuando el usuario no se encuentre en una cola.'
 
   BootstrapDialog.show({
     type: 'type-primary',
@@ -1435,149 +1201,6 @@ const changeRol = (userId)=>{
   })
 }
 
-
-
-/**
- * Created by dominguez on 10/03/2017.
- *
- * [columns_datatable description]
- * @param  {String} route [Nombre del tipo de reporte]
- * @return {Array}        [Array con nombre de cada parametro que ira en las columnas de la tabla dl reporte]
- */
-function columnsDatatable (route) {
-  let columns = ''
-  if (route === 'incoming_calls') {
-    columns = [
-      {'data': 'date'},
-      {'data': 'hour'},
-      {'data': 'telephone'},
-      {'data': 'agent'},
-      {'data': 'skill'},
-      {'data': 'duration'},
-      {'data': 'action'},
-      {'data': 'waittime'},
-      {'data': 'download'},
-      {'data': 'listen'}
-    ]
-  }
-
-  if (route === 'surveys') {
-    columns = [
-      {'data': 'Type Survey'},
-      {'data': 'Date'},
-      {'data': 'Hour'},
-      {'data': 'Username'},
-      {'data': 'Anexo'},
-      {'data': 'Telephone'},
-      {'data': 'Skill'},
-      {'data': 'Duration'},
-      {'data': 'Question_01'},
-      {'data': 'Answer_01'},
-      {'data': 'Question_02'},
-      {'data': 'Answer_02'},
-      {'data': 'Action'}
-    ]
-  }
-
-  if (route === 'consolidated_calls') {
-    columns = [
-      {'data': 'Name'},
-      {'data': 'Received'},
-      {'data': 'Answered'},
-      {'data': 'Abandoned'},
-      {'data': 'Transferred'},
-      {'data': 'Attended'},
-      {'data': 'Answ 10s'},
-      {'data': 'Answ 15s'},
-      {'data': 'Answ 20s'},
-      {'data': 'Answ 30s'},
-      {'data': 'Aband 10s'},
-      {'data': 'Aband 15s'},
-      {'data': 'Aband 20s'},
-      {'data': 'Aband 30s'},
-      {'data': 'Wait Time'},
-      {'data': 'Talk Time'},
-      {'data': 'Avg Wait'},
-      {'data': 'Avg Talk'},
-      {'data': 'Answ'},
-      {'data': 'Unansw'},
-      {'data': 'Ro10'},
-      {'data': 'Ro15'},
-      {'data': 'Ro20'},
-      {'data': 'Ro30'},
-      {'data': 'Ns10'},
-      {'data': 'Ns15'},
-      {'data': 'Ns20'},
-      {'data': 'Ns30'},
-      {'data': 'Avh2 10'},
-      {'data': 'Avh2 15'},
-      {'data': 'Avh2 20'},
-      {'data': 'Avh2 30'}
-    ]
-  }
-
-  if (route === 'events_detail') {
-    columns = [
-      {'data': 'nombre_agente'},
-      {'data': 'fecha'},
-      {'data': 'hora'},
-      {'data': 'evento'},
-      {'data': 'accion'}
-    ]
-  }
-
-  if (route === 'outgoing_calls') {
-    columns = [
-      {'data': 'date'},
-      {'data': 'hour'},
-      {'data': 'annexedorigin'},
-      {'data': 'username'},
-      {'data': 'destination'},
-      {'data': 'calltime'},
-      {'data': 'download'},
-      {'data': 'listen'}
-    ]
-  }
-
-  if (route === 'agents_online') {
-    columns = [
-      {"data":"date"},
-      {"data":"hour"},
-      {"data":"agents"}
-    ]
-  }
-
-  if (route === 'level_of_occupation') {
-    columns = [
-      {"data":"date"},
-      {"data":"hour"},
-      {"data":"indbound"},
-      {"data":"acw"},
-      {"data":"outbound"},
-      {"data":"auxiliares"},
-      {"data":"logueo"},
-      {"data":"occupation_cosapi"}
-    ]
-  }
-
-  if (route === 'list_users') {
-    columns = [
-      {"data":"Id"},
-      {"data":"First Name"},
-      {"data":"Second Name"},
-      {"data":"Last Name"},
-      {"data":"Second Last Name"},
-      {"data":"Username"},
-      {"data":"Role"},
-      {"data":"Estado"},
-      {"data":"Change Rol"},
-      {"data":"Change Password"},
-      {"data":"Change Status"}
-    ]
-  }
-
-  return columns
-}
 /**
  * Created by jdelacruzc on 11/04/2017.
  *
@@ -1589,57 +1212,40 @@ const RoleTableHide = () =>  ['user']
 /**
  * Created by jdelacruzc on 11/04/2017.
  *
- * [DatableHide description]
- * @param  {String} nombreDiv [Nombre del id de la tabla]
- * @param {Array}  numeroColumnas[Se pasan los numeros de columnas que se desean ocultar]
- * @return Oculta las columnas en el datatable
- */
-const DataTableHide = (nombreDIV, numeroColumnas, roleUser) => {
-    let exist = RoleTableHide().indexOf(roleUser)
-    if(exist >= 0) {
-      let DataTableDiv = $('#' + nombreDIV).DataTable()
-      DataTableDiv.columns( numeroColumnas ).visible( false, false );
-      DataTableDiv.columns.adjust().draw( false );
-    }
-}
-
-/**
- * Created by jdelacruzc on 11/04/2017.
- *
  * [createUser description]
  * @return Crea un usuario nuevo y refersca el datatable listuser
  */
 function createUser () {
-  var token = $('input[name=_token]').val()
-  var message = '<br>' +
-      '<div class="row">' +
-        '<div class="col-md-12">' +
-          '<div class="col-md-6" >' +
-            'Primer Nombre:' +
-          '</div>' +
-          '<div class="col-md-6">' +
-            '<input type="text" class="form-control" style="border-radius: 7px" id="primerNombre" placeholder="Test">' +
-          '</div>' +
-          '<br>' + '<br>' + '<br>' +
-          '<div class="col-md-6">' +
-            'Segundo Nombre:' +
-          '</div>' +
-          '<div class="col-md-6">' +
-            '<input type="text" class="form-control" style="border-radius: 7px" id="segundoNombre" placeholder="Test 2">' +
-          '</div>' +
-          '<br>' + '<br>' + '<br>' +
-          '<div class="col-md-6">' +
-            'Apellido Paterno:' +
-          '</div>' +
-          '<div class="col-md-6">' +
-            '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoPaterno" placeholder="Cosapi">' +
-          '</div>' +
-          '<br>' + '<br>' + '<br>' +
-          '<div class="col-md-6">' +
-            'Apellido Materno:' +
-          '</div>' +
-          '<div class="col-md-6">' +
-            '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoMaterno" placeholder="Cosapi 2">' +
+  const token = $('input[name=_token]').val()
+  const message = '<br>' +
+    '<div class="row">' +
+      '<div class="col-md-12">' +
+        '<div class="col-md-6" >' +
+          'Primer Nombre:' +
+        '</div>' +
+        '<div class="col-md-6">' +
+          '<input type="text" class="form-control" style="border-radius: 7px" id="primerNombre" placeholder="Test">' +
+        '</div>' +
+        '<br>' + '<br>' + '<br>' +
+        '<div class="col-md-6">' +
+        'Segundo Nombre:' +
+        '</div>' +
+        '<div class="col-md-6">' +
+          '<input type="text" class="form-control" style="border-radius: 7px" id="segundoNombre" placeholder="Test 2">' +
+        '</div>' +
+        '<br>' + '<br>' + '<br>' +
+        '<div class="col-md-6">' +
+          'Apellido Paterno:' +
+        '</div>' +
+        '<div class="col-md-6">' +
+          '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoPaterno" placeholder="Cosapi">' +
+        '</div>' +
+        '<br>' + '<br>' + '<br>' +
+        '<div class="col-md-6">' +
+          'Apellido Materno:' +
+        '</div>' +
+        '<div class="col-md-6">' +
+          '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoMaterno" placeholder="Cosapi 2">' +
           '</div>' +
           '<br>' + '<br>' + '<br>' +
           '<div class="col-md-6">' +
@@ -1687,40 +1293,40 @@ function createUser () {
         label: 'Aceptar',
         cssClass: 'btn-primary',
         action: function (dialogRef) {
-          var primerNombre    = $('#primerNombre').val()
-          var segundoNombre   = $('#segundoNombre').val()
-          var apellidoPaterno = $('#apellidoPaterno').val()
-          var apellidoMaterno = $('#apellidoMaterno').val()
-          var userName        = $('#userName').val()
-          var nuevaContraseña = $('#nuevaContraseña').val()
-          var email           = $('#email').val()
-          var role            = $('#slRol').val()
+          let primerNombre    = $('#primerNombre').val()
+          let segundoNombre   = $('#segundoNombre').val()
+          let apellidoPaterno = $('#apellidoPaterno').val()
+          let apellidoMaterno = $('#apellidoMaterno').val()
+          let userName        = $('#userName').val()
+          let nuevaContraseña = $('#nuevaContraseña').val()
+          let email           = $('#email').val()
+          let role            = $('#slRol').val()
 
           if (primerNombre != '' && segundoNombre != '' && apellidoPaterno != '' && apellidoMaterno != '' && userName != '' && nuevaContraseña != '' && email != '' && role != 'sinrol') {
-              $.ajax({
-                type: 'POST',
-                url: 'createUser',
-                data: {
-                  _token:           token,
-                  primerNombre:     primerNombre,
-                  segundoNombre:    segundoNombre,
-                  apellidoPaterno:  apellidoPaterno,
-                  apellidoMaterno:  apellidoMaterno,
-                  userName:         userName,
-                  nuevaContraseña:  nuevaContraseña,
-                  email:            email,
-                  role:             role
-                },
-                success: function (data) {
-                  if (data == 1) {
-                    show_tab_list_user('list_users')
-                    dialogRef.close()
-                    mostrar_notificacion('success', 'El usuario se registro correctamente!!!', 'Success', 2000, false, true)
-                  } else {
-                    mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
-                  }
+            $.ajax({
+              type: 'POST',
+              url: 'createUser',
+              data: {
+                _token:           token,
+                primerNombre:     primerNombre,
+                segundoNombre:    segundoNombre,
+                apellidoPaterno:  apellidoPaterno,
+                apellidoMaterno:  apellidoMaterno,
+                userName:         userName,
+                nuevaContraseña:  nuevaContraseña,
+                email:            email,
+                role:             role
+              },
+              success: function (data) {
+                if (data == 1) {
+                  show_tab_list_user('list_users')
+                  dialogRef.close()
+                  mostrar_notificacion('success', 'El usuario se registro correctamente!!!', 'Success', 2000, false, true)
+                } else {
+                  mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
                 }
-              })
+              }
+            })
           } else {
             alert('Por favor de llenar todos los campos')
           }
@@ -1829,7 +1435,7 @@ function filterLetter(e){
  * [BlockCopyPaste description]
  * @return Bloquea el Ctrl C y Ctrl V
  */
-function BlockCopyPaste(e){
+const BlockCopyPaste = (e) =>{
   if(e.ctrlKey === true && (e.which === 118 || e.which === 86)){
     return false
   }
@@ -1841,7 +1447,7 @@ function BlockCopyPaste(e){
  * [filterNumber description]
  * @return Solo permite ingresar numeros
  */
-function filterNumber(e){
+const filterNumber = (e) =>{
   let key = window.Event ? e.which : e.keyCode
   return (key >= 48 && key <= 57 || key === 8 || key === 9)
 }

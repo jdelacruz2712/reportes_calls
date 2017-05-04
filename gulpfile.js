@@ -83,7 +83,9 @@ elixir(function(mix) {
   Generando el archivo cosapi_realtime.min.js para mostrar data realtime en panel
   */
   .scripts([
+      'cosapi/js/front.js',
       'cosapi/js/helper.js',
+      'cosapi/js/datatable.js',
       'cosapi/js/frontVue.js'
   ],'public/js/cosapi.min.js','resources/assets/')
 

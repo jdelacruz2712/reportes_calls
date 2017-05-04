@@ -45,7 +45,7 @@ const dashboard = new Vue({
           let horaInicio =  (new Date()).getTime()
           let horaFin = this.agents[index].star_call_inbound
           if (horaFin) {
-            this.agents[index].timeElapsed = restarHoras(horaInicio - horaFin)
+            this.agents[index].timeElapsed = differenceHours(horaInicio - horaFin)
             this.loadTimeElapsed(index)
           }
         }.bind(this), 1000)
@@ -55,7 +55,7 @@ const dashboard = new Vue({
       let calcular = () => {
         let horaInicio =  (new Date()).getTime()
         let horaFin = this.encoladas[index].start_call
-        this.encoladas[index].timeElapsed = restarHoras(horaInicio - horaFin)
+        this.encoladas[index].timeElapsed = differenceHours(horaInicio - horaFin)
       }
       setTimeout(calcular(), 1000)
     },
@@ -176,7 +176,7 @@ function updateDataAgent(numberAnnexed, dataAgent){
   return actionPush
 }
 
-function restarHoras (s) {
+function differenceHours (s) {
   function addZ(n) {
     return (n<10? '0':'') + n
   }
