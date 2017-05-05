@@ -24,10 +24,10 @@ class EventsAgentController extends CosapiController
      */
     public function index(Request $request)
     {
-        if($request->ajax()){
-            $events = Eventos::select()->where('estado_visible_id','=',1)->get()->toArray();
-            return view('layout/recursos/status')->with(array('events' => $events));
-        }
+        $events = Eventos::select()->where('estado_visible_id','=',1)->get()->toArray();
+        return response()->json([
+            'getListEvents'                 => $events,
+        ], 200);
     }
 
     /**

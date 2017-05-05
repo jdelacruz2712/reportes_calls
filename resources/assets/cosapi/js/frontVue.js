@@ -1,32 +1,67 @@
 'use strict'
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 const vueFront = new Vue({
-  el: '#statusAgent',
+  el: '#frontAminLTE',
   data: {
+    getUserId : '',
+    getUsername : '',
+    getNameComplete : '',
+    getRole : '',
+    getRemoteIp : '',
+    statusChangePassword : '',
+    statusChangeAssistance : '',
+    statusQueueAddAsterisk : '',
+    hourServer : '',
+    dateServer : '',
     present_status_name: '',
     present_status_id: '',
-    anexo: '',
-    srcAvatar:'default_avatar.png'
+    anexo: 0,
+    srcAvatar:'default_avatar.png',
+    getListEvents: [],
+    showStatusModal: 'show fade'
   },
   mounted(){
-    this.getAvatar()
+    this.getAvatar(),
+    this.loadVariablesGlobals(),
+    this.loadModalStatus()
   },
   methods:{
+
+    sendUrlRequest: async function (url){
+      let response = await this.$http.post(url)
+      return response.data
+    },
+
     getAvatar: function (){
       let userId = $('#user_id').val()
       let parameters = { userID: userId }
       this.$http.post('viewUsers', parameters).then(response => {
         this.srcAvatar = response.body[0].user_profile.avatar
-        vueMenuHeader.srcAvatar = response.body[0].user_profile.avatar
       },response => console.log(response.body))
-    }
-  }
-})
+    },
 
-const vueMenuHeader = new Vue({
-  el:'#menuHeader',
-  data: {
-    srcAvatar:'default_avatar.png'
+    loadVariablesGlobals: async function () {
+      let response = await this.sendUrlRequest('/getVariablesGlobals')
+      this.getUserId = response.getUserId
+      this.getUsername = response.getUsername
+      this.getNameComplete = response.getNameComplete
+      this.getRole = response.getRole
+      this.getRemoteIp = response.getRemoteIp
+      this.statusChangePassword = response.statusChangePassword
+      this.statusChangeAssistance = response.statusChangeAssistance
+      this.statusQueueAddAsterisk = response.statusQueueAddAsterisk
+      this.hourServer = response.hourServer
+      this.dateServer = response.dateServer
+      fechaActual()
+      horaActual()
+    },
+
+    loadModalStatus: async  function (){
+      let response = await this.sendUrlRequest('list_event')
+      this.getListEvents = response.getListEvents
+      this.showStatusModal = 'modal show'
+      console.log(this.getListEvents)
+    }
   }
 })
 

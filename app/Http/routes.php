@@ -73,7 +73,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('viewDistrito'                                      , ['uses'=>'UserController@viewDistrito']);
 
     // Miscelaneas
-    Route::get('list_event'									        , ['uses'=>'EventsAgentController@index']);
+    Route::post('list_event'									    , ['uses'=>'EventsAgentController@index']);
     Route::post('assistance'                                        , ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);
     Route::post('working'                                           , ['uses'=>'AdminController@working'            ,    'as' => 'working']);
     Route::post('modifyPassword'                                    , ['uses'=>'UserController@modifyPassword'      ,    'as' => 'modifyPassword']);
@@ -81,6 +81,9 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('setQueueAdd'                                       , ['uses'=>'AdminController@setQueueAdd'        ,    'as' => 'setQueueAdd']);
     Route::post('createUser'                                        , ['uses'=>'UserController@createUser'          ,    'as' => 'createUser']);
     Route::post('changeStatus'                                      , ['uses'=>'UserController@changeStatus'        ,    'as' => 'changeStatus']);
+
+
+    Route::post('/getVariablesGlobals'                              , ['uses'=>'AdminController@getVariablesGlobals',    'as' => 'home'      ]);
 });
 
 

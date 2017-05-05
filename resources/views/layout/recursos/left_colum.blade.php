@@ -8,9 +8,8 @@
         <img  :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
        </div>
       <div  class="pull-left info">
-        <input type="hidden"  v-model="anexo" value="{{$anexo}}">
         <input type="hidden"  v-model="present_status_id" id="present_status_id">
-        <p>{{ ucwords(Session::get('UserName'))}}</p>
+        <p>@{{ getNameComplete }}</p>
         <a href="#"><i class="fa fa-circle text-success"></i> @{{ present_status_name }}</a>
       </div>
     </div>

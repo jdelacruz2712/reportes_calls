@@ -655,50 +655,48 @@ const mostrar_notificacion = (type, mensaje, titulo, time, duplicate, close, ext
 }
 
 // Muestra la hora actual del sistema cada 1 segundo
-const horaActual = (hora, minuto, segundo) => {
-  segundo = segundo + 1
-  if (segundo == 60) {
-    minuto = minuto + 1
-    segundo = 0
-    if (minuto == 60) {
-      minuto = 0
-      hora = hora + 1
-      if (hora == 24) {
-        hora = 0
+const horaActual = () => {
+  setTimeout(function(){
+    let hourServer = vueFront.hourServer.split(':')
+    let hora = parseInt(hourServer[0])
+    let minuto = parseInt(hourServer[1])
+    let segundo = parseInt(hourServer[2])
+    segundo = segundo + 1
+    if (segundo == 60) {
+      minuto = minuto + 1
+      segundo = 0
+      if (minuto == 60) {
+        minuto = 0
+        hora = hora + 1
+        if (hora == 24) {
+          hora = 0
+        }
       }
     }
-  }
 
-  let str_hora = ''
-  let str_minuto = ''
-  let str_segundo = ''
+    let str_hora = ''
+    let str_minuto = ''
+    let str_segundo = ''
 
-  str_hora = new String(hora)
-  str_minuto = new String(minuto)
-  str_segundo = new String(segundo)
+    str_hora = new String(hora)
+    str_minuto = new String(minuto)
+    str_segundo = new String(segundo)
 
-  if (str_hora.length == 1) {
-    hora = '0' + hora
-  }
-  if (str_minuto.length == 1) {
-    minuto = '0' + minuto
-  }
-  if (str_segundo.length == 1) {
-    segundo = '0' + segundo
-  }
+    if (str_hora.length == 1) hora = '0' + hora
+    if (str_minuto.length == 1) minuto = '0' + minuto
+    if (str_segundo.length == 1) segundo = '0' + segundo
 
-  let horaActual = '<span class="glyphicon glyphicon-time"></span> ' + hora + ':' + minuto + ':' + segundo
-  let presentHour = '<input type="hidden" value="' + hora + ':' + minuto + ':' + segundo + '" id="hour"/>'
-  document.getElementById('hora_actual').innerHTML = horaActual
-  document.getElementById('present_hour').innerHTML = presentHour
+    vueFront.hourServer = hora + ':' + minuto + ':' + segundo
 
-  setTimeout('horaActual(' + hora + ', ' + minuto + ', ' + segundo + ')', 1000)
+    horaActual()
+
+  }, 1000)
 }
 
 // Muestra la fecha actual en la cabecera del sistema.
-const fechaActual = (dia, mes, diaw) => {
-  let fechaActual = '<span class="glyphicon glyphicon-calendar"></span> ' + nombre_dia(diaw) + ' ' + dia + ' de ' + nombre_mes(mes)
-  document.getElementById('fecha_actual').innerHTML = fechaActual
+const fechaActual = () => {
+  let dateServer = vueFront.dateServer.split('-')
+  vueFront.dateServer = nombre_dia(parseInt(dateServer[2])) + ' ' + parseInt(dateServer[0]) + ' de ' + nombre_mes(parseInt(dateServer[1]))
 }
 
 // Funcion que retorna nombre del mes, en base al número enviado

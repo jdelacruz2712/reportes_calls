@@ -102,4 +102,20 @@ class AdminController extends CosapiController
             }
         }
     }
+
+    public function getVariablesGlobals()
+    {
+        return response()->json([
+            'getUserId'                 => $this->UserId,
+            'getUsername'               => $this->UserSystem,
+            'getRole'                   => $this->UserRole,
+            'getNameComplete'           => $this->UserName,
+            'statusChangePassword'      => $this->UserPassword,
+            'statusChangeAssistance'    => $this->AssistanceUser,
+            'statusQueueAddAsterisk'    => $this->QueueAdd,
+            'getRemoteIp'               => $_SERVER['REMOTE_ADDR'],
+            'hourServer'                => date('H:i:s'),
+            'dateServer'                => date('d-m-w')
+        ], 200);
+    }
 }

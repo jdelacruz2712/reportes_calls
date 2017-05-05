@@ -1,6 +1,5 @@
 <header class="main-header">
-    <!-- Token de sistemas -->
-    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
+
     <!-- Logo -->
     <a href="/" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -18,19 +17,22 @@
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-                <li>
-                    <!-- Fecha Actual -->
+                <li v-show="anexo != 0" >
                     <h5 class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Anexo Actual" style="color: white" onclick="liberar_anexos()">
-                      <span class="fa fa-headphones"></span> Anexo: <font id="anexo" >{{$anexo}}</font>
+                      <span class="fa fa-headphones"></span> Anexo: <font >@{{ anexo}}</font>
+                    </h5>
+                </li>
+                <li >
+                    <!-- Fecha Actual -->
+                    <h5 id="fecha_actual" class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Fecha Actual" style="color: white">
+                        <span class="glyphicon glyphicon-calendar"> @{{ dateServer }}</span>
                     </h5>
                 </li>
                 <li>
-                    <!-- Fecha Actual -->
-                    <h5 id="fecha_actual" class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Fecha Actual" style="color: white"></h5>
-                </li>
-                <li>
                     <!-- Hora Actual -->
-                    <h5 id="hora_actual"  class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Hora Actual" style="color: white"></h5>
+                    <h5 id="hora_actual"  class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Hora Actual" style="color: white">
+                        <span class="glyphicon glyphicon-time"> @{{ hourServer }}</span>
+                    </h5>
                 </li>
                 <li>
                 </li>
@@ -45,7 +47,7 @@
                         <li class="user-header">
                             <img :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
                             <p>
-                                {{ ucwords(Session::get('UserName')).' - '}}<font id="UserNameRole">{{ucwords(Session::get('UserRole'))}}</font>
+                                @{{ getNameComplete + ' - ' }}<font id="UserNameRole">@{{getRole}}</font>
                                 <small>{{date('j F Y')}}</small>
                             </p>
                         </li>
