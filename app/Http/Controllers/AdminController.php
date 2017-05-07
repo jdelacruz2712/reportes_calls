@@ -24,7 +24,6 @@ class AdminController extends CosapiController
     protected $AssistanceUser;
 
     public function __construct(){
-
         Session::put('UserId'       ,Auth::user()->id   );
         Session::put('UserRole'     ,Auth::user()->role   );
         Session::put('UserName'     ,Auth::user()->primer_nombre.' '.Auth::user()->apellido_paterno );
@@ -39,11 +38,11 @@ class AdminController extends CosapiController
             $name_anexo = $Anexos[0]['name'];
             Session::put('UserAnexo'    ,$name_anexo);
         }else{
-            Session::put('UserAnexo'     ,'Sin Anexo'   );
+            Session::put('UserAnexo'     , 0  );
         }
 
         if (!Session::has('QueueAdd')) {
-            Session::put('QueueAdd'     ,'false'   );
+            Session::put('QueueAdd'     ,false );
         }
 
         $this->UserId           = Session::get('UserId')        ;
@@ -55,20 +54,23 @@ class AdminController extends CosapiController
         $this->QueueAdd         = Session::get('QueueAdd')      ;
         $this->ChangeRole       = Session::get('ChangeRole')    ;
 
-        if (!Session::has('AssistanceUser' or Session::get('AssistanceUser') != 'false&')) {
-            $ultimate_event_login = $this->UltimateEventLogin();
-            if($ultimate_event_login[0] == 1 && $ultimate_event_login[1]== null){
-                //Redirecciona a la ventan de marcaciones
-                Session::put('AssistanceUser'    , 'true&');
+
+        $ultimate_event_login = $this->UltimateEventLogin();
+        //dd($ultimate_event_login);
+        if($ultimate_event_login[0] == 1 && $ultimate_event_login[1]== null){
+            //Redirecciona a la ventan de marcaciones
+            Session::put('AssistanceUser'    , true);
+        }else{
+            if($ultimate_event_login[2] >= date('Y-m-d H:i:s')){
+                //Redirecciona a la ventana de espera
+                $date = date_create($ultimate_event_login[2]);
+                Session::put('AssistanceUser'    , 'stand_by&'.date_format($date,"H:i:s"));
+                //dd(Session::get('AssistanceUser'));
             }else{
-                if($ultimate_event_login[2] >= date('Y-m-d H:i:s')){
-                    //Redirecciona a la ventana de espera
-                    $date = date_create($ultimate_event_login[2]);
-                    Session::put('AssistanceUser'    , 'stand_by&'.date_format($date,"H:i:s"));
-                }
-                Session::put('AssistanceUser'    , 'false&');
+                Session::put('AssistanceUser'    , false);
             }
         }
+        //dd(Session::get('AssistanceUser'));
         $this->AssistanceUser   = Session::get('AssistanceUser');
 
     }
@@ -95,16 +97,16 @@ class AdminController extends CosapiController
     {
         if($request->ajax()){
             if ($request->QueueAdd){
-                Session::put('QueueAdd'     ,$request->QueueAdd   );
-                $this->QueueAdd     = Session::get('QueueAdd')     ;
-
-                return $request->QueueAdd;
+                ($request->QueueAdd == 'true')? $this->QueueAdd = true : $this->QueueAdd = false;
+                Session::put('QueueAdd'     ,$this->QueueAdd   );
+                return response()->json($this->QueueAdd);
             }
         }
     }
 
     public function getVariablesGlobals()
     {
+        $requiredAnnexed = ($this->UserRole == 'user')? true : false;
         return response()->json([
             'getUserId'                 => $this->UserId,
             'getUsername'               => $this->UserSystem,
@@ -114,8 +116,11 @@ class AdminController extends CosapiController
             'statusChangeAssistance'    => $this->AssistanceUser,
             'statusQueueAddAsterisk'    => $this->QueueAdd,
             'getRemoteIp'               => $_SERVER['REMOTE_ADDR'],
+            'requiredAnnexed'           => $requiredAnnexed,
             'hourServer'                => date('H:i:s'),
-            'dateServer'                => date('d-m-w')
+            'textDateServer'            => date('d-m-w'),
+            'dateServer'                => date('Y-m-d'),
+            'annexed'                   => $this->UserAnexo
         ], 200);
     }
 }

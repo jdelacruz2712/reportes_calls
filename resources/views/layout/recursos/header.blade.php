@@ -17,15 +17,15 @@
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-                <li v-show="anexo != 0" >
+                <li v-show="annexed != 0" >
                     <h5 class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Anexo Actual" style="color: white" onclick="liberar_anexos()">
-                      <span class="fa fa-headphones"></span> Anexo: <font >@{{ anexo}}</font>
+                      <span class="fa fa-headphones"></span> Anexo: <font >@{{ annexed}}</font>
                     </h5>
                 </li>
                 <li >
                     <!-- Fecha Actual -->
                     <h5 id="fecha_actual" class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Fecha Actual" style="color: white">
-                        <span class="glyphicon glyphicon-calendar"> @{{ dateServer }}</span>
+                        <span class="glyphicon glyphicon-calendar"> @{{ textDateServer }}</span>
                     </h5>
                 </li>
                 <li>

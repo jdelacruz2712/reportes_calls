@@ -11,10 +11,10 @@ const  activeCalls = (nameRole, userId = '') => {
   let queueAdd = $('#queueAdd').val()
   let anexo = $('#anexo').text()
   let username = $('#user_name').val()
-  let ip = $('#ip').val()
+  let ip = vueFront.getRemoteIp
   let user_role = $('#user_role').text()
 
-  userId = (userId === '')? $('#user_id').val() : userId
+  userId = (userId === '')? vueFront.getUserId : userId
 
   $.ajax({
     type: 'POST',
@@ -26,7 +26,7 @@ const  activeCalls = (nameRole, userId = '') => {
     },
     success: function (data) {
       if (data == 1) {
-        if(userId === $('#user_id').val()){
+        if(userId === vueFront.getUserId){
           $('#UserNameRole').text(nameRole.charAt(0).toUpperCase() + nameRole.slice(1))
           $('#user_role').val(nameRole)
         }
@@ -37,8 +37,8 @@ const  activeCalls = (nameRole, userId = '') => {
         mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
 
         //Tiene un anexo asignado
-        if(queueAdd === 'true' && userId === $('#user_id').val()){
-          userId = $('#user_id').val()
+        if(queueAdd === 'true' && userId === vueFront.getUserId){
+          userId = vueFront.getUserId
           mostrar_notificacion('info', 'Se procedera a realizar la conexion al asterisk', 'Info', 5000, false, true)
           //Se encuentra agregado a colas
           parameters = {
@@ -54,7 +54,7 @@ const  activeCalls = (nameRole, userId = '') => {
           loadModule('agents_annexed')
         }else{
           //No se encuentra en ninguna cola
-          if(anexo != 'Sin Anexo' && userId === $('#user_id').val()){
+          if(anexo != 'Sin Anexo' && userId === vueFront.getUserId){
             parameters = {
               user_id : userId,
               type_action: 'release',
@@ -321,78 +321,73 @@ const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
     $('#myModalLoading').modal('hide')
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
     if(resData['DataQueue'] != null){
-      let arrayMessage = resData['DataQueue']
-      let messageSuccess = ''
-      let messageError = ''
-      let messageWarning = ''
-      for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
-        if (arrayMessage[posicion]['Response'] == 'Success') {
-          messageSuccess = messageSuccess + arrayMessage[posicion]['Message']
-          if (posicion != ((arrayMessage.length) - 1)) {
-            messageSuccess = messageSuccess + '<br>'
-          }
-        }else if (arrayMessage[posicion]['Response'] == 'Warning') {
-          messageWarning = messageWarning + arrayMessage[posicion]['Message']
-          if (posicion != ((arrayMessage.length) - 1)) {
-            messageWarning = messageWarning + '<br>'
-          }
-        } else {
-          messageError = messageError + arrayMessage[posicion]['Message']
-          if (posicion != ((arrayMessage.length) - 1)) {
-            messageError = messageError + '<br>'
-          }
-        }
-      }
-
-      if (messageSuccess != '') {
-        mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
-        if (parameters['type_action'] == 'update') {
-          setQueueAdd('true')
-        }
-
-        if (parameters['type_action'] == 'release') {
-          $('#anexo').text('Sin Anexo')
-          setQueueAdd('false')
-        }
-      }
-
-      if (messageError != '') {
-        mostrar_notificacion('error', messageError, 'Error', 0, false, true, 0)
-      }
-
-      if (messageWarning != '') {
-        mostrar_notificacion('warning', messageWarning, 'Warning', 0, false, true, 0)
-      }
-
-      if (parameters['type_action'] == 'disconnect') {
-        setTimeout('eventLogout()', 4000)
-      }
+      //Muestra notificaciones al hacer QueueAdd o QueueRemove
+      loadMultiNotification(resData,time,parameters)
     }
 
     if(resData['Response'] == 'success'){
-      if (parameters['type_action'] == 'release') {
-        socketAsterisk.emit('leaveRoom', $('#anexo').text())
-        $('#anexo').text('Sin Anexo')
-        vueFront.anexo = ''
-        setQueueAdd('false')
-      }else{
-        if (parameters['anexo']) {
-          $('#anexo').text(parameters['anexo'])
-          socketAsterisk.emit('createRoom', $('#anexo').text())
-        }
-
-        if (parameters['number_annexed']) {
-          vueFront.anexo = parameters['number_annexed']
-          $('#anexo').text(parameters['number_annexed'])
-          socketAsterisk.emit('createRoom', $('#anexo').text())
-        }
-      }
-
-      if (parameters['type_action'] == 'disconnect') {
-        setTimeout('eventLogout()', 4000)
-      }
+      eventPostExecuteAction(parameters)
     }
   })
+}
+
+const eventPostExecuteAction = (parameters) => {
+  if (parameters['type_action'] == 'release') {
+    socketAsterisk.emit('leaveRoom', vueFront.annexed)
+    vueFront.annexed = 0
+    vueFront.statusQueueAddAsterisk = false
+    setQueueAdd(false)
+  }else{
+    if (parameters['anexo']) {
+      vueFront.annexed = parameters['anexo']
+      socketAsterisk.emit('createRoom', vueFront.annexed)
+    }
+
+    if (parameters['number_annexed']) {
+      vueFront.annexed = parameters['number_annexed']
+      socketAsterisk.emit('createRoom', vueFront.annexed)
+    }
+  }
+
+  if (parameters['type_action'] == 'disconnect') setTimeout('eventLogout()', 4000)
+}
+
+const loadMultiNotification = (resData,time,parameters) => {
+  let arrayMessage = resData['DataQueue']
+  let messageSuccess = ''
+  let messageError = ''
+  let messageWarning = ''
+
+  for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
+    if (arrayMessage[posicion]['Response'] == 'Success') {
+      messageSuccess = messageSuccess + arrayMessage[posicion]['Message']
+      if (posicion != ((arrayMessage.length) - 1)) messageSuccess = messageSuccess + '<br>'
+    }else if (arrayMessage[posicion]['Response'] == 'Warning') {
+      messageWarning = messageWarning + arrayMessage[posicion]['Message']
+      if (posicion != ((arrayMessage.length) - 1)) messageWarning = messageWarning + '<br>'
+    } else {
+      messageError = messageError + arrayMessage[posicion]['Message']
+      if (posicion != ((arrayMessage.length) - 1)) messageError = messageError + '<br>'
+    }
+  }
+
+  if (messageSuccess != '') {
+    mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
+    if (parameters['type_action'] == 'update') {
+      vueFront.statusQueueAddAsterisk = true
+      setQueueAdd(true)
+    }
+
+    if (parameters['type_action'] == 'release') {
+      vueFront.annexed = 0
+      vueFront.statusQueueAddAsterisk = false
+      setQueueAdd(false)
+    }
+  }
+
+  if (messageError != '') mostrar_notificacion('error', messageError, 'Error', 0, false, true, 0)
+  if (messageWarning != '') mostrar_notificacion('warning', messageWarning, 'Warning', 0, false, true, 0)
+  if (parameters['type_action'] == 'disconnect') setTimeout('eventLogout()', 4000)
 }
 
 const setQueueAdd = (queueAdd) => {
@@ -405,7 +400,7 @@ const setQueueAdd = (queueAdd) => {
       QueueAdd: queueAdd
     },
     success: function (data) {
-      $('#queueAdd').val(data)
+      vueFront.statusQueueAddAsterisk = data
     }
   })
 }
@@ -437,15 +432,15 @@ const PanelStatus = () => {
   })
 }
 
-const MarkAssitance = (user_id, day, hour_actually, action, result) => {
-  if (result[0] == 'true') {
+const MarkAssitance = (user_id, day, hour_actually, action) => {
+   if(vueFront.statusChangeAssistance == true){
     modalAssintance(user_id, day, hour_actually, action)
-  } else if (result[0] == 'stand_by') {
-    ModalStandBy(result[1])
-  } else {
+  }else if(vueFront.statusChangeAssistance != false){
+    let assistence_user = $('#assistence_user').val().split('&')
+    ModalStandBy(assistence_user[1])
+  }else{
     checkPassword()
   }
-
 }
 
 const modalAssintance = (user_id, day, hour_actually, action) => {
@@ -494,7 +489,7 @@ const modalAssintance = (user_id, day, hour_actually, action) => {
 }
 
 const ModalStandBy = (hour_new) => {
-  let present_hour = $('#hour').val()
+  let present_hour = vueFront.hourServer
   let text_hour = restarHoras(present_hour, hour_new)
   const message = 'Bienvenido, para su entrada faltan :' +
     '<br>' +
@@ -509,7 +504,7 @@ const ModalStandBy = (hour_new) => {
 }
 
 const CloseStandBy = (hour_new) => {
-  let present_hour = $('#hour').val()
+  let present_hour = vueFront.hourServer
   if (present_hour >= hour_new) {
     $.each(BootstrapDialog.dialogs, function (id, dialog) {
       dialog.close()
@@ -695,8 +690,8 @@ const horaActual = () => {
 
 // Muestra la fecha actual en la cabecera del sistema.
 const fechaActual = () => {
-  let dateServer = vueFront.dateServer.split('-')
-  vueFront.dateServer = nombre_dia(parseInt(dateServer[2])) + ' ' + parseInt(dateServer[0]) + ' de ' + nombre_mes(parseInt(dateServer[1]))
+  let dateServer = vueFront.textDateServer.split('-')
+  vueFront.textDateServer = nombre_dia(parseInt(dateServer[2])) + ' ' + parseInt(dateServer[0]) + ' de ' + nombre_mes(parseInt(dateServer[1]))
 }
 
 // Funcion que retorna nombre del mes, en base al número enviado
@@ -796,12 +791,12 @@ const restarHoras = (inicio, fin) => {
 }
 
 const disconnectAgent = () => {
-  let anexo = $('#anexo').text()
-  let userRole = $('#user_role').val()
-  let queueAdd = $('#queueAdd').val()
-  if (anexo === 'Sin Anexo') {
+  let anexo = vueFront.annexed
+  let userRole = vueFront.getRole
+  let queueAdd = vueFront.statusQueueAddAsterisk
+  if (anexo === 0) {
     if(userRole === 'user'){
-      if(queueAdd === 'false'){
+      if(queueAdd === false){
         markExit()
       }else{
         mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Oops!!', 10000, false, true)
@@ -817,7 +812,7 @@ const disconnectAgent = () => {
 
 // Funcion que carga el modal se marcado de salida
 const markExit = () => {
-  let hour = $('#hour').val()
+  let hour = vueFront.hourServer
   let rank_hours = rangoHoras(hour.trim())
   const message_1 = 'Usted se retira de las oficinas ?'
   const message_2 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
@@ -894,18 +889,18 @@ const markExit = () => {
  * @param hour_exit
  */
 const desconnect_agent = (hour_exit) => {
-  let user_id = $('#user_id').val()
-  let ip = $('#ip').val()
-  let date = $('#date').val()
-  let anexo = $('#anexo').text()
-  let queueAdd = $('#queueAdd').val()
-  let userName = $('#user_name').val()
-  let userRole = $('#user_role').val()
+  let user_id = vueFront.getUserId
+  let ip = vueFront.getRemoteIp
+  let date = vueFront.dateServer
+  let anexo = vueFront.annexed
+  let queueAdd = vueFront.statusQueueAddAsterisk
+  let userName = vueFront.getUsername
+  let userRole = vueFront.getRole
   let parameters
   let route = ''
-  if (anexo != 'Sin Anexo') {
+  if (anexo != 0) {
 
-    if(queueAdd == 'true'){
+    if(queueAdd == true){
       //Se encuentra agregado a colas
 
       parameters = {
@@ -945,7 +940,7 @@ const desconnect_agent = (hour_exit) => {
       type_action: 'disconnect'
     }
     if(userRole === 'user'){
-      if(queueAdd == 'false'){
+      if(queueAdd == false){
         route = '/anexos/Logout'
         ajaxNodeJs(parameters, route, true, 2000)
       }else{
@@ -959,8 +954,8 @@ const desconnect_agent = (hour_exit) => {
 }
 
 const liberar_anexos = () => {
-  let anexo = $('#anexo').text()
-  if (anexo != 'Sin Anexo') {
+  let anexo = vueFront.annexed
+  if (anexo != 0) {
     BootstrapDialog.show({
       type: 'type-primary',
       title: 'Liberación de Anexo',
@@ -990,20 +985,20 @@ const liberar_anexos = () => {
 }
 
 const freeAnnexedAjax = (anexo = '', user_id = '') => {
-  let queueAdd = $('#queueAdd').val()
-  let ip = $('#ip').val()
+  let queueAdd = vueFront.statusQueueAddAsterisk
+  let ip = vueFront.getRemoteIp
   let parameters
   if(user_id == ''){
-    anexo = $('#anexo').text()
-    user_id = $('#user_id').val()
+    anexo = vueFront.annexed
+    user_id = vueFront.getUserId
     //Tiene un anexo asignado
-    if(queueAdd == 'true' ){
+    if(queueAdd == true){
 
       //Se encuentra agregado a colas
       parameters = {
         user_id : user_id,
         number_annexed: anexo,
-        username: $('#user_name').val(),
+        username: vueFront.getUsername,
         type_action: 'release',
         event_id : 11,
         event_name : 'Login',
@@ -1022,7 +1017,7 @@ const freeAnnexedAjax = (anexo = '', user_id = '') => {
     }
   }else{
     //Liberar otro anexo que no se encuentre en una cola
-    if(user_id != $('#user_id').val()){
+    if(user_id != vueFront.getUserId){
       parameters = {
         user_id : user_id,
         event_id : 11,
@@ -1057,12 +1052,12 @@ const assignAnexxed = (anexo_name,user_id) => {
     url: 'agents_annexed/user',
     data: {
       _token: token,
-      user_id: $('#user_id').val()
+      user_id: vueFront.getUserId
     },
     success: function (data) {
       if (data == 'Sin Anexo') {
         if(user_id == ''){
-          user_id = $('#user_id').val()
+          user_id = vueFront.getUserId
           //No se encuentra en ninguna cola
           parameters = {
             number_annexed : anexo_name,
@@ -1090,7 +1085,7 @@ const assignAnexxed = (anexo_name,user_id) => {
 const checkPassword = () => { if($('#type_password').val() == 0) changePassword() }
 
 const changePassword = (userId = '',closable = false) => {
-  if(userId === '') userId = $('#user_id').val()
+  if(userId === '') userId = vueFront.getUserId
   const token = $('input[name=_token]').val()
   const message = '<br>' +
                     '<div class="row">' +

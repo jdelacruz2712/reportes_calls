@@ -3,7 +3,7 @@
   <!-- sidebar: style can be found in sidebar.less -->
   <section class="sidebar">
     <!-- Sidebar user panel -->
-    <div class="user-panel" id="statusAgent">
+    <div class="user-panel" @click="loadModalStatus">
       <div class="pull-left image">
         <img  :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
        </div>

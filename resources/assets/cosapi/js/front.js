@@ -14,21 +14,9 @@ $(document).ready(function () {
     }
   })
 
-  let user_id = $('#user_id').val()
-  let hour = $('#hour').val()
-  let date = $('#date').val()
-  let anexo = $('#anexo').text()
-  if($('#assistence_user').length > 0 ){
-    let assistence_user = $('#assistence_user').val().split('&')
-    if(assistence_user[0] == 'true'){
-      MarkAssitance(user_id, date, hour, 'Entrada', assistence_user)
-    }else{
-      checkPassword()
-    }
-  }
 
 
-  if (anexo === 'Sin Anexo') loadModule('agents_annexed')
+  if (vueFront.annexed === 0 ) loadModule('agents_annexed')
 
   $('#statusAgent').click(function () {
     PanelStatus()

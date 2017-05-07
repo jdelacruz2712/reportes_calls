@@ -54,7 +54,6 @@ var vmProfile = new Vue({
                     this.birthdate = profile_user.fecha_nacimiento
                     this.birthdate = profile_user.fecha_nacimiento
                     this.idSex = profile_user.Sexo
-                    vueMenuHeader.srcAvatar = profile_user.avatar
                     vueFront.srcAvatar = profile_user.avatar
                     this.srcAvatar = profile_user.avatar
                     this.srcAvatarOriginal = profile_user.avatar
