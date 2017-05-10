@@ -8,9 +8,9 @@
         <img  :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
        </div>
       <div  class="pull-left info">
-        <input type="hidden"  v-model="present_status_id" id="present_status_id">
+        <input type="hidden"  v-model="getEventId" id="getEventId">
         <p>@{{ getNameComplete }}</p>
-        <a href="#"><i class="fa fa-circle text-success"></i> @{{ present_status_name }}</a>
+        <a href="#"><i class="fa fa-circle text-success"></i> @{{ getEventName }}</a>
       </div>
     </div>
 
@@ -77,7 +77,7 @@
               <li><a href="#" id="agents_queue"       class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Queue</a></li>
             @endif
             @if(Session::get('ChangeRole') == 1)
-              <li><a href="#" id="activate_calls"     class="activate_calls"><i class="fa fa-circle-o text-orange"></i> Activate Calls</a></li>
+              <li><a href="#" id="activate_calls"     class="activate_calls" onclick="activeCalls()"><i class="fa fa-circle-o text-orange"></i> Activate Calls</a></li>
             @endif
           </ul>
         </li>

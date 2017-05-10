@@ -13,7 +13,6 @@
     <!-- Token de sistemas -->
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
 
-    @include('layout.recursos.file_hidden')
     <div class="wrapper" id="frontAminLTE">
       @include('layout.recursos.header')
       @include('layout.recursos.left_colum')
@@ -33,8 +32,6 @@
       @include('layout.recursos.footer')
       @include('layout.recursos.right_colum')
       @include('layout.recursos.modals.modal_status')
-      @include('layout.recursos.modals.modal_releases_annexed')
-      @include('layout.recursos.modals.modal_asssistance')
       <div class="control-sidebar-bg"></div>
     </div>
     {!!Html::script('js/adminlte_jquerys.min.js?version='.date('YmdHis'))!!}

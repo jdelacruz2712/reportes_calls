@@ -8,43 +8,52 @@ const vueFront = new Vue({
     getNameComplete : '',
     getRole : '',
     getRemoteIp : '',
-    getEvent : 11,
+    getEventName : '',
+    getEventId : '',
     statusChangePassword : '',
     statusChangeAssistance : '',
     annexed : 0,
     srcAvatar :'default_avatar.png',
 
+    remotoReleaseUserId : 0,
+    remotoReleaseUsername : 0,
+    remotoReleaseAnnexed : 0,
+    remotoReleaseStatusQueueRemove : false,
+    remoteDisconnectAgentHour : '',
+    remoteActiveCallsUserId : '',
+    remoteActiveCallsNameRole : '',
+
+    quantityQueueAssign : 0,
     statusQueueAddAsterisk : false,
     hourServer : '',
     textDateServer : '',
     dateServer : '',
-    present_status_name : '',
-    present_status_id : '',
     getListEvents : [],
-    requiredAnexo : false,
-    textCheckAssistance : 'Entrada',
-    HourAssistance : '',
-    nextHourAssistance : '',
+    requiredAnnexed : false,
+
+    assistanceTextModal : 'Entrada',
+    assistanceHour : '',
+    assistanceNextHour : '',
+
     nextEventId : '',
     routeAction : '/detalle_eventos/registrarDetalle',
 
-    showStatusModal : 'modal fade',
-    showReleasesAnnexedModal : 'modal fade',
-    showAssistanceModal : 'modal fade'
+    ModalChangeStatus : 'modal fade',
+    ModalReleasesAnnexed : 'modal fade',
+    ModalAssistance : 'modal fade'
   },
   mounted(){
-    this.getAvatar(),
     this.loadVariablesGlobals()
   },
   methods :{
 
-    sendUrlRequest : async function (url){
-      let response = await this.$http.post(url)
+    sendUrlRequest : async function (url,parameters = {}){
+      let response = await this.$http.post(url,parameters)
       return response.data
     },
 
     getAvatar : function (){
-      let userId = $('#user_id').val()
+      let userId = this.getUserId
       let parameters = { userID : userId }
       this.$http.post('viewUsers', parameters).then(response => {
         this.srcAvatar = response.body[0].user_profile.avatar
@@ -66,6 +75,7 @@ const vueFront = new Vue({
       this.textDateServer = response.textDateServer
       this.dateServer = response.dateServer
       this.annexed = response.annexed
+      this.quantityQueueAssign = response.quantityQueueAssign
       await fechaActual()
       await horaActual()
       //await this.verifyAssistance()
@@ -76,12 +86,28 @@ const vueFront = new Vue({
 
       //Verificacion de marcado de asistencia
       MarkAssitance(this.getUserId, this.dateServer, this.hourServer, 'Entrada')
+
+      //Cargando image del profile_user
+      this.getAvatar()
+    },
+
+    verifyQueueAssign : function(){
+      if (this.getRole === 'user') {
+        if(this.quantityQueueAssign === false) {
+          mostrar_notificacion('warning', 'Usted no tiene colas asignadas.', 'Ooops!!!', 10000, false, true)
+          return false
+        }
+        return true
+      }
+      return true
     },
 
     loadModalStatus : async  function (){
-      let response = await this.sendUrlRequest('list_event')
-      this.getListEvents = response.getListEvents
-      this.showStatusModal = 'modal show'
+      let response = ''
+      let isVerifyQueueAssign = this.verifyQueueAssign()
+      if (isVerifyQueueAssign) response = await this.sendUrlRequest('list_event')
+      if (isVerifyQueueAssign) this.getListEvents = response.getListEvents
+      if (isVerifyQueueAssign) this.ModalChangeStatus = 'modal show'
     },
 
     verifyAnnexed : function(){
@@ -99,20 +125,29 @@ const vueFront = new Vue({
     },
 
     defineRoute : function(event){
-      if (this.getRole === 'user') {
         switch (event){
           case 'changeStatus' :
-            (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/QueuePause' : this.routeAction = '/detalle_eventos/cambiarEstado'
+            if (this.getRole === 'user') {
+              (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/QueuePause' : this.routeAction = '/detalle_eventos/cambiarEstado'
+            }else{
+              this.routeAction = '/detalle_eventos/registrarDetalle'
+            }
             break
           case 'releasesAnnexed' :
             this.routeAction = '/anexos/liberarAnexo'
             break
+          case 'assignAnnexed' :
+            this.routeAction = '/anexos/updateAnexo'
+            break
+          case 'disconnectAgent' :
+            (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/queueLogout' : this.routeAction = '/anexos/Logout'
+            break
         }
-      }
+
     },
 
     changeStatus : function (eventId){
-      this.showStatusModal = 'model fade'
+      this.ModalChangeStatus = 'modal fade'
       let isVerifyAnnexed = this.verifyAnnexed()
       if (isVerifyAnnexed) this.defineRoute('changeStatus')
       this.nextEventId = eventId
@@ -120,10 +155,48 @@ const vueFront = new Vue({
       if(isVerifyAnnexed) ajaxNodeJs(parameters, this.routeAction, true, 2000)
     },
 
-    releasesAnnexed : async function (){
-      this.showReleasesAnnexedModal = 'modal fade'
-      let verifyRequired = await this.verifyRequired()
-      if (verifyRequired) await this.defineRoute('releasesAnnexed')
+    assignAnnexed : function (){
+      this.defineRoute('assignAnnexed')
+      let parameters = this.loadParameters('assignAnnexed')
+      ajaxNodeJs(parameters, this.routeAction, true, 2000)
+    },
+
+    releasesAnnexed : function (){
+      this.defineRoute('releasesAnnexed')
+      let parameters = this.loadParameters('releasesAnnexed')
+      ajaxNodeJs(parameters, this.routeAction, true, 2000)
+      loadModule('agents_annexed')
+    },
+
+    activeCalls : async function (){
+      let parametersRole = this.loadParameters('activeCalls')
+      let response = await this.sendUrlRequest('modifyRole',parametersRole)
+      closeNotificationBootstrap()
+      if(response === 1){
+        mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
+        if(this.annexed !== 0){
+          this.defineRoute('releasesAnnexed')
+          let parameters = this.loadParameters('releasesAnnexed')
+          await ajaxNodeJs(parameters, this.routeAction, true, 2000)
+          if(this.remoteActiveCallsNameRole !== ''){
+            parametersRole = this.loadParameters('activeCalls')
+            await this.sendUrlRequest('modifyRole',parametersRole)
+          }
+        }else{
+          vueFront.getRole = vueFront.remoteActiveCallsNameRole
+          vueFront.remoteActiveCallsNameRole = ''
+          vueFront.remoteActiveCallsUserId = ''
+        }
+      }else{
+        mostrar_notificacion('error', 'Problemas a la  hora de actualizar el rol en la base de datos', 'Error', 10000, false, true)
+      }
+    },
+
+    disconnectAgent : function (){
+      this.defineRoute('disconnectAgent')
+      let parameters = this.loadParameters('disconnectAgent')
+      console.log(parameters)
+      ajaxNodeJs(parameters, this.routeAction, true, 2000)
     },
 
     verifyAssistance : async function(){
@@ -137,15 +210,15 @@ const vueFront = new Vue({
 
     loadModalCheckAssistance : async function (){
       let rankHours = await rangoHoras(this.hourServer)
-      this.HourAssistance = rankHours[1]
-      this.nextHourAssistance = rankHours[2]
-      this.showAssistanceModal = 'modal show'
+      this.assistanceHour = rankHours[1]
+      this.assistanceNextHour = rankHours[2]
+      this.ModalAssistance = 'modal show'
     },
 
     loadModalStandByAssistance : function (){
       setInterval(function(){
-        let differenceHour = restarHoras(this.nextHourAssistance, this.hourServer)
-        if (this.hourServer >= this.nextHourAssistance) this.showStandByAssistanceModal = 'modal fade'
+        let differenceHour = restarHoras(this.assistanceNextHour, this.hourServer)
+        if (this.hourServer >= this.assistanceNextHour) this.showStandByAssistanceModal = 'modal fade'
       }.bind(this),1000)
     },
 
@@ -158,9 +231,61 @@ const vueFront = new Vue({
           user_id : this.getUserId,
           username : this.getUsername,
           ip : this.getRemoteIp,
-          type_action : 'update'
+          type_action : 'changeStatus'
         }
       }
+
+      if (actionEvent === 'assignAnnexed'){
+        data = {
+          number_annexed : this.annexed,
+          user_id : this.getUserId,
+          username: this.getUsername,
+          userRol: this.getRole,
+          type_action : 'assignAnnexed'
+        }
+      }
+
+      if (actionEvent === 'releasesAnnexed'){
+        data = {
+          user_id : (this.remotoReleaseUserId === 0)? this.getUserId : this.remotoReleaseUserId,
+          number_annexed : (this.remotoReleaseAnnexed === 0)? this.annexed : this.remotoReleaseAnnexed,
+          username : (this.remotoReleaseUsername === 0)? this.getUsername : this.remotoReleaseUsername,
+          event_id : 11,
+          event_name : 'Login',
+          ip : this.getRemoteIp,
+          statusQueueRemove : (this.remotoReleaseStatusQueueRemove === false)? this.statusQueueAddAsterisk : this.remotoReleaseStatusQueueRemove,
+          type_action : 'releasesAnnexed'
+        }
+      }
+
+      if(actionEvent === 'disconnectAgent'){
+        data = {
+          user_id: this.getUserId,
+          hour_exit: this.dateServer+ ' ' + this.remoteDisconnectAgentHour,
+          number_annexed: this.annexed,
+          username : this.getUsername,
+          event_id: 15,
+          ip: this.getRemoteIp,
+          event_name : 'Desconectado',
+          type_action: 'disconnectAgent'
+
+        }
+      }
+
+      if(actionEvent === 'activeCalls'){
+        if(this.remoteActiveCallsNameRole === ''){
+          data = {
+            nameRole : this.getRole,
+            userId : this.getUserId
+          }
+        }else{
+          data = {
+            nameRole : this.remoteActiveCallsNameRole,
+            userId : this.remoteActiveCallsUserId
+          }
+        }
+      }
+
       return data
     }
   }
@@ -171,8 +296,6 @@ const socketSails = io.sails.connect(restApiSails)
 io.sails.autoConnect = false
 socketSails.reconnection = true
 socketSails.reconnectionDelayMax = 5
-// socketSails.timeout = 10
-// socketSails.reconnectionDelay = 20
 
 const socketAsterisk = io.connect(restApiDashboard, { 'forceNew': true })
 socketAsterisk.on('connect', function() {
@@ -182,8 +305,15 @@ socketAsterisk.on('connect', function() {
 });
 
 socketAsterisk.on('statusAgent',  (data) => {
-  vueFront.present_status_name  = data.NameEvent
-  vueFront.present_status_id    = data.EventId
+  vueFront.getEventName = data.NameEvent
+  vueFront.getEventId = data.EventId
+})
+
+// Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
+socketSails.on('status_agent', function (data) {
+  $('#myModalLoading').modal('hide')
+  vueFront.getEventName = data.Name_Event
+  vueFront.getEventId = data.Event_id
 })
 
 socketSails.on('connect', function () {
@@ -197,10 +327,6 @@ socketSails.on('disconnect', function () {
   console.log('Socket Sails.io desconectado!')
 })
 
-// Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
-socketSails.on('status_agent', function (data) {
-  vueFront.present_status_name = data.Name_Event
-  vueFront.present_status_id = data.Event_id
-})
+
 
 

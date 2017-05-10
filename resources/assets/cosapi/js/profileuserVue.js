@@ -35,7 +35,7 @@ var vmProfile = new Vue({
     },
     methods:{
         loadData: function() {
-            let userId = $('#user_id').val()
+            let userId = vueFront.getUserId
             let parameters = { userID: userId }
             this.$http.post('viewUsers',parameters).then(response => {
                 /* Data tabla users */
@@ -116,7 +116,7 @@ var vmProfile = new Vue({
 })
 
 $('#formPerfil').submit(function(event) {
-    const userID = $('#user_id').val()
+    const userID = vueFront.getUserId
     let form = new FormData()
     form.append('userId', userID)
     form.append('firstName', $('input[id=firstName]').val())

@@ -7,7 +7,10 @@
                         @foreach ($tabla_anexo as $key => $anexo)
                             <td>
                                 <center>
-                                    <a href="#"  class='{{ $anexo['btn']  }}' onclick="assignAnexxed('{{ $anexo['name'] }}','{{$anexo['user']['id']}}');" >
+                                    <a href="#"  class='{{ $anexo['btn']  }}' @click="asignAnnexed">
+
+                                    <a href="#"  class='{{ $anexo['btn']  }}' onclick="assignAnexxed('{{ $anexo['name'] }}','{{$anexo['user']['id']}}','{{$anexo['user']['username']}}');" >
+
                                         <center>
                                             <img class="img-responsive" width="74" height="74" name={{ $anexo['name'] }}  src={{ asset('img/'.$anexo['image']) }}  />
                                         </center>
