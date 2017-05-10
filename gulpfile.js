@@ -80,11 +80,11 @@ elixir(function(mix) {
   ],'public/js/adminlte_scripts.min.js','resources/assets/')
 
   .scripts([
-       'cosapi/js/env.js',
-       'node_modules/vue/vue.min.js',
-       'node_modules/vue-resource/vue-resource.min.js',
-       'node_modules/socket.io-client/socket.io.min.js',
-       'node_modules/sails.io/sails.io.js'
+      'node_modules/vue/vue.js',
+      'node_modules/vue-resource/vue-resource.min.js',
+      'node_modules/socket.io-client/socket.io.min.js',
+      'node_modules/sails.io/sails.io.js',
+      'cosapi/js/env.js'
   ],'public/js/adminlte_vuesockets.min.js','resources/assets/')
 
       /**
@@ -111,7 +111,7 @@ elixir(function(mix) {
     'vendor/bootstrap/js/bootstrap.min.js',
     'extras/toastr/toastr.js',
     'cosapi/js/helper.js',
-    'node_modules/vue/vue.min.js',
+    'node_modules/vue/vue.js',
     'node_modules/vue-resource/vue-resource.min.js',
     'node_modules/vue-select/vue-select.js',
     'node_modules/socket.io-client/socket.io.min.js'

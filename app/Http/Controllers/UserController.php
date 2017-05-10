@@ -209,8 +209,7 @@ class UserController extends CosapiController
                 if($resultado == true && $this->UserId ==  $request->userId){
                     Session::put('UserRole'   ,Auth::user()->role   );
                 }
-
-                return (string)$resultado;
+                return response()->json($resultado);
             }
         }
     }

@@ -5,6 +5,7 @@ namespace Cosapi\Http\Controllers;
 use Cosapi\Models\Anexo;
 use Cosapi\Models\DetalleEventos;
 use Cosapi\Models\User;
+use Cosapi\Models\User_Queue;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\Auth;
@@ -56,7 +57,6 @@ class AdminController extends CosapiController
 
 
         $ultimate_event_login = $this->UltimateEventLogin();
-        //dd($ultimate_event_login);
         if($ultimate_event_login[0] == 1 && $ultimate_event_login[1]== null){
             //Redirecciona a la ventan de marcaciones
             Session::put('AssistanceUser'    , true);
@@ -65,14 +65,17 @@ class AdminController extends CosapiController
                 //Redirecciona a la ventana de espera
                 $date = date_create($ultimate_event_login[2]);
                 Session::put('AssistanceUser'    , 'stand_by&'.date_format($date,"H:i:s"));
-                //dd(Session::get('AssistanceUser'));
             }else{
                 Session::put('AssistanceUser'    , false);
             }
         }
-        //dd(Session::get('AssistanceUser'));
         $this->AssistanceUser   = Session::get('AssistanceUser');
 
+        $cantidadColasAsignadas = User_Queue::select(DB::raw('COUNT(1) AS cantidadColasAsignadas'))->where('user_id',$this->UserId )->get()->toArray();
+        ($cantidadColasAsignadas[0]['cantidadColasAsignadas'] > 0 )? $cantidadColasAsignadas = true : $cantidadColasAsignadas = false ;
+
+        Session::put('quantityQueueAssign'     ,$cantidadColasAsignadas);
+        $this->quantityQueueAssign = Session::get('quantityQueueAssign')    ;
     }
 
 	/**
@@ -120,7 +123,8 @@ class AdminController extends CosapiController
             'hourServer'                => date('H:i:s'),
             'textDateServer'            => date('d-m-w'),
             'dateServer'                => date('Y-m-d'),
-            'annexed'                   => $this->UserAnexo
+            'annexed'                   => $this->UserAnexo,
+            'quantityQueueAssign'       => $this->quantityQueueAssign
         ], 200);
     }
 }

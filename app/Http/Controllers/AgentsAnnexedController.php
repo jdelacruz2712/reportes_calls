@@ -54,6 +54,7 @@ class AgentsAnnexedController extends CosapiController
                             $list_annexed[$key]['btn'] = 'btn';
                             $list_annexed[$key]['StatusAnexo'] = 'Anexo Libre';
                             $list_annexed[$key]['user']['id'] = '';
+                            $list_annexed[$key]['user']['username'] = '';
                             $tabla_anexos[$indice][$contador] = $list_annexed[$key];
                             $contador++;
                         }

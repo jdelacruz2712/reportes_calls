@@ -28,40 +28,7 @@ $(document).ready(function () {
 
   //Modificacion del Rol a User para los agentes de BackOffice
   $('#activate_calls').click(function(){
-    let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
-        '<br>' +
-        '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "ACD", porfavor de leer las ' +
-        'notificaiones para saber que el cambio se realizo exitosamente. En caso de que no le entren llamadas por favor' +
-        'de verificar que se le han asignado a las colas correctamente.</p>'
-    BootstrapDialog.show({
-      type: 'type-primary',
-      title: 'Activar Llamadas',
-      message: message,
-      closable: true,
-      buttons: [
-        {
-          label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
-          cssClass: 'btn-success',
-          action: function (dialogRef) {
-            activeCalls('user')
-          }
-        },
-        {
-          label: '<i class="fa fa-times" aria-hidden="true"></i> No',
-          cssClass: 'btn-danger',
-          action: function (dialogRef) {
-            activeCalls('backoffice')
-          }
-        },
-        {
-          label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
-          cssClass: 'btn-primary',
-          action: function (dialogRef) {
-            dialogRef.close()
-          }
-        }
-      ]
-    })
+
   })
 })
 
@@ -107,5 +74,55 @@ const show_tab_annexed = (event) => {
     success: (data) =>{
       $('#divListAnnexed').html(data)
     }
+  })
+}
+
+const activeCalls = () => {
+  vueFront.remoteActiveCallsUserId = vueFront.getUserId
+  let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+    '<br>' +
+    '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "Login", porfavor de leer las ' +
+    'notificaiones para saber que el cambio se realizo exitosamente y verificar que su rol este en "User", para luego' +
+    'pase a "ACD" de maner manual y pueda así recibir llamadas siempre que este asignado a las colas.</p>'
+
+  BootstrapDialog.show({
+    type: 'type-primary',
+    title: 'Activar Llamadas',
+    message: message,
+    closable: true,
+    buttons: [
+      {
+        label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
+        cssClass: 'btn-success',
+        action: function (dialogRef) {
+          if(vueFront.getRole !== 'user'){
+            vueFront.remoteActiveCallsNameRole = 'user'
+            vueFront.activeCalls('user')
+          }else{
+            closeNotificationBootstrap()
+          }
+        }
+      },
+      {
+        label: '<i class="fa fa-times" aria-hidden="true"></i> No',
+        cssClass: 'btn-danger',
+        action: function (dialogRef) {
+          if(vueFront.getRole !== 'backoffice'){
+            vueFront.remoteActiveCallsNameRole = 'backoffice'
+            vueFront.activeCalls()
+          }else{
+            closeNotificationBootstrap()
+          }
+        }
+      },
+      {
+        label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
+        cssClass: 'btn-primary',
+        action: function (dialogRef) {
+          vueFront.remoteActiveCallsUserId = ''
+          dialogRef.close()
+        }
+      }
+    ]
   })
 }

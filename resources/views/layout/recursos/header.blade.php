@@ -51,25 +51,13 @@
                                 <small>{{date('j F Y')}}</small>
                             </p>
                         </li>
-                        <!-- Menu Body -->
-                        <!--<li class="user-body">
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Queues</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Sales</a>
-                            </div>
-                            <div class="col-xs-4 text-center">
-                                <a href="#">Friends</a>
-                            </div>
-                        </li>-->
                         <!-- Menu Footer-->
                         <li class="user-footer">
                             <div class="pull-left">
                                 <a href="#" class="btn btn-default btn-flat reportes" id="profile_users" >Profile</a>
                             </div>
                             <div class="pull-right">
-                                <a href="#" onClick="javascript:disconnectAgent()" class="btn btn-default btn-flat">Sign out</a>
+                                <a href="#" onClick="javascript:disconnect()" class="btn btn-default btn-flat">Sign out</a>
                             </div>
                         </li>
                     </ul>
