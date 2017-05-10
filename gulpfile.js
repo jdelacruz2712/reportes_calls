@@ -87,7 +87,7 @@ elixir(function(mix) {
        'node_modules/sails.io/sails.io.js'
   ],'public/js/adminlte_vuesockets.min.js','resources/assets/')
 
-      /**
+  /**
   Generando el archivo cosapi_realtime.min.js para mostrar data realtime en panel
   */
   .scripts([
@@ -111,7 +111,7 @@ elixir(function(mix) {
     'vendor/bootstrap/js/bootstrap.min.js',
     'extras/toastr/toastr.js',
     'cosapi/js/helper.js',
-    'node_modules/vue/vue.min.js',
+    'node_modules/vue/vue.js',
     'node_modules/vue-resource/vue-resource.min.js',
     'node_modules/vue-select/vue-select.js',
     'node_modules/socket.io-client/socket.io.min.js'
@@ -186,26 +186,6 @@ elixir(function(mix) {
       'plugins/select2/select2.js'
   ],'public/js/select2.min.js','resources/assets/');
 });
-
-/**
- Generando un solo archivo js para descarga de audios
-*/
-/*elixir(function(mix) {
-  mix.scripts([
-      'cosapi/js/jquery.media.js'
-  ],'public/js/jquery.media.min.js','resources/assets/');
-});*/
-
-
-
-
-
-
-
-
-
-
-
 
 elixir(function(mix) {
   /**
