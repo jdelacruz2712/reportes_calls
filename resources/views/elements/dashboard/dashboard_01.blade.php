@@ -6,11 +6,12 @@
 	<p>
 	<div id="dashboard">
 		@include('elements.dashboard.pictures_kpi.index')
-		@include('elements.dashboard.tables.table_detail_calls')
+		@include('elements.dashboard.tables.calls_inbound')
 		<div class="row">
 			<div class="col-md-8">
-				@include('elements.dashboard.tables.table_detail_encoladas')
-				@include('elements.dashboard.tables.table_detail_agents')
+				@include('elements.dashboard.tables.calls_waiting')
+				@include('elements.dashboard.tables.calls_outbound')
+				@include('elements.dashboard.tables.other_agents')
 			</div>
 			<div class="col-md-4">
 				@include('elements.dashboard.panels_kpi.agentactivitysummary')

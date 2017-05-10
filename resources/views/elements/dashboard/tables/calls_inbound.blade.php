@@ -1,8 +1,8 @@
-<div class="row-fluid" id='detailAgents'  v-show="agents.length != 0">
+<div class="row-fluid" v-show="callsInbound.length != 0">
   <div class="col-md-12">
     <div class="box box-primary box-solid">
       <div class="box-header with-border ">
-        <h3 class="box-title"><b>Details Calls</b></h3>
+        <h3 class="box-title"><b>Details Calls Inbound</b></h3>
         <div class="box-tools pull-right">
          <button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
          </button>
@@ -11,7 +11,7 @@
 
       <div class="box-body">
         <div class="table-responsive" id =>
-          <table align="center" class="table table-responsive table-condensed table-hover">
+          <table align="center" class="table table-responsive table-condensed table-hover text-center">
             <thead>
               <tr>
                 <th>#</th>
@@ -22,17 +22,16 @@
                 <th>Phone Number</th>
                 <th>Total Duration</th>
                 <th>Total Calls</th>
-                <th>Exit</th>
               </tr>
             </thead>
             <tbody>
-              <template v-for="(agent, index) in agents ">
+              <template v-for="(inbound, index) in callsInbound ">
                 <tr>
-                  <td align="center">@{{ index + 1 }}</td>
-                  <td align="center">
-                    @{{ agent.agent_annexed }}
+                  <td>@{{ index + 1 }}</td>
+                  <td>
+                    @{{ inbound.agent_annexed }}
                     <span class="pull-right-container">
-                      <template v-if="agent.status_pause == 0  ">
+                      <template v-if="inbound.agent_status == 0  ">
                         <span class="img img-circle pull-right bg-green">
                           <i class="fa fa-thumbs-up" style="padding: 3.5px; " aria-hidden="true"></i>
                         </span>
@@ -44,22 +43,17 @@
                       </template>
                     </span>
                   </td>
-                  <td>@{{ agent.agent_name }}</td>
-                  <td align="center">
+                  <td>@{{ inbound.agent_name }}</td>
+                  <td>
                     <span class="label label-success">
                       <i class="fa fa-phone" style="padding: 1px;" aria-hidden="true"></i>
-                      @{{ agent.event_name }}
+                      @{{ inbound.event_name }}
                     </span>
                   </td>
-                  <td align="center">@{{ agent.name_queue_inbound }}</td>
-                  <td align="center">@{{ agent.phone_number_inbound }}</td>
-                  <td align="center">@{{ agent.timeElapsed }}</td>
-                  <td align="center">@{{ agent.total_calls }}</td>
-                  <td align="center">
-                    <button onclick="desloguear_agente('224','acornejo');">
-                      <i class="fa fa-key" aria-hidden="true"></i>
-                    </button>
-                  </td>
+                  <td>@{{ inbound.inbound_queue }}</td>
+                  <td>@{{ inbound.inbound_phone  }}</td>
+                  <td>@{{ inbound.timeElapsed }}</td>
+                  <td>@{{ inbound.total_calls }}</td>
                 </tr>
               </template>
             </tbody>

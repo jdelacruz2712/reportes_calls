@@ -1,4 +1,4 @@
-<div class="row-fluid" id='detailAgents'>
+<div class="row-fluid">
   <div class="col-md-12">
     <div class="box box-primary box-solid">
       <div class="box-header with-border ">
@@ -10,7 +10,7 @@
       </div>
       <div class="box-body">
         <div class="table-responsive" id =>
-          <table align="center" class="table table-responsive table-condensed">
+          <table align="center" class="table table-responsive table-condensed text-center">
             <thead>
               <tr>
                 <th>#</th>
@@ -22,28 +22,26 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="(other, index) in otherAgents ">
+              <template v-for="(other, index) in others ">
                 <tr>
-                  <td align="center"> @{{ index + 1 }}</td>
-                  <td align="center"> @{{ other.agent_annexed }}</td>
+                  <td>@{{ index + 1 }}</td>
+                  <td>@{{ other.agent_annexed }}</td>
                   <td>@{{ other.agent_name }}</td>
-                  <td align="center">
+                  <td>
                     <span class="label label-success">
                       <i class="fa fa-phone" style="padding: 1px;" aria-hidden="true"></i>
                       @{{ other.event_name }}
                     </span>
                   </td>
-                  <td align="center">@{{ other.timeElapsed }}</td>
-                  <td align="center">@{{ other.agent_total_calls }}</td>
+                  <td>@{{ other.timeElapsed }}</td>
+                  <td>@{{ other.agent_total_calls }}</td>
                 </tr>
               </template>
             </tbody>
           </table>
         </div>
       </div>
-      <div class="overlay" v-if="otherAgents.length === 0">
-        <i class="fa fa-refresh fa-spin"></i>
-      </div>
+
     </div>
   </div>
 </div>
