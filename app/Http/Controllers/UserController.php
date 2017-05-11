@@ -306,7 +306,7 @@ class UserController extends CosapiController
                 'Estado'                => $view['Estado'],
                 'Change Rol'            => '<a class="btn btn-success btn-xs" onclick="changeRol('. $view['Id'] .')"><i class="fa fa-user"></i></a>',
                 'Change Password'       => '<a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .',true)"><i class="fa fa-key"></i></a>',
-                'Change Status'         => '<a class="btn btn-info btn-xs" onclick="changeStatus('. $view['Id'] .', \''. $view['Estado'] .'\')"><i class="fa fa-refresh"></i></a>'
+                'Change Status'         => '<a class="btn btn-info btn-xs" onclick="changeStatusUser('. $view['Id'] .', \''. $view['Estado'] .'\')"><i class="fa fa-refresh"></i></a>'
             ]);
 
         }

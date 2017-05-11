@@ -78,13 +78,16 @@ const vueFront = new Vue({
       this.quantityQueueAssign = response.quantityQueueAssign
       await fechaActual()
       await horaActual()
+
       //await this.verifyAssistance()
+
+      if (this.annexed === 0 ) loadModule('agents_annexed')
 
       // Setea la etiqueta del estado actual cada vez que actualicen la pantalla del sistema
       let parameters = {user_id: this.getUserId}
       ajaxNodeJs(parameters, '/detalle_eventos/getstatus', true)
 
-      //Verificacion de marcado de asistencia
+      //Verificacion de marcado de asistencia y requerimiento de cambio de contraseña
       MarkAssitance(this.getUserId, this.dateServer, this.hourServer, 'Entrada')
 
       //Cargando image del profile_user
@@ -172,7 +175,7 @@ const vueFront = new Vue({
       let parametersRole = this.loadParameters('activeCalls')
       let response = await this.sendUrlRequest('modifyRole',parametersRole)
       closeNotificationBootstrap()
-      if(response === 1){
+      if(response === 1 && this.remoteActiveCallsUserId === vueFront.getUserId){
         mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
         if(this.annexed !== 0){
           this.defineRoute('releasesAnnexed')
@@ -188,7 +191,8 @@ const vueFront = new Vue({
           vueFront.remoteActiveCallsUserId = ''
         }
       }else{
-        mostrar_notificacion('error', 'Problemas a la  hora de actualizar el rol en la base de datos', 'Error', 10000, false, true)
+        if(this.remoteActiveCallsUserId === vueFront.getUserId) mostrar_notificacion('error', 'Problemas a la  hora de actualizar el rol en la base de datos', 'Error', 10000, false, true)
+        else if (response === 1) mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
       }
     },
 
@@ -200,7 +204,7 @@ const vueFront = new Vue({
     },
 
     verifyAssistance : async function(){
-      if(this.statusChangePassword){
+      if(this.statusChangePassword === true){
         this.loadModalCheckAssistance()
       }else if(this.statusChangePassword != false){
         this.showStandByAssistanceModal = 'modal show'
