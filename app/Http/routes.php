@@ -81,6 +81,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('setQueueAdd'                                       , ['uses'=>'AdminController@setQueueAdd'        ,    'as' => 'setQueueAdd']);
     Route::post('createUser'                                        , ['uses'=>'UserController@createUser'          ,    'as' => 'createUser']);
     Route::post('changeStatus'                                      , ['uses'=>'UserController@changeStatus'        ,    'as' => 'changeStatus']);
+    Route::post('updateStatusAddAgentDashboard'                     , ['uses'=>'AdminController@updateStatusAddAgentDashboard','as'=>'updateStatusAddAgentDashboard']);
 
 
     Route::post('/getVariablesGlobals'                              , ['uses'=>'AdminController@getVariablesGlobals',    'as' => 'home'      ]);

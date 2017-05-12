@@ -265,7 +265,7 @@ const eventPostExecuteAction = (parameters) => {
       if(parameters['event_id'] == 1 && vueFront.getRole === 'user') setQueueAdd(true)
       break
     case 'assignAnnexed':
-      socketAsterisk.emit('createRoom', vueFront.annexed)
+      //socketAsterisk.emit('createRoom', vueFront.annexed)
       break
     case 'releasesAnnexed':
       vueFront.remotoReleaseUserId = 0

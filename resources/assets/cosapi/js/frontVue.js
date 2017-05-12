@@ -12,6 +12,7 @@ const vueFront = new Vue({
     getEventId : '',
     statusChangePassword : '',
     statusChangeAssistance : '',
+    statusAddAgentDashboard : '',
     annexed : 0,
     srcAvatar :'default_avatar.png',
 
@@ -28,8 +29,10 @@ const vueFront = new Vue({
     hourServer : '',
     textDateServer : '',
     dateServer : '',
-    getListEvents : [],
     requiredAnnexed : false,
+
+    getListEvents : [],
+    getAgentDashboard : [],
 
     assistanceTextModal : 'Entrada',
     assistanceHour : '',
@@ -70,12 +73,14 @@ const vueFront = new Vue({
       this.statusChangePassword = response.statusChangePassword
       this.statusChangeAssistance = response.statusChangeAssistance
       this.statusQueueAddAsterisk = response.statusQueueAddAsterisk
+      this.statusAddAgentDashboard = response.statusAddAgentDashboard
       this.requiredAnnexed = response.requiredAnnexed
       this.hourServer = response.hourServer
       this.textDateServer = response.textDateServer
       this.dateServer = response.dateServer
       this.annexed = response.annexed
       this.quantityQueueAssign = response.quantityQueueAssign
+      this.getAgentDashboard = response.getAgentDashboard
       await fechaActual()
       await horaActual()
 
@@ -92,6 +97,11 @@ const vueFront = new Vue({
 
       //Cargando image del profile_user
       this.getAvatar()
+
+      //Cargando registro en Dahsboard
+      if(this.statusAddAgentDashboard === false) {
+        socketAsterisk.emit('createUserDashboard', this.getAgentDashboard)
+      }
     },
 
     verifyQueueAssign : function(){
@@ -117,7 +127,8 @@ const vueFront = new Vue({
       if (this.getRole === 'user') {
         if(this.requiredAnnexed) {
           if (this.annexed == 0){
-            alert('Seleccionar Anexo !!!')
+            closeNotificationBootstrap()
+            mostrar_notificacion('warning', 'Usted no cuenta con un anexo.', 'Ooops!!!', 10000, false, true)
             return false
           }
           return true
@@ -162,6 +173,7 @@ const vueFront = new Vue({
       this.defineRoute('assignAnnexed')
       let parameters = this.loadParameters('assignAnnexed')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
+      loadModule('agents_annexed')
     },
 
     releasesAnnexed : function (){
@@ -199,7 +211,6 @@ const vueFront = new Vue({
     disconnectAgent : function (){
       this.defineRoute('disconnectAgent')
       let parameters = this.loadParameters('disconnectAgent')
-      console.log(parameters)
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
     },
 
@@ -309,8 +320,10 @@ socketAsterisk.on('connect', function() {
 });
 
 socketAsterisk.on('statusAgent',  (data) => {
-  vueFront.getEventName = data.NameEvent
-  vueFront.getEventId = data.EventId
+  vueFront.sendUrlRequest('/updateStatusAddAgentDashboard')
+  vueFront.statusAddAgentDashboard = data.statusAddAgentDashboard
+  vueFront.getEventName = data.eventName
+  vueFront.getEventId = data.eventId
 })
 
 // Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado

@@ -2,6 +2,7 @@
 
 namespace Cosapi\Http\Controllers;
 
+use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
 use Cosapi\Models\DetalleEventos;
 use Cosapi\Models\User;
@@ -23,6 +24,7 @@ class AdminController extends CosapiController
     protected $QueueAdd;
     protected $ChangeRole;
     protected $AssistanceUser;
+    protected $statusAddAgentDashboard;
 
     public function __construct(){
         Session::put('UserId'       ,Auth::user()->id   );
@@ -37,23 +39,22 @@ class AdminController extends CosapiController
         $Anexos = Anexo::select('name')->where('user_id','=',Auth::user()->id )->get()->toArray();
         if(count($Anexos) != 0){
             $name_anexo = $Anexos[0]['name'];
-            Session::put('UserAnexo'    ,$name_anexo);
+            Session::put('UserAnexo',$name_anexo);
         }else{
-            Session::put('UserAnexo'     , 0  );
+            Session::put('UserAnexo', 0 );
         }
 
-        if (!Session::has('QueueAdd')) {
-            Session::put('QueueAdd'     ,false );
-        }
+        if (!Session::has('QueueAdd'))  Session::put('QueueAdd',false );
 
-        $this->UserId           = Session::get('UserId')        ;
-        $this->UserRole         = Session::get('UserRole')      ;
-        $this->UserName         = Session::get('UserName')      ;
-        $this->UserSystem       = Session::get('UserSystem')    ;
-        $this->UserPassword     = Session::get('UserPassword')  ;
-        $this->UserAnexo        = Session::get('UserAnexo')     ;
-        $this->QueueAdd         = Session::get('QueueAdd')      ;
-        $this->ChangeRole       = Session::get('ChangeRole')    ;
+        $this->UserId                           = Session::get('UserId')        ;
+        $this->UserRole                         = Session::get('UserRole')      ;
+        $this->UserName                         = Session::get('UserName')      ;
+        $this->UserSystem                       = Session::get('UserSystem')    ;
+        $this->UserPassword                     = Session::get('UserPassword')  ;
+        $this->UserAnexo                        = Session::get('UserAnexo')     ;
+        $this->QueueAdd                         = Session::get('QueueAdd')      ;
+        $this->ChangeRole                       = Session::get('ChangeRole')    ;
+        $this->statusAddAgentDashboard          = (Session::get('statusAddAgentDashboard')== null) ? false : true;
 
 
         $ultimate_event_login = $this->UltimateEventLogin();
@@ -109,6 +110,7 @@ class AdminController extends CosapiController
 
     public function getVariablesGlobals()
     {
+        $AgentOnline = AgentOnline::select()->where('agent_user_id','=',$this->UserId )->get()->toArray();
         $requiredAnnexed = ($this->UserRole == 'user')? true : false;
         return response()->json([
             'getUserId'                 => $this->UserId,
@@ -124,7 +126,13 @@ class AdminController extends CosapiController
             'textDateServer'            => date('d-m-w'),
             'dateServer'                => date('Y-m-d'),
             'annexed'                   => $this->UserAnexo,
-            'quantityQueueAssign'       => $this->quantityQueueAssign
+            'quantityQueueAssign'       => $this->quantityQueueAssign,
+            'statusAddAgentDashboard'   => $this->statusAddAgentDashboard,
+            'getAgentDashboard'         => $AgentOnline[0]
         ], 200);
+    }
+
+    function  updateStatusAddAgentDashboard(){
+        Session::put('statusAddAgentDashboard',true );
     }
 }

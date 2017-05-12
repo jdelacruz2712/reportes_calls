@@ -224,7 +224,7 @@ class UserController extends CosapiController
                         'estado_id'    => $request->estadoID,
                     ]);
 
-                return (string)$resultado;
+                return response()->json($resultado);
             }
         }
     }
