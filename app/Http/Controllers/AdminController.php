@@ -75,7 +75,7 @@ class AdminController extends CosapiController
         ($cantidadColasAsignadas[0]['cantidadColasAsignadas'] > 0 )? $cantidadColasAsignadas = true : $cantidadColasAsignadas = false ;
 
         Session::put('quantityQueueAssign'     ,$cantidadColasAsignadas);
-        $this->quantityQueueAssign = Session::get('quantityQueueAssign')    ;
+        $this->quantityQueueAssign = Session::get('quantityQueueAssign');
     }
 
 	/**
