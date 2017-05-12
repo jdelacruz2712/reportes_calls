@@ -117,10 +117,12 @@ const vueFront = new Vue({
 
     loadModalStatus : async  function (){
       let response = ''
-      let isVerifyQueueAssign = this.verifyQueueAssign()
-      if (isVerifyQueueAssign) response = await this.sendUrlRequest('list_event')
-      if (isVerifyQueueAssign) this.getListEvents = response.getListEvents
-      if (isVerifyQueueAssign) this.ModalChangeStatus = 'modal show'
+      let isVerifyAnnexed = false
+      let isVerifyQueueAssign  = this.verifyQueueAssign()
+      if (isVerifyQueueAssign) isVerifyAnnexed = this.verifyAnnexed()
+      if (isVerifyAnnexed) response = await this.sendUrlRequest('list_event')
+      if (isVerifyAnnexed) this.getListEvents = response.getListEvents
+      if (isVerifyAnnexed) this.ModalChangeStatus = 'modal show'
     },
 
     verifyAnnexed : function(){
@@ -128,7 +130,7 @@ const vueFront = new Vue({
         if(this.requiredAnnexed) {
           if (this.annexed == 0){
             closeNotificationBootstrap()
-            mostrar_notificacion('warning', 'Usted no cuenta con un anexo.', 'Ooops!!!', 10000, false, true)
+            mostrar_notificacion('warning', 'Usted debe seleccionar un anexo.', 'Ooops!!!', 10000, false, true)
             return false
           }
           return true
@@ -162,11 +164,10 @@ const vueFront = new Vue({
 
     changeStatus : function (eventId){
       this.ModalChangeStatus = 'modal fade'
-      let isVerifyAnnexed = this.verifyAnnexed()
-      if (isVerifyAnnexed) this.defineRoute('changeStatus')
+      this.defineRoute('changeStatus')
       this.nextEventId = eventId
       let parameters = this.loadParameters('changeStatus')
-      if(isVerifyAnnexed) ajaxNodeJs(parameters, this.routeAction, true, 2000)
+      ajaxNodeJs(parameters, this.routeAction, true, 2000)
     },
 
     assignAnnexed : function (){
@@ -343,7 +344,3 @@ socketSails.on('disconnect', function () {
   $('#container').html(divLoading)
   console.log('Socket Sails.io desconectado!')
 })
-
-
-
-
