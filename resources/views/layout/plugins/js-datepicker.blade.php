@@ -7,7 +7,7 @@ $(document).ready(function() {
         }
     })
 
-    $('input[name=birthdate]').daterangepicker({
+    $('input[name="birthdate"]').daterangepicker({
         singleDatePicker: true,
         showDropdowns: true,
         alwaysShowCalendars: true,
@@ -21,6 +21,7 @@ $(document).ready(function() {
     $('input[name="birthdate"]').on('apply.daterangepicker', function (ev, picker) {
         var startDate = picker.startDate;
         $('input[name="birthdate"]').val(startDate.format('YYYY-MM-DD'));
+        vmProfile.birthdate = startDate.format('YYYY-MM-DD')
     })
 })
 </script>
