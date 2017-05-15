@@ -275,13 +275,6 @@ const eventPostExecuteAction = (parameters) => {
       socketAsterisk.emit('leaveRoom', vueFront.annexed)
       vueFront.annexed = 0
       setQueueAdd(false)
-      if(this.remoteActiveCallsNameRole !== ''){
-        if(vueFront.getUserId === vueFront.remoteActiveCallsUserId) {
-          vueFront.getRole = vueFront.remoteActiveCallsNameRole
-          vueFront.remoteActiveCallsNameRole = ''
-          vueFront.remoteActiveCallsUserId = ''
-        }
-      }
       break
     case 'disconnectAgent':
       setTimeout('eventLogout()', 4000)
@@ -290,8 +283,6 @@ const eventPostExecuteAction = (parameters) => {
 }
 
 const loadMultiNotification = (resData,time,parameters) => {
-  console.log(resData)
-  console.log(parameters)
   let arrayMessage = resData['DataQueue']
   let message = ''
   let messageSuccess = ''
@@ -767,7 +758,6 @@ const disconnect = () => {
                     alert('Porfavor de seleccionar su hora de salida.')
                   } else {
                     dialogRef.close()
-                    console.log($('input:radio[name=rbtnHour]:checked').val().trim())
                     vueFront.remoteDisconnectAgentHour = $('input:radio[name=rbtnHour]:checked').val().trim()
                     vueFront.disconnectAgent()
                   }

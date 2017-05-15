@@ -64,53 +64,56 @@ const show_tab_annexed = (event) => {
 }
 
 const activeCalls = () => {
-  vueFront.remoteActiveCallsUserId = vueFront.getUserId
-  let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
-    '<br>' +
-    '<p><b>Nota : </b>Cuando active la entrada de llamadas pasara a un estado de "Login", porfavor de leer las ' +
-    'notificaiones para saber que el cambio se realizo exitosamente y verificar que su rol este en "User", para luego' +
-    'pase a "ACD" de maner manual y pueda así recibir llamadas siempre que este asignado a las colas.</p>'
+  if(vueFront.annexed !== 0){
+      mostrar_notificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
+  }else{
+    vueFront.remoteActiveCallsUserId = vueFront.getUserId
+    let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+      '<br>' +
+      '<p><b>Nota : </b>Cuando active la entrada de llamadas usted tendra que seleccionar su anexo y pasar a ACD para que le puedan caer las llamadas. ' +
+      'Por favor de verificar que esta asignados a las colas correspondientes.</p>'
 
-  BootstrapDialog.show({
-    type: 'type-primary',
-    title: 'Activar Llamadas',
-    message: message,
-    closable: true,
-    buttons: [
-      {
-        label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
-        cssClass: 'btn-success',
-        action: function (dialogRef) {
-          if(vueFront.getRole !== 'user'){
-            vueFront.remoteActiveCallsNameRole = 'user'
-            vueFront.activeCalls('user')
-          }else{
-            closeNotificationBootstrap()
+    BootstrapDialog.show({
+      type: 'type-primary',
+      title: 'Activar Llamadas',
+      message: message,
+      closable: true,
+      buttons: [
+        {
+          label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
+          cssClass: 'btn-success',
+          action: function (dialogRef) {
+            if(vueFront.getRole !== 'user'){
+              vueFront.remoteActiveCallsNameRole = 'user'
+              vueFront.activeCalls('user')
+            }else{
+              closeNotificationBootstrap()
+            }
+          }
+        },
+        {
+          label: '<i class="fa fa-times" aria-hidden="true"></i> No',
+          cssClass: 'btn-danger',
+          action: function (dialogRef) {
+            if(vueFront.getRole !== 'backoffice'){
+              vueFront.remoteActiveCallsNameRole = 'backoffice'
+              vueFront.activeCalls()
+            }else{
+              closeNotificationBootstrap()
+            }
+          }
+        },
+        {
+          label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
+          cssClass: 'btn-primary',
+          action: function (dialogRef) {
+            vueFront.remoteActiveCallsUserId = ''
+            dialogRef.close()
           }
         }
-      },
-      {
-        label: '<i class="fa fa-times" aria-hidden="true"></i> No',
-        cssClass: 'btn-danger',
-        action: function (dialogRef) {
-          if(vueFront.getRole !== 'backoffice'){
-            vueFront.remoteActiveCallsNameRole = 'backoffice'
-            vueFront.activeCalls()
-          }else{
-            closeNotificationBootstrap()
-          }
-        }
-      },
-      {
-        label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
-        cssClass: 'btn-primary',
-        action: function (dialogRef) {
-          vueFront.remoteActiveCallsUserId = ''
-          dialogRef.close()
-        }
-      }
-    ]
-  })
+      ]
+    })
+  }
 }
 
 const changeRol = (userId) => {
@@ -138,7 +141,6 @@ const changeRol = (userId) => {
           vueFront.remoteActiveCallsUserId = userId
           vueFront.remoteActiveCallsNameRole = nameRole
           vueFront.activeCalls()
-          //activeCalls(nameRole,userId)
           show_tab_list_user('list_users')
         }
       },

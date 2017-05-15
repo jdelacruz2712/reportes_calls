@@ -39,7 +39,7 @@ class EventsAgentController extends CosapiController
 
         if ($request->ajax()){
             if ($request->fecha_evento){
-                return $this->list_state_agents($request->fecha_evento);
+                return $this->list_event_consolidated($request->fecha_evento);
             }else{
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.events_consolidated.events_consolidated',
@@ -89,13 +89,22 @@ class EventsAgentController extends CosapiController
 
 
     /**
-     * [export Función que permite exportar los datos de la tabla]
+     * [export_event_detail Función que permite exportar los datos de la tabla]
      * @param  Request $request [Recepciona datos enviado por POST]
      * @return [array]          [Ubicaciones de los archivos a exportar]
      */
-    public function export(Request $request){
-        $export_contestated  = call_user_func_array([$this,'export_'.$request->format_export], [$request->days]);
+    public function export_event_detail(Request $request){
+        $export_contestated  = call_user_func_array([$this,'export_event_detail_'.$request->format_export], [$request->days]);
         return $export_contestated;
+    }
+
+    /**
+     * [export_event_consolidated Función que permite exportar los datos de la tabla]
+     * @param  Request $request [Recepciona datos enviado por POST]
+     * @return [array]          [Ubicaciones de los archivos a exportar]
+     */
+    public function export_event_consolidated(Request $request){
+        return call_user_func_array([$this,'export_event_consolidated_'.$request->format_export], [$request->days]);
     }
 
 
@@ -104,11 +113,12 @@ class EventsAgentController extends CosapiController
      * @param  [date]  $fecha_evento [Fecha de la consulta]
      * @return [array]               [Array con datos del consolidado de eventos]
      */
-    protected function list_state_agents($fecha_evento){
+    protected function list_event_consolidated($fecha_evento){
 
-        $query_estado_agentes   = $this->query_estado_agentes($fecha_evento);
-        $estateagentcollection  = $this->collection_state_agent($query_estado_agentes);
-        $list_state_agents      = $this->FormatDatatable($estateagentcollection);
+        $query_event_consolidated       = $this->query_event_consolidated($fecha_evento);
+        $builderview_event_consolidated = $this->builderview_event_consolidated($query_event_consolidated);
+        $collection_event_consolidated  = $this->collection_event_consolidated($builderview_event_consolidated);
+        $list_state_agents              = $this->FormatDatatable($collection_event_consolidated);
         return $list_state_agents;
 
     }
@@ -119,13 +129,46 @@ class EventsAgentController extends CosapiController
      * @param  [date]  $fecha_evento [Fecha de la consulta]
      * @return [array]               [Datos extraidos del Consolidated Events desde la Base de Datos]
      */
-    protected function query_estado_agentes ($fecha_evento)
+    protected function query_event_consolidated ($fecha_evento)
     {
         list($fecha_inicial,$fecha_final) = explode(' - ', $fecha_evento);
 
-        $query_estado_agentes = DB::select('CALL sp_get_consolidated_events ("'.$fecha_inicial.'","'.$fecha_final.'")');
+        $query_event_consolidated = DB::select('CALL sp_get_consolidated_events ("'.$fecha_inicial.'","'.$fecha_final.'")');
 
-        return $query_estado_agentes;
+        return $query_event_consolidated;
+    }
+
+
+
+    /**
+     * [collection_state_agent Función que transforma un Array en Collection]
+     * @param  [array]      $query_estado_agentes [Datos del Consolidated Events]
+     * @return [collection]                       [Datos en formato Colecction del reporte Consolidated Events]
+     */
+    protected function builderview_event_consolidated($query_event_consolidated){
+        $builderview = [];
+        $posicion = 0;
+        foreach ($query_event_consolidated as $query_event) {
+            $builderview[$posicion]['agente']        = $query_event->agente;
+            $builderview[$posicion]['login']        = conversorSegundosHoras($query_event->login,false);
+            $builderview[$posicion]['acd']          = conversorSegundosHoras($query_event->acd,false);
+            $builderview[$posicion]['break']        = conversorSegundosHoras($query_event->break,false);
+            $builderview[$posicion]['sshh']         = conversorSegundosHoras($query_event->sshh,false);
+            $builderview[$posicion]['refrigerio']   = conversorSegundosHoras($query_event->refrigerio,false);
+            $builderview[$posicion]['feedback']    = conversorSegundosHoras($query_event->feedback,false);
+            $builderview[$posicion]['capacitacion'] = conversorSegundosHoras($query_event->capacitacion,false);
+            $builderview[$posicion]['backoffice']   = conversorSegundosHoras($query_event->backoffice,false);
+            $builderview[$posicion]['inbound']     = conversorSegundosHoras($query_event->inbound,false);
+            $builderview[$posicion]['outbound']     = conversorSegundosHoras($query_event->outbound,false);
+            $builderview[$posicion]['acw']          = conversorSegundosHoras($query_event->acw,false);
+            $builderview[$posicion]['desconectado'] = conversorSegundosHoras($query_event->desconectado,false);
+            $builderview[$posicion]['logueado']     = conversorSegundosHoras($query_event->logueado,false);
+            $builderview[$posicion]['auxiliar']   = conversorSegundosHoras($query_event->auxiliar,false);
+            $builderview[$posicion]['talk']         = conversorSegundosHoras($query_event->talk_time,false);
+            $builderview[$posicion]['saliente']     = conversorSegundosHoras($query_event->saliente_hablado,false);
+            $posicion ++;
+        }
+        return $builderview;
     }
 
 
@@ -134,30 +177,30 @@ class EventsAgentController extends CosapiController
      * @param  [array]      $query_estado_agentes [Datos del Consolidated Events]
      * @return [collection]                       [Datos en formato Colecction del reporte Consolidated Events]
      */
-    protected function collection_state_agent($query_estado_agentes){
-        $estateagentcollection                 = new Collector;
-        foreach ($query_estado_agentes as $view) {
-            $estateagentcollection->push([
-                'agent'              => $view->agente,
-                'acd'                => conversorSegundosHoras($view->acd,false),
-                'break'              => conversorSegundosHoras($view->break,false),
-                'sshh'               => conversorSegundosHoras($view->sshh,false),
-                'refrigerio'         => conversorSegundosHoras($view->refrigerio,false),
-                'feeedback'          => conversorSegundosHoras($view->feedback,false),
-                'capacitacion'       => conversorSegundosHoras($view->capacitacion,false),
-                'backoffice'         => conversorSegundosHoras($view->backoffice,false),
-                'indbound'           => conversorSegundosHoras($view->inbound,false),
-                'outbound'           => conversorSegundosHoras($view->outbound,false),
-                'acw'                => conversorSegundosHoras($view->acw,false),
-                'login'              => conversorSegundosHoras($view->login,false),
-                'desconectado'       => conversorSegundosHoras($view->desconectado,false),
-                'logueado'           => conversorSegundosHoras($view->logueado,false),
-                'auxiliares'         => conversorSegundosHoras($view->auxiliar,false),
-                'talk'               => conversorSegundosHoras($view->talk_time,false),
-                'saliente'           => conversorSegundosHoras($view->saliente_hablado,false)
+    protected function collection_event_consolidated($builderview_event_consolidated){
+        $eventconsolidatedcollection                = new Collector;
+        foreach ($builderview_event_consolidated as $view) {
+            $eventconsolidatedcollection->push([
+                'agente'             => $view['agente'],
+                'login'              => $view['login'],
+                'acd'                => $view['acd'],
+                'break'              => $view['break'],
+                'sshh'               => $view['sshh'],
+                'refrigerio'         => $view['refrigerio'],
+                'feedback'           => $view['feedback'],
+                'capacitacion'       => $view['capacitacion'],
+                'backoffice'         => $view['backoffice'],
+                'inbound'            => $view['inbound'],
+                'outbound'           => $view['outbound'],
+                'acw'                => $view['acw'],
+                'desconectado'       => $view['desconectado'],
+                'logueado'           => $view['logueado'],
+                'auxiliar'           => $view['auxiliar'],
+                'talk'               => $view['talk'],
+                'saliente'           => $view['saliente']
             ]);
         }
-        return $estateagentcollection;
+        return $eventconsolidatedcollection;
     }
 
 
@@ -270,7 +313,7 @@ class EventsAgentController extends CosapiController
      * @param  [string] $days [Fecha de la consulta]
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
      */
-    protected function export_csv($days){
+    protected function export_event_detail_csv($days){
             $days                   = explode(' - ',$days);
 
             $builderview = $this->builderview(detailEvents($this->query_events($days)));
@@ -293,7 +336,7 @@ class EventsAgentController extends CosapiController
      * @param  [string] $days [Fecha de la consulta]
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
      */
-    protected function export_excel($days){
+    protected function export_event_detail_excel($days){
         $days                   = explode(' - ',$days);
         Excel::create('detail_events', function($excel) use($days) {
 
@@ -308,6 +351,49 @@ class EventsAgentController extends CosapiController
         $data = [
             'succes'    => true,
             'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/detail_events.xlsx']
+        ];
+
+        return $data;
+    }
+
+    /**
+     * [export_csv Function que retorna la ubicación de los datos a exportar en CSV]
+     * @param  [string] $days [Fecha de la consulta]
+     * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
+     */
+    protected function export_event_consolidated_csv($days){
+        $builderview = $this->builderview_event_consolidated($this->query_event_consolidated($days));
+        $this->BuilderExport($builderview,'detail_events_consolidated','csv','exports');
+
+
+        $data = [
+            'succes'    => true,
+            'path'      => [
+                'http://'.$_SERVER['HTTP_HOST'].'/exports/detail_events_consolidated.csv'
+            ]
+        ];
+
+        return $data;
+    }
+
+
+    /**
+     * [export_excel Function que retorna la ubicación de los datos a exportar en Excel]
+     * @param  [string] $days [Fecha de la consulta]
+     * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
+     */
+    protected function export_event_consolidated_excel($days){
+        Excel::create('detail_events_consolidated', function($excel) use($days) {
+
+            $excel->sheet('Consolidated Events', function($sheet) use($days) {
+                $sheet->fromArray($this->builderview_event_consolidated($this->query_event_consolidated($days)));
+            });
+
+        })->store('xlsx','exports');
+
+        $data = [
+            'succes'    => true,
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/detail_events_consolidated.xlsx']
         ];
 
         return $data;

@@ -188,24 +188,17 @@ const vueFront = new Vue({
       let parametersRole = this.loadParameters('activeCalls')
       let response = await this.sendUrlRequest('modifyRole',parametersRole)
       closeNotificationBootstrap()
-      if(response === 1 && this.remoteActiveCallsUserId === vueFront.getUserId){
-        mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
-        if(this.annexed !== 0){
-          this.defineRoute('releasesAnnexed')
-          let parameters = this.loadParameters('releasesAnnexed')
-          await ajaxNodeJs(parameters, this.routeAction, true, 2000)
-          if(this.remoteActiveCallsNameRole !== ''){
-            parametersRole = this.loadParameters('activeCalls')
-            await this.sendUrlRequest('modifyRole',parametersRole)
-          }
-        }else{
-          vueFront.getRole = vueFront.remoteActiveCallsNameRole
-          vueFront.remoteActiveCallsNameRole = ''
-          vueFront.remoteActiveCallsUserId = ''
+      if(response === 1 ) {
+        if(this.getUserId === this.remoteActiveCallsUserId) {
+          this.getRole = this.remoteActiveCallsNameRole
+          this.statusQueueAddAsterisk = false
+          this.remoteActiveCallsNameRole = ''
+          this.remoteActiveCallsUserId = ''
         }
-      }else{
-        if(this.remoteActiveCallsUserId === vueFront.getUserId) mostrar_notificacion('error', 'Problemas a la  hora de actualizar el rol en la base de datos', 'Error', 10000, false, true)
-        else if (response === 1) mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
+        mostrar_notificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
+      }
+      else {
+        mostrar_notificacion('error', 'Problemas a la  hora de actualizar el rol en la base de datos', 'Error', 10000, false, true)
       }
     },
 
