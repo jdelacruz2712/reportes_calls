@@ -321,10 +321,10 @@ socketAsterisk.on('statusAgent',  (data) => {
 })
 
 // Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
-socketSails.on('status_agent', function (data) {
+socketSails.on('statusSails', function (data) {
   $('#myModalLoading').modal('hide')
-  vueFront.getEventName = data.Name_Event
-  vueFront.getEventId = data.Event_id
+  vueFront.getEventName = data.eventName
+  vueFront.getEventId = data.eventId
 })
 
 socketSails.on('connect', function () {
