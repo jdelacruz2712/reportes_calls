@@ -22,13 +22,13 @@
                       <span class="fa fa-headphones"></span> Anexo: <font >@{{ annexed}}</font>
                     </h5>
                 </li>
-                <li >
+                <li v-show="textDateServer.length != 0">
                     <!-- Fecha Actual -->
                     <h5 id="fecha_actual" class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Fecha Actual" style="color: white">
                         <span class="glyphicon glyphicon-calendar"> @{{ textDateServer }}</span>
                     </h5>
                 </li>
-                <li>
+                <li v-show="hourServer.length != 0">
                     <!-- Hora Actual -->
                     <h5 id="hora_actual"  class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Hora Actual" style="color: white">
                         <span class="glyphicon glyphicon-time"> @{{ hourServer }}</span>

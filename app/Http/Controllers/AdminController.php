@@ -111,6 +111,7 @@ class AdminController extends CosapiController
     public function getVariablesGlobals()
     {
         $AgentOnline = AgentOnline::select()->where('agent_user_id','=',$this->UserId )->get()->toArray();
+        $dataAgentOnline = (count($AgentOnline) == 0)? '' : $AgentOnline[0] ;
         $requiredAnnexed = ($this->UserRole == 'user')? true : false;
         return response()->json([
             'getUserId'                 => $this->UserId,
@@ -128,7 +129,7 @@ class AdminController extends CosapiController
             'annexed'                   => $this->UserAnexo,
             'quantityQueueAssign'       => $this->quantityQueueAssign,
             'statusAddAgentDashboard'   => $this->statusAddAgentDashboard,
-            'getAgentDashboard'         => $AgentOnline[0]
+            'getAgentDashboard'         => $dataAgentOnline
         ], 200);
     }
 

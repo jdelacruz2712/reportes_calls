@@ -13,6 +13,7 @@ const vueFront = new Vue({
     statusChangePassword : '',
     statusChangeAssistance : '',
     statusAddAgentDashboard : '',
+    statusQueueAddAsterisk : false,
     annexed : 0,
     srcAvatar :'default_avatar.png',
 
@@ -25,7 +26,6 @@ const vueFront = new Vue({
     remoteActiveCallsNameRole : '',
 
     quantityQueueAssign : 0,
-    statusQueueAddAsterisk : false,
     hourServer : '',
     textDateServer : '',
     dateServer : '',
@@ -43,7 +43,11 @@ const vueFront = new Vue({
 
     ModalChangeStatus : 'modal fade',
     ModalReleasesAnnexed : 'modal fade',
-    ModalAssistance : 'modal fade'
+    ModalAssistance : 'modal fade',
+    ModalConnectionNodeJs: 'modal fade',
+
+    nameServerNodeJs : '',
+    messageServerNodeJs : ''
   },
   mounted(){
     this.loadVariablesGlobals()
@@ -51,8 +55,10 @@ const vueFront = new Vue({
   methods :{
 
     sendUrlRequest : async function (url,parameters = {}){
-      let response = await this.$http.post(url,parameters)
-      return response.data
+      try {
+        let response = await this.$http.post(url,parameters)
+        return response.data
+      }catch (error){ return error.status}
     },
 
     getAvatar : function (){
@@ -99,9 +105,8 @@ const vueFront = new Vue({
       this.getAvatar()
 
       //Cargando registro en Dahsboard
-      if(this.statusAddAgentDashboard === false) {
-        socketAsterisk.emit('createUserDashboard', this.getAgentDashboard)
-      }
+      if(this.statusAddAgentDashboard === false) socketAsterisk.emit('createUserDashboard', this.getAgentDashboard)
+      if(this.statusAddAgentDashboard === '') mostrar_notificacion('warning', 'Tienes problemas con tu usuario, comunicate con el área de sistemas !!!', 'Warning', 0, false, true, 0)
     },
 
     verifyQueueAssign : function(){
@@ -282,17 +287,8 @@ const vueFront = new Vue({
       }
 
       if(actionEvent === 'activeCalls'){
-        if(this.remoteActiveCallsNameRole === ''){
-          data = {
-            nameRole : this.getRole,
-            userId : this.getUserId
-          }
-        }else{
-          data = {
-            nameRole : this.remoteActiveCallsNameRole,
-            userId : this.remoteActiveCallsUserId
-          }
-        }
+        if(this.remoteActiveCallsNameRole === '') data = { nameRole : this.getRole, userId : this.getUserId }
+        else data = {nameRole : this.remoteActiveCallsNameRole, userId : this.remoteActiveCallsUserId }
       }
 
       return data
@@ -306,11 +302,31 @@ io.sails.autoConnect = false
 socketSails.reconnection = true
 socketSails.reconnectionDelayMax = 5
 
-const socketAsterisk = io.connect(restApiDashboard, { 'forceNew': true })
+const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
 socketAsterisk.on('connect', function() {
+   console.log('Socket Asterisk connected!')
    if (vueFront.annexed) {
      socketAsterisk.emit('createRoom', vueFront.annexed)
    }
+});
+
+socketAsterisk.on('connect_error', function(){
+  vueFront.nameServerNodeJs = 'Servidor Asterisk'
+  vueFront.ModalConnectionNodeJs = 'modal show'
+  let i = 9
+  let refreshIntervalId  = setInterval(()=> {
+    vueFront.messageServerNodeJs = `Fallo la conexión por el Servidor Asterik volveremos a reintentar en ${i} segundos!!!`
+    i--
+    if(i === 0) clearInterval(refreshIntervalId)
+  },1000)
+  console.log('socketAsterisk Connection Failed');
+});
+
+socketAsterisk.on('disconnect', function () {
+  vueFront.nameServerNodeJs = 'Servidor Asterisk'
+  vueFront.ModalConnectionNodeJs = 'modal show'
+  vueFront.messageServerNodeJs = 'Acabas de perder conexión con el Asterisk !!!'
+  console.log('socketAsterisk Disconnected');
 });
 
 socketAsterisk.on('statusAgent',  (data) => {
@@ -328,12 +344,15 @@ socketSails.on('statusSails', function (data) {
 })
 
 socketSails.on('connect', function () {
-  $('#loading').hide()
+  vueFront.nameServerNodeJs = 'Servidor Sails'
+  vueFront.ModalConnectionNodeJs = 'modal fade'
+  vueFront.messageServerNodeJs = 'Acabas de conectar con el Servidor Sails'
   console.log('Socket Sails.io connected!')
 })
 
 socketSails.on('disconnect', function () {
-  let divLoading = '<div class="loading" id="loading" style="display: inline;"><li></li><li></li><li></li><li></li><li></li></div>'
-  $('#container').html(divLoading)
+  vueFront.nameServerNodeJs = 'Servidor Sails'
+  vueFront.ModalConnectionNodeJs = 'modal show'
+  vueFront.messageServerNodeJs = 'Acabas de perder conexión con el Servidor Sails'
   console.log('Socket Sails.io desconectado!')
 })
