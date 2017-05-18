@@ -14,6 +14,7 @@ const vueFront = new Vue({
     statusChangeAssistance : '',
     statusAddAgentDashboard : '',
     statusQueueAddAsterisk : false,
+    eventStatusPause : '',
     annexed : 0,
     srcAvatar :'default_avatar.png',
 
@@ -39,6 +40,7 @@ const vueFront = new Vue({
     assistanceNextHour : '',
 
     nextEventId : '',
+    nextEventName : '',
     routeAction : '/detalle_eventos/registrarDetalle',
 
     ModalChangeStatus : 'modal fade',
@@ -95,11 +97,11 @@ const vueFront = new Vue({
       if (this.annexed === 0 ) loadModule('agents_annexed')
 
       // Setea la etiqueta del estado actual cada vez que actualicen la pantalla del sistema
-      let parameters = {user_id: this.getUserId}
-      ajaxNodeJs(parameters, '/detalle_eventos/getstatus', true)
+      let parameters = {userID: this.getUserId}
+      ajaxNodeJs(parameters, '/detalle_eventos/getStatusActual', true)
 
       //Verificacion de marcado de asistencia y requerimiento de cambio de contraseña
-      MarkAssitance(this.getUserId, this.dateServer, this.hourServer, 'Entrada')
+      //MarkAssitance(this.getUserId, this.dateServer, this.hourServer, 'Entrada')
 
       //Cargando image del profile_user
       this.getAvatar()
@@ -149,31 +151,35 @@ const vueFront = new Vue({
         switch (event){
           case 'changeStatus' :
             if (this.getRole === 'user') {
-              (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/QueuePause' : this.routeAction = '/detalle_eventos/cambiarEstado'
+              (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/queuePause' : this.routeAction = '/detalle_eventos/queueAdd'
             }else{
               this.routeAction = '/detalle_eventos/registrarDetalle'
             }
             break
           case 'releasesAnnexed' :
-            this.routeAction = '/anexos/liberarAnexo'
+            this.routeAction = '/anexos/liberarAnexoOnline'
             break
           case 'assignAnnexed' :
-            this.routeAction = '/anexos/updateAnexo'
+            this.routeAction = '/anexos/asignarAnexo'
             break
           case 'disconnectAgent' :
-            (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/queueLogout' : this.routeAction = '/anexos/Logout'
+            (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/queueRemove' : this.routeAction = '/anexos/logout'
             break
         }
 
     },
 
-    changeStatus : function (eventId){
+    changeStatus : function (eventId, eventName,eventStatusPause){
       this.ModalChangeStatus = 'modal fade'
       this.defineRoute('changeStatus')
       this.nextEventId = eventId
+      this.nextEventName = eventName
+      this.eventStatusPause = eventStatusPause
+      this.remoteDisconnectAgentHour = this.hourServer
       let parameters = this.loadParameters('changeStatus')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
     },
+
 
     assignAnnexed : function (){
       this.defineRoute('assignAnnexed')
@@ -184,6 +190,9 @@ const vueFront = new Vue({
 
     releasesAnnexed : function (){
       this.defineRoute('releasesAnnexed')
+      this.nextEventId = 1
+      this.nextEventName = 'Login'
+      this.remoteDisconnectAgentHour = this.hourServer
       let parameters = this.loadParameters('releasesAnnexed')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
       loadModule('agents_annexed')
@@ -209,14 +218,19 @@ const vueFront = new Vue({
 
     disconnectAgent : function (){
       this.defineRoute('disconnectAgent')
+      this.nextEventId = 15
+      this.nextEventName = 'Desconectado'
       let parameters = this.loadParameters('disconnectAgent')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
     },
 
     verifyAssistance : async function(){
-      if(this.statusChangePassword === true){
+      console.log('hola')
+      if(this.statusChangeAssistance === true){
+        console.log('hola marco mi asistencia')
         this.loadModalCheckAssistance()
-      }else if(this.statusChangePassword != false){
+      }else if(this.statusChangeAssistance != false){
+        console.log('hola marco standby')
         this.showStandByAssistanceModal = 'modal show'
         this.loadModalStandByAssistance()
       }
@@ -230,65 +244,39 @@ const vueFront = new Vue({
     },
 
     loadModalStandByAssistance : function (){
-      setInterval(function(){
+      let refreshIntervalStandBy = setInterval(() => {
         let differenceHour = restarHoras(this.assistanceNextHour, this.hourServer)
-        if (this.hourServer >= this.assistanceNextHour) this.showStandByAssistanceModal = 'modal fade'
-      }.bind(this),1000)
+        if (this.hourServer >= this.assistanceNextHour){
+          clearInterval(refreshIntervalStandBy)
+          this.showStandByAssistanceModal = 'modal fade'
+        }
+      },1000)
     },
 
     loadParameters : function (actionEvent){
       let data = []
-      if (actionEvent === 'changeStatus'){
-        data = {
-          number_annexed : this.annexed,
-          event_id : this.nextEventId,
-          user_id : this.getUserId,
-          username : this.getUsername,
-          ip : this.getRemoteIp,
-          type_action : 'changeStatus'
-        }
-      }
-
-      if (actionEvent === 'assignAnnexed'){
-        data = {
-          number_annexed : this.annexed,
-          user_id : this.getUserId,
-          username: this.getUsername,
-          userRol: this.getRole,
-          type_action : 'assignAnnexed'
-        }
-      }
-
-      if (actionEvent === 'releasesAnnexed'){
-        data = {
-          user_id : (this.remotoReleaseUserId === 0)? this.getUserId : this.remotoReleaseUserId,
-          number_annexed : (this.remotoReleaseAnnexed === 0)? this.annexed : this.remotoReleaseAnnexed,
-          username : (this.remotoReleaseUsername === 0)? this.getUsername : this.remotoReleaseUsername,
-          event_id : 11,
-          event_name : 'Login',
-          ip : this.getRemoteIp,
-          statusQueueRemove : (this.remotoReleaseStatusQueueRemove === false)? this.statusQueueAddAsterisk : this.remotoReleaseStatusQueueRemove,
-          type_action : 'releasesAnnexed'
-        }
-      }
-
-      if(actionEvent === 'disconnectAgent'){
-        data = {
-          user_id: this.getUserId,
-          hour_exit: this.dateServer+ ' ' + this.remoteDisconnectAgentHour,
-          number_annexed: this.annexed,
-          username : this.getUsername,
-          event_id: 15,
-          ip: this.getRemoteIp,
-          event_name : 'Desconectado',
-          type_action: 'disconnectAgent'
-
-        }
-      }
 
       if(actionEvent === 'activeCalls'){
         if(this.remoteActiveCallsNameRole === '') data = { nameRole : this.getRole, userId : this.getUserId }
         else data = {nameRole : this.remoteActiveCallsNameRole, userId : this.remoteActiveCallsUserId }
+        return data
+      }
+
+      data = {
+        userID : (this.remotoReleaseUserId === 0)? this.getUserId : this.remotoReleaseUserId,
+        username : (this.remotoReleaseUsername === 0)? this.getUsername : this.remotoReleaseUsername,
+        userRol : this.getRole,
+        eventID : this.getEventId,
+        eventName : this.getEventName,
+        eventNextID : this.nextEventId,
+        eventNextName : this.nextEventName,
+        eventFechaHora : `${this.dateServer} ${this.remoteDisconnectAgentHour}`,
+        eventDateReally : `${this.dateServer} ${this.hourServer}`,
+        eventIPCliente : this.getRemoteIp,
+        eventAnnexed : (this.remotoReleaseAnnexed === 0)? this.annexed : this.remotoReleaseAnnexed,
+        typeActionPostRequest : actionEvent,
+        eventStatusPause : this.eventStatusPause,
+        statusQueueRemove : (this.remotoReleaseStatusQueueRemove === false)? this.statusQueueAddAsterisk : this.remotoReleaseStatusQueueRemove
       }
 
       return data
@@ -329,11 +317,14 @@ socketAsterisk.on('disconnect', function () {
   console.log('socketAsterisk Disconnected');
 });
 
+// Cambia la etiqueta de estado actual cuando este recibe o realiza un llamada
 socketAsterisk.on('statusAgent',  (data) => {
   vueFront.sendUrlRequest('/updateStatusAddAgentDashboard')
   vueFront.statusAddAgentDashboard = data.statusAddAgentDashboard
   vueFront.getEventName = data.eventName
   vueFront.getEventId = data.eventId
+  vueFront.nextEventId = ''
+  vueFront.nextEventName = ''
 })
 
 // Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
@@ -341,6 +332,8 @@ socketSails.on('statusSails', function (data) {
   $('#myModalLoading').modal('hide')
   vueFront.getEventName = data.eventName
   vueFront.getEventId = data.eventId
+  vueFront.nextEventId = ''
+  vueFront.nextEventName = ''
 })
 
 socketSails.on('connect', function () {

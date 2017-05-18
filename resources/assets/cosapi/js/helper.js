@@ -259,10 +259,9 @@ const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
 }
 
 const eventPostExecuteAction = (parameters) => {
-
-  switch (parameters['type_action']){
+  switch (parameters['typeActionPostRequest']){
     case 'changeStatus':
-      if(parameters['event_id'] == 1 && vueFront.getRole === 'user') setQueueAdd(true)
+      if(parameters['eventID'] == 1 && vueFront.getRole === 'user') setQueueAdd(true)
       break
     case 'assignAnnexed':
       //socketAsterisk.emit('createRoom', vueFront.annexed)
@@ -310,8 +309,8 @@ const loadMultiNotification = (resData,time,parameters) => {
 
   if (messageSuccess !== '') {
     mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
-    if (parameters['type_action'] === 'changeStatus') setQueueAdd(true)
-    if (parameters['type_action'] === 'releasesAnnexed') setQueueAdd(false)
+    if (parameters['typeActionPostRequest'] === 'changeStatus') setQueueAdd(true)
+    if (parameters['typeActionPostRequest'] === 'releasesAnnexed') setQueueAdd(false)
   }
 
   if (messageError !== '') mostrar_notificacion('error', messageError, 'Error', 0, false, true, 0)

@@ -33,6 +33,7 @@
       @include('layout.recursos.right_colum')
       @include('layout.recursos.modals.modal_status')
       @include('layout.recursos.modals.modal_reconnect')
+      @include('layout.recursos.modals.modal_asssistance')
       <div class="control-sidebar-bg"></div>
     </div>
     {!!Html::script('js/adminlte_jquerys.min.js?version='.date('YmdHis'))!!}

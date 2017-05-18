@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div :class="modalConnectionNodeJs" role="dialog" data-backdrop="static" data-keyboard="false">
+<div :class="ModalConnectionNodeJs" role="dialog" data-backdrop="static" data-keyboard="false">
   <div class="modal-dialog ">
     <!-- Modal content-->
     <div class="panel panel-primary">
