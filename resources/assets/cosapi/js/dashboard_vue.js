@@ -126,14 +126,15 @@ const dashboard = new Vue({
 // Refresca la informacion de la tabla de DetailsCalls
 const refreshDetailsCalls = () => {
   dashboard.callsInbound = []
+  dashboard.callsOutbound = []
+  dashboard.callsWaiting = []
   dashboard.others = []
-  socket.emit('listOther')
+  socket.emit('listDataDashboard')
 }
 
 refreshDetailsCalls()
 
 socket.on('AddCallWaiting', dataCallWaiting => {
-  console.log(dataCallWaiting)
   dashboard.callsWaiting.push(dataCallWaiting)
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
@@ -146,106 +147,41 @@ socket.on('RemoveCallWaiting', dataCallWaiting => {
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
-socket.on('RemoveOther', dataOther => removeOther(dataOther))
-socket.on('UpdateOther', dataOther => updateOther(dataOther))
-socket.on('AddOther', dataOther => {
-    dataOther.total_calls = getTotalCalls(dataOther)
-    AddOther(dataOther)
-})
+socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others))
+socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others))
+socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others))
 
-socket.on('RemoveOutbound', dataOutbound => removeOutbound(dataOutbound))
-socket.on('UpdateOutbound', dataOutbound => updateOutbound(dataOutbound))
-socket.on('AddOutbound', dataOutbound => {
-  dataOutbound.total_calls = getTotalCalls(dataOutbound)
-  AddOutbound(dataOutbound)
-})
+socket.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound))
+socket.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound))
+socket.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound))
 
-socket.on('RemoveInbound', dataInbound => removeInbound(dataInbound))
-socket.on('UpdateInbound', dataInbound => updateInbound(dataInbound))
-socket.on('AddInbound', dataInbound => {
-  dataInbound.total_calls = getTotalCalls(dataInbound)
-  AddInbound(dataInbound)
-})
+socket.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound))
+socket.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound))
+socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound))
 
-AddOther = (data) => {
-  console.log(`Agregan a otros agentes el anexo : ${data.agent_annexed} `)
+AddDataDashboard = (data, dataDashboard) => {
+  let index = (dataDashboard.length)
+  data.total_calls = getTotalCalls(data)
   data.timeElapsed = 0
-  let index = (dashboard.others.length)
-  dashboard.others.push(data)
+  dataDashboard.push(data)
   dashboard.loadTimeElapsed(index, false)
 }
 
-AddOutbound = (data) => {
-  console.log(`Agregan llamadas outbound del anexo : ${data.agent_annexed} `)
-  data.timeElapsed = 0
-  let index = (dashboard.callsOutbound.length)
-  dashboard.callsOutbound.push(data)
-  // dashboard.loadTimeElapsed(index, false)
-}
-
-AddInbound = (data) => {
-  console.log(`Agregan llamadas outbound del anexo : ${data.agent_annexed} `)
-  data.timeElapsed = 0
-  let index = (dashboard.callsInbound.length)
-  dashboard.callsInbound.push(data)
-  // dashboard.loadTimeElapsed(index, false)
-}
-
-updateOther = (data) => {
-  console.log(`Actualizando data de otros agentes del anexo : ${data.agent_annexed} `)
-  dashboard.others.forEach((item, index) => {
+updateDataDashboard = (data, dataDashboard) => {
+  dataDashboard.forEach((item, index) => {
     if (item.agent_annexed === data.agent_annexed) {
       if (item.event_id !== data.event_id) {
         data.total_calls = getTotalCalls(data)
-        dashboard.others.splice(index, 1, data)
+        dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
       }
     }
   })
 }
 
-updateOutbound = (data) => {
-  console.log(`Actualizando data de llamadas outbound del anexo : ${data.agent_annexed} `)
-  dashboard.callsOutbound.forEach((item, index) => {
-    if (item.agent_annexed === data.agent_annexed) {
-      if (item.event_id !== data.event_id) {
-        data.total_calls = getTotalCalls(data)
-        dashboard.callsOutbound.splice(index, 1, data)
-        dashboard.loadMetricasKpi(false)
-      }
-    }
-  })
-}
-
-updateInbound = (data) => {
-  console.log(`Actualizando data de llamadas outbound del anexo : ${data.agent_annexed} `)
-  dashboard.callsInbound.forEach((item, index) => {
-    if (item.agent_annexed === data.agent_annexed) {
-      if (item.event_id !== data.event_id) {
-        data.total_calls = getTotalCalls(data)
-        dashboard.callsInbound.splice(index, 1, data)
-        dashboard.loadMetricasKpi(false)
-      }
-    }
-  })
-}
-
-removeOther =  (data) => {
-  dashboard.others.forEach((item, index) => {
-    if (item.agent_annexed === data.agent_annexed) dashboard.others.splice(index, 1)
-  })
-}
-
-
-removeOutbound =  (data) => {
-  dashboard.callsOutbound.forEach((item, index) => {
-    if (item.agent_annexed === data.agent_annexed) dashboard.callsOutbound.splice(index, 1)
-  })
-}
-
-removeInbound =  (data) => {
-  dashboard.callsInbound.forEach((item, index) => {
-    if (item.agent_annexed === data.agent_annexed) dashboard.callsInbound.splice(index, 1)
+removeDataDashboard =  (data, dataDashboard) => {
+  dataDashboard.forEach((item, index) => {
+    if (item.agent_annexed === data.agent_annexed) dataDashboard.splice(index, 1)
   })
 }
 
