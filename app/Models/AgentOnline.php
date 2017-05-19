@@ -10,6 +10,6 @@ class AgentOnline extends Model
     protected $table        = 'agent_online';
     public $timestamps      = false;
 
-    protected $fillable = ['agent_user_id','agent_role','agent_name','event_name','event_time'];
+    protected $fillable = ['agent_user_id','agent_role','agent_name','event_name','event_time','event_id'];
 
 }
