@@ -276,7 +276,19 @@ const eventPostExecuteAction = (parameters) => {
       setQueueAdd(false)
       break
     case 'disconnectAgent':
+      vueFront.messageStandBy = 'Estamos procesando la salida del sistema, espere :'
+      vueFront.assistanceNextHour = '00:00:04'
+      vueFront.hourServer = '00:00:00'
+      vueFront.loadModalStandByAssistance()
       setTimeout('eventLogout()', 4000)
+      break
+    case 'checkAssistance':
+      vueFront.statusChangeAssistance = false
+      if(parameters['eventFechaHora'] > vueFront.hourServer ) {
+        vueFront.statusChangeAssistance = `stand_by&${vueFront.remoteAgentHour}`
+        vueFront.assistanceNextHour = vueFront.remoteAgentHour
+        vueFront.loadModalStandByAssistance()
+      }else {checkPassword()}
       break
   }
 }
@@ -741,36 +753,10 @@ const disconnect = () => {
         cssClass: 'btn-primary',
         action: function (dialogRef) {
           dialogRef.close()
-                    // Registro de Salida
-          BootstrapDialog.show({
-            type: 'type-danger',
-            title: 'Registrar Salida',
-            message: message_2,
-            closable: false,
-            buttons: [
-              {
-                label: 'Aceptar',
-                cssClass: 'btn-danger',
-                action: function (dialogRef) {
-                  let hour_exit = hour.trim()
-                  if (typeof $('input:radio[name=rbtnHour]:checked').val() === 'undefined') {
-                    alert('Porfavor de seleccionar su hora de salida.')
-                  } else {
-                    dialogRef.close()
-                    vueFront.remoteDisconnectAgentHour = $('input:radio[name=rbtnHour]:checked').val().trim()
-                    vueFront.disconnectAgent()
-                  }
-                }
-              },
-              {
-                label: 'Cancelar',
-                cssClass: 'btn-danger',
-                action: function (dialogRef) {
-                  dialogRef.close()
-                }
-              }
-            ]
-          })
+          vueFront.nextEventId = 15
+          vueFront.nextEventName = 'Desconectado'
+          vueFront.assistanceTextModal = 'Salida'
+          vueFront.loadModalCheckAssistance()
         }
       },
       {
@@ -778,7 +764,7 @@ const disconnect = () => {
         cssClass: 'btn-primary',
         action: function (dialogRef) {
           dialogRef.close()
-          vueFront.remoteDisconnectAgentHour = hour.trim()
+          vueFront.remoteAgentHour = hour.trim()
           vueFront.disconnectAgent()
         }
       },

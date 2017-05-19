@@ -14,14 +14,14 @@
                         <p>Por favor de seleccionar la hora correspondiente a su @{{ assistanceTextModal }} .</p>
                         <br><br>
                         <div class="row">
-                            <div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + rankHours[1] + '">@{{ assistanceHour }}</center></div>
-                            <div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rankHours[2] + '">@{{ assistanceNextHour }}</center></div>
+                            <div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" v-bind:value="assistanceHour" v-model="remoteAgentHour">@{{ assistanceHour }}</center></div>
+                            <div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" v-bind:value="assistanceNextHour" v-model="remoteAgentHour">@{{ assistanceNextHour }}</center></div>
                         </div>'
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" type="submit">Aceptar</button> <button class="btn btn-danger" type="submit" @click="ModalAssistance = 'modal fade'">Cancelar</button>
+                <button class="btn btn-success" @click="checkAssistance">Aceptar</button> <button class="btn btn-danger" @click="ModalAssistance = 'modal fade'" v-show="assistanceTextModal === 'Salida'">Cancelar</button>
             </div>
         </div>
     </div>

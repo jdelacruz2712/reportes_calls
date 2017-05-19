@@ -22,7 +22,7 @@ const vueFront = new Vue({
     remotoReleaseUsername : 0,
     remotoReleaseAnnexed : 0,
     remotoReleaseStatusQueueRemove : false,
-    remoteDisconnectAgentHour : '',
+    remoteAgentHour : '',
     remoteActiveCallsUserId : '',
     remoteActiveCallsNameRole : '',
 
@@ -31,6 +31,7 @@ const vueFront = new Vue({
     textDateServer : '',
     dateServer : '',
     requiredAnnexed : false,
+    differenceHour : '00:00:00',
 
     getListEvents : [],
     getAgentDashboard : [],
@@ -47,9 +48,12 @@ const vueFront = new Vue({
     ModalReleasesAnnexed : 'modal fade',
     ModalAssistance : 'modal fade',
     ModalConnectionNodeJs: 'modal fade',
+    ModalStandByAssistance: 'modal fade',
 
     nameServerNodeJs : '',
-    messageServerNodeJs : ''
+
+    messageServerNodeJs : '',
+    messageStandBy : ''
   },
   mounted(){
     this.loadVariablesGlobals()
@@ -89,10 +93,12 @@ const vueFront = new Vue({
       this.annexed = response.annexed
       this.quantityQueueAssign = response.quantityQueueAssign
       this.getAgentDashboard = response.getAgentDashboard
+      this.assistanceNextHour = response.assistanceNextHour
       await fechaActual()
       await horaActual()
 
-      //await this.verifyAssistance()
+      //Verificacion de marcado de asistencia y requerimiento de cambio de contraseña
+      await this.verifyAssistance()
 
       if (this.annexed === 0 ) loadModule('agents_annexed')
 
@@ -100,8 +106,7 @@ const vueFront = new Vue({
       let parameters = {userID: this.getUserId}
       ajaxNodeJs(parameters, '/detalle_eventos/getStatusActual', true)
 
-      //Verificacion de marcado de asistencia y requerimiento de cambio de contraseña
-      //MarkAssitance(this.getUserId, this.dateServer, this.hourServer, 'Entrada')
+
 
       //Cargando image del profile_user
       this.getAvatar()
@@ -165,6 +170,9 @@ const vueFront = new Vue({
           case 'disconnectAgent' :
             (this.statusQueueAddAsterisk === true)? this.routeAction = '/detalle_eventos/queueRemove' : this.routeAction = '/anexos/logout'
             break
+          case 'checkAssistance' :
+            this.routeAction = '/detalle_eventos/registerAssistence'
+            break
         }
 
     },
@@ -175,7 +183,7 @@ const vueFront = new Vue({
       this.nextEventId = eventId
       this.nextEventName = eventName
       this.eventStatusPause = eventStatusPause
-      this.remoteDisconnectAgentHour = this.hourServer
+      this.remoteAgentHour = this.hourServer
       let parameters = this.loadParameters('changeStatus')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
     },
@@ -190,9 +198,9 @@ const vueFront = new Vue({
 
     releasesAnnexed : function (){
       this.defineRoute('releasesAnnexed')
-      this.nextEventId = 1
+      this.nextEventId = 11
       this.nextEventName = 'Login'
-      this.remoteDisconnectAgentHour = this.hourServer
+      this.remoteAgentHour = this.hourServer
       let parameters = this.loadParameters('releasesAnnexed')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
       loadModule('agents_annexed')
@@ -225,15 +233,12 @@ const vueFront = new Vue({
     },
 
     verifyAssistance : async function(){
-      console.log('hola')
-      if(this.statusChangeAssistance === true){
-        console.log('hola marco mi asistencia')
-        this.loadModalCheckAssistance()
-      }else if(this.statusChangeAssistance != false){
-        console.log('hola marco standby')
-        this.showStandByAssistanceModal = 'modal show'
+      if(this.statusChangeAssistance === true)this.loadModalCheckAssistance()
+      else if(this.statusChangeAssistance != false) {
+        this.messageStandBy = 'Usted ingresara al menú del sistema en :'
         this.loadModalStandByAssistance()
       }
+      else checkPassword()
     },
 
     loadModalCheckAssistance : async function (){
@@ -244,13 +249,23 @@ const vueFront = new Vue({
     },
 
     loadModalStandByAssistance : function (){
+      this.ModalStandByAssistance = 'modal show'
       let refreshIntervalStandBy = setInterval(() => {
-        let differenceHour = restarHoras(this.assistanceNextHour, this.hourServer)
+        this.differenceHour = restarHoras(this.hourServer,this.assistanceNextHour)
         if (this.hourServer >= this.assistanceNextHour){
           clearInterval(refreshIntervalStandBy)
-          this.showStandByAssistanceModal = 'modal fade'
+          this.ModalStandByAssistance = 'modal fade'
+          checkPassword()
         }
       },1000)
+    },
+
+    checkAssistance : function(){
+      let route = (this.assistanceTextModal === 'Entrada')? 'checkAssistance' : 'disconnectAgent'
+      this.defineRoute(route)
+      let parameters = this.loadParameters(route)
+      ajaxNodeJs(parameters, this.routeAction, true, 2000)
+      this.ModalAssistance = 'modal fade'
     },
 
     loadParameters : function (actionEvent){
@@ -270,7 +285,7 @@ const vueFront = new Vue({
         eventName : this.getEventName,
         eventNextID : this.nextEventId,
         eventNextName : this.nextEventName,
-        eventFechaHora : `${this.dateServer} ${this.remoteDisconnectAgentHour}`,
+        eventFechaHora : `${this.dateServer} ${this.remoteAgentHour}`,
         eventDateReally : `${this.dateServer} ${this.hourServer}`,
         eventIPCliente : this.getRemoteIp,
         eventAnnexed : (this.remotoReleaseAnnexed === 0)? this.annexed : this.remotoReleaseAnnexed,

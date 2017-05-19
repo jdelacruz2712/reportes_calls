@@ -113,6 +113,11 @@ class AdminController extends CosapiController
         $AgentOnline = AgentOnline::select()->where('agent_user_id','=',$this->UserId )->get()->toArray();
         $dataAgentOnline = (count($AgentOnline) == 0)? '' : $AgentOnline[0] ;
         $requiredAnnexed = ($this->UserRole == 'user')? true : false;
+        $assistanceNextHour = '';
+        if(!is_bool($this->AssistanceUser)){
+            $assistanceNextHour = explode('&',$this->AssistanceUser);
+            $assistanceNextHour = $assistanceNextHour[1];
+        }
         return response()->json([
             'getUserId'                 => $this->UserId,
             'getUsername'               => $this->UserSystem,
@@ -127,6 +132,7 @@ class AdminController extends CosapiController
             'textDateServer'            => date('d-m-w'),
             'dateServer'                => date('Y-m-d'),
             'annexed'                   => $this->UserAnexo,
+            'assistanceNextHour'        => $assistanceNextHour,
             'quantityQueueAssign'       => $this->quantityQueueAssign,
             'statusAddAgentDashboard'   => $this->statusAddAgentDashboard,
             'getAgentDashboard'         => $dataAgentOnline
