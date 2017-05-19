@@ -50,9 +50,13 @@ const vueFront = new Vue({
     ModalConnectionNodeJs: 'modal fade',
     ModalStandByAssistance: 'modal fade',
 
-    nameServerNodeJs : '',
 
-    messageServerNodeJs : '',
+    nodejsStatusSails: false,
+    nodejsStatusAsterisk: false,
+
+    nodejsServerName : '',
+
+    nodejsServerMessage : '',
     messageStandBy : ''
   },
   mounted(){
@@ -113,6 +117,7 @@ const vueFront = new Vue({
 
       //Cargando registro en Dahsboard
       if(this.statusAddAgentDashboard === false) socketAsterisk.emit('createUserDashboard', this.getAgentDashboard)
+      else if(vueFront.getUserId) socketAsterisk.emit('createRoom', {agent_user_id : vueFront.getUserId})
       if(this.statusAddAgentDashboard === '') mostrar_notificacion('warning', 'Tienes problemas con tu usuario, comunicate con el área de sistemas !!!', 'Warning', 0, false, true, 0)
     },
 
@@ -308,18 +313,19 @@ socketSails.reconnectionDelayMax = 5
 
 const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
 socketAsterisk.on('connect', function() {
-   console.log('Socket Asterisk connected!')
-   if (vueFront.annexed) {
-     socketAsterisk.emit('createRoom', vueFront.annexed)
-   }
+  vueFront.nodejsServerName = 'Servidor Asterisk'
+  vueFront.ModalConnectionNodeJs = 'modal fade'
+  vueFront.nodejsServerMessage = 'Acabas de conectar con el Servidor Asterisk'
+  console.log('Socket Asterisk connected!')
+  if(vueFront.getUserId) socketAsterisk.emit('createRoom', {agent_user_id : vueFront.getUserId})
 });
 
 socketAsterisk.on('connect_error', function(){
-  vueFront.nameServerNodeJs = 'Servidor Asterisk'
+  vueFront.nodejsServerName = 'Servidor Asterisk'
   vueFront.ModalConnectionNodeJs = 'modal show'
   let i = 9
   let refreshIntervalId  = setInterval(()=> {
-    vueFront.messageServerNodeJs = `Fallo la conexión por el Servidor Asterik volveremos a reintentar en ${i} segundos!!!`
+    vueFront.nodejsServerMessage = `Fallo la conexión por el Servidor Asterik volveremos a reintentar en ${i} segundos!!!`
     i--
     if(i === 0) clearInterval(refreshIntervalId)
   },1000)
@@ -327,9 +333,9 @@ socketAsterisk.on('connect_error', function(){
 });
 
 socketAsterisk.on('disconnect', function () {
-  vueFront.nameServerNodeJs = 'Servidor Asterisk'
+  vueFront.nodejsServerName = 'Servidor Asterisk'
   vueFront.ModalConnectionNodeJs = 'modal show'
-  vueFront.messageServerNodeJs = 'Acabas de perder conexión con el Asterisk !!!'
+  vueFront.nodejsServerMessage = 'Acabas de perder conexión con el Asterisk !!!'
   console.log('socketAsterisk Disconnected');
 });
 
@@ -353,15 +359,15 @@ socketSails.on('statusSails', function (data) {
 })
 
 socketSails.on('connect', function () {
-  vueFront.nameServerNodeJs = 'Servidor Sails'
+  vueFront.nodejsServerName = 'Servidor Sails'
   vueFront.ModalConnectionNodeJs = 'modal fade'
-  vueFront.messageServerNodeJs = 'Acabas de conectar con el Servidor Sails'
+  vueFront.nodejsServerMessage = 'Acabas de conectar con el Servidor Sails'
   console.log('Socket Sails.io connected!')
 })
 
 socketSails.on('disconnect', function () {
-  vueFront.nameServerNodeJs = 'Servidor Sails'
+  vueFront.nodejsServerName = 'Servidor Sails'
   vueFront.ModalConnectionNodeJs = 'modal show'
-  vueFront.messageServerNodeJs = 'Acabas de perder conexión con el Servidor Sails'
+  vueFront.nodejsServerMessage = 'Acabas de perder conexión con el Servidor Sails'
   console.log('Socket Sails.io desconectado!')
 })

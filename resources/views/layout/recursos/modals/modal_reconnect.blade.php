@@ -4,12 +4,12 @@
     <!-- Modal content-->
     <div class="panel panel-primary">
       <div class="panel-heading">
-        <h4 class="modal-title">@{{ nameServerNodeJs }}</h4>
+        <h4 class="modal-title">@{{ nodejsServerName }}</h4>
       </div>
       <div class="modal-body">
         <div class="img-responsive ">
           <center>
-            @{{ messageServerNodeJs }}
+            @{{ nodejsServerMessage }}
           </center>
         </div>
         <br>
