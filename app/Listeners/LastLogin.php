@@ -38,7 +38,8 @@ class LastLogin
             [
                 'agent_name' => Auth::user()->username,
                 'agent_role'    => Auth::user()->role,
-                'event_name'    => 'Login', 'event_id'      => 11,
+                'event_name'    => 'Login',
+                'event_id'      => 11,
                 'event_time'    => number_format(microtime(true)*1000,0,'.','')
             ]);
     }

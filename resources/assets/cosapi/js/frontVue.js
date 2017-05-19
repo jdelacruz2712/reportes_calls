@@ -201,6 +201,7 @@ const vueFront = new Vue({
       this.nextEventId = 11
       this.nextEventName = 'Login'
       this.remoteAgentHour = this.hourServer
+      this.annexed = 0
       let parameters = this.loadParameters('releasesAnnexed')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
       loadModule('agents_annexed')
