@@ -54,7 +54,6 @@ class AdminController extends CosapiController
         $this->UserAnexo                        = Session::get('UserAnexo')     ;
         $this->QueueAdd                         = Session::get('QueueAdd')      ;
         $this->ChangeRole                       = Session::get('ChangeRole')    ;
-        $this->statusAddAgentDashboard          = (Session::get('statusAddAgentDashboard')== null) ? false : true;
 
 
         $ultimate_event_login = $this->UltimateEventLogin();
@@ -110,8 +109,6 @@ class AdminController extends CosapiController
 
     public function getVariablesGlobals()
     {
-        $AgentOnline = AgentOnline::select()->where('agent_user_id','=',$this->UserId )->get()->toArray();
-        $dataAgentOnline = (count($AgentOnline) == 0)? '' : $AgentOnline[0] ;
         $requiredAnnexed = ($this->UserRole == 'user')? true : false;
         $assistanceNextHour = '';
         if(!is_bool($this->AssistanceUser)){
@@ -133,13 +130,37 @@ class AdminController extends CosapiController
             'dateServer'                => date('Y-m-d'),
             'annexed'                   => $this->UserAnexo,
             'assistanceNextHour'        => $assistanceNextHour,
-            'quantityQueueAssign'       => $this->quantityQueueAssign,
-            'statusAddAgentDashboard'   => $this->statusAddAgentDashboard,
-            'getAgentDashboard'         => $dataAgentOnline
+            'quantityQueueAssign'       => $this->quantityQueueAssign
         ], 200);
     }
 
     function  updateStatusAddAgentDashboard(){
         Session::put('statusAddAgentDashboard',true );
+    }
+
+    function getStatusAddAgentDashboard (){
+        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))->where('agent_name', $this->UserSystem)->get()->toArray();
+        $existAgent = $AgentOnline[0]['count_agent'];
+        $exits = '';
+        if($existAgent != 0){
+            $exits = true;
+        } else{
+            AgentOnline::updateOrCreate(
+                ['agent_user_id' => Auth::user()->id],
+                [
+                    'agent_name' => Auth::user()->username,
+                    'agent_role'    => Auth::user()->role,
+                    'event_name'    => 'Login',
+                    'event_id'      => 11,
+                    'event_time'    => number_format(microtime(true)*1000,0,'.','')
+                ]);
+            $exits = false;
+        }
+        return response()->json(['statusAddAgentDashboard'   => $exits]);
+    }
+
+    function getAgentDashboard(){
+        $AgentOnline = AgentOnline::select()->where('agent_user_id','=',$this->UserId )->get()->toArray();
+        return response()->json(['statusAddAgentDashboard'   => $AgentOnline[0]]);
     }
 }

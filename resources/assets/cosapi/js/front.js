@@ -432,12 +432,11 @@ const RoleTableHide = () =>  ['user']
 
 // Función para asignar o liberar anexo en base al rol
 const assignAnexxed = (annexed,userId,username) => {
-    if(userId.length === 0 && vueFront.annexed !== 0){
+    if(userId === '' && vueFront.annexed !== 0){
         mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo ' + vueFront.annexed + '.', 'Warning', 10000, false, true)
     }else {
-
-        if (userId.length === 0) {
-            vueFront.annexed = annexed
+        if (userId === '') {
+            vueFront.remotoReleaseAnnexed = annexed
             vueFront.assignAnnexed()
         }else{
             vueFront.remotoReleaseAnnexed = annexed

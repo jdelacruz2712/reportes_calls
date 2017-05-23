@@ -237,17 +237,20 @@ const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
     //Muestra notificaciones al hacer QueueAdd o QueueRemove
     if(resData['DataQueue'] != null) loadMultiNotification(resData,time,parameters)
-    if(resData['Response'] == 'success')eventPostExecuteAction(parameters)
+    if(resData['Response'] == 'success')eventPostExecuteActionSuccess(parameters)
+    if(resData['Response'] == 'error')eventPostExecuteActionError(parameters)
   })
 }
 
 // Función que realiza Actividades como resultado de un evento realizado con el NodeJS
-const eventPostExecuteAction = (parameters) => {
+const eventPostExecuteActionSuccess = (parameters) => {
   switch (parameters['typeActionPostRequest']){
     case 'changeStatus':
       if(parameters['eventNextID'] == 1 && vueFront.getRole === 'user') setQueueAdd(true)
       break
     case 'assignAnnexed':
+      vueFront.annexed = vueFront.remotoReleaseAnnexed
+      vueFront.remotoReleaseAnnexed = 0
       //socketAsterisk.emit('createRoom', vueFront.annexed)
       break
     case 'releasesAnnexed':
@@ -258,7 +261,6 @@ const eventPostExecuteAction = (parameters) => {
       socketAsterisk.emit('leaveRoom', vueFront.annexed)
       vueFront.annexed = 0
       setQueueAdd(false)
-      vueFront.ModalReleasesAnnexed = "modal fade"
       break
     case 'disconnectAgent':
       vueFront.titleStandBy = 'Ventana de Desconexión'
@@ -279,6 +281,13 @@ const eventPostExecuteAction = (parameters) => {
   }
 }
 
+const eventPostExecuteActionError = function(parameters){
+  switch (parameters['typeActionPostRequest']){
+    case 'assignAnnexed':
+      vueFront.remotoReleaseAnnexed = 0
+      break
+  }
+}
 // Función que muestra multiples Notification en base a lo devuelto por el NodeJs
 const loadMultiNotification = (resData,time,parameters) => {
   let arrayMessage = resData['DataQueue']
