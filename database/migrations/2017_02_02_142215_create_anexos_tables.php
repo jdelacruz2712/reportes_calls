@@ -18,13 +18,21 @@ class CreateAnexosTables extends Migration
             $table->string('name', 5);
             $table->unsignedInteger('user_id');
             $table->unsignedTinyInteger('estado_id');
+            $table->unsignedTinyInteger('call_context_id')->default('1');
             $table->timestamps();
             $table->unique(['name']);
             $table->unique(['name','user_id']);
-            /*relacion con tabla users*/
+            
+            /*relacion con tabla estados*/
             $table->foreign('estado_id')
                   ->references('id') 
                   ->on('estados'); 
+
+            /*relacion con tabla call_contexts*/
+            $table->foreign('call_context_id')
+                  ->references('id') 
+                  ->on('call_contexts'); 
+
         });
     }
 

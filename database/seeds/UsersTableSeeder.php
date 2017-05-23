@@ -19,6 +19,7 @@ class UsersTableSeeder extends Seeder
             'apellido_paterno'  =>  'Cosapitest',
             'apellido_materno'  =>  'Cosapitest',
             'username'          =>  'cosapitest',
+            'estado_id'         =>  '1',
             'email'             =>  'cosapitest@cosapidata.com.pe',
             'password'          =>  Hash::make('C0s4pi+est+'),
             'role'              =>  'admin'
