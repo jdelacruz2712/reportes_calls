@@ -42,29 +42,21 @@ const dashboard = new Vue({
       await this.loadSlaDay()
     },
 
-    loadTimeElapsed: function (index, tableDashboard) {
+    loadTimeElapsed: function (index, dataDashboard, namePanel) {
       setInterval(async function () {
-        let horaFin = await this.getEventTime(index, tableDashboard)
-        if (horaFin) {
-          let horaInicio = (new Date()).getTime()
-          let elapsed = differenceHours(horaInicio - horaFin)
-          this.showTimeElapsed(index, elapsed, tableDashboard)
-        }
+        const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
+        const horaActual = (new Date()).getTime()
+        const elapsed = differenceHours(horaActual - horaBD)
+        const estado = dataDashboard[index].event_name
+        console.log(index + ' - '+ horaBD + ' - ' + estado + ' - ' + elapsed)
+        dataDashboard[index].timeElapsed = elapsed
       }.bind(this), 1000)
     },
 
-    getEventTime: function (index, tableDashboard) {
-      if (this.callsInbound[index] || this.others[index]) {
-        if (tableDashboard) return this.callsInbound[index].inbound_start
-        else return this.others[index].event_time
-      }
-    },
-
-    showTimeElapsed: function (index, elapsed, tableDashboard) {
-      if (this.callsInbound[index] || this.others[index]) {
-        if (tableDashboard) this.callsInbound[index].timeElapsed = elapsed
-        else this.others[index].timeElapsed = elapsed
-      }
+    getEventTime: function (index, dataDashboard, namePanel) {
+        if (namePanel === 'AddInbound') return dataDashboard[index].inbound_start
+        if (namePanel === 'AddOutbound') return dataDashboard[index].outbound_start
+        if (namePanel === 'AddOther') return dataDashboard[index].event_time
     },
 
     loadTimeElapsedEncoladas: function (index) {
@@ -148,22 +140,21 @@ socket.on('RemoveCallWaiting', dataCallWaiting => {
 
 socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others))
 socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others))
-socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others))
+socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'AddOther'))
 
 socket.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound))
 socket.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound))
-socket.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound))
+socket.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound, 'AddOutbound'))
 
 socket.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound))
 socket.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound))
-socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound))
+socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'AddInbound'))
 
-AddDataDashboard = (data, dataDashboard) => {
+AddDataDashboard = (data, dataDashboard, namePanel) => {
   let index = (dataDashboard.length)
   data.total_calls = getTotalCalls(data)
-  data.timeElapsed = 0
   dataDashboard.push(data)
-  dashboard.loadTimeElapsed(index, false)
+  dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
 }
 
 updateDataDashboard = (data, dataDashboard) => {
