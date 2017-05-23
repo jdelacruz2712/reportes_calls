@@ -55,8 +55,9 @@ const vueFront = new Vue({
     nodejsStatusAsterisk: false,
 
     nodejsServerName : '',
-
     nodejsServerMessage : '',
+
+    titleStandBy : '',
     messageStandBy : ''
   },
   mounted(){
@@ -196,9 +197,16 @@ const vueFront = new Vue({
 
     assignAnnexed : function (){
       this.defineRoute('assignAnnexed')
+      this.nextEventId = this.getEventId
+      this.nextEventName = this.getEventName
       let parameters = this.loadParameters('assignAnnexed')
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
       loadModule('agents_annexed')
+    },
+
+    liberarAnexos : function (){
+      if(this.annexed != 0) this.ModalReleasesAnnexed = 'modal show'
+      else mostrar_notificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
     },
 
     releasesAnnexed : function (){
@@ -241,6 +249,7 @@ const vueFront = new Vue({
     verifyAssistance : async function(){
       if(this.statusChangeAssistance === true)this.loadModalCheckAssistance()
       else if(this.statusChangeAssistance != false) {
+        this.titleStandBy = 'Ventana de Conexión'
         this.messageStandBy = 'Usted ingresara al menú del sistema en :'
         this.loadModalStandByAssistance()
       }
@@ -255,6 +264,8 @@ const vueFront = new Vue({
     },
 
     loadModalStandByAssistance : function (){
+      this.titleStandBy = 'Ventana de Conexión'
+      this.messageStandBy = 'Usted ingresara al menú del sistema en :'
       this.ModalStandByAssistance = 'modal show'
       let refreshIntervalStandBy = setInterval(() => {
         this.differenceHour = restarHoras(this.hourServer,this.assistanceNextHour)
@@ -299,7 +310,6 @@ const vueFront = new Vue({
         eventStatusPause : this.eventStatusPause,
         statusQueueRemove : (this.remotoReleaseStatusQueueRemove === false)? this.statusQueueAddAsterisk : this.remotoReleaseStatusQueueRemove
       }
-
       return data
     }
   }

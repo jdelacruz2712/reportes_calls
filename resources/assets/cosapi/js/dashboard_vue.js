@@ -48,7 +48,6 @@ const dashboard = new Vue({
         if (horaFin) {
           let horaInicio = (new Date()).getTime()
           let elapsed = differenceHours(horaInicio - horaFin)
-          // console.log(index + ' - ' + elapsed)
           this.showTimeElapsed(index, elapsed, tableDashboard)
         }
       }.bind(this), 1000)
@@ -169,19 +168,21 @@ AddDataDashboard = (data, dataDashboard) => {
 
 updateDataDashboard = (data, dataDashboard) => {
   dataDashboard.forEach((item, index) => {
-    if (item.agent_annexed === data.agent_annexed) {
+    if (item.agent_name === data.agent_name) {
       if (item.event_id !== data.event_id) {
         data.total_calls = getTotalCalls(data)
         dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
       }
+      item.agent_annexed = data.agent_annexed
+      item.event_name = data.event_name
     }
   })
 }
 
 removeDataDashboard =  (data, dataDashboard) => {
   dataDashboard.forEach((item, index) => {
-    if (item.agent_annexed === data.agent_annexed) dataDashboard.splice(index, 1)
+    if (item.agent_name === data.agent_name) dataDashboard.splice(index, 1)
   })
 }
 

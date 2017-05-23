@@ -16,7 +16,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-success" type="submit">Aceptar</button> <button class="btn btn-danger" type="submit" @click="ModalReleasesAnnexed = 'modal fade'">Cancelar</button>
+                <button class="btn btn-success" @click="releasesAnnexed">Aceptar</button> <button class="btn btn-danger" @click="ModalReleasesAnnexed = 'modal fade'">Cancelar</button>
             </div>
         </div>
     </div>

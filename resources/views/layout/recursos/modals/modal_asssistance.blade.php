@@ -4,8 +4,7 @@
         <!-- Modal content-->
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <button type="button" class="close" @click="ModalAssistance = 'modal fade'">
-                    <span aria-hidden="true">×</span></button>
+                <button type="button" class="close" @click="ModalAssistance = 'modal fade'" v-show="assistanceTextModal === 'Salida'"><span aria-hidden="true">×</span></button>
                 <h4 class="modal-title">Control de assistance</h4>
             </div>
             <div class="modal-body">

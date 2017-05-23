@@ -35,6 +35,7 @@
       @include('layout.recursos.modals.modal_reconnect')
       @include('layout.recursos.modals.modal_asssistance')
       @include('layout.recursos.modals.modal_standby')
+      @include('layout.recursos.modals.modal_releases_annexed')
       <div class="control-sidebar-bg"></div>
     </div>
     {!!Html::script('js/adminlte_jquerys.min.js?version='.date('YmdHis'))!!}

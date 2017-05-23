@@ -13,8 +13,6 @@ $(document).ready(function () {
       'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
     }
   })
-
-  $('#statusAgent').click(function () { PanelStatus() })
   $('.reportes').on('click', function (e) { loadModule($(this).attr('id')) })
 })
 
@@ -63,6 +61,8 @@ const show_tab_annexed = (event) => {
   })
 }
 
+
+// Función que activa las llamadas a travez del cambio de roles
 const activeCalls = () => {
   if(vueFront.annexed !== 0){
       mostrar_notificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
@@ -116,6 +116,7 @@ const activeCalls = () => {
   }
 }
 
+// Función que cambia el Rol de los Usuarios
 const changeRol = (userId) => {
   const message = 'Seleccione el rol que quiere asignar al usuario :'+
       '<br><br>'+
@@ -155,8 +156,10 @@ const changeRol = (userId) => {
   })
 }
 
+// Función que verifica si necesita realizar un cambio de contraseña
 const checkPassword = () => {if(vueFront.statusChangePassword == 0) changePassword()}
 
+// Función que muestra modal para el cambio de contraseña
 const changePassword = (userId = '',closable = false) => {
   if(userId === '') userId = vueFront.getUserId
   const token = $('input[name=_token]').val()
@@ -426,3 +429,83 @@ function createUser () {
  * @return {Array} [Los roles con el cual me ocultaran las columnas]
  */
 const RoleTableHide = () =>  ['user']
+
+// Función para asignar o liberar anexo en base al rol
+const assignAnexxed = (annexed,userId,username) => {
+    if(userId.length === 0 && vueFront.annexed !== 0){
+        mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo ' + vueFront.annexed + '.', 'Warning', 10000, false, true)
+    }else {
+
+        if (userId.length === 0) {
+            vueFront.annexed = annexed
+            vueFront.assignAnnexed()
+        }else{
+            vueFront.remotoReleaseAnnexed = annexed
+            vueFront.remotoReleaseUsername = username
+            vueFront.remotoReleaseUserId = userId
+            vueFront.remotoReleaseStatusQueueRemove = true
+            vueFront.releasesAnnexed()
+        }
+    }
+}
+
+// Funcion que carga el modal se marcado de salida
+const disconnect = () => {
+    let hour = vueFront.hourServer
+    let rank_hours = rangoHoras(hour.trim())
+    const message_1 = 'Usted se retira de las oficinas ?'
+    const message_2 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
+        '<br><br>' +
+        '<div class="row">' +
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + hour + '">' + hour + '</center></div>' +
+        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
+        '</div>'
+
+    BootstrapDialog.show({
+        type: 'type-primary',
+        title: 'Registrar Salida',
+        message: message_1,
+        closable: false,
+        buttons: [
+            {
+                label: 'Si',
+                cssClass: 'btn-primary',
+                action: function (dialogRef) {
+                    dialogRef.close()
+                    vueFront.nextEventId = 15
+                    vueFront.nextEventName = 'Desconectado'
+                    vueFront.assistanceTextModal = 'Salida'
+                    vueFront.loadModalCheckAssistance()
+                }
+            },
+            {
+                label: 'No',
+                cssClass: 'btn-primary',
+                action: function (dialogRef) {
+                    dialogRef.close()
+                    vueFront.remoteAgentHour = hour.trim()
+                    vueFront.disconnectAgent()
+                }
+            },
+            {
+                label: 'Cancelar',
+                cssClass: 'btn-danger',
+                action: function (dialogRef) {
+                    dialogRef.close()
+                }
+            }
+        ]
+    })
+}
+
+// Función que acciona le ventana de asistencias correspondiente al estado
+const MarkAssitance = (user_id, day, hour_actually, action) => {
+    if(vueFront.statusChangeAssistance == true){
+        modalAssintance(user_id, day, hour_actually, action)
+    }else if(vueFront.statusChangeAssistance != false){
+        let assistence_user = $('#assistence_user').val().split('&')
+        ModalStandBy(assistence_user[1])
+    }else{
+        checkPassword()
+    }
+}
