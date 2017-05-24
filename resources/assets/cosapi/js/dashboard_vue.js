@@ -44,12 +44,12 @@ const dashboard = new Vue({
 
     loadTimeElapsed: function (index, dataDashboard, namePanel) {
       setInterval(async function () {
-        const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
-        const horaActual = (new Date()).getTime()
-        const elapsed = differenceHours(horaActual - horaBD)
-        const estado = dataDashboard[index].event_name
-        console.log(index + ' - '+ horaBD + ' - ' + estado + ' - ' + elapsed)
-        dataDashboard[index].timeElapsed = elapsed
+        if (dataDashboard[index]){
+          const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
+          const horaActual = (new Date()).getTime()
+          const elapsed = differenceHours(horaActual - horaBD)
+          dataDashboard[index].timeElapsed = elapsed
+        }
       }.bind(this), 1000)
     },
 
