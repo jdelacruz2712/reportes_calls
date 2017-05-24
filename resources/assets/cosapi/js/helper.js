@@ -231,6 +231,7 @@ const validar_sonido = () => {
 
 // Función que envía parametros a rutas en NodeJS
 const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
+  console.log(parameters)
   $('#myModalLoading').modal('show')
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     $('#myModalLoading').modal('hide')
@@ -285,6 +286,10 @@ const eventPostExecuteActionError = function(parameters){
   switch (parameters['typeActionPostRequest']){
     case 'assignAnnexed':
       vueFront.remotoReleaseAnnexed = 0
+      break
+    case 'checkAssistance':
+      vueFront.nextEventId = ''
+      vueFront.nextEventName = ''
       break
   }
 }

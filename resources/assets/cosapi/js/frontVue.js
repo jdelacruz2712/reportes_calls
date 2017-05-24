@@ -300,6 +300,10 @@ const vueFront = new Vue({
     checkAssistance : function(){
       let route = (this.assistanceTextModal === 'Entrada')? 'checkAssistance' : 'disconnectAgent'
       this.defineRoute(route)
+      if(route == 'checkAssistance'){
+        this.nextEventId = 11
+        this.nextEventName = 'Login'
+      }
       let parameters = this.loadParameters(route)
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
       this.ModalAssistance = 'modal fade'
