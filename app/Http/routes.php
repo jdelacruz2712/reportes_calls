@@ -86,6 +86,8 @@ Route::group (['middleware'=>['user']], function(){
 
 
     Route::post('/getVariablesGlobals'                              , ['uses'=>'AdminController@getVariablesGlobals',    'as' => 'home'      ]);
+    Route::post('/getStatusAddAgentDashboard'                       , ['uses'=>'AdminController@getStatusAddAgentDashboard',    'as' => 'home'      ]);
+    Route::post('/getAgentDashboard'                                , ['uses'=>'AdminController@getAgentDashboard',    'as' => 'home'      ]);
 });
 
 

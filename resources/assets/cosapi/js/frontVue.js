@@ -1,5 +1,14 @@
 'use strict'
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+
+const socketIO = io.connect(restApiSails)
+const socketSails = io.sails.connect(restApiSails)
+io.sails.autoConnect = false
+socketSails.reconnection = true
+socketSails.reconnectionDelayMax = 5
+
+const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
+
 const vueFront = new Vue({
   el : '#frontAminLTE',
   data : {
@@ -90,7 +99,7 @@ const vueFront = new Vue({
       this.statusChangePassword = response.statusChangePassword
       this.statusChangeAssistance = response.statusChangeAssistance
       this.statusQueueAddAsterisk = response.statusQueueAddAsterisk
-      this.statusAddAgentDashboard = response.statusAddAgentDashboard
+      //this.statusAddAgentDashboard = response.statusAddAgentDashboard
       this.requiredAnnexed = response.requiredAnnexed
       this.hourServer = response.hourServer
       this.textDateServer = response.textDateServer
@@ -117,8 +126,18 @@ const vueFront = new Vue({
       this.getAvatar()
 
       //Cargando registro en Dahsboard
-      if(this.statusAddAgentDashboard === false) socketAsterisk.emit('createUserDashboard', this.getAgentDashboard)
-      else if(vueFront.getUserId) socketAsterisk.emit('createRoom', {agent_user_id : vueFront.getUserId})
+      let responseAddDashboard = await this.sendUrlRequest('/getStatusAddAgentDashboard')
+      if(responseAddDashboard.statusAddAgentDashboard === false) {
+        this.statusAddAgentDashboard = true
+        let dataAddAgentDashboard = await this.sendUrlRequest('/getAgentDashboard')
+        this.getAgentDashboard = dataAddAgentDashboard.statusAddAgentDashboard
+        socketAsterisk.emit('createUserDashboard', this.getAgentDashboard)
+      }
+      else if(vueFront.getUserId) {
+        this.statusAddAgentDashboard = true
+        socketAsterisk.emit('createRoom', {agent_user_id : vueFront.getUserId})
+      }
+
       if(this.statusAddAgentDashboard === '') mostrar_notificacion('warning', 'Tienes problemas con tu usuario, comunicate con el área de sistemas !!!', 'Warning', 0, false, true, 0)
     },
 
@@ -216,6 +235,7 @@ const vueFront = new Vue({
       this.remoteAgentHour = this.hourServer
       this.annexed = 0
       let parameters = this.loadParameters('releasesAnnexed')
+      vueFront.ModalReleasesAnnexed = "modal fade"
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
       loadModule('agents_annexed')
     },
@@ -280,6 +300,10 @@ const vueFront = new Vue({
     checkAssistance : function(){
       let route = (this.assistanceTextModal === 'Entrada')? 'checkAssistance' : 'disconnectAgent'
       this.defineRoute(route)
+      if(route == 'checkAssistance'){
+        this.nextEventId = 11
+        this.nextEventName = 'Login'
+      }
       let parameters = this.loadParameters(route)
       ajaxNodeJs(parameters, this.routeAction, true, 2000)
       this.ModalAssistance = 'modal fade'
@@ -315,13 +339,7 @@ const vueFront = new Vue({
   }
 })
 
-const socketIO = io.connect(restApiSails)
-const socketSails = io.sails.connect(restApiSails)
-io.sails.autoConnect = false
-socketSails.reconnection = true
-socketSails.reconnectionDelayMax = 5
 
-const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
 socketAsterisk.on('connect', function() {
   vueFront.nodejsServerName = 'Servidor Asterisk'
   vueFront.ModalConnectionNodeJs = 'modal fade'
