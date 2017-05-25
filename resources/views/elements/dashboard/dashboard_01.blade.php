@@ -17,7 +17,7 @@
 				@include('elements.dashboard.panels_kpi.agentactivitysummary')
 			</div>
 		</div>
-		<!-- <pre>@{{ $data }}</pre> -->
+		 <pre>@{{ $data }}</pre>
 	</div>
 @endsection
 
