@@ -136,8 +136,8 @@ socket.on('RemoveCallWaiting', dataCallWaiting => {
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
-socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others))
-socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others))
+socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others,'others'))
+socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'AddOther','others'))
 socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'AddOther','others'))
 
 socket.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound))
@@ -156,23 +156,28 @@ AddDataDashboard =  (data, dataDashboard, namePanel, variableVue = '') => {
   dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
 }
 
-updateDataDashboard = (data, dataDashboard) => {
+updateDataDashboard = (data, dataDashboard, namePanel, variableVue = '') => {
   dataDashboard.forEach((item, index) => {
     if (item.agent_name === data.agent_name) {
       if (item.event_id !== data.event_id) {
         data.total_calls = getTotalCalls(data)
         dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
+        dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
       }
       item.agent_annexed = data.agent_annexed
       item.event_name = data.event_name
+      orderDashboard(dataDashboard,variableVue)
     }
   })
 }
 
-removeDataDashboard =  (data, dataDashboard) => {
+removeDataDashboard =  (data, dataDashboard, variableVue = '') => {
   dataDashboard.forEach((item, index) => {
-    if (item.agent_name === data.agent_name) dataDashboard.splice(index, 1)
+    if (item.agent_name === data.agent_name){
+      dataDashboard.splice(index, 1)
+      orderDashboard(dataDashboard,variableVue)
+    }
   })
 }
 
