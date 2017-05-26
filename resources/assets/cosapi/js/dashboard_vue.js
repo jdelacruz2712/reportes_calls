@@ -138,9 +138,9 @@ socket.on('RemoveCallWaiting', dataCallWaiting => {
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
-socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others))
-socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others))
-socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'AddOther'))
+socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others,'others'))
+socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'AddOther','others'))
+socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'AddOther','others'))
 
 socket.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound))
 socket.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound))
@@ -150,30 +150,36 @@ socket.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashb
 socket.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound))
 socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'AddInbound'))
 
-AddDataDashboard = (data, dataDashboard, namePanel) => {
+AddDataDashboard =  (data, dataDashboard, namePanel, variableVue = '') => {
   let index = (dataDashboard.length)
   data.total_calls = getTotalCalls(data)
   dataDashboard.push(data)
+  orderDashboard(dataDashboard,variableVue)
   dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
 }
 
-updateDataDashboard = (data, dataDashboard) => {
+updateDataDashboard = (data, dataDashboard, namePanel, variableVue = '') => {
   dataDashboard.forEach((item, index) => {
     if (item.agent_name === data.agent_name) {
       if (item.event_id !== data.event_id) {
         data.total_calls = getTotalCalls(data)
         dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
+        dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
       }
       item.agent_annexed = data.agent_annexed
       item.event_name = data.event_name
+      orderDashboard(dataDashboard,variableVue)
     }
   })
 }
 
-removeDataDashboard =  (data, dataDashboard) => {
+removeDataDashboard =  (data, dataDashboard, variableVue = '') => {
   dataDashboard.forEach((item, index) => {
-    if (item.agent_name === data.agent_name) dataDashboard.splice(index, 1)
+    if (item.agent_name === data.agent_name){
+      dataDashboard.splice(index, 1)
+      orderDashboard(dataDashboard,variableVue)
+    }
   })
 }
 
@@ -193,4 +199,72 @@ differenceHours = (s) => {
   let hrs = (s - mins) / 60
 
   return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs)
+}
+
+const orderDashboard = async (dataDashboard,variableVue) => {
+  if(variableVue !== ''){
+    let newObject = await orderObjects(dataDashboard, 'agent_name') // Ordena alfabeticamente
+    newObject = await orderObjects(newObject, 'event_id', getRulers('event_id')) //Ordena por regla establecida
+    eval('dashboard.'+ variableVue +'= newObject')
+  }
+}
+
+const orderObjects = (object, column, rulers = '') => {
+  let newObject = []
+  let indexObject = []
+  object.forEach(function (objectPrimary, indexPrimary, arrPrimary) {
+    menorIndex = indexPrimary
+    menorObject = objectPrimary
+    object.forEach((objectSecond, indexSecond, arrSecond) => {
+      if (indexObject.indexOf(menorIndex) < 0) {
+        if (indexObject.indexOf(indexSecond) < 0) {
+          if (menorIndex != indexSecond) {
+            let primervalor = (rulers !== '') ? rulers[menorObject[column]] : menorObject[column]
+            let segundovalor = (rulers !== '') ? rulers[objectSecond[column]] : objectSecond[column]
+            if (primervalor === segundovalor) {
+              if (indexSecond > menorIndex) {
+                menorIndex = menorIndex
+                menorObject = menorObject
+              } else {
+                menorIndex = indexSecond
+                menorObject = objectSecond
+              }
+            } else if (primervalor > segundovalor) {
+              menorIndex = indexSecond
+              menorObject = objectSecond
+            }
+          }
+        }
+      } else {
+        menorIndex = indexSecond
+        menorObject = objectSecond
+      }
+    })
+    indexObject.push(menorIndex)
+    newObject[indexPrimary] = menorObject
+  })
+  return newObject
+}
+
+const getRulers = (action) => {
+  let rulers = ''
+  if (action === 'event_id'){
+    rulers = {
+      '12'  : 1,  // Ring Inbound
+      '16'  : 2,  // Hold Inbound
+      '8'   : 3,  // Inbound
+      '13'  : 4,  // Ring Outbound
+      '17'  : 5,  // Hold Outbound
+      '9'   : 6,  // Outbound
+      '1'   : 7,  // ACD
+      '7'   : 8,  // Gestión BackOffice
+      '2'   : 9,  // Break
+      '4'   : 10, // Refrigerio
+      '3'   : 11, // SSHH
+      '5'   : 12, // Feedback
+      '6'   : 13, // Capacitación
+      '11'  : 14  //Login
+    }
+  }
+  return rulers
 }
