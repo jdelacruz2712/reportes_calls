@@ -20,7 +20,7 @@
                             </a>
                         </div>
 
-                        <div v-if="getListEvent.id === 1  && getEventName === 'Login'">
+                        <div v-if="getListEvent.id == '1'  && getEventName === 'Login'">
                             <div class="col-md-3" data-toggle="tooltip" :title="getListEvent.name" style="margin-bottom: 10px;">
                                 <a href="#" @click="changeStatus(getListEvent.id,getListEvent.name,getListEvent.estado_call_id)">
                                     <span :class=" 'info-box-icon bg-' + getListEvent.color " style="width:100%; height: 100%">
