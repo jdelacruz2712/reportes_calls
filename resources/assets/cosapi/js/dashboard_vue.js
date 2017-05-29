@@ -44,10 +44,12 @@ const dashboard = new Vue({
 
     loadTimeElapsed: function (index, dataDashboard, namePanel) {
       setInterval(async function () {
-        const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
-        const horaActual = (new Date()).getTime()
-        const elapsed = differenceHours(horaActual - horaBD)
-        dataDashboard[index].timeElapsed = elapsed
+        if (dataDashboard[index]){
+          const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
+          const horaActual = (new Date()).getTime()
+          const elapsed = differenceHours(horaActual - horaBD)
+          dataDashboard[index].timeElapsed = elapsed
+        }
       }.bind(this), 1000)
     },
 
@@ -248,20 +250,20 @@ const getRulers = (action) => {
   let rulers = ''
   if (action === 'event_id'){
     rulers = {
-      '12' : 1, // Ring Inbound
-      '16' : 2, // Hold Inbound
-      '8' : 3, // Inbound
-      '13' : 4, // Ring Outbound
-      '17' : 5, // Hold Outbound
-      '9' : 6, // Outbound
-      '1' : 7, // ACD
-      '7' : 8, // Gestión BackOffice
-      '2' : 9, // Break
-      '4' : 10, // Refrigerio
-      '3' : 11, // SSHH
-      '5' : 12, // Feedback
-      '6' : 13, // Capacitación
-      '11' : 14 //Login
+      '12'  : 1,  // Ring Inbound
+      '16'  : 2,  // Hold Inbound
+      '8'   : 3,  // Inbound
+      '13'  : 4,  // Ring Outbound
+      '17'  : 5,  // Hold Outbound
+      '9'   : 6,  // Outbound
+      '1'   : 7,  // ACD
+      '7'   : 8,  // Gestión BackOffice
+      '2'   : 9,  // Break
+      '4'   : 10, // Refrigerio
+      '3'   : 11, // SSHH
+      '5'   : 12, // Feedback
+      '6'   : 13, // Capacitación
+      '11'  : 14  //Login
     }
   }
   return rulers

@@ -231,7 +231,6 @@ const validar_sonido = () => {
 
 // Función que envía parametros a rutas en NodeJS
 const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
-  console.log(parameters)
   $('#myModalLoading').modal('show')
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     $('#myModalLoading').modal('hide')
