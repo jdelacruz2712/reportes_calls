@@ -203,7 +203,7 @@ differenceHours = (s) => {
 
 const orderDashboard = async (dataDashboard,variableVue) => {
   if(variableVue !== ''){
-    let newObject = await orderObjects(dataDashboard, 'agent_name') // Ordena alfabeticamente
+    let newObject = await orderObjects(dataDashboard, 'event_time') // Ordena alfabeticamente
     newObject = await orderObjects(newObject, 'event_id', getRulers('event_id')) //Ordena por regla establecida
     eval('dashboard.'+ variableVue +'= newObject')
   }
