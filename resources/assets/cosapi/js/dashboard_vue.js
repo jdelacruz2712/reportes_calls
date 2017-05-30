@@ -152,7 +152,10 @@ socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.c
 
 AddDataDashboard =  (data, dataDashboard, namePanel, variableVue = '') => {
   let index = (dataDashboard.length)
+  let eventList = getRulers('event_id')
   data.total_calls = getTotalCalls(data)
+  data.color = eventList[data.event_id].color
+  data.icon = eventList[data.event_id].icon
   dataDashboard.push(data)
   orderDashboard(dataDashboard,variableVue)
   dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
@@ -162,13 +165,17 @@ updateDataDashboard = (data, dataDashboard, namePanel, variableVue = '') => {
   dataDashboard.forEach((item, index) => {
     if (item.agent_name === data.agent_name) {
       if (item.event_id !== data.event_id) {
+        let eventList = getRulers('event_id')
         data.total_calls = getTotalCalls(data)
+        data.color = eventList[data.event_id].color
+        data.icon = eventList[data.event_id].icon
         dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
         dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
       }
       item.agent_annexed = data.agent_annexed
       item.event_name = data.event_name
+      item.agent_status = data.agent_status
       orderDashboard(dataDashboard,variableVue)
     }
   })
@@ -219,8 +226,8 @@ const orderObjects = (object, column, rulers = '') => {
       if (indexObject.indexOf(menorIndex) < 0) {
         if (indexObject.indexOf(indexSecond) < 0) {
           if (menorIndex != indexSecond) {
-            let primervalor = (rulers !== '') ? rulers[menorObject[column]] : menorObject[column]
-            let segundovalor = (rulers !== '') ? rulers[objectSecond[column]] : objectSecond[column]
+            let primervalor = (rulers !== '') ? rulers[menorObject[column]].position : menorObject[column]
+            let segundovalor = (rulers !== '') ? rulers[objectSecond[column]].position : objectSecond[column]
             if (primervalor === segundovalor) {
               if (indexSecond > menorIndex) {
                 menorIndex = menorIndex
@@ -250,20 +257,20 @@ const getRulers = (action) => {
   let rulers = ''
   if (action === 'event_id'){
     rulers = {
-      '12'  : 1,  // Ring Inbound
-      '16'  : 2,  // Hold Inbound
-      '8'   : 3,  // Inbound
-      '13'  : 4,  // Ring Outbound
-      '17'  : 5,  // Hold Outbound
-      '9'   : 6,  // Outbound
-      '1'   : 7,  // ACD
-      '7'   : 8,  // Gestión BackOffice
-      '2'   : 9,  // Break
-      '4'   : 10, // Refrigerio
-      '3'   : 11, // SSHH
-      '5'   : 12, // Feedback
-      '6'   : 13, // Capacitación
-      '11'  : 14  //Login
+      '12'  : {'icon' : 'fa fa-phone', 'color' : 'success', 'position' : 1},  // Ring Inbound
+      '16'  : {'icon' : 'fa fa-phone', 'color' : 'success', 'position' : 2},  // Hold Inbound
+      '8'   : {'icon' : 'fa fa-phone', 'color' : 'success', 'position' : 3},  // Inbound
+      '13'  : {'icon' : 'fa fa-phone', 'color' : 'warning', 'position' : 4},  // Ring Outbound
+      '17'  : {'icon' : 'fa fa-phone', 'color' : 'warning', 'position' : 5},  // Hold Outbound
+      '9'   : {'icon' : 'fa fa-phone', 'color' : 'warning', 'position' : 6},  // Outbound
+      '1'   : {'icon' : 'fa fa-phone', 'color' : 'info', 'position' : 7},  // ACD
+      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'danger', 'position' : 8},  // Gestión BackOffice
+      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 9},  // Break
+      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 10}, // Refrigerio
+      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 11}, // SSHH
+      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 12}, // Feedback
+      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 13}, // Capacitación
+      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 14}  //Login
     }
   }
   return rulers
