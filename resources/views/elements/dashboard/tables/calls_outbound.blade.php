@@ -26,11 +26,14 @@
               <template v-for="(outbound, index) in callsOutbound ">
                 <tr>
                   <td> @{{ index + 1 }}</td>
-                  <td> @{{ outbound.agent_annexed }}</td>
-                  <td>@{{ outbound.agent_name }}</td>
                   <td>
-                    <span class="label label-success">
-                      <i class="fa fa-phone" style="padding: 1px;" aria-hidden="true"></i>
+                    <i :class ="((outbound.agent_status == 0 && outbound.event_id != 11 && outbound.agent_role == 'user')? 'fa fa-circle text-green' : outbound.event_id != 11 && outbound.agent_role == 'user'? 'fa fa-circle text-red' : '')"></i>
+                    @{{ outbound.agent_annexed }}
+                  </td>
+                  <td> @{{ outbound.agent_name }}</td>
+                  <td>
+                    <span :class ="'label label-' + outbound.color">
+                      <i :class ="outbound.icon" style="padding: 1px;" aria-hidden="true"></i>
                       @{{ outbound.event_name }}
                     </span>
                   </td>

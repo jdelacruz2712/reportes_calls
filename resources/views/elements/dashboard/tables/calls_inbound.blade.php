@@ -29,24 +29,13 @@
                 <tr>
                   <td>@{{ index + 1 }}</td>
                   <td>
+                    <i :class ="((inbound.agent_status == 0 && inbound.event_id != 11 && inbound.agent_role == 'user')? 'fa fa-circle text-green' : inbound.event_id != 11 && inbound.agent_role == 'user'? 'fa fa-circle text-red' : '')"></i>
                     @{{ inbound.agent_annexed }}
-                    <span class="pull-right-container">
-                      <template v-if="inbound.agent_status == 0  ">
-                        <span class="img img-circle pull-right bg-green">
-                          <i class="fa fa-thumbs-up" style="padding: 3.5px; " aria-hidden="true"></i>
-                        </span>
-                      </template>
-                      <template v-else>
-                        <span class="img img-circle pull-right bg-red">
-                          <i class="fa fa-thumbs-down" style="padding: 3.5px; " aria-hidden="true"></i>
-                        </span>
-                      </template>
-                    </span>
                   </td>
                   <td>@{{ inbound.agent_name }}</td>
                   <td>
-                    <span class="label label-success">
-                      <i class="fa fa-phone" style="padding: 1px;" aria-hidden="true"></i>
+                    <span :class ="'label label-' + inbound.color">
+                      <i :class ="inbound.icon" style="padding: 1px;" aria-hidden="true"></i>
                       @{{ inbound.event_name }}
                     </span>
                   </td>

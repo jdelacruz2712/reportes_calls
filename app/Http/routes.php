@@ -14,6 +14,8 @@ Route::group (['middleware'=>['user']], function(){
         Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);
         Route::post('dashboard_01/getEventKpi'							, ['uses'=>'DashboardController@getEventKpi']);
         Route::post('dashboard_01/getQuantityCalls'                     , ['uses'=>'DashboardController@getQuantityCalls']);
+        Route::post('dashboard_01/panelAgentStatusSummary'              , ['uses'=>'DashboardController@panelAgentStatusSummary']);
+        Route::post('dashboard_01/panelGroupStatistics'                 , ['uses'=>'DashboardController@panelGroupStatistics']);
         Route::get('dashboard_02'   									, ['uses'=>'DashboardController@dashboard_02']);
 
         // Reportes de consolidado de eventos

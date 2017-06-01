@@ -1,17 +1,32 @@
-<div class="box box-success box-solid">
+<div class="box box-primary box-solid">
 	<div class="box-header with-border">
   		<h3 class="box-title">Group Statistics</h3>
 	</div>
 	<!-- /.box-header -->
 	<div class="box-body">
-		<div class="col-md-4">
+        <div class="col-md-12">
+            <ul class="products-list product-list-in-box">
+                <li class="item">
+                    <div class="product-img">
+                        <i class="fa fa-tachometer fa-2x"></i>
+                    </div>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ slaDay }} %</label>
+                        <span class="product-description">
+                           SLA Day
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+		<div class="col-md-6">
             <ul class="products-list product-list-in-box">
 				<li class="item">
                     <div class="product-img">
-                        <i class="fa fa-weixin fa-3x"></i>
+                        <i class="fa fa-weixin fa-2x"></i>
                     </div>
-                    <div class="product-info">
-                        <label>0 %</label>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ percentageAnswer }} %</label>
                         <span class="product-description">
                             % Answer
                         </span>
@@ -19,14 +34,14 @@
                 </li>
             </ul>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-6">
             <ul class="products-list product-list-in-box">
                 <li class="item">
                     <div class="product-img">
-                        <i class="fa fa-times-circle fa-3x"></i>
+                        <i class="fa fa-times-circle fa-2x"></i>
                     </div>
-                    <div class="product-info">
-                        <label>0 %</label>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ percentageUnanswer }} %</label>
                         <span class="product-description">
                             % Unanswer
                         </span>
@@ -34,14 +49,14 @@
                 </li>
             </ul>
         </div>
-		<div class="col-md-4">
+		<div class="col-md-6">
             <ul class="products-list product-list-in-box">
                 <li class="item">
                     <div class="product-img">
-                        <i class="fa fa-clock-o fa-3x"></i>
+                        <i class="fa fa-clock-o fa-2x"></i>
                     </div>
-                    <div class="product-info">
-                        <label>00:00:00</label>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ avgWait }}</label>
                         <span class="product-description">
                             Avg Wait
                         </span>
@@ -49,44 +64,14 @@
                 </li>
             </ul>
         </div>
-		<div class="col-md-4">
+        <div class="col-md-6">
             <ul class="products-list product-list-in-box">
                 <li class="item">
-                    <div class="product-img">
-                        <i class="fa fa-bar-chart fa-3x"></i>
+                    <div class="product-img" >
+                        <i class="fa fa-hourglass-start fa-2x"></i>
                     </div>
-                    <div class="product-info">
-                        <label>0 %</label>
-                        <span class="product-description">
-                            RO %15
-                        </span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-		<div class="col-md-4">
-            <ul class="products-list product-list-in-box">
-                <li class="item">
-                    <div class="product-img">
-                        <i class="fa fa-tachometer fa-3x"></i>
-                    </div>
-                    <div class="product-info">
-                        <label>00:00:00</label>
-                        <span class="product-description">
-                            Service Level Real
-                        </span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-		<div class="col-md-4">
-            <ul class="products-list product-list-in-box">
-                <li class="item">
-                    <div class="product-img">
-                        <i class="fa fa-hourglass-start fa-3x"></i>
-                    </div>
-                    <div class="product-info">
-                        <label>00:00:00</label>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ avgCallDuration }}</label>
                         <span class="product-description">
                             Avg Call Duration
                         </span>
@@ -94,46 +79,31 @@
                 </li>
             </ul>
         </div>
-		<div class="col-md-4">
+		<div class="col-md-6">
             <ul class="products-list product-list-in-box">
                 <li class="item">
                     <div class="product-img">
-                        <i class="fa fa-area-chart fa-3x"></i>
+                        <i class="fa fa-clock-o fa-2x"></i>
                     </div>
-                    <div class="product-info">
-                        <label>0 %</label>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ totalCallDurationInbound }}</label>
                         <span class="product-description">
-                            Avh2 15%
+                            Duration Inbound
                         </span>
                     </div>
                 </li>
             </ul>
         </div>
-		<div class="col-md-4">
+        <div class="col-md-6">
             <ul class="products-list product-list-in-box">
                 <li class="item">
                     <div class="product-img">
-                        <i class="fa fa-clock-o fa-3x"></i>
+                        <i class="fa fa-clock-o fa-2x"></i>
                     </div>
-                    <div class="product-info">
-                        <label>00:00:00</label>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ totalCallDurationOutbound }}</label>
                         <span class="product-description">
-                            Total Call Duration
-                        </span>
-                    </div>
-                </li>
-            </ul>
-        </div>
-        <div class="col-md-4">
-            <ul class="products-list product-list-in-box">
-                <li class="item">
-                    <div class="product-img">
-                        <i class="fa fa-comments-o fa-3x"></i>
-                    </div>
-                    <div class="product-info">
-                        <label>00:00:00</label>
-                        <span class="product-description">
-                            Answered 15s
+                            Duration Outbound
                         </span>
                     </div>
                 </li>

@@ -14,10 +14,15 @@
 				@include('elements.dashboard.tables.other_agents')
 			</div>
 			<div class="col-md-4">
-				@include('elements.dashboard.panels_kpi.agentactivitysummary')
+				<div class="col-md-12">
+					@include('elements.dashboard.panels_kpi.agentactivitysummary')
+				</div>
+				<div class="col-md-12">
+					@include('elements.dashboard.panels_kpi.groupstatistics')
+				</div>
 			</div>
 		</div>
-		 <pre>@{{ $data }}</pre>
+		 <!--<pre>@{{ $data }}</pre>-->
 	</div>
 @endsection
 

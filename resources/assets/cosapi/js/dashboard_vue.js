@@ -8,6 +8,15 @@ const dashboard = new Vue({
     callsWaiting: [],
     others: [],
 
+    agentStatusSummary: [],
+
+    percentageAnswer: '',
+    percentageUnanswer: '',
+    avgWait: '',
+    avgCallDuration: '',
+    totalCallDurationInbound: '',
+    totalCallDurationOutbound: '',
+
     slaDay: '0',
     answered: '0',
     abandoned: '0',
@@ -40,6 +49,8 @@ const dashboard = new Vue({
       await this.loadAnsweredTime()
       await this.loadAbandonedTime()
       await this.loadSlaDay()
+      this.panelAgentStatusSummary()
+      this.panelGroupStatistics()
     },
 
     loadTimeElapsed: function (index, dataDashboard, namePanel) {
@@ -48,15 +59,16 @@ const dashboard = new Vue({
           const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
           const horaActual = (new Date()).getTime()
           const elapsed = differenceHours(horaActual - horaBD)
-          dataDashboard[index].timeElapsed = elapsed
+          if (elapsed != 'NaN:NaN:NaN') dataDashboard[index].timeElapsed = elapsed
+
         }
       }.bind(this), 1000)
     },
 
     getEventTime: function (index, dataDashboard, namePanel) {
-        if (namePanel === 'AddInbound') return dataDashboard[index].inbound_start
-        if (namePanel === 'AddOutbound') return dataDashboard[index].outbound_start
-        if (namePanel === 'AddOther') return dataDashboard[index].event_time
+      if (namePanel === 'callsInbound') return dataDashboard[index].inbound_start
+      if (namePanel === 'callsOutbound') return dataDashboard[index].outbound_start
+      if (namePanel === 'others') return dataDashboard[index].event_time
     },
 
     loadTimeElapsedEncoladas: function (index) {
@@ -110,6 +122,28 @@ const dashboard = new Vue({
 
     loadCallWaiting: function () {
       // this.queue = 15
+    },
+
+    panelAgentStatusSummary : async function (){
+      let response = await this.sendUrlRequest('dashboard_01/panelAgentStatusSummary', '', '')
+      let result = response.message
+      let eventList = getRulers('event_id')
+      result.forEach((item,index) =>{
+        item.color = eventList[item.event_id].color
+        item.icon = eventList[item.event_id].icon
+      })
+      result = await orderObjects(result, 'event_id', eventList) //Ordena por regla establecida
+      this.agentStatusSummary = result
+    },
+
+    panelGroupStatistics : async function (){
+      let response = await this.sendUrlRequest('dashboard_01/panelGroupStatistics', '', '')
+      this.avgWait = response.avgWait
+      this.avgCallDuration = response.avgCallDuration
+      this.percentageAnswer = response.percentageAnswer
+      this.percentageUnanswer = response.percentageUnanswer
+      this.totalCallDurationInbound = response.totalCallDurationInbound
+      this.totalCallDurationOutbound = response.totalCallDurationOutbound
     }
   }
 })
@@ -138,60 +172,79 @@ socket.on('RemoveCallWaiting', dataCallWaiting => {
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
-socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others,'others'))
-socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'AddOther','others'))
-socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'AddOther','others'))
+socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others, 'others'))
+socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'others'))
+socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'others'))
 
-socket.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound))
-socket.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound))
-socket.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound, 'AddOutbound'))
+socket.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socket.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socket.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
 
-socket.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound))
-socket.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound))
-socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'AddInbound'))
+socket.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socket.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
 
-AddDataDashboard =  (data, dataDashboard, namePanel, variableVue = '') => {
+
+isExistDuplicate = (data, dataDashboard) =>{
+  let exist = true
   let index = (dataDashboard.length)
-  let eventList = getRulers('event_id')
-  data.total_calls = getTotalCalls(data)
-  data.color = eventList[data.event_id].color
-  data.icon = eventList[data.event_id].icon
-  dataDashboard.push(data)
-  orderDashboard(dataDashboard,variableVue)
-  dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
+  if(index > 0) dataDashboard.forEach((item, index) => {
+    if (item.agent_name == data.agent_name) exist = false
+  })
+  return exist
 }
 
-updateDataDashboard = (data, dataDashboard, namePanel, variableVue = '') => {
-  dataDashboard.forEach((item, index) => {
+AddDataDashboard = async (data, dataDashboard, namePanel) => {
+  let exist = isExistDuplicate (data, dataDashboard)
+  if(exist){
+    let index = (dataDashboard.length)
+    let eventList = getRulers('event_id')
+    data.color = eventList[data.event_id].color
+    data.icon = eventList[data.event_id].icon
+    dataDashboard.push(data)
+    orderDashboard(dataDashboard,namePanel)
+    dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
+    dataDashboard[index].total_calls = await getTotalCalls(data)
+    dashboard.panelAgentStatusSummary()
+    dashboard.panelGroupStatistics()
+  }
+
+}
+
+updateDataDashboard = (data, dataDashboard, namePanel) => {
+  dataDashboard.forEach( async (item, index) => {
     if (item.agent_name === data.agent_name) {
       if (item.event_id !== data.event_id) {
         let eventList = getRulers('event_id')
-        data.total_calls = getTotalCalls(data)
         data.color = eventList[data.event_id].color
         data.icon = eventList[data.event_id].icon
         dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
         dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
+        dataDashboard[index].total_calls = await getTotalCalls(data)
       }
       item.agent_annexed = data.agent_annexed
       item.event_name = data.event_name
       item.agent_status = data.agent_status
-      orderDashboard(dataDashboard,variableVue)
+      orderDashboard(dataDashboard,namePanel)
     }
   })
+  dashboard.panelAgentStatusSummary()
+  dashboard.panelGroupStatistics()
 }
 
-removeDataDashboard =  (data, dataDashboard, variableVue = '') => {
+removeDataDashboard =  (data, dataDashboard, namePanel ) => {
   dataDashboard.forEach((item, index) => {
     if (item.agent_name === data.agent_name){
       dataDashboard.splice(index, 1)
-      orderDashboard(dataDashboard,variableVue)
+      orderDashboard(dataDashboard,namePanel)
     }
   })
+  dashboard.panelAgentStatusSummary()
 }
 
 getTotalCalls = async (data) => {
-  let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed', data.name_agent)
+  let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed', data.agent_name)
   return response.message
 }
 
@@ -208,11 +261,12 @@ differenceHours = (s) => {
   return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs)
 }
 
-const orderDashboard = async (dataDashboard,variableVue) => {
-  if(variableVue !== ''){
+const orderDashboard = async (dataDashboard,namePanel) => {
+  if(namePanel !== ''){
     let newObject = await orderObjects(dataDashboard, 'event_time') // Ordena alfabeticamente
     newObject = await orderObjects(newObject, 'event_id', getRulers('event_id')) //Ordena por regla establecida
-    eval('dashboard.'+ variableVue +'= newObject')
+    newObject = await orderObjects(newObject, 'agent_role', getRulers('agent_role')) //Ordena por regla establecida
+    eval('dashboard.'+ namePanel +'= newObject')
   }
 }
 
@@ -257,20 +311,31 @@ const getRulers = (action) => {
   let rulers = ''
   if (action === 'event_id'){
     rulers = {
-      '12'  : {'icon' : 'fa fa-phone', 'color' : 'success', 'position' : 1},  // Ring Inbound
-      '16'  : {'icon' : 'fa fa-phone', 'color' : 'success', 'position' : 2},  // Hold Inbound
+      '12'  : {'icon' : 'fa fa-volume-up', 'color' : 'success', 'position' : 1},  // Ring Inbound
+      '16'  : {'icon' : 'fa fa-bell-slash', 'color' : 'danger', 'position' : 2},  // Hold Inbound
       '8'   : {'icon' : 'fa fa-phone', 'color' : 'success', 'position' : 3},  // Inbound
-      '13'  : {'icon' : 'fa fa-phone', 'color' : 'warning', 'position' : 4},  // Ring Outbound
-      '17'  : {'icon' : 'fa fa-phone', 'color' : 'warning', 'position' : 5},  // Hold Outbound
-      '9'   : {'icon' : 'fa fa-phone', 'color' : 'warning', 'position' : 6},  // Outbound
-      '1'   : {'icon' : 'fa fa-phone', 'color' : 'info', 'position' : 7},  // ACD
-      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'danger', 'position' : 8},  // Gestión BackOffice
-      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 9},  // Break
-      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 10}, // Refrigerio
-      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 11}, // SSHH
-      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 12}, // Feedback
-      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 13}, // Capacitación
-      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 14}  //Login
+      '13'  : {'icon' : 'fa fa-volume-up', 'color' : 'primary', 'position' : 4},  // Ring Outbound
+      '17'  : {'icon' : 'fa fa-bell-slash', 'color' : 'danger', 'position' : 5},  // Hold Outbound
+      '9'   : {'icon' : 'fa fa-headphones', 'color' : 'warning', 'position' : 6},  // Outbound
+      '18'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 7},  //Ring Interno
+      '19'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 8},  //Interno
+      '1'   : {'icon' : 'fa fa-fax', 'color' : 'info', 'position' : 9},  // ACD
+      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'primary', 'position' : 10},  // Gestión BackOffice
+      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 11},  // Break
+      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 12}, // Refrigerio
+      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 13}, // SSHH
+      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 14}, // Feedback
+      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 15}, // Capacitación
+      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 16}  //Login
+    }
+  }
+
+  if (action === 'agent_role'){
+    rulers = {
+      'user'       : {'position' : 1},
+      'backoffice' : {'position' : 2},
+      'supervisor' : {'position' : 3},
+      'admin'      : {'position' : 4}
     }
   }
   return rulers

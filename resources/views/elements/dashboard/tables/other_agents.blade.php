@@ -26,7 +26,7 @@
                 <tr>
                   <td>@{{ index + 1 }}</td>
                   <td>
-                    <i :class ="((other.agent_status == 0 && other.event_id != 11)? 'fa fa-circle text-green' : other.event_id != 11 ? 'fa fa-circle text-red' : '')"></i>
+                    <i :class ="((other.agent_status == 0 && other.event_id != 11 && other.agent_role == 'user')? 'fa fa-circle text-green' : other.event_id != 11 && other.agent_role == 'user'? 'fa fa-circle text-red' : '')"></i>
                     @{{ other.agent_annexed }}</td>
                   <td>@{{ other.agent_name }}</td>
                   <td>
@@ -36,7 +36,7 @@
                     </span>
                   </td>
                   <td>@{{ other.timeElapsed }}</td>
-                  <td>@{{ other.agent_total_calls }}</td>
+                  <td>@{{ other.total_calls }}</td>
                 </tr>
               </template>
             </tbody>
