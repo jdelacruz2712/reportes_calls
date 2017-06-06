@@ -317,16 +317,20 @@ const getRulers = (action) => {
       '13'  : {'icon' : 'fa fa-volume-up', 'color' : 'primary', 'position' : 4},  // Ring Outbound
       '17'  : {'icon' : 'fa fa-bell-slash', 'color' : 'danger', 'position' : 5},  // Hold Outbound
       '9'   : {'icon' : 'fa fa-headphones', 'color' : 'warning', 'position' : 6},  // Outbound
-      '18'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 7},  //Ring Interno
-      '19'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 8},  //Interno
-      '1'   : {'icon' : 'fa fa-fax', 'color' : 'info', 'position' : 9},  // ACD
-      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'primary', 'position' : 10},  // Gestión BackOffice
-      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 11},  // Break
-      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 12}, // Refrigerio
-      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 13}, // SSHH
-      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 14}, // Feedback
-      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 15}, // Capacitación
-      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 16}  //Login
+      '18'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 7},  //Ring Inbound Interno
+      '22'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 8},  //Hold Inbound Interno
+      '19'  : {'icon' : 'fa fa-phone', 'color' : 'default', 'position' : 9},  //Inbound Interno
+      '21'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 10},  //Ring Outbound Interno
+      '23'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 11},  //Hold Outbound Interno
+      '20'  : {'icon' : 'fa fa fa-headphones', 'color' : 'default', 'position' : 12},  //Outbound Interno
+      '1'   : {'icon' : 'fa fa-fax', 'color' : 'info', 'position' : 13},  // ACD
+      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'primary', 'position' : 14},  // Gestión BackOffice
+      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 15},  // Break
+      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 16}, // Refrigerio
+      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 17}, // SSHH
+      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 18}, // Feedback
+      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 19}, // Capacitación
+      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 20}  //Login
     }
   }
 
