@@ -231,9 +231,9 @@ const validar_sonido = () => {
 
 // Función que envía parametros a rutas en NodeJS
 const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
-  $('#myModalLoading').modal('show')
+  vueFront.ModalLoading = 'modal show'
   socketSails.get(ruta, parameters, function (resData, jwRes) {
-    $('#myModalLoading').modal('hide')
+    vueFront.ModalLoading = 'modal fade'
     mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
     //Muestra notificaciones al hacer QueueAdd o QueueRemove
     if(resData['DataQueue'] != null) loadMultiNotification(resData,time,parameters)

@@ -24,6 +24,7 @@ const vueFront = new Vue({
     statusAddAgentDashboard : '',
     statusQueueAddAsterisk : false,
     eventStatusPause : '',
+    annexedStatusAsterisk : 0,
     annexed : 0,
     srcAvatar :'default_avatar.png',
 
@@ -374,6 +375,7 @@ socketAsterisk.on('statusAgent',  (data) => {
   vueFront.statusAddAgentDashboard = data.statusAddAgentDashboard
   vueFront.getEventName = data.eventName
   vueFront.getEventId = data.eventId
+  vueFront.annexedStatusAsterisk = data.annexedStatusAsterisk
   vueFront.nextEventId = ''
   vueFront.nextEventName = ''
 })

@@ -10,7 +10,10 @@
       <div  class="pull-left info">
         <input type="hidden"  v-model="getEventId" id="getEventId">
         <p>@{{ getNameComplete }}</p>
-        <a href="#"><i class="fa fa-circle text-success"></i> @{{ getEventName }}</a>
+        <a href="#">
+          <i :class ="((annexedStatusAsterisk == 0 && getEventId != 11 && getRole == 'user')? 'fa fa-circle text-green' : getEventId != 11 && getRole == 'user'? 'fa fa-circle text-red' : '')"></i>
+          @{{ getEventName }}
+        </a>
       </div>
     </div>
 
