@@ -53,9 +53,10 @@ const vueFront = new Vue({
     nextEventName : '',
     routeAction : '/detalle_eventos/registrarDetalle',
 
+    ModalLoading: 'modal fade',
+    ModalAssistance : 'modal fade',
     ModalChangeStatus : 'modal fade',
     ModalReleasesAnnexed : 'modal fade',
-    ModalAssistance : 'modal fade',
     ModalConnectionNodeJs: 'modal fade',
     ModalStandByAssistance: 'modal fade',
 
@@ -346,7 +347,7 @@ socketAsterisk.on('connect', function() {
   vueFront.nodejsServerMessage = 'Acabas de conectar con el Servidor Asterisk'
   console.log('Socket Asterisk connected!')
   if(vueFront.getUserId) socketAsterisk.emit('createRoom', {agent_user_id : vueFront.getUserId})
-});
+})
 
 socketAsterisk.on('connect_error', function(){
   vueFront.nodejsServerName = 'Servidor Asterisk'
@@ -358,14 +359,14 @@ socketAsterisk.on('connect_error', function(){
     if(i === 0) clearInterval(refreshIntervalId)
   },1000)
   console.log('socketAsterisk Connection Failed');
-});
+})
 
 socketAsterisk.on('disconnect', function () {
   vueFront.nodejsServerName = 'Servidor Asterisk'
   vueFront.ModalConnectionNodeJs = 'modal show'
   vueFront.nodejsServerMessage = 'Acabas de perder conexión con el Asterisk !!!'
   console.log('socketAsterisk Disconnected');
-});
+})
 
 // Cambia la etiqueta de estado actual cuando este recibe o realiza un llamada
 socketAsterisk.on('statusAgent',  (data) => {
@@ -379,7 +380,7 @@ socketAsterisk.on('statusAgent',  (data) => {
 
 // Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
 socketSails.on('statusSails', function (data) {
-  $('#myModalLoading').modal('hide')
+  vueFront.ModalLoading = 'modal fade'
   vueFront.getEventName = data.eventName
   vueFront.getEventId = data.eventId
   vueFront.nextEventId = ''
