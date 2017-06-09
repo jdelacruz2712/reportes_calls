@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div :class="ModalReleasesAnnexed"  data-backdrop="static" data-keyboard="false" role="dialog">
+<div :class="ModalReleasesAnnexed"  data-backdrop="static" data-keyboard="false" role="dialog" v-if="ModalReleasesAnnexed !== 'modal fade'">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="panel panel-primary">

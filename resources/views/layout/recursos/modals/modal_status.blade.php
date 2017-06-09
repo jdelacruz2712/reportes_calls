@@ -1,5 +1,5 @@
 <!-- Modal -->
-<div :class="ModalChangeStatus" data-backdrop="static" data-keyboard="false" role="dialog">
+<div :class="ModalChangeStatus" data-backdrop="static" data-keyboard="false" role="dialog" v-if="ModalChangeStatus !== 'modal fade'">
     <div class="modal-dialog">
         <!-- Modal content-->
         <div class="panel panel-primary">
