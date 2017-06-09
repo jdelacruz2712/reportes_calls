@@ -4,7 +4,7 @@
 @section('content')
 	<input id="tokenId" type="hidden" name="_token" value="{{ csrf_token() }}">
 	<p>
-	<div id="dashboard">
+	<div>
 		@include('elements.dashboard.pictures_kpi.index')
 		@include('elements.dashboard.tables.calls_inbound')
 		<div class="row">

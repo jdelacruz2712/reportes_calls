@@ -9,8 +9,11 @@
     {!!Html::style('css/cosapi_dashboard.min.css')!!}
      @yield('css')
   </head>
-  <body >
-    @yield('content')
+  <body>
+    <div id="dashboard">
+      @yield('content')
+      @include('layout.recursos.modals.modal_reconnect')
+    </div>
     {!!Html::script('js/cosapi_dashboard.min.js?version='.date('YmdHis'))!!}
     @yield('scripts')
   </body>
