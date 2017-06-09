@@ -1,5 +1,6 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
-const socket = io.connect(restApiDashboard, { 'forceNew': true })
+const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
+
 const dashboard = new Vue({
   el: '#dashboard',
   data: {
@@ -29,7 +30,11 @@ const dashboard = new Vue({
     answeredSymbol: '',
 
     abandonedSecond: '',
-    answeredSecond: ''
+    answeredSecond: '',
+
+    ModalConnectionNodeJs: 'modal fade',
+    nodejsServerName : '',
+    nodejsServerMessage : ''
   },
   mounted () {
     this.loadMetricasKpi(true)
@@ -154,17 +159,44 @@ const refreshDetailsCalls = () => {
   dashboard.callsOutbound = []
   dashboard.callsWaiting = []
   dashboard.others = []
-  socket.emit('listDataDashboard')
+  socketAsterisk.emit('listDataDashboard')
 }
 
 refreshDetailsCalls()
 
-socket.on('AddCallWaiting', dataCallWaiting => {
+socketAsterisk.on('connect', function() {
+  dashboard.nodejsServerName = 'Servidor Asterisk'
+  dashboard.ModalConnectionNodeJs = 'modal fade'
+  dashboard.nodejsServerMessage = 'Acabas de conectar con el Servidor Asterisk'
+  console.log('Socket Asterisk connected!')
+  refreshDetailsCalls()
+})
+
+socketAsterisk.on('connect_error', function(){
+  dashboard.nodejsServerName = 'Servidor Asterisk'
+  dashboard.ModalConnectionNodeJs = 'modal show'
+  let i = 9
+  let refreshIntervalId  = setInterval(()=> {
+    dashboard.nodejsServerMessage = `Fallo la conexión por el Servidor Asterik volveremos a reintentar en ${i} segundos!!!`
+    i--
+    if(i === 0) clearInterval(refreshIntervalId)
+  },1000)
+  console.log('socketAsterisk Connection Failed');
+})
+
+socketAsterisk.on('disconnect', function () {
+  dashboard.nodejsServerName = 'Servidor Asterisk'
+  dashboard.ModalConnectionNodeJs = 'modal show'
+  dashboard.nodejsServerMessage = 'Acabas de perder conexión con el Asterisk !!!'
+  console.log('socketAsterisk Disconnected');
+})
+
+socketAsterisk.on('AddCallWaiting', dataCallWaiting => {
   dashboard.callsWaiting.push(dataCallWaiting)
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
-socket.on('RemoveCallWaiting', dataCallWaiting => {
+socketAsterisk.on('RemoveCallWaiting', dataCallWaiting => {
   let numberPhone = dataCallWaiting
   dashboard.callsWaiting.forEach((item, index) => {
     if (item.number_phone === numberPhone) dashboard.callsWaiting.splice(index, 1)
@@ -172,17 +204,17 @@ socket.on('RemoveCallWaiting', dataCallWaiting => {
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
-socket.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others, 'others'))
-socket.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'others'))
-socket.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'others'))
+socketAsterisk.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others, 'others'))
+socketAsterisk.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'others'))
+socketAsterisk.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'others'))
 
-socket.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
-socket.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
-socket.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socketAsterisk.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socketAsterisk.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socketAsterisk.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
 
-socket.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
-socket.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
-socket.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socketAsterisk.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socketAsterisk.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socketAsterisk.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
 
 
 isExistDuplicate = (data, dataDashboard) =>{
