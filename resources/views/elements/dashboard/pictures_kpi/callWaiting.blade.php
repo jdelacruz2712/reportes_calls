@@ -1,4 +1,4 @@
-<div class="col-md-2 " id="total_encoladas" v-show="totalCallsWaiting != 0">
+<div class="col-md-2 " id="total_encoladas" v-if="totalCallsWaiting != 0">
     <div class="info-box bg-yellow">
 		<span class="info-box-icon2">
 			<i class="fa fa-sign-out"></i>
