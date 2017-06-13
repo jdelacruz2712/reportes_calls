@@ -227,7 +227,10 @@ isExistDuplicate = (data, dataDashboard) =>{
 }
 
 AddDataDashboard = async (data, dataDashboard, namePanel) => {
+  console.log(namePanel + ' Add')
+  console.log(dataDashboard)
   let exist = isExistDuplicate (data, dataDashboard)
+  console.log(exist)
   if(exist){
     let index = (dataDashboard.length)
     let eventList = getRulers('event_id')
@@ -258,7 +261,7 @@ updateDataDashboard = (data, dataDashboard, namePanel) => {
       item.agent_annexed = data.agent_annexed
       item.event_name = data.event_name
       item.agent_status = data.agent_status
-      orderDashboard(dataDashboard,namePanel)
+      //orderDashboard(dataDashboard,namePanel)
     }
   })
   dashboard.panelAgentStatusSummary()
@@ -266,10 +269,11 @@ updateDataDashboard = (data, dataDashboard, namePanel) => {
 }
 
 removeDataDashboard =  (data, dataDashboard, namePanel ) => {
+  console.log(namePanel + ' Remove')
+  console.log(dataDashboard)
   dataDashboard.forEach((item, index) => {
     if (item.agent_name === data.agent_name){
       dataDashboard.splice(index, 1)
-      orderDashboard(dataDashboard,namePanel)
     }
   })
   dashboard.panelAgentStatusSummary()
@@ -352,17 +356,23 @@ const getRulers = (action) => {
       '18'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 7},  //Ring Inbound Interno
       '22'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 8},  //Hold Inbound Interno
       '19'  : {'icon' : 'fa fa-phone', 'color' : 'default', 'position' : 9},  //Inbound Interno
-      '21'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 10},  //Ring Outbound Interno
-      '23'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 11},  //Hold Outbound Interno
-      '20'  : {'icon' : 'fa fa fa-headphones', 'color' : 'default', 'position' : 12},  //Outbound Interno
-      '1'   : {'icon' : 'fa fa-fax', 'color' : 'info', 'position' : 13},  // ACD
-      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'primary', 'position' : 14},  // Gestión BackOffice
-      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 15},  // Break
-      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 16}, // Refrigerio
-      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 17}, // SSHH
-      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 18}, // Feedback
-      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 19}, // Capacitación
-      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 20}  //Login
+      '24'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 10},  //Ring Inbound Transfer
+      '26'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 11},  //Hold Inbound Transfer
+      '25'  : {'icon' : 'fa fa-phone', 'color' : 'default', 'position' : 12},  //Inbound Transfer
+      '21'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 13},  //Ring Outbound Interno
+      '23'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 14},  //Hold Outbound Interno
+      '20'  : {'icon' : 'fa fa fa-headphones', 'color' : 'default', 'position' : 15},  //Outbound Interno
+      '27'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 10},  //Ring Outbound Transfer
+      '28'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 11},  //Hold Outbound Transfer
+      '29'  : {'icon' : 'fa fa-phone', 'color' : 'default', 'position' : 12},  //Outbound Transfer
+      '1'   : {'icon' : 'fa fa-fax', 'color' : 'info', 'position' : 16},  // ACD
+      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'primary', 'position' : 17},  // Gestión BackOffice
+      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 18},  // Break
+      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 19}, // Refrigerio
+      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 20}, // SSHH
+      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 21}, // Feedback
+      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 22}, // Capacitación
+      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 23},  //Login
     }
   }
 
