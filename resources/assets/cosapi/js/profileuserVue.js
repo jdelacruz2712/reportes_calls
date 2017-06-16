@@ -35,10 +35,12 @@ var vmProfile = new Vue({
     },
     methods:{
         loadData: function() {
+            vueFront.ModalLoading = 'modal show'
             let userId = vueFront.getUserId
             let parameters = { userID: userId }
             this.$http.post('viewUsers',parameters).then(response => {
                 /* Data tabla users */
+                vueFront.ModalLoading = 'modal fade'
                 this.firstName = response.body[0].primer_nombre
                 this.secondName = response.body[0].segundo_nombre
                 this.firstLastName = response.body[0].apellido_paterno
@@ -150,18 +152,18 @@ $('#formPerfil').submit(function(event) {
         },
         success: (data) => {
             vmProfile.loadData()
-            $('#myModalLoading').modal('show')
+            vueFront.ModalLoading = 'modal show'
             if(data === 'Ok'){
                 setTimeout(function() {
                     mostrar_notificacion('success', 'Se edito tu perfil con exito !', 'Success', 2000, false, true)
-                    $('#myModalLoading').modal('hide')
+                    vueFront.ModalLoading = 'modal fade'
                 },1500)
             }else if(data === 'NotImage'){
                 mostrar_notificacion('error', 'Solo esta permitida la subida de imagenes en el avatar', 'Error', 4000, false, true)
-                $('#myModalLoading').modal('hide')
+                vueFront.ModalLoading = 'modal fade'
             }else{
                 mostrar_notificacion('error', 'Error al editar el perfil', 'Error', 2000, false, true)
-                $('#myModalLoading').modal('hide')
+                vueFront.ModalLoading = 'modal fade'
             }
         }
     })

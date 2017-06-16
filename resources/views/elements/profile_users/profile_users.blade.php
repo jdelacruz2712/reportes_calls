@@ -1,4 +1,3 @@
-@include('layout.recursos.modals.modal_loading')
 @include('layout.plugins.css-datepicker')
 <form id="formPerfil" enctype="multipart/form-data" method="POST">
     <input id="tokenId" type="hidden" name="_token" value="{{ csrf_token() }}">
