@@ -262,7 +262,7 @@ updateDataDashboard = (data, dataDashboard, namePanel) => {
       item.agent_annexed = data.agent_annexed
       item.event_name = data.event_name
       item.agent_status = data.agent_status
-      //orderDashboard(dataDashboard,namePanel)
+      orderDashboard(dataDashboard,namePanel)
     }
   })
   dashboard.panelAgentStatusSummary()
