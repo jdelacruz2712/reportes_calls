@@ -159,6 +159,7 @@ const refreshDetailsCalls = () => {
   dashboard.callsOutbound = []
   dashboard.callsWaiting = []
   dashboard.others = []
+  socketAsterisk.emit('createRoomDashboard',{nameProyect : nameProyecto})
   socketAsterisk.emit('listDataDashboard')
 }
 
