@@ -180,7 +180,7 @@ class IncomingCallsController extends CosapiController
             $audio_name     = '&nameaudio='.$view['telephone'].'-'.$vdn.'-'.$day->format('dmY').'-';
             $proyecto       = '&proyect='.getenv('AUDIO_PROYECT');
             $hora           = '&hour='.$hour;
-            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
+            $route_complete = 'http://'.$_SERVER['HTTP_HOST'].'/script_php/descargar_audio.php?'.$url.$audio_name.$proyecto.$hora;
             $download       = '<center><a target="_blank" href="'.$route_complete.'"><i class="fa fa-download" aria-hidden="true"></i></a></center>';
 
             if($bronswer["browser"] == 'FIREFOX'){
