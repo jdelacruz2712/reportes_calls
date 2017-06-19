@@ -6,6 +6,8 @@ use Cosapi\Models\Anexo;
 use Cosapi\Models\Cdr;
 use Cosapi\Models\Kpis;
 use Cosapi\Models\Queue_Log;
+use Cosapi\Models\User;
+use Cosapi\Models\UsersProfile;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
@@ -20,6 +22,25 @@ class DashboardController extends IncomingCallsController
   public function dashboard_01()
   {
     return view('elements/dashboard/dashboard_01');
+  }
+
+  public function getListProfile(Request $request)
+  {
+      try {
+        $listProfile = [];
+        $usersProfile = AgentOnline::select()
+            ->leftJoin('users', 'agent_online.agent_user_id', '=', 'users.id')
+            ->leftJoin('users_profile', 'users.id', '=', 'users_profile.user_id')
+            ->get()->toArray();
+        foreach ($usersProfile as $users){
+          $listProfile[$users['agent_user_id']]['avatar'] = ($users['avatar'] == null)? 'default_avatar.png' : $users['avatar'];
+          $listProfile[$users['agent_user_id']]['nameComplete'] = $users['primer_nombre'].' '.$users['apellido_paterno'];
+          $listProfile[$users['agent_user_id']]['role'] = $users['role'];
+        }
+        return response()->json(['message' => $listProfile], 200);
+      } catch (\Exception $e) {
+        return response()->json(['message' => $e->getMessage()], 500);
+      }
   }
 
   public function getEventKpi(Request $request){
@@ -60,7 +81,6 @@ class DashboardController extends IncomingCallsController
   }
 
   public function getQuantityCalls(Request $request){
-
     if($request->type){
       try {
         $query_calls = $this->query_calls(date('Y-m-d').' - '.date('Y-m-d'),$request->type,$request->time);
@@ -122,10 +142,10 @@ class DashboardController extends IncomingCallsController
         $timeInQueue += $Queue_Log[$i]['timeInQueue'];
         $totalReceived += $Queue_Log[$i]['quantityEvent'];
       }
-      $avgWait = $timeInQueue/($Answer + $Unanswer);
-      $avgCallDuratioInbound = $totalCallDurationInbound/($Answer);
-      $percentageAnswer = ($Answer * 100) / $totalReceived;
-      $percentageUnanswer = ($Unanswer * 100) / $totalReceived;
+      $avgWait = (($Answer + $Unanswer) != 0) ? $timeInQueue/($Answer + $Unanswer) : 0;
+      $avgCallDuratioInbound = ($Answer != 0) ? $totalCallDurationInbound/($Answer) : 0;
+      $percentageAnswer = ($totalReceived != 0) ? ($Answer * 100) / $totalReceived : 0;
+      $percentageUnanswer = ($totalReceived != 0)?($Unanswer * 100) / $totalReceived : 0;
 
       return response()->json([
           'avgWait' => conversorSegundosHoras(intval($avgWait),false),

@@ -14,8 +14,8 @@
             <thead>
               <tr>
                 <th>#</th>
-                <th>Annexed</th>
                 <th>Agent</th>
+                <th>Annexed</th>
                 <th>Evento</th>
                 <th>Total Duration</th>
                 <th>Total Calls</th>
@@ -25,10 +25,20 @@
               <template v-for="(other, index) in others ">
                 <tr>
                   <td>@{{ index + 1 }}</td>
+                  <td class="products-list product-list-in-box">
+                    <div class="product-img">
+                      <img :src="'storage/' + other.avatar" alt="user-img" class="img-circle">
+                    </div>
+                    <div class="product-info" style="text-align: left">
+                      @{{ other.nameComplete }}
+                      <small class="product-description">
+                        <i :class ="((other.agent_status == 0 && other.event_id != 11 && other.agent_role == 'user')? 'fa fa-circle text-green' : other.event_id != 11 && other.agent_role == 'user'? 'fa fa-circle text-red' : '')"></i>
+                        @{{  other.role.charAt(0).toUpperCase() + other.role.slice(1) }}
+                      </small>
+                    </div>
+                  </td>
                   <td>
-                    <i :class ="((other.agent_status == 0 && other.event_id != 11 && other.agent_role == 'user')? 'fa fa-circle text-green' : other.event_id != 11 && other.agent_role == 'user'? 'fa fa-circle text-red' : '')"></i>
                     @{{ other.agent_annexed }}</td>
-                  <td>@{{ other.agent_name }}</td>
                   <td>
                     <span :class ="'label label-' + other.color">
                       <i :class ="other.icon" style="padding: 1px;" aria-hidden="true"></i>

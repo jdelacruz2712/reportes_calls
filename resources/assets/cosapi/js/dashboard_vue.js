@@ -10,6 +10,7 @@ const dashboard = new Vue({
     others: [],
 
     agentStatusSummary: [],
+    listProfileUsers : [],
 
     percentageAnswer: '',
     percentageUnanswer: '',
@@ -38,6 +39,7 @@ const dashboard = new Vue({
   },
   mounted () {
     this.loadMetricasKpi(true)
+    this.loadListProfile()
   },
   methods: {
     loadMetricasKpi: async function (viewLoad) {
@@ -125,6 +127,12 @@ const dashboard = new Vue({
       if (answered !== 0) this.slaDay = ((answeredTime * 100) / answered).toFixed(2)
     },
 
+    loadListProfile: async function () {
+      let response = await this.sendUrlRequest('dashboard_01/getListProfile', '')
+      this.listProfileUsers = response.message
+      await refreshDetailsCalls()
+    },
+
     loadCallWaiting: function () {
       // this.queue = 15
     },
@@ -163,14 +171,13 @@ const refreshDetailsCalls = () => {
   socketAsterisk.emit('listDataDashboard')
 }
 
-refreshDetailsCalls()
 
 socketAsterisk.on('connect', function() {
   dashboard.nodejsServerName = 'Servidor Asterisk'
   dashboard.ModalConnectionNodeJs = 'modal fade'
   dashboard.nodejsServerMessage = 'Acabas de conectar con el Servidor Asterisk'
   console.log('Socket Asterisk connected!')
-  refreshDetailsCalls()
+  dashboard.loadListProfile()
 })
 
 socketAsterisk.on('connect_error', function(){
@@ -228,15 +235,13 @@ isExistDuplicate = (data, dataDashboard) =>{
 }
 
 AddDataDashboard = async (data, dataDashboard, namePanel) => {
-  console.log(namePanel + ' Add')
-  console.log(dataDashboard)
   let exist = isExistDuplicate (data, dataDashboard)
-  console.log(exist)
   if(exist){
     let index = (dataDashboard.length)
     let eventList = getRulers('event_id')
     data.color = eventList[data.event_id].color
     data.icon = eventList[data.event_id].icon
+    data = addInformationProfile(data)
     dataDashboard.push(data)
     orderDashboard(dataDashboard,namePanel)
     dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
@@ -254,6 +259,7 @@ updateDataDashboard = (data, dataDashboard, namePanel) => {
         let eventList = getRulers('event_id')
         data.color = eventList[data.event_id].color
         data.icon = eventList[data.event_id].icon
+        data = addInformationProfile(data)
         dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
         dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
@@ -269,9 +275,14 @@ updateDataDashboard = (data, dataDashboard, namePanel) => {
   dashboard.panelGroupStatistics()
 }
 
+addInformationProfile = (data) =>{
+  data.avatar = dashboard.listProfileUsers[data.agent_user_id]['avatar']
+  data.nameComplete = dashboard.listProfileUsers[data.agent_user_id]['nameComplete']
+  data.role = dashboard.listProfileUsers[data.agent_user_id]['role']
+  return data
+}
+
 removeDataDashboard =  (data, dataDashboard, namePanel ) => {
-  console.log(namePanel + ' Remove')
-  console.log(dataDashboard)
   dataDashboard.forEach((item, index) => {
     if (item.agent_name === data.agent_name){
       dataDashboard.splice(index, 1)

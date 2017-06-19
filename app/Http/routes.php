@@ -12,6 +12,7 @@ Route::group (['middleware'=>['user']], function(){
 
         // Dashboard
         Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);
+        Route::post('dashboard_01/getListProfile'						, ['uses'=>'DashboardController@getListProfile']);
         Route::post('dashboard_01/getEventKpi'							, ['uses'=>'DashboardController@getEventKpi']);
         Route::post('dashboard_01/getQuantityCalls'                     , ['uses'=>'DashboardController@getQuantityCalls']);
         Route::post('dashboard_01/panelAgentStatusSummary'              , ['uses'=>'DashboardController@panelAgentStatusSummary']);
