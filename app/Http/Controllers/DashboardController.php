@@ -28,14 +28,14 @@ class DashboardController extends IncomingCallsController
   {
       try {
         $listProfile = [];
-        $usersProfile = AgentOnline::select()
-            ->leftJoin('users', 'agent_online.agent_user_id', '=', 'users.id')
+        $usersProfile = User::select(DB::raw('users.id as id, users.primer_nombre as primer_nombre, users.apellido_paterno as apellido_paterno, users.role as role, users_profile.avatar as avatar'))
+            ->leftJoin('agent_online', 'agent_online.agent_user_id', '=', 'users.id')
             ->leftJoin('users_profile', 'users.id', '=', 'users_profile.user_id')
             ->get()->toArray();
         foreach ($usersProfile as $users){
-          $listProfile[$users['agent_user_id']]['avatar'] = ($users['avatar'] == null)? 'default_avatar.png' : $users['avatar'];
-          $listProfile[$users['agent_user_id']]['nameComplete'] = $users['primer_nombre'].' '.$users['apellido_paterno'];
-          $listProfile[$users['agent_user_id']]['role'] = $users['role'];
+          $listProfile[$users['id']]['avatar'] = ($users['avatar'] == null)? 'default_avatar.png' : $users['avatar'];
+          $listProfile[$users['id']]['nameComplete'] = $users['primer_nombre'].' '.$users['apellido_paterno'];
+          $listProfile[$users['id']]['role'] = $users['role'];
         }
         return response()->json(['message' => $listProfile], 200);
       } catch (\Exception $e) {
