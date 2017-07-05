@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 class DetalleEventos extends Model
 {
     protected $connection   = 'laravel';
-    protected $table 		= 'detalle_eventos';
+    protected $table 		    = 'detalle_eventos';
 
 
     public function evento(){
