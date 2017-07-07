@@ -206,7 +206,7 @@ class CosapiController extends Controller
                                         ->where('estado_id','=','1')
                                         ->orderBy('primer_nombre')
                                         ->orderBy('apellido_paterno')
-                                        ->orderBy('apellido_paterno')
+                                        ->orderBy('apellido_materno')
                                         ->get()
                                         ->toArray();
         return $Users;
@@ -287,14 +287,16 @@ class CosapiController extends Controller
      * @return array
      */
     protected function UltimateEventLogin(){
-        $users      = DetalleEventos::Select(DB::raw('count(*) as cant_event,id,date_really,fecha_evento'))
+        $users      = DetalleEventos::Select(DB::raw('id,date_really,fecha_evento'))
             ->where('user_id','=',$this->UserId)
             ->where('evento_id','=',11)
-            ->where(DB::raw('DATE(fecha_evento)'),'=',date('Y-m-d'))
+            ->where(DB::raw('CONVERT(varchar(10),fecha_evento,120)'),'=',date('Y-m-d'))
             ->orderBy('id', 'asc')
             ->get();
+
+
         foreach ($users as $user) {
-            $cant_event     = $user->cant_event;
+            $cant_event     = count($users);
             $date_really    = $user->date_really;
             $fecha_evento   = $user->fecha_evento;
             $id             = $user->id;
@@ -307,8 +309,8 @@ class CosapiController extends Controller
      * [Funcion para obtener el tamaño de los anexos]
      */
     protected function lengthAnnexed(){
-        $lengthAnnexed = Anexo::select(DB::raw('LENGTH(name) AS annexed_length'))
-                                ->groupBy(DB::raw('LENGTH(name)'))
+        $lengthAnnexed = Anexo::select(DB::raw('LEN(name) AS annexed_length'))
+                                ->groupBy(DB::raw('LEN(name)'))
                                 ->get()
                                 ->toArray();
         return $lengthAnnexed;

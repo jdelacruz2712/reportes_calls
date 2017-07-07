@@ -52,7 +52,7 @@ return [
             'prefix'   => '',
         ],
         'mysql' => [
-            'driver'    => 'mysql',
+            'driver'    => 'sqlsrv',
             'host'      => env('LARAVEL_HOST', 'localhost'),
             'database'  => env('LARAVEL_DATABASE', 'forge'),
             'username'  => env('LARAVEL_USERNAME', 'forge'),

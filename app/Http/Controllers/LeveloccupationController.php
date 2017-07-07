@@ -67,7 +67,7 @@ class LeveloccupationController extends CosapiController
 
         $query_detalle_eventos          = DetalleEventosHistory::Select_fechamod()
                                                     ->with('evento')
-                                                    ->whereBetween(DB::raw("DATE(fecha_evento)"),$array_day_consult)
+                                                    ->whereBetween(DB::raw("CONVERT(varchar(10),fecha_evento,120) "),$array_day_consult)
                                                     ->OrderBy('user_id', 'asc')
                                                     ->OrderBy('fecha_evento', 'asc')
                                                     ->get()->toArray();

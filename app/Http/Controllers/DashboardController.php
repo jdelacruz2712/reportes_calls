@@ -64,7 +64,7 @@ class DashboardController extends IncomingCallsController
 
         $answered             = Queue_Log::select()
                                 ->whereIn('event',$event)
-                                ->where(DB::raw('DATE(datetime)'),date('Y-m-d'))
+                                ->where(DB::raw(' CONVERT(varchar(10),datetime,120)'),date('Y-m-d'))
                                 ->filtro_time($metrica)
                                 ->count();
 
@@ -115,7 +115,7 @@ class DashboardController extends IncomingCallsController
       $percentageUnanswer = 0;
 
       $Queue_Log = Queue_Log::select(DB::raw('event, SUM(ABS(info1)) as timeInQueue, SUM(ABS(info2)) AS timeCallDuration, count(1) AS quantityEvent '))
-                                  ->where(DB::raw('DATE(datetime)'),date('Y-m-d'))
+                                  ->where(DB::raw('CONVERT(varchar(10),datetime,120)'),date('Y-m-d'))
                                   ->groupBy('event')
                                   ->get()
                                   ->toArray();
@@ -124,7 +124,7 @@ class DashboardController extends IncomingCallsController
       $range_annexed          = Anexo::select('name')->where('estado_id','1')->get()->toArray();
       $tamano_anexo           = $this->lengthAnnexed();
       $OutgoingCallsController   = Cdr::Select(DB::raw('SUM(billsec) AS billsec'))
-                                    ->whereIn(DB::raw('LENGTH(src)'),$tamano_anexo)
+                                    ->whereIn(DB::raw('LEN(src)'),$tamano_anexo)
                                     ->where('dst','not like','*%')
                                     ->where('disposition','=','ANSWERED')
                                     ->where('lastapp','=','Dial')

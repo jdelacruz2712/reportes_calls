@@ -133,7 +133,7 @@ class EventsAgentController extends CosapiController
     {
         list($fecha_inicial,$fecha_final) = explode(' - ', $fecha_evento);
 
-        $query_event_consolidated = DB::select('CALL sp_get_consolidated_events ("'.$fecha_inicial.'","'.$fecha_final.'")');
+        $query_event_consolidated = DB::select('Exec sp_get_consolidated_events "'.$fecha_inicial.'", "'.$fecha_final.'"');
 
         return $query_event_consolidated;
     }
@@ -239,8 +239,8 @@ class EventsAgentController extends CosapiController
                             ->filtro_user_rol($rol,$user_id)
                             ->filtro_days($days)
                             ->OrderBy(DB::raw('user_id'), 'asc')
-                            ->OrderBy(DB::raw('DATE(fecha_evento)'), 'asc')
-                            ->OrderBy(DB::raw('TIME(fecha_evento)'), 'asc')
+                            ->OrderBy(DB::raw('CONVERT(varchar(10),fecha_evento,120) '), 'asc')
+                            ->OrderBy(DB::raw('CONVERT(varchar,fecha_evento,108)'), 'asc')
                             ->get()
                             ->toArray();
         return $events_presents;
@@ -258,8 +258,8 @@ class EventsAgentController extends CosapiController
                             ->filtro_user_rol($rol,$user_id)
                             ->filtro_days($days)
                             ->OrderBy(DB::raw('user_id'), 'asc')
-                            ->OrderBy(DB::raw('DATE(fecha_evento)'), 'asc')
-                            ->OrderBy(DB::raw('TIME(fecha_evento)'), 'asc')
+                            ->OrderBy(DB::raw('CONVERT(varchar(10),fecha_evento,120) '), 'asc')
+                            ->OrderBy(DB::raw('CONVERT(varchar,fecha_evento,108)'), 'asc')
                             ->get()
                             ->toArray();
         return $events_history;

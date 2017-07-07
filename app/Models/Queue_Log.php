@@ -36,7 +36,7 @@ class Queue_Log extends Model
 
         if( ! empty($days))
         {
-            return    $query->whereBetween(DB::raw("DATE(datetime)"),$days);
+            return    $query->whereBetween(DB::raw("CONVERT(varchar(10),datetime,120)"),$days);
         }
 
     }
@@ -44,7 +44,9 @@ class Queue_Log extends Model
 
     public function scopeSelect_fechamod($query,$rank_hour = 30)
     {
-        return $query->Select(DB::raw("*,DATE(datetime) as fechamod, TIME(datetime) AS timemod,  DATE_FORMAT((DATE_SUB(DATETIME, INTERVAL ( MINUTE(DATETIME)%$rank_hour )MINUTE)), '%H:%i') AS hourmod, DATE_FORMAT((DATE_SUB(DATE_FORMAT(DATE_ADD(DATETIME, INTERVAL info2 SECOND), '%Y-%m-%d %H:%i:%s'),INTERVAL ( MINUTE( DATE_FORMAT(DATE_ADD(DATETIME, INTERVAL info2 SECOND), '%Y-%m-%d %H:%i:%s'))%$rank_hour) MINUTE)), '%H:%i') AS hour_final " ));
+        return $query->Select(DB::raw("*,CONVERT(varchar(10),datetime,120) as fechamod, CONVERT(varchar,datetime,108) AS timemod,
+        CONVERT(varchar(5),DATEADD(minute, (DATEPART(n,datetime)%$rank_hour) * -1 , datetime), 108) AS hourmod, 
+        CONVERT(varchar(5), DATEADD(minute, (DATEPART (n, DATEADD(SECOND, + Cast(info2 as INT) , datetime) ) %$rank_hour) * -1, DATEADD(SECOND, + Cast(info2 as INT) , datetime)	) , 108) AS hour_final " ));
     }
 
 
@@ -53,7 +55,7 @@ class Queue_Log extends Model
 
         if($hours != '')
         {
-            return    $query->where(DB::raw("DATE_FORMAT((DATE_SUB(DATETIME, INTERVAL ( MINUTE(DATETIME)%30 )MINUTE)), '%H:%i')" ),'like',$hours);
+            return    $query->where(DB::raw("CONVERT(varchar(5), DATEADD(minute, DATEPART(n,DATETIME)%30 * -1, DATETIME), 108))" ),'like',$hours);
         }
 
     }
