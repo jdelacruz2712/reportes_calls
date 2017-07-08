@@ -242,7 +242,9 @@ class UserController extends CosapiController
                         'email'            => $request->email,
                         'password'         => Hash::make($request->nuevaContraseña),
                         'role'             => $request->role,
-                        'estado_id'        => 1
+                        'estado_id'        => 1,
+                        'created_at'       => $this->MostrarFechaActual(),
+                        'updated_at'       => $this->MostrarFechaActual()
                     ]);
 
                 return (string)$resultado;
