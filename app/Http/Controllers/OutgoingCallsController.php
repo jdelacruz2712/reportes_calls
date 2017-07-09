@@ -73,7 +73,7 @@ class OutgoingCallsController extends CosapiController
     protected function query_calls_outgoing($fecha_evento){
 
         $days                   = explode(' - ', $fecha_evento);
-        $range_annexed          = Anexo::select('name')->where('estado_id','1')->get()->toArray();
+        $range_annexed          = Anexo::select('name')->get()->toArray();
         $tamano_anexo           = $this->lengthAnnexed();
         $query_calls_outgoing   = Cdr::Select()
                                     ->filtro_user_rol($this->UserRole,$this->UserSystem)
