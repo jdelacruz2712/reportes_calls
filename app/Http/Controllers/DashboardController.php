@@ -94,7 +94,7 @@ class DashboardController extends IncomingCallsController
 
   public function panelAgentStatusSummary (Request $request){
     try{
-      $AgentOnline = AgentOnline::select(DB::raw('event_id, event_name, count(1) as quantity'))->groupBy('event_name')->get()->toArray();
+      $AgentOnline = AgentOnline::select(DB::raw('event_id, event_name, count(1) as quantity'))->groupBy('event_id', 'event_name')->get()->toArray();
       return response()->json(['message' => $AgentOnline], 200);
     }catch (\Exception $e){
       return response()->json(['message' => $e->getMessage()], 500);
