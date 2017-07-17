@@ -393,7 +393,9 @@ const getRulers = (action) => {
       'user'       : {'position' : 1},
       'backoffice' : {'position' : 2},
       'supervisor' : {'position' : 3},
-      'admin'      : {'position' : 4}
+      'admin'      : {'position' : 4},
+      'cliente'    : {'position' : 5},
+      'calidad'    : {'position' : 6}
     }
   }
   return rulers

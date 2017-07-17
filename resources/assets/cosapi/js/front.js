@@ -124,6 +124,8 @@ const changeRol = (userId) => {
       '<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>'+
       '<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>'+
       '<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>'+
+      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="calidad">Calidad</center></div>'+
+      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="cliente">Cliente</center></div>'+
       '</div>'+
       '<br>'+
       '<b>Nota :</b> Utilizar esta opcion siempre y cuando el usuario no se encuentre en una cola.'
@@ -357,6 +359,8 @@ function createUser () {
       '<option value="user">Usuario</option>' +
       '<option value="backoffice">BackOffice</option>' +
       '<option value="supervisor">Supervisor</option>' +
+      '<option value="cliente">Cliente</option>' +
+      '<option value="calidad">Calidad</option>' +
       '</select>' +
       '</div>' +
       '</div>' +
@@ -428,7 +432,7 @@ function createUser () {
  * [RoleTableHide description]
  * @return {Array} [Los roles con el cual me ocultaran las columnas]
  */
-const RoleTableHide = () =>  ['user']
+const RoleTableHide = () =>  ['user','cliente']
 
 // Función para asignar o liberar anexo en base al rol
 const assignAnexxed = (annexed,userId,username) => {

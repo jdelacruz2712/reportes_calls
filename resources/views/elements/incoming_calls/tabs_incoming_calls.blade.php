@@ -30,8 +30,8 @@
                     <th>Duration</th>
                     <th>Action</th>
                     <th>Wait Time</th>
-                    <th>Download</th>
-                    <th>Listen</th>
+                    <th><i class="fa fa-download"   aria-hidden="true"></i> Download</th>
+                    <th><i class="fa fa-play"       aria-hidden="true"></i> Listen</th>
                 </tr>
                 </thead>
             </table>
@@ -39,9 +39,10 @@
     </div>
 </div>
 
+
 <script type="text/javascript">
 $(document).ready(function(){
     show_tab_incoming('calls_completed')
-    //DataTableHide('table-incoming',[8,9],'{{Session::get('UserRole')}}')
+    DataTableHide('table-incoming',[8,9],'{{Session::get('UserRole')}}')
 })
 </script>

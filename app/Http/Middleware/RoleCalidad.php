@@ -6,8 +6,9 @@ use Closure;
 use Illuminate\Auth\Guard;
 use Illuminate\Support\Facades\Auth;
 
-class RoleUser
+class RoleCalidad
 {
+
     protected $auth;
 
     public function __construct(Guard $auth)
@@ -24,15 +25,7 @@ class RoleUser
      */
     public function handle($request, Closure $next)
     {
-        if(
-            Auth::check() && (
-                Auth::user()->role == 'user'                ||
-                Auth::user()->role == 'supervisor'          ||
-                Auth::user()->role == 'admin'               ||
-                Auth::user()->role == 'cliente'             ||
-                Auth::user()->role == 'calidad'             ||
-                Auth::user()->role == 'backoffice'
-            )) {
+        if(Auth::check() && (Auth::user()->role == 'cliente' || Auth::user()->role == 'admin' || Auth::user()->role == 'backoffice' || Auth::user()->role == 'calidad' || Auth::user()->role == 'supervisor')) {
             return $next($request);
         }
         $request->session()->flash('alert-danger','Usted no cuenta con los permisos necesarios para este recurso');
