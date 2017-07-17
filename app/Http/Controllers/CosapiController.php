@@ -252,12 +252,11 @@ class CosapiController extends Controller
      * @param $evento_id : El id del evento de pausa que acciono el agente via web.
      * @param $user_id   : Capturar el ID del usuario conectado.
      */
-    public function register_event($evento_id,$user_id,$anexo = '',$fecha_evento = '',$observaciones = '',$date_really ='')
+    public function register_event($evento_id, $user_id, $user_rol, $anexo = '', $fecha_evento = '', $observaciones = '', $date_really ='')
     {
-
         /** Guarda Eventos  */
-        if($fecha_evento == '')     { $fecha_evento = Carbon::now(); }else{ $fecha_evento = $fecha_evento; }
-        if($date_really  == null)   { $date_really  = null; }else{ $date_really  = Carbon::now(); }
+        if($fecha_evento == '')     { $fecha_evento = Carbon::now(); } else { $fecha_evento = $fecha_evento; }
+        if($date_really  == null)   { $date_really  = null; } else { $date_really  = Carbon::now(); }
 
         \DB::table('detalle_eventos')->insert(array(
             'evento_id'     => $evento_id,
@@ -266,7 +265,8 @@ class CosapiController extends Controller
             'date_really'   => $date_really,
             'anexo'         => $anexo,
             'observaciones' => $observaciones,
-            'ip_cliente'    => $_SERVER['REMOTE_ADDR']
+            'ip_cliente'    => $_SERVER['REMOTE_ADDR'],
+            'user_rol'      => $user_rol
         ));
 
     }
