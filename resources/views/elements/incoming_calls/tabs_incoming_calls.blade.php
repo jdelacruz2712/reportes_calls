@@ -45,4 +45,8 @@ $(document).ready(function(){
     show_tab_incoming('calls_completed')
     DataTableHide('table-incoming',[8,9],'{{Session::get('UserRole')}}')
 })
+
+$('.nav-tabs > li').click(function() {
+    DataTableHide('table-incoming',[8,9],'{{Session::get('UserRole')}}')
+})
 </script>
