@@ -52,7 +52,7 @@ return [
             'prefix'   => '',
         ],
         'mysql' => [
-            'driver'    => 'mysql',
+            'driver'    => env('LARAVEL_DRIVER', 'sqlite'),
             'host'      => env('LARAVEL_HOST', 'localhost'),
             'database'  => env('LARAVEL_DATABASE', 'forge'),
             'username'  => env('LARAVEL_USERNAME', 'forge'),
@@ -63,7 +63,7 @@ return [
             'strict'    => false,
         ],
         'laravel' => [
-            'driver'    => 'mysql',
+            'driver'    => env('LARAVEL_DRIVER', 'sqlite'),
             'host'      => env('LARAVEL_HOST', 'localhost'),
             'database'  => env('LARAVEL_DATABASE', 'forge'),
             'username'  => env('LARAVEL_USERNAME', 'forge'),
@@ -74,7 +74,7 @@ return [
             'strict'    => false,
         ],
         'sapia' => [
-            'driver'    => 'mysql',
+            'driver'    => env('SAPIA_DRIVER', 'sqlite'),
             'host'      => env('SAPIA_HOST', 'localhost'),
             'database'  => env('SAPIA_DATABASE', 'forge'),
             'username'  => env('SAPIA_USERNAME', 'forge'),
