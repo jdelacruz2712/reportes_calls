@@ -105,10 +105,10 @@ class IncomingCallsController extends CosapiController
 
         switch($events){
             case 'calls_completed' :
-                $events             = array ('COMPLETECALLER', 'COMPLETEAGENT', 'TRANSFER');
+                $events             = array ('COMPLETECALLER', 'COMPLETEAGENT', 'TRANSFER', 'BLINDTRANSFER');
             break;
             case 'calls_transfer' :
-                $events             = array ('TRANSFER');
+                $events             = array ('TRANSFER', 'BLINDTRANSFER');
             break;
             case 'calls_abandone' :
                 $events             = array ('ABANDON');
@@ -137,6 +137,9 @@ class IncomingCallsController extends CosapiController
 
             switch ($query_call['event']) {
                 case 'TRANSFER':
+                    $action = 'Transferido a '.$query_call['url'];
+                    break;
+                case 'BLINDTRANSFER':
                     $action = 'Transferido a '.$query_call['url'];
                     break;
                 case 'ABANDON':
