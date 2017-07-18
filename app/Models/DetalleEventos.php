@@ -37,7 +37,7 @@ class DetalleEventos extends Model
     public function scopeFiltro_user_rol($query,$rol,$users)
     {
 
-        if( $rol == 'user')
+        if( $rol == 'user' || $rol == 'backoffice')
         {
             return    $query->where('user_id','=',$users);
         }
