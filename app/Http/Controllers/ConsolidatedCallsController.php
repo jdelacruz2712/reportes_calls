@@ -178,29 +178,31 @@ class ConsolidatedCallsController extends CosapiController
         $time_standar = array(10,15,20,30);
         $Consolidated = [];
         foreach ($calls_inbound as $calls) {
-            
-            
-                if(isset($Consolidated[$calls[$groupby]][$calls['event']])){
 
-                    $Consolidated[$calls[$groupby]][$calls['event']]=$Consolidated[$calls[$groupby]][$calls['event']]+1;
+                $indiceGroupBy    = $calls[$groupby];
+                $indiceEvent      = ($calls['event'] === 'BLINDTRANSFER') ? 'TRANSFER' : $calls['event'];
 
-                    if(isset($Consolidated[$calls[$groupby]]['min_espera'])){
+                if(isset($Consolidated[$indiceGroupBy][$indiceEvent])){
 
-                            $Consolidated[$calls[$groupby]]['min_espera']=abs($calls['info1'])+$Consolidated[$calls[$groupby]]['min_espera'];
+                    $Consolidated[$indiceGroupBy][$indiceEvent]=$Consolidated[$indiceGroupBy][$indiceEvent]+1;
+
+                    if(isset($Consolidated[$indiceGroupBy]['min_espera'])){
+
+                            $Consolidated[$indiceGroupBy]['min_espera']=abs($calls['info1'])+$Consolidated[$indiceGroupBy]['min_espera'];
 
                     }else{
 
-                        $Consolidated[$calls[$groupby]]['min_espera']=abs($calls['info1']);
+                        $Consolidated[$indiceGroupBy]['min_espera']=abs($calls['info1']);
 
                     }
 
-                    if(isset($Consolidated[$calls[$groupby]]['duracion'])){
+                    if(isset($Consolidated[$indiceGroupBy]['duracion'])){
 
-                        $Consolidated[$calls[$groupby]]['duracion']=abs($calls['info2'])+$Consolidated[$calls[$groupby]]['duracion'];
+                        $Consolidated[$indiceGroupBy]['duracion']=abs($calls['info2'])+$Consolidated[$indiceGroupBy]['duracion'];
 
                     }else{
 
-                        $Consolidated[$calls[$groupby]]['duracion']=abs($calls['info2']);
+                        $Consolidated[$indiceGroupBy]['duracion']=abs($calls['info2']);
 
                     }
 
@@ -212,7 +214,7 @@ class ConsolidatedCallsController extends CosapiController
                             /*
                              * Contador de tiempo en cola < 10 y < 20
                             */
-                            $Consolidated[$calls[$groupby]][$calls['event'].$time_standar[$i]]=$Consolidated[$calls[$groupby]][$calls['event'].$time_standar[$i]]+1;
+                            $Consolidated[$indiceGroupBy][$indiceEvent.$time_standar[$i]]=$Consolidated[$indiceGroupBy][$indiceEvent.$time_standar[$i]]+1;
                             
                         }
 
@@ -224,25 +226,25 @@ class ConsolidatedCallsController extends CosapiController
                      * Entra cuando encuentra un evento que aun no a sid contabilizado, para asì inicializar los contadores
                      */
 
-                    $Consolidated[$calls[$groupby]]['name']=$calls[$groupby];
+                    $Consolidated[$indiceGroupBy]['name']=$calls[$groupby];
 
-                    $Consolidated[$calls[$groupby]][$calls['event']]=1;
+                    $Consolidated[$indiceGroupBy][$indiceEvent]=1;
 
 
-                    if(isset($Consolidated[$calls[$groupby]]['min_espera'])){
+                    if(isset($Consolidated[$indiceGroupBy]['min_espera'])){
 
-                        $Consolidated[$calls[$groupby]]['min_espera']=abs($calls['info1'])+$Consolidated[$calls[$groupby]]['min_espera'];
+                        $Consolidated[$indiceGroupBy]['min_espera']=abs($calls['info1'])+$Consolidated[$indiceGroupBy]['min_espera'];
 
                     }else{
-                        $Consolidated[$calls[$groupby]]['min_espera']=abs($calls['info1']);
+                        $Consolidated[$indiceGroupBy]['min_espera']=abs($calls['info1']);
                     }
 
-                    if(isset($Consolidated[$calls[$groupby]]['duracion'])){
+                    if(isset($Consolidated[$indiceGroupBy]['duracion'])){
 
-                        $Consolidated[$calls[$groupby]]['duracion']=abs($calls['info2'])+$Consolidated[$calls[$groupby]]['duracion'];
+                        $Consolidated[$indiceGroupBy]['duracion']=abs($calls['info2'])+$Consolidated[$indiceGroupBy]['duracion'];
 
                     }else{
-                        $Consolidated[$calls[$groupby]]['duracion']=abs($calls['info2']);
+                        $Consolidated[$indiceGroupBy]['duracion']=abs($calls['info2']);
                     }
                     
                     for($i=0;$i<count($time_standar);$i++){
@@ -253,11 +255,11 @@ class ConsolidatedCallsController extends CosapiController
 
                         if(abs($calls['info1'])<=$time_standar[$i]){
                           
-                            $Consolidated[$calls[$groupby]][$calls['event'].$time_standar[$i]]=1;
+                            $Consolidated[$indiceGroupBy][$indiceEvent.$time_standar[$i]]=1;
                             
                         }else{
 
-                            $Consolidated[$calls[$groupby]][$calls['event'].$time_standar[$i]]=0;
+                            $Consolidated[$indiceGroupBy][$indiceEvent.$time_standar[$i]]=0;
 
                         }
 

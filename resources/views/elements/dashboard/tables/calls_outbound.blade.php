@@ -55,8 +55,8 @@
                   <td colspan="3">=================></td>
                   <td>@{{ outbound.second_event_name }}</td>
                   <td>@{{ outbound.second_outbound_phone }}</td>
-                  <td>@{{ outbound.second_outbound_start }}</td>
-                  <td>@{{ outbound.second_outbound_start }}</td>
+                  <td>@{{ outbound.secondCalltimeElapsed }}</td>
+                  <td>@{{ outbound.secondCalltimeElapsed }}</td>
                 </tr>
               </template>
             </tbody>

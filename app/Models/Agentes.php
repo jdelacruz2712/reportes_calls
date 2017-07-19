@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Agentes extends Model
 {
-    protected $table = 'agentes';
+    protected $connection   = 'laravel';
+    protected $table        = 'agentes';
 
 }
