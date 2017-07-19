@@ -8,7 +8,7 @@ Route::group ( ['middleware'=>['auth'], 'prefix'=>'home' ]      , function(){
 });
 
 Route::group (['middleware'=>['user']], function(){
-    Route::group ( ['middleware'=>['supervisor']]      , function(){
+    Route::group ( ['middleware'=>['supervisor', 'cliente', 'calidad']]      , function(){
 
         // Dashboard
         Route::get('dashboard_01'         								, ['uses'=>'DashboardController@dashboard_01']);

@@ -1,4 +1,5 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.component('v-select', VueSelect.VueSelect)
 const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
 
 const dashboard = new Vue({
@@ -8,6 +9,10 @@ const dashboard = new Vue({
     callsOutbound: [],
     callsWaiting: [],
     others: [],
+    roleDefault: [
+      'User'
+    ],
+    rolesPermission: [],
 
     agentStatusSummary: [],
     listProfileUsers : [],
@@ -157,6 +162,22 @@ const dashboard = new Vue({
       this.percentageUnanswer = response.percentageUnanswer
       this.totalCallDurationInbound = response.totalCallDurationInbound
       this.totalCallDurationOutbound = response.totalCallDurationOutbound
+    },
+
+    compareRole: function (role) {
+      let Permission = false
+      this.rolesPermission.forEach((index, value) => {
+        index.forEach((roleName, roleIndex) => {
+        let name = roleName.toLowerCase()
+        if(role === name) Permission = true
+    })
+    })
+      return Permission
+    },
+
+    loadRolePermission: function(val) {
+      this.rolesPermission.push(val)
+      refreshDetailsCalls()
     }
   }
 })
