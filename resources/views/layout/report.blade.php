@@ -14,12 +14,17 @@
 
 			<div class="col-md-4">
 				<!-- Date range -->
-				<div class="box-body" @if($viewDateSearch == false) style="display: none" @endif>
+				<div class="box-body">
 					<div class="input-group">
 						<div class="input-group-addon">
 							<i class="fa fa-calendar"></i>
 						</div>
-						<input type="text" id="texto" name="fecha_evento" class="form-control pull-right" >
+						@if($viewDateSearch == true)
+							<input type="text" id="texto" name="fecha_evento" class="form-control pull-right" >
+						@endif
+						@if($viewDateSingleSearch == true)
+							<input type="text" id="texto" name="fecha_evento" class="form-control fecha_evento_single pull-right" >
+						@endif
 					</div>
 				</div>
 			</div>

@@ -33,7 +33,8 @@ class LeveloccupationController extends CosapiController
                     'titleReport'           => 'Report of Level Occupation',
                     'viewButtonSearch'      => true,
                     'viewHourSearch'        => false,
-                    'viewDateSearch'        => true,
+                    'viewDateSearch'        => false,
+                    'viewDateSingleSearch'  => true,
                     'exportReport'          => 'export_level_occupation',
                     'nameRouteController'   => 'level_of_occupation'
                 ));
@@ -319,7 +320,7 @@ class LeveloccupationController extends CosapiController
      * @param  [string] $new_detalle        [Array con los tiempo acumulados por evento del agente]
      * @param  [int]    $Usuarios           [Id del Usuario]
      * @param  [string] $Eventos_Auxiliares [Id de los eventos auxiliares]
-     * @param  [string] $Cosapi_Eventos     [Id de los eventos que considera Cosapi para el nivel de ocupacion] 
+     * @param  [string] $Cosapi_Eventos     [Id de los eventos que considera Cosapi para el nivel de ocupacion]
      * @param  [string] $Claro_Eventos      [Id de los eventos que considera Claro para el nivel de ocupacion ]
      * @param  [string] $Eventos            [Id de todos los eventos activos]
      * @param  [string] $before_hour        [Hora anterior]

@@ -47,6 +47,7 @@ class EventsAgentController extends CosapiController
                     'viewButtonSearch'      => true,
                     'viewHourSearch'        => false,
                     'viewDateSearch'        => true,
+                    'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_events_consolidated',
                     'nameRouteController'   => ''
                 ));
@@ -80,6 +81,7 @@ class EventsAgentController extends CosapiController
                     'viewButtonSearch'      => true,
                     'viewHourSearch'        => false,
                     'viewDateSearch'        => true,
+                    'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_events_detail',
                     'nameRouteController'   => ''
                 ));

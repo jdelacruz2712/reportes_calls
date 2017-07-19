@@ -34,6 +34,7 @@ class IncomingCallsController extends CosapiController
                     'viewButtonSearch'      => false,
                     'viewHourSearch'        => false,
                     'viewDateSearch'        => true,
+                    'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_incoming',
                     'nameRouteController'   => ''
                 ));

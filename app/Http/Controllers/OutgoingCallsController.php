@@ -32,6 +32,7 @@ class OutgoingCallsController extends CosapiController
                     'viewButtonSearch'      => true,
                     'viewHourSearch'        => false,
                     'viewDateSearch'        => true,
+                    'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_outgoing',
                     'nameRouteController'   => 'outgoing_calls'
                 ));

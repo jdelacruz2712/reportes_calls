@@ -30,6 +30,7 @@ class ConsolidatedCallsController extends CosapiController
                     'viewButtonSearch'      => false,
                     'viewHourSearch'        => true,
                     'viewDateSearch'        => true,
+                    'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_consolidated',
                     'nameRouteController'   => ''
                 ));

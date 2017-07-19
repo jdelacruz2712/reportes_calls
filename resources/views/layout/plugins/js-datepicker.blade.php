@@ -7,6 +7,22 @@ $(document).ready(function() {
         }
     })
 
+    $('.fecha_evento_single').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        alwaysShowCalendars: true,
+        autoUpdateInput: false,
+        opens: "right",
+        locale: {
+            format: 'YYYY-MM-DD - YYYY-MM-DD'
+        }
+    })
+
+    $('.fecha_evento_single').on('apply.daterangepicker', function (ev, picker) {
+        let startDate = picker.startDate;
+        $('.fecha_evento_single').val(startDate.format('YYYY-MM-DD - YYYY-MM-DD'));
+    })
+
     $('input[name="birthdate"]').daterangepicker({
         singleDatePicker: true,
         showDropdowns: true,
@@ -19,7 +35,7 @@ $(document).ready(function() {
     })
 
     $('input[name="birthdate"]').on('apply.daterangepicker', function (ev, picker) {
-        var startDate = picker.startDate;
+        let startDate = picker.startDate;
         $('input[name="birthdate"]').val(startDate.format('YYYY-MM-DD'));
         vmProfile.birthdate = startDate.format('YYYY-MM-DD')
     })
