@@ -128,8 +128,11 @@ class IncomingCallsController extends CosapiController
         $action = '';
         $posicion = 0;
         $builderview = [];
+
+        //dd(getenv('FORMAT_DATE'));
+
         foreach ($query_calls as $query_call) {
-            $builderview[$posicion]['date']        = $query_call['fechamod'];
+            $builderview[$posicion]['date']        = date(getenv('FORMAT_DATE'), strtotime($query_call['fechamod']));
             $builderview[$posicion]['hour']        = $query_call['timemod'];
             $builderview[$posicion]['telephone']   = $query_call['clid'];
             $builderview[$posicion]['agent']       = ExtraerAgente($query_call['agent']);
@@ -175,7 +178,7 @@ class IncomingCallsController extends CosapiController
             $colas          = $this->list_vdn();
             $vdn            = $colas[$view['skill']]['vdn'];
             $listen         = 'No compatible';
-            $day            = Carbon::parse($view['date']);
+            $day            = Carbon::parse(date('Y-m-d', strtotime($view['date'])));
             $hour           = Carbon::parse($view['hour']);
             $listen         = 'No compatible';
             $bronswer       = detect_bronswer();
