@@ -9,8 +9,6 @@
         </div>
       </div>
       <div class="box-body">
-        <v-select multiple :value.sync="roleDefault" :on-change="loadRolePermission" :options="['Admin','Supervisor','Backoficce','Calidad','Cliente','User']" placeholder="Choose Role Here !"></v-select>
-        <br>
         <div class="table-responsive">
           <table align="center" class="table table-responsive table-condensed text-center">
             <thead>

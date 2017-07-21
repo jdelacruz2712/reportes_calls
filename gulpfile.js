@@ -114,7 +114,7 @@ elixir(function(mix) {
     'node_modules/vue/vue.min.js',
     'node_modules/vue-resource/vue-resource.min.js',
     'node_modules/vue-select/vue-select.js',
-    'node_modules/socket.io-client/socket.io.min.js'
+    'node_modules/socket.io-client/socket.io.min.js',
   ],'public/js/cosapi_dashboard.min.js','resources/assets/')
   .scripts([
     'cosapi/js/dashboard_vue.js'
