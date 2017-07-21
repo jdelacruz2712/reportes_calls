@@ -83,6 +83,7 @@ class OutgoingCallsController extends CosapiController
                                     ->where('disposition','=','ANSWERED')
                                     ->where('lastapp','=','Dial')
                                     ->whereIn('src',$range_annexed)
+                                    ->whereNotIn('dst',$range_annexed)
                                     ->filtro_days($days)
                                     ->OrderBy('src')
                                     ->get()
@@ -117,7 +118,6 @@ class OutgoingCallsController extends CosapiController
                 $builderview[$posicion]['username']      = $query_call['accountcode'];
                 $builderview[$posicion]['userfield']     = $query_call['userfield']; // Url para descarga de audio
                 $builderview[$posicion]['calltime']      = conversorSegundosHoras($query_call['billsec'],false);
-
             }
             $posicion ++;
         }
