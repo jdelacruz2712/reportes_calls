@@ -83,6 +83,7 @@ class OutgoingCallsController extends CosapiController
                                     ->where('disposition','=','ANSWERED')
                                     ->where('lastapp','=','Dial')
                                     ->whereIn('src',$range_annexed)
+                                    ->whereNotIn('dst',$range_annexed)
                                     ->filtro_days($days)
                                     ->OrderBy('src')
                                     ->get()
@@ -117,7 +118,6 @@ class OutgoingCallsController extends CosapiController
                 $builderview[$posicion]['username']      = $query_call['accountcode'];
                 $builderview[$posicion]['userfield']     = $query_call['userfield']; // Url para descarga de audio
                 $builderview[$posicion]['calltime']      = conversorSegundosHoras($query_call['billsec'],false);
-
             }
             $posicion ++;
         }
@@ -142,17 +142,15 @@ class OutgoingCallsController extends CosapiController
             $listen         = 'No compatible';
             $carpeta        = '';
 
-            if(substr($view['destination'], 0, 4) =='0800'){
-                $carpeta = '0800';
-            }else if(strlen($view['destination']) =='7'){
-                $carpeta = 'local';
-            }else if(strlen($view['destination']) =='9'){
-                if(substr($view['destination'], 0,1)=='0'){
-                    $carpeta = 'nacional';
-                }else{
-                    $carpeta = 'celular';
-                }
+            if(substr($view['destination'], 0, 4) =='0800') $carpeta = '0800';
+            else if(strlen($view['destination']) =='4' or strlen($view['destination']) == '5') $carpeta = 'anexos-externos';
+            else if(strlen($view['destination']) =='7') $carpeta = 'local';
+            else if(strlen($view['destination']) =='9'){
+                if(substr($view['destination'], 0,1)=='0') $carpeta = 'nacional';
+                else $carpeta = 'celular';
             }
+
+
             $url            = 'url=Salientes/'.$carpeta.'/'.$day->format('Y/m/d').'/';
             $proyecto       = '&proyect='.getenv('AUDIO_PROYECT');
 
