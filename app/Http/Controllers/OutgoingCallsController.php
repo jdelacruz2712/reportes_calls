@@ -142,17 +142,15 @@ class OutgoingCallsController extends CosapiController
             $listen         = 'No compatible';
             $carpeta        = '';
 
-            if(substr($view['destination'], 0, 4) =='0800'){
-                $carpeta = '0800';
-            }else if(strlen($view['destination']) =='7'){
-                $carpeta = 'local';
-            }else if(strlen($view['destination']) =='9'){
-                if(substr($view['destination'], 0,1)=='0'){
-                    $carpeta = 'nacional';
-                }else{
-                    $carpeta = 'celular';
-                }
+            if(substr($view['destination'], 0, 4) =='0800') $carpeta = '0800';
+            else if(strlen($view['destination']) =='4' or strlen($view['destination']) == '5') $carpeta = 'anexos-externos';
+            else if(strlen($view['destination']) =='7') $carpeta = 'local';
+            else if(strlen($view['destination']) =='9'){
+                if(substr($view['destination'], 0,1)=='0') $carpeta = 'nacional';
+                else $carpeta = 'celular';
             }
+
+
             $url            = 'url=Salientes/'.$carpeta.'/'.$day->format('Y/m/d').'/';
             $proyecto       = '&proyect='.getenv('AUDIO_PROYECT');
 
