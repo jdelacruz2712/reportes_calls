@@ -26,6 +26,8 @@ class LeveloccupationController extends CosapiController
                 $nivelocupacionBuilderView  = $this->nivelocupacionBuilderView($NivelOcupationHour[0],$NivelOcupationHour[1],$NivelOcupationHour[2]);
                 $nivelocupacionCollection   = $this->nivelocupacionCollection($nivelocupacionBuilderView);
                 $list_level_occupation      = $this->FormatDatatable($nivelocupacionCollection);
+
+
                 return $list_level_occupation;
             }else{
                 return view('elements/index')->with(array(
@@ -81,36 +83,46 @@ class LeveloccupationController extends CosapiController
         $Array_days                     = ArrayDays($day_consult);
         $cantidad_detalles              = count($query_detalle_eventos);
 
+
         if($array_day_consult[0] < date('Y-m-d') && $array_day_consult[1] < date('Y-m-d')) {
             foreach ($query_detalle_eventos as $key => $detalle_eventos) {
-                $second_timemod = convertHourExactToSeconds($detalle_eventos['timemod']);
-                $array_hour = explode(':', $detalle_eventos['hourmod']);
+
+                $fechaMod = $detalle_eventos['fechamod'];
+                $userID = $detalle_eventos['user_id'];
+                $hourMod = $detalle_eventos['hourmod'];
+                $timeMod = $detalle_eventos['timemod'];
+                $eventoID =  $detalle_eventos['evento_id'];
+
+                $second_timemod = convertHourExactToSeconds($timeMod);
+                $array_hour = explode(':', $hourMod);
                 $hour = $array_hour[0] * 3600;
                 $minute = $array_hour[1] * 60;
                 $second = $hour + $minute;
 
-                if (!isset($new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']])) {
+
+
+                if (!isset($new_detalle[$fechaMod][$userID])) {
 
                     if (isset($new_detalle)) {
                         $new_detalle = $this->nivel_ocupacion($day_consult, $new_detalle, $Usuarios, $Eventos_Auxiliares, $Cosapi_Eventos, $Claro_Eventos, $Eventos, $before_hour, $before_user, $before_date);
                     }
 
-                    $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_ini'] = $detalle_eventos['evento_id'];
+                    $new_detalle[$fechaMod][$userID][$hourMod]['evento_ini'] = $eventoID;
 
-                    $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = 0;
+                    $new_detalle[$fechaMod][$userID][$hourMod][1] = 0;
 
-                    if ($query_detalle_eventos[$key + 1]['user_id'] != $detalle_eventos['user_id'] or $query_detalle_eventos[$key + 1]['fechamod'] != $detalle_eventos['fechamod']) {
+                    if ($query_detalle_eventos[$key + 1]['user_id'] != $userID or $query_detalle_eventos[$key + 1]['fechamod'] != $fechaMod) {
                         if ($query_detalle_eventos[$key - 1]['evento_id'] != 15) {
-                            $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = 1800;
+                            $new_detalle[$fechaMod][$userID][$hourMod][1] = 1800;
                         }
                     }
 
 
                 } else {
 
-                    if (!isset($new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']])) {
-                        $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_ini'] = $detalle_eventos['evento_id'];
-                        $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']][1] = $second_timemod - $second;
+                    if (!isset($new_detalle[$fechaMod][$userID][$hourMod])) {
+                        $new_detalle[$fechaMod][$userID][$hourMod]['evento_ini'] = $eventoID;
+                        $new_detalle[$fechaMod][$userID][$hourMod][1] = $second_timemod - $second;
                         $before_second_timemod = convertHourExactToSeconds($before_hour . ':00', 1800);
 
                         if (!isset($new_detalle[$before_date][$before_user][$before_hour][$before_event])) {
@@ -126,23 +138,21 @@ class LeveloccupationController extends CosapiController
                         if (!isset($new_detalle[$before_date][$before_user][$before_hour][$before_event])) {
                             $new_detalle[$before_date][$before_user][$before_hour][$before_event] = 0;
                         }
-
                         $new_detalle[$before_date][$before_user][$before_hour][$before_event] = $new_detalle[$before_date][$before_user][$before_hour][$before_event] + ($second_timemod - $before_time);
-
                     }
                 }
 
                 if (($key + 1) == $cantidad_detalles) {
-                    $new_detalle = $this->nivel_ocupacion($day_consult, $new_detalle, $Usuarios, $Eventos_Auxiliares, $Cosapi_Eventos, $Claro_Eventos, $Eventos, $detalle_eventos['hourmod'], $detalle_eventos['user_id'], $detalle_eventos['fechamod']);
+                    $new_detalle = $this->nivel_ocupacion($day_consult, $new_detalle, $Usuarios, $Eventos_Auxiliares, $Cosapi_Eventos, $Claro_Eventos, $Eventos, $hourMod, $userID, $fechaMod);
                 }
 
-                $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['evento_fin'] = $detalle_eventos['evento_id'];
-                $new_detalle[$detalle_eventos['fechamod']][$detalle_eventos['user_id']][$detalle_eventos['hourmod']]['hour'] = $detalle_eventos['hourmod'];
-                $before_event = $detalle_eventos['evento_id'];
+                $new_detalle[$fechaMod][$userID][$hourMod]['evento_fin'] = $eventoID;
+                $new_detalle[$fechaMod][$userID][$hourMod]['hour'] = $hourMod;
+                $before_event = $eventoID;
                 $before_time = $second_timemod;
-                $before_date = $detalle_eventos['fechamod'];
-                $before_hour = $detalle_eventos['hourmod'];
-                $before_user = $detalle_eventos['user_id'];
+                $before_date = $fechaMod;
+                $before_hour = $hourMod;
+                $before_user = $userID;
 
             }
 
@@ -337,83 +347,93 @@ class LeveloccupationController extends CosapiController
        $acw        = 0;
        $outbound   = 0;
 
-       //CALCULANDO TIEMPOS DE LLAMADAS ENTRANTES
-       $comingcaller           = new IncomingCallsController();
-       $result_tiempoatendida  = $comingcaller->query_calls($day_consult,'calls_completed',$Usuarios[$before_user-1]['username'],$before_hour);
 
-       foreach ($result_tiempoatendida as $tiempoatendida) {
-           if($tiempoatendida['hourmod'] == $tiempoatendida['hour_final']){
-               $indbound = $indbound + abs($tiempoatendida['info2']);
-           }else if($tiempoatendida['hourmod'] != $tiempoatendida['hour_final'] and $tiempoatendida['hour_final'] > $tiempoatendida['hourmod']){
-               $second_registro = convertHourExactToSeconds($tiempoatendida['timemod']);
-               if($tiempoatendida['hour_final'] != '00:00') {
-                   $second_tope = convertHourExactToSeconds($tiempoatendida['hour_final'] . ':00');
-               }else{
-                   $second_tope = 86400;
-               }
-               $second_duracion=$second_tope-$second_registro;
-               $indbound = $indbound + abs($second_duracion);
-           }
-       }
+        if (!empty($day_consult) && !empty($Usuarios[$before_user-1]['username']) && !empty($before_hour)){
 
-       // 88 = Inbound sacado de la tabla "Queue_stats_mv"
-       $new_detalle[$before_date][$before_user][$before_hour]['88'] = $indbound;
-
-       //  CALCULANDO TIEMPOS AUXILIARES
-       foreach ($Eventos_Auxiliares as $eventos_auxiliar){
-           if(!isset($new_detalle[$before_date][$before_user][$before_hour][$eventos_auxiliar['id']])){
-               $new_detalle[$before_date][$before_user][$before_hour][$eventos_auxiliar['id']] = 0;
-           }
-           $auxiliares = $auxiliares + $new_detalle[$before_date][$before_user][$before_hour][$eventos_auxiliar['id']];
-       }
-
-       // CALCULANDO TIEMPOS COSAPI
-       foreach ($Cosapi_Eventos as $cosapi_evento){
-           if(!isset($new_detalle[$before_date][$before_user][$before_hour][$cosapi_evento['id']])){
-               $new_detalle[$before_date][$before_user][$before_hour][$cosapi_evento['id']] = 0;
-           }
-
-           if($cosapi_evento['id'] != 8){
-                $cosapi = $cosapi + $new_detalle[$before_date][$before_user][$before_hour][$cosapi_evento['id']];
-           }
-       }
-
-       // CALCULANDO TIEMPOS CLARO
-       foreach ($Claro_Eventos as $claro_evento){
-           if(!isset($new_detalle[$before_date][$before_user][$before_hour][$claro_evento['id']])){
-               $new_detalle[$before_date][$before_user][$before_hour][$claro_evento['id']] = 0;
-           }
-
-           if($claro_evento['id'] != 8){
-               $claro = $claro + $new_detalle[$before_date][$before_user][$before_hour][$claro_evento['id']];
-           }
-       }
-
-       // CALCULANDO TIEMPOS LOGUEO
-       foreach ($Eventos as $evento){
-           if($evento['id'] != 8){
-               if(!isset($new_detalle[$before_date][$before_user][$before_hour][$evento['id']])){
-                   $new_detalle[$before_date][$before_user][$before_hour][$evento['id']] = 0;
-               }
-               $logueo = $logueo + $new_detalle[$before_date][$before_user][$before_hour][$evento['id']];
-           }
-
-           if($evento['id'] == 10){
-               if(!isset($new_detalle[$before_date][$before_user][$before_hour][$evento['id']])){
-                   $new_detalle[$before_date][$before_user][$before_hour][$evento['id']] = 0;
-               }
-               $acw = $acw + $new_detalle[$before_date][$before_user][$before_hour][$evento['id']];
-           }
+            //CALCULANDO TIEMPOS DE LLAMADAS ENTRANTES
+            $inboundCalls           = new IncomingCallsController();
+            $result_tiempoatendida  = $inboundCalls->query_calls($day_consult,'calls_completed',$Usuarios[$before_user-1]['username'],$before_hour);
 
 
-           if($evento['id'] == 9){
-               if(!isset($new_detalle[$before_date][$before_user][$before_hour][$evento['id']])){
-                   $new_detalle[$before_date][$before_user][$before_hour][$evento['id']] = 0;
-               }
-               $outbound = $outbound + $new_detalle[$before_date][$before_user][$before_hour][$evento['id']];
-           }
+            if (isset($result_tiempoatendida) or count($result_tiempoatendida) != 0){
+                foreach ($result_tiempoatendida as $tiempoatendida) {
+                    if($tiempoatendida['hourmod'] == $tiempoatendida['hour_final']){
+                        $indbound = $indbound + abs($tiempoatendida['info2']);
+                    }else if($tiempoatendida['hourmod'] != $tiempoatendida['hour_final'] and $tiempoatendida['hour_final'] > $tiempoatendida['hourmod']){
+                        $second_registro = convertHourExactToSeconds($tiempoatendida['timemod']);
+                        if($tiempoatendida['hour_final'] != '00:00') {
+                            $second_tope = convertHourExactToSeconds($tiempoatendida['hour_final'] . ':00');
+                        }else{
+                            $second_tope = 86400;
+                        }
+                        $second_duracion=$second_tope-$second_registro;
+                        $indbound = $indbound + abs($second_duracion);
+                    }
+                }
 
-       }
+                // 88 = Inbound sacado de la tabla "Queue_stats_mv"
+                $new_detalle[$before_date][$before_user][$before_hour]['88'] = $indbound;
+
+                //  CALCULANDO TIEMPOS AUXILIARES
+                foreach ($Eventos_Auxiliares as $eventos_auxiliar){
+                    if(!isset($new_detalle[$before_date][$before_user][$before_hour][$eventos_auxiliar['id']])){
+                        $new_detalle[$before_date][$before_user][$before_hour][$eventos_auxiliar['id']] = 0;
+                    }
+                    $auxiliares = $auxiliares + $new_detalle[$before_date][$before_user][$before_hour][$eventos_auxiliar['id']];
+                }
+
+                // CALCULANDO TIEMPOS COSAPI
+                foreach ($Cosapi_Eventos as $cosapi_evento){
+                    if(!isset($new_detalle[$before_date][$before_user][$before_hour][$cosapi_evento['id']])){
+                        $new_detalle[$before_date][$before_user][$before_hour][$cosapi_evento['id']] = 0;
+                    }
+
+                    if($cosapi_evento['id'] != 8){
+                        $cosapi = $cosapi + $new_detalle[$before_date][$before_user][$before_hour][$cosapi_evento['id']];
+                    }
+                }
+
+                // CALCULANDO TIEMPOS CLARO
+                foreach ($Claro_Eventos as $claro_evento){
+                    if(!isset($new_detalle[$before_date][$before_user][$before_hour][$claro_evento['id']])){
+                        $new_detalle[$before_date][$before_user][$before_hour][$claro_evento['id']] = 0;
+                    }
+
+                    if($claro_evento['id'] != 8){
+                        $claro = $claro + $new_detalle[$before_date][$before_user][$before_hour][$claro_evento['id']];
+                    }
+                }
+
+                // CALCULANDO TIEMPOS LOGUEO
+                foreach ($Eventos as $evento){
+                    if($evento['id'] != 8){
+                        if(!isset($new_detalle[$before_date][$before_user][$before_hour][$evento['id']])){
+                            $new_detalle[$before_date][$before_user][$before_hour][$evento['id']] = 0;
+                        }
+                        $logueo = $logueo + $new_detalle[$before_date][$before_user][$before_hour][$evento['id']];
+                    }
+
+                    if($evento['id'] == 10){
+                        if(!isset($new_detalle[$before_date][$before_user][$before_hour][$evento['id']])){
+                            $new_detalle[$before_date][$before_user][$before_hour][$evento['id']] = 0;
+                        }
+                        $acw = $acw + $new_detalle[$before_date][$before_user][$before_hour][$evento['id']];
+                    }
+
+
+                    if($evento['id'] == 9){
+                        if(!isset($new_detalle[$before_date][$before_user][$before_hour][$evento['id']])){
+                            $new_detalle[$before_date][$before_user][$before_hour][$evento['id']] = 0;
+                        }
+                        $outbound = $outbound + $new_detalle[$before_date][$before_user][$before_hour][$evento['id']];
+                    }
+
+                }
+            }
+
+        }
+
+
 
        $new_detalle[$before_date][$before_user][$before_hour]['indbound']     = $indbound;
        $new_detalle[$before_date][$before_user][$before_hour]['acw']          = $acw;
