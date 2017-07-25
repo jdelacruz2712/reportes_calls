@@ -4,12 +4,12 @@
       <div class="box-header with-border ">
         <h3 class="box-title"><b>Details Agents Connect</b></h3>
         <div class="box-tools pull-right">
-         <button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
-         </button>
+          <button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
+          </button>
         </div>
       </div>
       <div class="box-body">
-        <div class="table-responsive" id =>
+        <div class="table-responsive">
           <table align="center" class="table table-responsive table-condensed text-center">
             <thead>
               <tr>
@@ -23,7 +23,7 @@
             </thead>
             <tbody>
               <template v-for="(other, index) in others ">
-                <tr>
+                <tr v-if="compareRole(other.role) === true">
                   <td>@{{ index + 1 }}</td>
                   <td class="products-list product-list-in-box">
                     <div class="product-img">

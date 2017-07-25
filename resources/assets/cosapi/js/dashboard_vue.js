@@ -1,4 +1,5 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.component('v-select', VueSelect.VueSelect)
 const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
 
 const dashboard = new Vue({
@@ -8,6 +9,10 @@ const dashboard = new Vue({
     callsOutbound: [],
     callsWaiting: [],
     others: [],
+    roleDefault: [
+      'User'
+    ],
+    rolesPermission: [],
 
     agentStatusSummary: [],
     listProfileUsers : [],
@@ -157,6 +162,37 @@ const dashboard = new Vue({
       this.percentageUnanswer = response.percentageUnanswer
       this.totalCallDurationInbound = response.totalCallDurationInbound
       this.totalCallDurationOutbound = response.totalCallDurationOutbound
+    },
+
+    compareRole: function (role) {
+      let Permission = false
+      this.rolesPermission.forEach((index, value) => {
+        index.forEach((roleName, roleIndex) => {
+          let miniName = roleName.toLowerCase()
+          if(role === miniName) Permission = true
+        })
+      })
+      return Permission
+    },
+
+    loadRolePermission: function(val) {
+      let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
+      if(cookieRole){
+        if(cookieRole.length === 1){
+          Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+          this.rolesPermission.push(val)
+          refreshDetailsCalls()
+        }else{
+          Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+          this.rolesPermission.push(val)
+          refreshDetailsCalls()
+        }
+      }else{
+        Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+        this.rolesPermission.push(val)
+        refreshDetailsCalls()
+      }
+      this.loadListProfile()
     }
   }
 })
@@ -399,4 +435,26 @@ const getRulers = (action) => {
     }
   }
   return rulers
+}
+
+const replaceCookieArray = (cookie) => {
+  if(cookie){
+    let firstCookie = cookie.replace(/"/g,'')
+    let secondCookie = firstCookie.replace('[','')
+    let thirdCookie = secondCookie.replace(']','')
+    return thirdCookie.split(',')
+  }else{
+    return
+  }
+}
+
+let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
+if(cookieRole){
+  if(cookieRole.length === 1){
+    dashboard.roleDefault = ['User']
+  }else{
+    dashboard.roleDefault = cookieRole
+  }
+}else{
+  dashboard.roleDefault = ['User']
 }

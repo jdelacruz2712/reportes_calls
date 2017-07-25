@@ -15,6 +15,9 @@
 			</div>
 			<div class="col-md-4">
 				<div class="col-md-12">
+					@include('elements.dashboard.panels_kpi.filterdashboard')
+				</div>
+				<div class="col-md-12">
 					@include('elements.dashboard.panels_kpi.agentactivitysummary')
 				</div>
 				<div class="col-md-12">
