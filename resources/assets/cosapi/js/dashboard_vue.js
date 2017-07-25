@@ -168,16 +168,31 @@ const dashboard = new Vue({
       let Permission = false
       this.rolesPermission.forEach((index, value) => {
         index.forEach((roleName, roleIndex) => {
-        let name = roleName.toLowerCase()
-        if(role === name) Permission = true
-    })
-    })
+          let miniName = roleName.toLowerCase()
+          if(role === miniName) Permission = true
+        })
+      })
       return Permission
     },
 
     loadRolePermission: function(val) {
-      this.rolesPermission.push(val)
-      refreshDetailsCalls()
+      let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
+      if(cookieRole){
+        if(cookieRole.length === 1){
+          Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+          this.rolesPermission.push(val)
+          refreshDetailsCalls()
+        }else{
+          Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+          this.rolesPermission.push(val)
+          refreshDetailsCalls()
+        }
+      }else{
+        Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+        this.rolesPermission.push(val)
+        refreshDetailsCalls()
+      }
+      this.loadListProfile()
     }
   }
 })
@@ -420,4 +435,26 @@ const getRulers = (action) => {
     }
   }
   return rulers
+}
+
+const replaceCookieArray = (cookie) => {
+  if(cookie){
+    let firstCookie = cookie.replace(/"/g,'')
+    let secondCookie = firstCookie.replace('[','')
+    let thirdCookie = secondCookie.replace(']','')
+    return thirdCookie.split(',')
+  }else{
+    return
+  }
+}
+
+let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
+if(cookieRole){
+  if(cookieRole.length === 1){
+    dashboard.roleDefault = ['User']
+  }else{
+    dashboard.roleDefault = cookieRole
+  }
+}else{
+  dashboard.roleDefault = ['User']
 }
