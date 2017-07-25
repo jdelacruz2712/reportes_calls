@@ -164,7 +164,7 @@ const dashboard = new Vue({
       this.totalCallDurationOutbound = response.totalCallDurationOutbound
     },
 
-    compareRole: function (role) {
+    compareRole : function (role) {
       let Permission = false
       this.rolesPermission.forEach((index, value) => {
         index.forEach((roleName, roleIndex) => {
@@ -175,24 +175,17 @@ const dashboard = new Vue({
       return Permission
     },
 
-    loadRolePermission: function(val) {
+    loadRolePermission : function(val) {
       let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
       if(cookieRole){
-        if(cookieRole.length === 1){
-          Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
-          this.rolesPermission.push(val)
-          refreshDetailsCalls()
-        }else{
-          Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
-          this.rolesPermission.push(val)
-          refreshDetailsCalls()
-        }
-      }else{
+        Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+        this.rolesPermission.push(val)
+        refreshDetailsCalls()
+      } else {
         Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
         this.rolesPermission.push(val)
         refreshDetailsCalls()
       }
-      this.loadListProfile()
     }
   }
 })
@@ -450,11 +443,8 @@ const replaceCookieArray = (cookie) => {
 
 let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
 if(cookieRole){
-  if(cookieRole.length === 1){
-    dashboard.roleDefault = ['User']
-  }else{
-    dashboard.roleDefault = cookieRole
-  }
-}else{
+  if(cookieRole.toString().length === 0) dashboard.roleDefault = ['User']
+  else dashboard.roleDefault = cookieRole
+} else {
   dashboard.roleDefault = ['User']
 }
