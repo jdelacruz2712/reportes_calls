@@ -178,7 +178,8 @@ class IncomingCallsController extends CosapiController
             $colas          = $this->list_vdn();
             $vdn            = $colas[$view['skill']]['vdn'];
             $listen         = 'No compatible';
-            $day            = Carbon::parse(date('Y-m-d', strtotime($view['date'])));
+            $date           = str_replace('/', '-', $view['date']);
+            $day            = Carbon::parse(date('Y-m-d', strtotime($date)));
             $hour           = Carbon::parse($view['hour']);
             $listen         = 'No compatible';
             $bronswer       = detect_bronswer();
