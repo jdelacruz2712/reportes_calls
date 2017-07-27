@@ -2,6 +2,7 @@
 
 namespace Cosapi\Http\Controllers;
 use Cosapi\Models\Anexo;
+use Cosapi\Models\Online;
 use Cosapi\Models\Queue;
 use Cosapi\Models\User;
 use Illuminate\Http\Request;
@@ -325,5 +326,14 @@ class CosapiController extends Controller
             return mkdir($path, $mode, $recursive);
         }
     }
+
+  /**
+   * [Funcion para actualizar el user_id en la tabla session]
+   */
+  public function updateSessionUserID()
+  {
+    Online::where('id', Session::getId())->update(['user_id' => Session::get('UserId')]);
+  }
+
 
 }
