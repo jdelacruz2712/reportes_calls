@@ -219,20 +219,24 @@ class IncomingCallsController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
      */
     protected function export_csv($days){
+        $filenamefirst              = "calls_completed";
+        $filenamesecond             = "calls_transfer";
+        $filenamethird              = "calls_abandone";
+        $filetime                   = time();
 
-        $events = ['calls_completed','calls_transfer','calls_abandone'];
+        $events = [$filenamefirst,$filenamesecond,$filenamethird];
 
         for($i=0;$i<count($events);$i++){
             $builderview = $this->builderview($this->query_calls($days,$events[$i]));
-            $this->BuilderExport($builderview,$events[$i],'csv','exports');
+            $this->BuilderExport($builderview,$events[$i].'_'.$filetime,'csv','exports');
         }
     
         $data = [
             'succes'    => true,
             'path'      => [
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/calls_completed.csv',
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/calls_transfer.csv',
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/calls_abandone.csv'
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamefirst.'_'.$filetime.'.csv',
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamesecond.'_'.$filetime.'.csv',
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamethird.'_'.$filetime.'.csv'
                             ]
         ];
 
@@ -246,7 +250,8 @@ class IncomingCallsController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
      */
     protected function export_excel($days){
-        Excel::create('inbound_calls', function($excel) use($days) {
+        $filename               = 'inbound_calls_'.time();
+        Excel::create($filename, function($excel) use($days) {
 
             $excel->sheet('Atendidas', function($sheet) use($days) {
                 $sheet->fromArray($this->builderview($this->query_calls($days,'calls_completed')));
@@ -266,7 +271,7 @@ class IncomingCallsController extends CosapiController
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/inbound_calls.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;

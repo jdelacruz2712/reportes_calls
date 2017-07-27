@@ -190,13 +190,13 @@ class OutgoingCallsController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
      */
     protected function export_csv($days){
-
+        $filename               = 'outgoing_calls_'.time();
         $builderview = $this->builderview($this->query_calls_outgoing($days),'export');
-        $this->BuilderExport($builderview,'outgoing_calls','csv','exports');
+        $this->BuilderExport($builderview,$filename,'csv','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/outgoing_calls.csv']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.csv']
         ];
 
         return $data;
@@ -208,13 +208,13 @@ class OutgoingCallsController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
      */
     protected function export_excel($days){
-
+        $filename               = 'outgoing_calls_'.time();
         $builderview = $this->builderview($this->query_calls_outgoing($days),'export');
-        $this->BuilderExport($builderview,'outgoing_calls','xlsx','exports');
+        $this->BuilderExport($builderview,$filename,'xlsx','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/outgoing_calls.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;

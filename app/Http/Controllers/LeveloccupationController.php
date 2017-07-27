@@ -516,13 +516,14 @@ class LeveloccupationController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
      */
     protected function export_csv($days){
+        $filename               = 'level_occupation_'.time();
         $NivelOcupationHour=$this->NivelOcupationHour($days);
         $builderview = $this->nivelocupacionBuilderView($NivelOcupationHour[0],$NivelOcupationHour[1],$NivelOcupationHour[2]);
-        $this->BuilderExport($builderview,'level_occupation','csv','exports');
+        $this->BuilderExport($builderview,$filename,'csv','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/level_occupation.csv']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.csv']
         ];
 
         return $data;
@@ -534,13 +535,14 @@ class LeveloccupationController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
      */
     protected function export_excel($days){
+        $filename               = 'level_occupation_'.time();
         $NivelOcupationHour = $this->NivelOcupationHour($days);
         $builderview = $this->nivelocupacionBuilderView($NivelOcupationHour[0],$NivelOcupationHour[1],$NivelOcupationHour[2]);
-        $this->BuilderExport($builderview,'level_occupation','xlsx','exports');
+        $this->BuilderExport($builderview,$filename,'xlsx','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/level_occupation.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;
