@@ -23,9 +23,9 @@
             </thead>
             <tbody>
               <template v-for="(other, index) in others ">
-                <tr v-if="compareRole(other.role) === true">
-                  <td>@{{ index + 1 }}</td>
-                  <td class="products-list product-list-in-box">
+                <tr v-if="compareRole(other.role) === true" >
+                  <td style="vertical-align: middle">@{{ index + 1 }}</td>
+                  <td style="vertical-align: middle"  class="products-list product-list-in-box">
                     <div class="product-img">
                       <img :src="'storage/' + other.avatar" alt="user-img" class="img-circle">
                     </div>
@@ -37,16 +37,16 @@
                       </small>
                     </div>
                   </td>
-                  <td>
+                  <td style="vertical-align: middle">
                     @{{ other.agent_annexed }}</td>
-                  <td>
+                  <td style="vertical-align: middle">
                     <span :class ="'label label-' + other.color">
                       <i :class ="other.icon" style="padding: 1px;" aria-hidden="true"></i>
                       @{{ other.event_name }}
                     </span>
                   </td>
-                  <td>@{{ other.timeElapsed }}</td>
-                  <td>@{{ other.total_calls }}</td>
+                  <td style="vertical-align: middle">@{{ other.timeElapsed }}</td>
+                  <td style="vertical-align: middle">@{{ other.total_calls }}</td>
                 </tr>
               </template>
             </tbody>

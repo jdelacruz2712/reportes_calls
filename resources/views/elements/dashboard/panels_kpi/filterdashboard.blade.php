@@ -5,7 +5,7 @@
         </div>
         <div class="box-body">
             <div class="col-md-12">
-                <v-select multiple :value.sync="roleDefault" :on-change="loadRolePermission" :options="['Admin','Supervisor','Backoficce','Calidad','Cliente','User']" placeholder="Choose Role Here !"></v-select>
+                <v-select multiple :value.sync="roleDefault" :on-change="loadRolePermission" :options="['Admin','Supervisor','Backoffice','Calidad','Cliente','User']" placeholder="Choose Role Here !"></v-select>
             </div>
         </div>
     </div>

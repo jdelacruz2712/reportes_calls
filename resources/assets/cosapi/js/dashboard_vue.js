@@ -1,6 +1,11 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 Vue.component('v-select', VueSelect.VueSelect)
-const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts' : 15, 'reconnectionDelay' : 9000,'reconnectionDelayMax' : 9000})
+const socketAsterisk = io.connect(restApiDashboard, {
+  'reconnection': true,
+  'reconnectionAttempts': 15,
+  'reconnectionDelay': 9000,
+  'reconnectionDelayMax': 9000
+})
 
 const dashboard = new Vue({
   el: '#dashboard',
@@ -15,7 +20,7 @@ const dashboard = new Vue({
     rolesPermission: [],
 
     agentStatusSummary: [],
-    listProfileUsers : [],
+    listProfileUsers: [],
 
     percentageAnswer: '',
     percentageUnanswer: '',
@@ -23,6 +28,10 @@ const dashboard = new Vue({
     avgCallDuration: '',
     totalCallDurationInbound: '',
     totalCallDurationOutbound: '',
+
+    answeredMonth: '0',
+    answeredTimeMonth: '0',
+    slaMonth: '0',
 
     slaDay: '0',
     answered: '0',
@@ -39,12 +48,12 @@ const dashboard = new Vue({
     answeredSecond: '',
 
     ModalConnectionNodeJs: 'modal fade',
-    nodejsServerName : '',
-    nodejsServerMessage : ''
+    nodejsServerName: '',
+    nodejsServerMessage: ''
   },
   mounted () {
-    this.loadMetricasKpi(true)
     this.loadListProfile()
+    this.loadMetricasKpi(true)
   },
   methods: {
     loadMetricasKpi: async function (viewLoad) {
@@ -56,18 +65,18 @@ const dashboard = new Vue({
         this.slaDay = '-'
       }
 
-      await this.loadAnswered()
-      await this.loadAbandoned()
-      await this.loadAnsweredTime()
-      await this.loadAbandonedTime()
-      await this.loadSlaDay()
       this.panelAgentStatusSummary()
       this.panelGroupStatistics()
+      await this.loadAllKpisDay()
+      await this.loadSlaDay()
+
+      await this.loadAllKpisMonth()
+      await this.loadSlaMonth()
     },
 
     loadTimeElapsed: function (index, dataDashboard, namePanel) {
       setInterval(async function () {
-        if (dataDashboard[index]){
+        if (dataDashboard[index]) {
           const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
           const horaActual = (new Date()).getTime()
           const elapsed = differenceHours(horaActual - horaBD)
@@ -92,37 +101,27 @@ const dashboard = new Vue({
       setInterval(calcular(), 1000)
     },
 
-    sendUrlRequest: async function (url, type, actionTime = false) {
+    sendUrlRequest: async function (url, rangeDateSearch) {
       let parameters = {
-        type: type,
-        time: actionTime
+        rangeDateSearch: rangeDateSearch
       }
-      let response = await this.$http.post(url, parameters)
+      let response = await this.$http.post(url,parameters)
       return response.data
     },
 
-    loadAnswered: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'calls_completed')
-      this.answered = response.message
-    },
+    loadAllKpisDay: async function () {
+      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'forDay')
 
-    loadAbandoned: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'calls_abandone')
-      this.abandoned = response.message
-    },
+      this.abandoned = response[0].calls_abandone.message
+      this.answered = response[0].calls_completed.message
 
-    loadAnsweredTime: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'calls_completed', 'true')
-      this.answeredTime = response.message
-      this.answeredSecond = response.time
-      this.answeredSymbol = response.symbol
-    },
+      this.answeredTime = response[0].calls_completed_time.message
+      this.answeredSecond = response[0].calls_completed_time.time
+      this.answeredSymbol = response[0].calls_completed_time.symbol
 
-    loadAbandonedTime: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'calls_abandone', 'true')
-      this.abandonedTime = response.message
-      this.abandonedSecond = response.time
-      this.abandonedSymbol = response.symbol
+      this.abandonedTime = response[0].calls_abandone_time.message
+      this.abandonedSecond = response[0].calls_abandone_time.time
+      this.abandonedSymbol = response[0].calls_abandone_time.symbol
     },
 
     loadSlaDay: function () {
@@ -130,6 +129,20 @@ const dashboard = new Vue({
       let answeredTime = this.answeredTime
       this.slaDay = 0
       if (answered !== 0) this.slaDay = ((answeredTime * 100) / answered).toFixed(2)
+    },
+
+    loadAllKpisMonth: async function () {
+      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'forMonth')
+
+      this.answeredMonth = response[0].calls_completed.message
+      this.answeredTimeMonth = response[0].calls_completed_time.message
+    },
+
+    loadSlaMonth: function () {
+      let answeredMonth = this.answeredMonth
+      let answeredTimeMonth = this.answeredTimeMonth
+      this.slaMonth = 0
+      if (answeredMonth !== 0) this.slaMonth = ((answeredTimeMonth * 100) / answeredMonth).toFixed(2)
     },
 
     loadListProfile: async function () {
@@ -142,11 +155,11 @@ const dashboard = new Vue({
       // this.queue = 15
     },
 
-    panelAgentStatusSummary : async function (){
+    panelAgentStatusSummary: async function () {
       let response = await this.sendUrlRequest('dashboard_01/panelAgentStatusSummary', '', '')
       let result = response.message
       let eventList = getRulers('event_id')
-      result.forEach((item,index) =>{
+      result.forEach((item, index) => {
         item.color = eventList[item.event_id].color
         item.icon = eventList[item.event_id].icon
       })
@@ -154,7 +167,7 @@ const dashboard = new Vue({
       this.agentStatusSummary = result
     },
 
-    panelGroupStatistics : async function (){
+    panelGroupStatistics: async function () {
       let response = await this.sendUrlRequest('dashboard_01/panelGroupStatistics', '', '')
       this.avgWait = response.avgWait
       this.avgCallDuration = response.avgCallDuration
@@ -164,25 +177,25 @@ const dashboard = new Vue({
       this.totalCallDurationOutbound = response.totalCallDurationOutbound
     },
 
-    compareRole : function (role) {
+    compareRole: function (role) {
       let Permission = false
       this.rolesPermission.forEach((index, value) => {
         index.forEach((roleName, roleIndex) => {
           let miniName = roleName.toLowerCase()
-          if(role === miniName) Permission = true
+          if (role === miniName) Permission = true
         })
       })
       return Permission
     },
 
-    loadRolePermission : function(val) {
+    loadRolePermission: function (val) {
       let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
-      if(cookieRole){
-        Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+      if (cookieRole) {
+        Cookies.set('roleCookie', val, {expires: timeDaycookie, path: ''})
         this.rolesPermission.push(val)
         refreshDetailsCalls()
       } else {
-        Cookies.set('roleCookie', val, { expires: timeDaycookie, path: '' })
+        Cookies.set('roleCookie', val, {expires: timeDaycookie, path: ''})
         this.rolesPermission.push(val)
         refreshDetailsCalls()
       }
@@ -196,12 +209,12 @@ const refreshDetailsCalls = () => {
   dashboard.callsOutbound = []
   dashboard.callsWaiting = []
   dashboard.others = []
-  socketAsterisk.emit('createRoomDashboard',{nameProyect : nameProyecto})
+  socketAsterisk.emit('createRoomDashboard', {nameProyect: nameProyecto})
   socketAsterisk.emit('listDataDashboard')
 }
 
 
-socketAsterisk.on('connect', function() {
+socketAsterisk.on('connect', function () {
   dashboard.nodejsServerName = 'Servidor Asterisk'
   dashboard.ModalConnectionNodeJs = 'modal fade'
   dashboard.nodejsServerMessage = 'Acabas de conectar con el Servidor Asterisk'
@@ -209,15 +222,15 @@ socketAsterisk.on('connect', function() {
   dashboard.loadListProfile()
 })
 
-socketAsterisk.on('connect_error', function(){
+socketAsterisk.on('connect_error', function () {
   dashboard.nodejsServerName = 'Servidor Asterisk'
   dashboard.ModalConnectionNodeJs = 'modal show'
   let i = 9
-  let refreshIntervalId  = setInterval(()=> {
+  let refreshIntervalId = setInterval(() => {
     dashboard.nodejsServerMessage = `Fallo la conexión por el Servidor Asterik volveremos a reintentar en ${i} segundos!!!`
     i--
-    if(i === 0) clearInterval(refreshIntervalId)
-  },1000)
+    if (i === 0) clearInterval(refreshIntervalId)
+  }, 1000)
   console.log('socketAsterisk Connection Failed');
 })
 
@@ -254,25 +267,25 @@ socketAsterisk.on('UpdateInbound', dataInbound => updateDataDashboard(dataInboun
 socketAsterisk.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
 
 
-isExistDuplicate = (data, dataDashboard) =>{
+isExistDuplicate = (data, dataDashboard) => {
   let exist = true
   let index = (dataDashboard.length)
-  if(index > 0) dataDashboard.forEach((item, index) => {
+  if (index > 0) dataDashboard.forEach((item, index) => {
     if (item.agent_name == data.agent_name) exist = false
   })
   return exist
 }
 
 AddDataDashboard = async (data, dataDashboard, namePanel) => {
-  let exist = isExistDuplicate (data, dataDashboard)
-  if(exist){
+  let exist = isExistDuplicate(data, dataDashboard)
+  if (exist) {
     let index = (dataDashboard.length)
     let eventList = getRulers('event_id')
     data.color = eventList[data.event_id].color
     data.icon = eventList[data.event_id].icon
     data = addInformationProfile(data)
     dataDashboard.push(data)
-    orderDashboard(dataDashboard,namePanel)
+    orderDashboard(dataDashboard, namePanel)
     dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
     dataDashboard[index].total_calls = await getTotalCalls(data)
     dashboard.panelAgentStatusSummary()
@@ -282,7 +295,7 @@ AddDataDashboard = async (data, dataDashboard, namePanel) => {
 }
 
 updateDataDashboard = (data, dataDashboard, namePanel) => {
-  dataDashboard.forEach( async (item, index) => {
+  dataDashboard.forEach(async (item, index) => {
     if (item.agent_name === data.agent_name) {
       if (item.event_id !== data.event_id) {
         let eventList = getRulers('event_id')
@@ -297,23 +310,23 @@ updateDataDashboard = (data, dataDashboard, namePanel) => {
       item.agent_annexed = data.agent_annexed
       item.event_name = data.event_name
       item.agent_status = data.agent_status
-      orderDashboard(dataDashboard,namePanel)
+      orderDashboard(dataDashboard, namePanel)
     }
   })
   dashboard.panelAgentStatusSummary()
   dashboard.panelGroupStatistics()
 }
 
-addInformationProfile = (data) =>{
+addInformationProfile = (data) => {
   data.avatar = dashboard.listProfileUsers[data.agent_user_id]['avatar']
   data.nameComplete = dashboard.listProfileUsers[data.agent_user_id]['nameComplete']
   data.role = dashboard.listProfileUsers[data.agent_user_id]['role']
   return data
 }
 
-removeDataDashboard =  (data, dataDashboard, namePanel ) => {
+removeDataDashboard = (data, dataDashboard, namePanel) => {
   dataDashboard.forEach((item, index) => {
-    if (item.agent_name === data.agent_name){
+    if (item.agent_name === data.agent_name) {
       dataDashboard.splice(index, 1)
     }
   })
@@ -326,7 +339,9 @@ getTotalCalls = async (data) => {
 }
 
 differenceHours = (s) => {
-  function addZ (n) { return (n < 10 ? '0' : '') + n }
+  function addZ(n) {
+    return (n < 10 ? '0' : '') + n
+  }
 
   let ms = s % 1000
   s = (s - ms) / 1000
@@ -338,12 +353,12 @@ differenceHours = (s) => {
   return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs)
 }
 
-const orderDashboard = async (dataDashboard,namePanel) => {
-  if(namePanel !== ''){
+const orderDashboard = async (dataDashboard, namePanel) => {
+  if (namePanel !== '') {
     let newObject = await orderObjects(dataDashboard, 'event_time') // Ordena alfabeticamente
     newObject = await orderObjects(newObject, 'event_id', getRulers('event_id')) //Ordena por regla establecida
     newObject = await orderObjects(newObject, 'agent_role', getRulers('agent_role')) //Ordena por regla establecida
-    eval('dashboard.'+ namePanel +'= newObject')
+    eval('dashboard.' + namePanel + '= newObject')
   }
 }
 
@@ -386,64 +401,64 @@ const orderObjects = (object, column, rulers = '') => {
 
 const getRulers = (action) => {
   let rulers = ''
-  if (action === 'event_id'){
+  if (action === 'event_id') {
     rulers = {
-      '12'  : {'icon' : 'fa fa-volume-up', 'color' : 'success', 'position' : 1},  // Ring Inbound
-      '16'  : {'icon' : 'fa fa-bell-slash', 'color' : 'danger', 'position' : 2},  // Hold Inbound
-      '8'   : {'icon' : 'fa fa-phone', 'color' : 'success', 'position' : 3},  // Inbound
-      '13'  : {'icon' : 'fa fa-volume-up', 'color' : 'primary', 'position' : 4},  // Ring Outbound
-      '17'  : {'icon' : 'fa fa-bell-slash', 'color' : 'danger', 'position' : 5},  // Hold Outbound
-      '9'   : {'icon' : 'fa fa-headphones', 'color' : 'warning', 'position' : 6},  // Outbound
-      '18'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 7},  //Ring Inbound Interno
-      '22'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 8},  //Hold Inbound Interno
-      '19'  : {'icon' : 'fa fa-phone', 'color' : 'default', 'position' : 9},  //Inbound Interno
-      '24'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 10},  //Ring Inbound Transfer
-      '26'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 11},  //Hold Inbound Transfer
-      '25'  : {'icon' : 'fa fa-phone', 'color' : 'default', 'position' : 12},  //Inbound Transfer
-      '21'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 13},  //Ring Outbound Interno
-      '23'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 14},  //Hold Outbound Interno
-      '20'  : {'icon' : 'fa fa fa-headphones', 'color' : 'default', 'position' : 15},  //Outbound Interno
-      '27'  : {'icon' : 'fa fa-volume-up', 'color' : 'default', 'position' : 10},  //Ring Outbound Transfer
-      '28'  : {'icon' : 'fa fa-bell-slash', 'color' : 'default', 'position' : 11},  //Hold Outbound Transfer
-      '29'  : {'icon' : 'fa fa-phone', 'color' : 'default', 'position' : 12},  //Outbound Transfer
-      '1'   : {'icon' : 'fa fa-fax', 'color' : 'info', 'position' : 16},  // ACD
-      '7'   : {'icon' : 'fa fa-suitcase', 'color' : 'primary', 'position' : 17},  // Gestión BackOffice
-      '2'   : {'icon' : 'fa fa-star', 'color' : 'primary', 'position' : 18},  // Break
-      '4'   : {'icon' : 'fa fa-cutlery', 'color' : 'primary', 'position' : 19}, // Refrigerio
-      '3'   : {'icon' : 'fa fa-asterisk', 'color' : 'primary', 'position' : 20}, // SSHH
-      '5'   : {'icon' : 'fa fa-retweet', 'color' : 'danger', 'position' : 21}, // Feedback
-      '6'   : {'icon' : 'fa fa-book', 'color' : 'danger', 'position' : 22}, // Capacitación
-      '11'  : {'icon' : 'fa fa-home', 'color' : 'default', 'position' : 23},  //Login
+      '12': {'icon': 'fa fa-volume-up', 'color': 'success', 'position': 1},  // Ring Inbound
+      '16': {'icon': 'fa fa-bell-slash', 'color': 'danger', 'position': 2},  // Hold Inbound
+      '8': {'icon': 'fa fa-phone', 'color': 'success', 'position': 3},  // Inbound
+      '13': {'icon': 'fa fa-volume-up', 'color': 'primary', 'position': 4},  // Ring Outbound
+      '17': {'icon': 'fa fa-bell-slash', 'color': 'danger', 'position': 5},  // Hold Outbound
+      '9': {'icon': 'fa fa-headphones', 'color': 'warning', 'position': 6},  // Outbound
+      '18': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 7},  //Ring Inbound Interno
+      '22': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 8},  //Hold Inbound Interno
+      '19': {'icon': 'fa fa-phone', 'color': 'default', 'position': 9},  //Inbound Interno
+      '24': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 10},  //Ring Inbound Transfer
+      '26': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 11},  //Hold Inbound Transfer
+      '25': {'icon': 'fa fa-phone', 'color': 'default', 'position': 12},  //Inbound Transfer
+      '21': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 13},  //Ring Outbound Interno
+      '23': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 14},  //Hold Outbound Interno
+      '20': {'icon': 'fa fa fa-headphones', 'color': 'default', 'position': 15},  //Outbound Interno
+      '27': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 10},  //Ring Outbound Transfer
+      '28': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 11},  //Hold Outbound Transfer
+      '29': {'icon': 'fa fa-phone', 'color': 'default', 'position': 12},  //Outbound Transfer
+      '1': {'icon': 'fa fa-fax', 'color': 'info', 'position': 16},  // ACD
+      '7': {'icon': 'fa fa-suitcase', 'color': 'primary', 'position': 17},  // Gestión BackOffice
+      '2': {'icon': 'fa fa-star', 'color': 'primary', 'position': 18},  // Break
+      '4': {'icon': 'fa fa-cutlery', 'color': 'primary', 'position': 19}, // Refrigerio
+      '3': {'icon': 'fa fa-asterisk', 'color': 'primary', 'position': 20}, // SSHH
+      '5': {'icon': 'fa fa-retweet', 'color': 'danger', 'position': 21}, // Feedback
+      '6': {'icon': 'fa fa-book', 'color': 'danger', 'position': 22}, // Capacitación
+      '11': {'icon': 'fa fa-home', 'color': 'default', 'position': 23},  //Login
     }
   }
 
-  if (action === 'agent_role'){
+  if (action === 'agent_role') {
     rulers = {
-      'user'       : {'position' : 1},
-      'backoffice' : {'position' : 2},
-      'supervisor' : {'position' : 3},
-      'admin'      : {'position' : 4},
-      'cliente'    : {'position' : 5},
-      'calidad'    : {'position' : 6}
+      'user': {'position': 1},
+      'backoffice': {'position': 2},
+      'supervisor': {'position': 3},
+      'admin': {'position': 4},
+      'cliente': {'position': 5},
+      'calidad': {'position': 6}
     }
   }
   return rulers
 }
 
 const replaceCookieArray = (cookie) => {
-  if(cookie){
-    let firstCookie = cookie.replace(/"/g,'')
-    let secondCookie = firstCookie.replace('[','')
-    let thirdCookie = secondCookie.replace(']','')
+  if (cookie) {
+    let firstCookie = cookie.replace(/"/g, '')
+    let secondCookie = firstCookie.replace('[', '')
+    let thirdCookie = secondCookie.replace(']', '')
     return thirdCookie.split(',')
-  }else{
+  } else {
     return
   }
 }
 
 let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
-if(cookieRole){
-  if(cookieRole.toString().length === 0) dashboard.roleDefault = ['User']
+if (cookieRole) {
+  if (cookieRole.toString().length === 0) dashboard.roleDefault = ['User']
   else dashboard.roleDefault = cookieRole
 } else {
   dashboard.roleDefault = ['User']
