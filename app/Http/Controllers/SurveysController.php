@@ -213,20 +213,24 @@ class SurveysController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
      */
     protected function export_csv($days){
+        $filenamefirst              = 'surveys_inbound';
+        $filenamesecond             = 'surveys_outbound';
+        $filenamethird              = 'surveys_released';
+        $filetime                   = time();
 
-        $events = ['surveys_inbound','surveys_outbound','surveys_released'];
+        $events = [$filenamefirst,$filenamesecond,$filenamethird];
 
         for($i=0;$i<count($events);$i++){
             $builderview = $this->builderview($this->query_surveys($days,$events[$i]));
-            $this->BuilderExport($builderview,$events[$i],'csv','exports');
+            $this->BuilderExport($builderview,$events[$i].'_'.$filetime,'csv','exports');
         }
     
         $data = [
             'succes'    => true,
             'path'      => [
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/surveys_inbound.csv',
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/surveys_outbound.csv',
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/surveys_released.csv'
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamefirst.'_'.$filetime.'.csv',
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamesecond.'_'.$filetime.'.csv',
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamethird.'_'.$filetime.'.csv'
                             ]
         ];
 
@@ -240,7 +244,8 @@ class SurveysController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
      */
     protected function export_excel($days){
-        Excel::create('report_surveys', function($excel) use($days) {
+        $filename               = 'report_surveys_'.time();
+        Excel::create($filename, function($excel) use($days) {
 
             $excel->sheet('Inbound', function($sheet) use($days) {
                 $sheet->fromArray($this->builderview($this->query_surveys($days,'surveys_inbound')));
@@ -260,7 +265,7 @@ class SurveysController extends CosapiController
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/report_surveys.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;

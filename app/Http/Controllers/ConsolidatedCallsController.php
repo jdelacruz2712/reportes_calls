@@ -569,21 +569,26 @@ protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$gro
      * @return [array]       [Array con datos de las rutas donde estas los CSV generados]
      */
     protected function export_csv($days, $rank_hour){
+        $filenamefirst              = 'skills_group';
+        $filenamesecond             = 'agent_group';
+        $filenamethird              = 'day_group';
+        $filenamefourth             = 'hour_group';
+        $filetime                   = time();
 
-        $events = ['skills_group','agent_group','day_group','hour_group'];
+        $events = [$filenamefirst,$filenamesecond,$filenamethird,$filenamefourth];
 
         for($i=0;$i<count($events);$i++){
             $builderview = $this->calls_inbound($days,$events[$i],$rank_hour);
-            $this->BuilderExport($builderview,$events[$i],'csv','exports');
+            $this->BuilderExport($builderview,$events[$i].'_'.$filetime,'csv','exports');
         }
     
         $data = [
             'succes'    => true,
             'path'      => [
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/skills_group.csv',
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/agent_group.csv',
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/day_group.csv',
-                            'http://'.$_SERVER['HTTP_HOST'].'/exports/hour_group.csv'
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamefirst.'_'.$filetime.'.csv',
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamesecond.'_'.$filetime.'.csv',
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamethird.'_'.$filetime.'.csv',
+                            'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filenamefourth.'_'.$filetime.'.csv'
                             ]
         ];
 
@@ -598,7 +603,8 @@ protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$gro
      * @return [array]       [Array con datos de las rutas donde estas los Excel generados]
      */
     protected function export_excel($days,$rank_hour){
-        Excel::create('consolidated_calls', function($excel) use($days,$rank_hour) {
+        $filename               = 'consolidated_calls'.time();
+        Excel::create($filename, function($excel) use($days,$rank_hour) {
 
             $excel->sheet('Skills', function($sheet) use($days,$rank_hour) {
                 $sheet->fromArray($this->calls_inbound($days,'skills_group',$rank_hour));
@@ -621,7 +627,7 @@ protected function BuilderCallsConsolidated($CallsConsolidated ,$call_group,$gro
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/consolidated_calls.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;

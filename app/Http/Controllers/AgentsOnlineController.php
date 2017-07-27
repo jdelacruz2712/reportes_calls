@@ -117,13 +117,13 @@ class AgentsOnlineController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
      */
     protected function export_csv($days){
-
+        $filename               = 'agents_online_'.time();
         $builderview = $this->builderview($this->query_agents_online($days),'export');
-        $this->BuilderExport($builderview,'agents_online','csv','exports');
+        $this->BuilderExport($builderview,$filename,'csv','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/agents_online.csv']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.csv']
         ];
 
         return $data;
@@ -135,13 +135,13 @@ class AgentsOnlineController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
      */
     protected function export_excel($days){
-
+        $filename               = 'agents_online_'.time();
         $builderview = $this->builderview($this->query_agents_online($days,'agents_online'),'export');
-        $this->BuilderExport($builderview,'agents_online','xlsx','exports');
+        $this->BuilderExport($builderview,$filename,'xlsx','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/agents_online.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;

@@ -317,15 +317,16 @@ class EventsAgentController extends CosapiController
      */
     protected function export_event_detail_csv($days){
             $days                   = explode(' - ',$days);
+            $filename               = 'detail_events_'.time();
 
             $builderview = $this->builderview(detailEvents($this->query_events($days)));
-            $this->BuilderExport($builderview,'detail_events','csv','exports');
+            $this->BuilderExport($builderview,$filename,'csv','exports');
 
 
         $data = [
             'succes'    => true,
             'path'      => [
-                'http://'.$_SERVER['HTTP_HOST'].'/exports/detail_events.csv'
+                'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.csv'
             ]
         ];
 
@@ -340,7 +341,8 @@ class EventsAgentController extends CosapiController
      */
     protected function export_event_detail_excel($days){
         $days                   = explode(' - ',$days);
-        Excel::create('detail_events', function($excel) use($days) {
+        $filename               = 'detail_events_'.time();
+        Excel::create($filename, function($excel) use($days) {
 
 
             $excel->sheet('Detail Events', function($sheet) use($days) {
@@ -352,7 +354,7 @@ class EventsAgentController extends CosapiController
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/detail_events.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;
@@ -364,14 +366,15 @@ class EventsAgentController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en CSV]
      */
     protected function export_event_consolidated_csv($days){
+        $filename               = 'detail_events_consolidated_'.substr(time(),6,4);
         $builderview = $this->builderview_event_consolidated($this->query_event_consolidated($days));
-        $this->BuilderExport($builderview,'detail_events_consolidated','csv','exports');
+        $this->BuilderExport($builderview,$filename,'csv','exports');
 
 
         $data = [
             'succes'    => true,
             'path'      => [
-                'http://'.$_SERVER['HTTP_HOST'].'/exports/detail_events_consolidated.csv'
+                'http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.csv'
             ]
         ];
 
@@ -385,7 +388,8 @@ class EventsAgentController extends CosapiController
      * @return [array]        [Array con la ubicación donde se a guardado el archivo exportado en Excel]
      */
     protected function export_event_consolidated_excel($days){
-        Excel::create('detail_events_consolidated', function($excel) use($days) {
+        $filename               = 'detail_events_consolidated_'.time();
+        Excel::create($filename, function($excel) use($days) {
 
             $excel->sheet('Consolidated Events', function($sheet) use($days) {
                 $sheet->fromArray($this->builderview_event_consolidated($this->query_event_consolidated($days)));
@@ -395,7 +399,7 @@ class EventsAgentController extends CosapiController
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/detail_events_consolidated.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;

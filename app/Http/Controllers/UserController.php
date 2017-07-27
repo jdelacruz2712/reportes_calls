@@ -325,26 +325,26 @@ class UserController extends CosapiController
     }
 
     protected function export_csv(){
-
+        $filename               = 'list_users_'.time();
         $builderview = $this->builderview($this->user_list_query(),'export');
-        $this->BuilderExport($builderview,'list_users','csv','exports');
+        $this->BuilderExport($builderview,$filename,'csv','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/list_users.csv']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.csv']
         ];
 
         return $data;
     }
 
     protected function export_excel(){
-
+        $filename               = 'list_users_'.time();
         $builderview = $this->builderview($this->user_list_query(),'export');
-        $this->BuilderExport($builderview,'list_users','xlsx','exports');
+        $this->BuilderExport($builderview,$filename,'xlsx','exports');
 
         $data = [
             'succes'    => true,
-            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/list_users.xlsx']
+            'path'      => ['http://'.$_SERVER['HTTP_HOST'].'/exports/'.$filename.'.xlsx']
         ];
 
         return $data;

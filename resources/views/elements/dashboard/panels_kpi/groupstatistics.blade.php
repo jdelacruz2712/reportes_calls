@@ -4,7 +4,7 @@
 	</div>
 	<!-- /.box-header -->
 	<div class="box-body">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <ul class="products-list product-list-in-box">
                 <li class="item">
                     <div class="product-img">
@@ -14,6 +14,21 @@
                         <label>@{{ slaDay }} %</label>
                         <span class="product-description">
                            SLA Day
+                        </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="products-list product-list-in-box">
+                <li class="item">
+                    <div class="product-img">
+                        <i class="fa fa-tachometer fa-2x"></i>
+                    </div>
+                    <div class="product-info" style="margin-left: 40px;">
+                        <label>@{{ slaMonth }} %</label>
+                        <span class="product-description">
+                           SLA Month
                         </span>
                     </div>
                 </li>
