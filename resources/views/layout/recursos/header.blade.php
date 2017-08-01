@@ -47,7 +47,7 @@
                         <li class="user-header">
                             <img :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
                             <p>
-                                @{{ getNameComplete + ' - ' }}<font id="UserNameRole">@{{getRole}}</font>
+                                @{{ getNameComplete + ' - ' }}<font id="UserNameRole">@{{ getRole }}</font>
                                 <small>{{date('j F Y')}}</small>
                             </p>
                         </li>
