@@ -92,9 +92,9 @@ class DashboardController extends IncomingCallsController
 
   public function getQuantityCalls(Request $request)
   {
-    if ($request->type) {
+    if ($request->nameAgent) {
       try {
-        $query_calls = $this->query_calls(date('Y-m-d') . ' - ' . date('Y-m-d'), $request->type, $request->time);
+        $query_calls = $this->query_calls(date('Y-m-d') . ' - ' . date('Y-m-d'), 'calls_completed', $request->nameAgent);
         $QuantityCalls = count($query_calls);
         return response()->json(['message' => $QuantityCalls], 200);
       } catch (\Exception $e) {
