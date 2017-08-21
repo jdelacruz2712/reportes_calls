@@ -101,9 +101,10 @@ const dashboard = new Vue({
       setInterval(calcular(), 1000)
     },
 
-    sendUrlRequest: async function (url, rangeDateSearch) {
+    sendUrlRequest: async function (url, rangeDateSearch, nameAgent = '') {
       let parameters = {
-        rangeDateSearch: rangeDateSearch
+        rangeDateSearch: rangeDateSearch,
+        nameAgent: nameAgent
       }
       let response = await this.$http.post(url,parameters)
       return response.data
@@ -146,7 +147,7 @@ const dashboard = new Vue({
     },
 
     loadListProfile: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getListProfile', '')
+      let response = await this.sendUrlRequest('dashboard_01/getListProfile')
       this.listProfileUsers = response.message
       await refreshDetailsCalls()
     },
@@ -156,7 +157,7 @@ const dashboard = new Vue({
     },
 
     panelAgentStatusSummary: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/panelAgentStatusSummary', '', '')
+      let response = await this.sendUrlRequest('dashboard_01/panelAgentStatusSummary')
       let result = response.message
       let eventList = getRulers('event_id')
       result.forEach((item, index) => {
@@ -168,7 +169,7 @@ const dashboard = new Vue({
     },
 
     panelGroupStatistics: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/panelGroupStatistics', '', '')
+      let response = await this.sendUrlRequest('dashboard_01/panelGroupStatistics')
       this.avgWait = response.avgWait
       this.avgCallDuration = response.avgCallDuration
       this.percentageAnswer = response.percentageAnswer
@@ -334,7 +335,7 @@ removeDataDashboard = (data, dataDashboard, namePanel) => {
 }
 
 getTotalCalls = async (data) => {
-  let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', 'calls_completed', data.agent_name)
+  let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', '', data.agent_name)
   return response.message
 }
 
