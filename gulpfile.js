@@ -64,18 +64,11 @@ elixir(function(mix) {
   Generando el archivo cosapi_adminlte.min.js para el Layout adminLTE
   */
   .scripts([
-      'vendor/jquery/jquery.min.js',
-      'plugins/jQueryUI/jquery-ui.min.js'
-  ],'public/js/adminlte_jquerys.min.js','resources/assets/')
-
-  .scripts([
-      'vendor/bootstrap/js/bootstrap.min.js',
       'extras/bootstrap3-dialog/js/bootstrap-dialog.js',
-      'extras/toastr/toastr.js',
+      'extras/toastr/toastr.js'
   ],'public/js/adminlte_notifications.min.js','resources/assets/')
 
   .scripts([
-      'plugins/adminLTE/js/app.min.js',
       'plugins/adminLTE/js/funcionalidades.js'
   ],'public/js/adminlte_scripts.min.js','resources/assets/')
 
@@ -172,6 +165,42 @@ elixir(function(mix) {
       'plugins/datatables/Buttons-1.2.1/js/buttons.bootstrap.min.js',
       'plugins/datatables/Buttons-1.2.1/js/buttons.html5.min.js'
   ],'public/js/datatables.min.js','resources/assets/');
+});
+
+/**
+jasvir 24/08/2017
+Generando archivos AdminLTE 2.4E Testing
+*/
+/**
+ testing AdminLTE 2.4 Generando un solo archivo css y js para la funcionalidad de select
+*/
+elixir(function(mix) {
+  mix
+  .styles([
+      'plugins/bootstrap/dist/css/bootstrap.css',
+      'plugins/font-awesome/css/font-awesome.css',
+      'plugins/Ionicons/css/ionicons.css',
+      'dist/css/AdminLTE.css',
+      'dist/css/skins/_all-skins.css'
+  ],'public/adminlte/css/full_adminlte.css','resources/assets/adminlte/')
+  .scripts([
+      'plugins/jquery/dist/jquery.js',
+      'plugins/bootstrap/dist/js/bootstrap.js',
+      'plugins/fastclick/lib/fastclick.js',
+      'dist/js/adminlte.js',
+      'dist/js/demo.js'
+  ],'public/adminlte/js/full_adminlte.js','resources/assets/adminlte/');
+});
+
+elixir(function(mix) {
+  mix
+  /*css*/
+  .copy('resources/assets/adminlte/dist/img'                          , 'public/adminlte/img')
+  .copy('resources/assets/adminlte/plugins/bootstrap/dist/fonts'      , 'public/adminlte/fonts')
+  .copy('resources/assets/adminlte/plugins/Ionicons/fonts'            , 'public/adminlte/fonts')
+  .copy('resources/assets/adminlte/plugins/font-awesome/fonts'        , 'public/adminlte/fonts')
+  .copy('resources/assets/plugins/adminLTE/css/fonts-googleapis.css'  , 'public/adminlte/css/fonts-googleapis.css')
+  .copy('resources/assets/plugins/adminLTE/css/fonts-google-apis'     , 'public/adminlte/css/fonts-google-apis')
 });
 
 

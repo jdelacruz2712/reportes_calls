@@ -3,15 +3,15 @@
     <!-- Logo -->
     <a href="/" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>{{getenv('PROYECT_NAME_SHORT')}}</b></span>
+        <span class="logo-mini">{{getenv('PROYECT_NAME_SHORT')}}</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>{{getenv('PROYECT_NAME_COMPLETE')}}</b></span>
+        <span class="logo-lg">{{getenv('PROYECT_NAME_COMPLETE')}}</span>
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation" id="menuHeader">
         <!-- Sidebar toggle button-->
-        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
         <!-- Navbar Right Menu -->

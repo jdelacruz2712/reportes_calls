@@ -6,7 +6,8 @@
     @include('layout.recursos.icon_title')
     <title>Reportes | @yield('title')</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    {!!Html::style('css/cosapi_adminlte.min.css')!!}
+    {!!Html::style('adminlte/css/full_adminlte.css')!!}
+    {!!Html::style('adminlte/css/fonts-googleapis.css')!!}
     @yield('css')
   </head>
   <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini ">
@@ -38,7 +39,7 @@
       @include('layout.recursos.modals.modal_releases_annexed')
       <div class="control-sidebar-bg"></div>
     </div>
-    {!!Html::script('js/adminlte_jquerys.min.js?version='.date('YmdHis'))!!}
+      {!!Html::script('adminlte/js/full_adminlte.js')!!}
     {!!Html::script('js/adminlte_notifications.min.js?version='.date('YmdHis'))!!}
     {!!Html::script('js/adminlte_scripts.min.js?version='.date('YmdHis'))!!}
     {!!Html::script('js/adminlte_vuesockets.min.js?version='.date('YmdHis'))!!}

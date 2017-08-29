@@ -1,4 +1,4 @@
-@include('layout.plugins.css-valores-cuadros')
+
 @extends('layout.dashboard')
 @section('title', 'Dashboard')
 @section('content')
