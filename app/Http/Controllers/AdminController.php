@@ -126,7 +126,7 @@ class AdminController extends CosapiController
             'getRemoteIp'               => $_SERVER['REMOTE_ADDR'],
             'requiredAnnexed'           => $requiredAnnexed,
             'hourServer'                => date('H:i:s'),
-            'textDateServer'            => date('d-m-w'),
+            'textDateServer'            => date('d-m-w-Y'),
             'dateServer'                => date('Y-m-d'),
             'annexed'                   => $this->UserAnexo,
             'assistanceNextHour'        => $assistanceNextHour,

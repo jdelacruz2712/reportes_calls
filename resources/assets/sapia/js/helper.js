@@ -450,7 +450,10 @@ const horaActual = () => {
 // Muestra la fecha actual en la cabecera del sistema.
 const fechaActual = () => {
   let dateServer = vueFront.textDateServer.split('-')
-  vueFront.textDateServer = nombre_dia(parseInt(dateServer[2])) + ' ' + parseInt(dateServer[0]) + ' de ' + nombre_mes(parseInt(dateServer[1]))
+  vueFront.textDateServer = nombre_dia(parseInt(dateServer[2])) + ' ' +
+  parseInt(dateServer[0]) + ' de ' +
+  nombre_mes(parseInt(dateServer[1])) + ' de ' +
+  parseInt(dateServer[3])
 }
 
 // Función que retorna nombre del mes, en base al número enviado
@@ -482,7 +485,7 @@ const nombre_mes = (mes) => {
       nombre_mes = 'Ago'
       break
     case 9 :
-      nombre_mes = 'Sep'
+      nombre_mes = 'Septiembre'
       break
     case 10 :
       nombre_mes = 'Oct'
@@ -517,7 +520,7 @@ const nombre_dia = (dia) => {
       nombre_dia = 'Jue'
       break
     case 5 :
-      nombre_dia = 'Vie'
+      nombre_dia = 'Viernes'
       break
     case 6 :
       nombre_dia = 'Sab'
