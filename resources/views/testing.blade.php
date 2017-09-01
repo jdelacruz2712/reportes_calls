@@ -6,8 +6,8 @@
   <title>AdminLTE 2 | Dashboard</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <link rel="stylesheet" href="{{ asset('adminlte/css/full_adminlte.css')}}">
-  <link rel="stylesheet" href="{{ asset('adminlte/css/fonts-googleapis.css')}}">
+  <link rel="stylesheet" href="{{ asset('css/adminlte.css')}}">
+  <link rel="stylesheet" href="{{ asset('css/fonts-googleapis.css')}}">
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -292,17 +292,6 @@
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>
-      <!-- search form -->
-      <form action="#" method="get" class="sidebar-form">
-        <div class="input-group">
-          <input type="text" name="q" class="form-control" placeholder="Search...">
-          <span class="input-group-btn">
-                <button type="submit" name="search" id="search-btn" class="btn btn-flat">
-                  <i class="fa fa-search"></i>
-                </button>
-              </span>
-        </div>
-      </form>
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
       <ul class="sidebar-menu" data-widget="tree">
@@ -850,6 +839,6 @@
 
 </div>
 <!-- ./wrapper -->
-<script src="{{ asset('adminlte/js/full_adminlte.js')}}"></script>
+<script src="{{ asset('js/adminlte.js')}}"></script>
 </body>
 </html>
