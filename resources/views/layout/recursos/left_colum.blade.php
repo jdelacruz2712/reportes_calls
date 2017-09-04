@@ -11,7 +11,7 @@
         <input type="hidden"  v-model="getEventId" id="getEventId">
         <p>@{{ getNameComplete }}</p>
         <a href="#">
-          <i :class ="((annexedStatusAsterisk == 0 && getEventId != 11 && getRole == 'user')? 'fa fa-circle text-green' : getEventId != 11 && getRole == 'user'? 'fa fa-circle text-red' : '')"></i>
+          <i :class ="((annexedStatusAsterisk == 0) ? 'fa fa-circle text-red' : 'fa fa-circle text-green')"></i>
           @{{ getEventName }}
         </a>
       </div>

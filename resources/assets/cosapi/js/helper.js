@@ -66,9 +66,11 @@ const exportar = (format_export) => {
 
 /**
  * [export_ajax description]
- * @param  {[type]} type          [Define si el envio de datos es por POST o GET]
+ * @param  {[type]} type          [Define si el envio de datos es por POST o
+ *   GET]
  * @param  {String} url           [Ruta a la cual se van a solicitar los datos]
- * @param  {String} format_export [Formato en el cual se va a exportar el archivo]
+ * @param  {String} format_export [Formato en el cual se va a exportar el
+ *   archivo]
  * @param  {String} days          [Fecha de consulta de datos]
  */
 const export_ajax = (type, url, format_export = '', days = '',rankHour = 1800) => {
@@ -100,9 +102,12 @@ const export_ajax = (type, url, format_export = '', days = '',rankHour = 1800) =
 }
 
 /**
- * [downloadURL Iframe creado dinamicamente para realizar la descarga de archivos a la hora de exportar]
- * @param  {String} url   [Dirección en donde se encuentra el archivo descargado]
- * @param  {String} index [Indentificador de los frame, para que no tengan el mismo nombre como ID]
+ * [downloadURL Iframe creado dinamicamente para realizar la descarga de
+ * archivos a la hora de exportar]
+ * @param  {String} url   [Dirección en donde se encuentra el archivo
+ *   descargado]
+ * @param  {String} index [Indentificador de los frame, para que no tengan el
+ *   mismo nombre como ID]
  */
 const downloadURL = (url, index) => {
   const hiddenIFrameID = `hiddenDownloader${index}`
@@ -114,11 +119,13 @@ const downloadURL = (url, index) => {
 }
 
 /**
- * [cargar_dialog Función que muestra ventana emergente indicando que se va a realizar una descargar de algun archivo]
+ * [cargar_dialog Función que muestra ventana emergente indicando que se va a
+ * realizar una descargar de algun archivo]
  * @param  {String} new_string [Tipo de ventan emergente a mostrar]
  * @param  {String} title    [Titulo de la ventana emergente]
  * @param  {String} message  [Mensaje que se mostrara en la ventana emergente]
- * @param  {String} closable [Dato que nos indica que si podemos cerrar la ventana]
+ * @param  {String} closable [Dato que nos indica que si podemos cerrar la
+ *   ventana]
  * @return {[booleam]}          [description]
  */
 const cargar_dialog = (new_type, title, messagedialog, closable) => {
@@ -138,9 +145,12 @@ const cargar_dialog = (new_type, title, messagedialog, closable) => {
  * [cargar_ajaxDIV Función para cargar los datos en la vista]
  * @param  {String}  type     [Tipo de envío de datos: POST o GET]
  * @param  {String}  url      [Ruta a la cual se consultara los datos]
- * @param  {String}  nameDiv  [El nombre del Div en el cual se cargaran los datos]
- * @param  {String}  msjError [Texto qu se mostrar si ocurre algún tipo de error a la hora de cargar los datos]
- * @param  {Boolean} before   [Datos que nos dira si se ebe mostrar la imagen de cargando]
+ * @param  {String}  nameDiv  [El nombre del Div en el cual se cargaran los
+ *   datos]
+ * @param  {String}  msjError [Texto qu se mostrar si ocurre algún tipo de
+ *   error a la hora de cargar los datos]
+ * @param  {Boolean} before   [Datos que nos dira si se ebe mostrar la imagen
+ *   de cargando]
  */
 const cargar_ajaxDIV = (type, url, nameDiv, msjError, before = false) => {
   const image_loading = '<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>'
@@ -182,8 +192,10 @@ const refresh_information = (evento) => {
 }
 
 /**
- * [detalle_kpi_dashboard_02 Función que carga los ddatos del KPI ubicados en el Dashboard2]
- * @param  {string} evento [Tipo de reporte que se quiere cargar: day, week, mounth]
+ * [detalle_kpi_dashboard_02 Función que carga los ddatos del KPI ubicados en
+ * el Dashboard2]
+ * @param  {string} evento [Tipo de reporte que se quiere cargar: day, week,
+ *   mounth]
  * @return {[view]}          [Vista con los datos dl reporte]
  */
 const detalle_kpi_dashboard_02 = (evento) => {
@@ -220,7 +232,8 @@ const create_sound_bite = (sound) => {
 }
 
 /**
- * [validar_sonido Funcion que valida la cantidad de llamadas en cola par activar el sonido del monitor]
+ * [validar_sonido Funcion que valida la cantidad de llamadas en cola par
+ * activar el sonido del monitor]
  */
 const validar_sonido = () => {
   let click2 = create_sound_bite('/cosapi/sonidos/alerta_principal.mp3')
@@ -379,20 +392,13 @@ const ceroIzquierda = (numero) => {
 // Función que crea las Notification
 const mostrar_notificacion = (type, mensaje, titulo, time, duplicate, close, extendtime) => {
   let position = ''
-  switch (type){
-    case 'success' :
-      position = 'toast-top-right'
-      break
-    case 'warning' :
-      position = 'toast-top-left'
-      break
-    case 'error' :
-      position = 'toast-top-center'
-      break
-    default :
-      position = 'toast-bottom-right'
-      break
+  switch (type) {
+    case 'success': position = 'toast-bottom-left'; break
+    case 'warning': position = 'toast-bottom-left'; break
+    case 'error': position = 'toast-bottom-right'; break
+    default: position = 'toast-bottom-right'; break
   }
+
   toastr.options = {
     'closeButton': close,
     'debug': false,

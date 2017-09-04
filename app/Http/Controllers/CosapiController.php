@@ -103,8 +103,7 @@ class CosapiController extends Controller
      */
     protected function FormatDatatable($collection)
     {
-        return Datatables::of($collection)
-                        ->make(true);
+        return Datatables::of($collection)->make(true);
     }
 
     /**
