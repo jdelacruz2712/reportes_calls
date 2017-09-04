@@ -151,8 +151,8 @@ class AdminController extends CosapiController
 	function getStatusAddAgentDashboard()
 	{
 		$AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))
-										->where('agent_name', $this->UserSystem)
-										->get()->toArray();
+			->where('agent_name', $this->UserSystem)
+			->get()->toArray();
 
 		$existAgent = $AgentOnline[0]['count_agent'];
 		$exits = '';
@@ -180,3 +180,5 @@ class AdminController extends CosapiController
 		$AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
 		return response()->json(['statusAddAgentDashboard' => $AgentOnline[0]]);
 	}
+
+}
