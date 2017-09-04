@@ -1,7 +1,7 @@
 <div class="row-fluid" id='detailAgents'>
     <div class="box box-primary box-solid">
         <div class="box-header with-border">
-            <h3 class="box-title">Filter Dashboard</h3>
+            <h3 class="dashboard-title">Filter Dashboard</h3>
         </div>
         <div class="box-body">
             <div class="col-md-12">

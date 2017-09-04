@@ -88,6 +88,7 @@ class AdminController extends CosapiController
 	 * [index Función que carga la base del AdminLTE]
 	 * @return [view] [Returna la vista base del Admin LTE]
 	 */
+
 	public function index()
 	{
 		return view('/front-admin')->with(array(
@@ -179,4 +180,3 @@ class AdminController extends CosapiController
 		$AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
 		return response()->json(['statusAddAgentDashboard' => $AgentOnline[0]]);
 	}
-}
