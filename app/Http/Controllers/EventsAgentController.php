@@ -66,7 +66,6 @@ class EventsAgentController extends CosapiController
     public function events_detail (Request $request){
         if ($request->ajax()){
             if ($request->fecha_evento){
-
                 $days                   = explode(' - ',$request->fecha_evento);
                 $query_events           = $this->query_events($days);
                 $array_detail_events    = detailEvents($query_events);

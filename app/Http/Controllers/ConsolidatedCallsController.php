@@ -80,7 +80,7 @@ class ConsolidatedCallsController extends CosapiController
         $query_calls_inbound                = $this->query_calls_inbound($fecha_evento, ($rank_hour/60));
 
         switch($evento){
-            case 'skills_group' :
+            case 'skills_group'       :
                 $call_group                 = $this->calls_queue($fecha_evento);
                 $groupby                    = 'queue';
                 break ;
