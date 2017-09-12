@@ -25,6 +25,9 @@ Route::group (['middleware'=>['user']], function(){
         // Reporte de nivel de occupacion
         Route::post('level_of_occupation'								, ['uses'=>'LeveloccupationController@index']);
 
+        // Repote nuevo de eventos
+        Route::post('detail_event_report'								, ['uses'=>'DetailEventsReportController@index']);
+
         // Reporte de llamadas salienes
         Route::post('agents_online'										, ['uses'=>'AgentsOnlineController@index']);
 
@@ -62,6 +65,7 @@ Route::group (['middleware'=>['user']], function(){
     Route::post('export_consolidated'								, ['uses'=>'ConsolidatedCallsController@export']);
     Route::post('export_events_detail'								, ['uses'=>'EventsAgentController@export_event_detail']);
     Route::post('export_events_consolidated'						, ['uses'=>'EventsAgentController@export_event_consolidated']);
+    Route::post('export_details_events_report'						, ['uses'=>'DetailEventsReportController@export_details_events_report']);
     Route::post('export_agents_online'								, ['uses'=>'AgentsOnlineController@export']);
     Route::post('export_surveys'	    							, ['uses'=>'SurveysController@export']);
     Route::post('export_level_occupation'	    					, ['uses'=>'LeveloccupationController@export']);

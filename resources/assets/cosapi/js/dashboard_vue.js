@@ -101,6 +101,7 @@ const dashboard = new Vue({
       setInterval(calcular(), 1000)
     },
 
+    // Funcion para traer data de los controladores
     sendUrlRequest: async function (url, rangeDateSearch, nameAgent = '') {
       let parameters = {
         rangeDateSearch: rangeDateSearch,
