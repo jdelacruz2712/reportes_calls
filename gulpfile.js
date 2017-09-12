@@ -22,7 +22,7 @@ elixir(function(mix) {
       'node_modules/vue-resource/vue-resource.min.js',
       'node_modules/socket.io-client/socket.io.min.js',
       'node_modules/sails.io/sails.io.js',
-      'sapia/js/env.js'
+      '../../.env.js'
   ],'public/js/vuesockets.min.js','resources/assets/')
 
   /**
@@ -79,7 +79,7 @@ elixir(function(mix) {
     'vendor/adminlte/plugins/jquery/dist/jquery.js',
     'vendor/adminlte/plugins/bootstrap/dist/js/bootstrap.js',
     'vendor/adminlte/plugins/fastclick/lib/fastclick.js',
-    'sapia/js/env.js',
+    '../../.env.js',
     'sapia/js/helper.js',
     'node_modules/vue/vue.min.js',
     'node_modules/vue-resource/vue-resource.min.js',

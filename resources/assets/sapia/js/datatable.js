@@ -9,9 +9,9 @@
  * @param  {String} route     [Ruta a la cual va a consultar los datos a cargar]
  */
 const dataTables = (nombreDIV, data, route) => {
-  //Eliminación del DataTable en caso de que exista
+  // Eliminación del DataTable en caso de que exista
   $('#' + nombreDIV).dataTable().fnDestroy()
-  //Creacion del DataTable
+  // Creacion del DataTable
   $('#' + nombreDIV).DataTable({
     'deferRender': true,
     'responsive': false,
@@ -78,8 +78,8 @@ const dataTables_lang_spanish = () => {
  */
 const columnsDatatable = (route) => {
   let columns = ''
-    if (route === 'incoming_calls') {
-      columns = [
+  if (route === 'incoming_calls') {
+    columns = [
         {'data': 'date'},
         {'data': 'hour'},
         {'data': 'telephone'},
@@ -90,11 +90,11 @@ const columnsDatatable = (route) => {
         {'data': 'waittime'},
         {'data': 'download'},
         {'data': 'listen'}
-      ]
-    }
+    ]
+  }
 
-    if (route === 'surveys') {
-      columns = [
+  if (route === 'surveys') {
+    columns = [
         {'data': 'Type Survey'},
         {'data': 'Date'},
         {'data': 'Hour'},
@@ -108,11 +108,11 @@ const columnsDatatable = (route) => {
         {'data': 'Question_02'},
         {'data': 'Answer_02'},
         {'data': 'Action'}
-      ]
-    }
+    ]
+  }
 
-    if (route === 'consolidated_calls') {
-      columns = [
+  if (route === 'consolidated_calls') {
+    columns = [
         {'data': 'Name'},
         {'data': 'Received'},
         {'data': 'Answered'},
@@ -145,21 +145,21 @@ const columnsDatatable = (route) => {
         {'data': 'Avh2 15'},
         {'data': 'Avh2 20'},
         {'data': 'Avh2 30'}
-      ]
-    }
+    ]
+  }
 
-    if (route === 'events_detail') {
-      columns = [
+  if (route === 'events_detail') {
+    columns = [
         {'data': 'nombre_agente'},
         {'data': 'fecha'},
         {'data': 'hora'},
         {'data': 'evento'},
         {'data': 'accion'}
-      ]
-    }
+    ]
+  }
 
-    if (route === 'outgoing_calls') {
-      columns = [
+  if (route === 'outgoing_calls') {
+    columns = [
         {'data': 'date'},
         {'data': 'hour'},
         {'data': 'annexedorigin'},
@@ -168,47 +168,47 @@ const columnsDatatable = (route) => {
         {'data': 'calltime'},
         {'data': 'download'},
         {'data': 'listen'}
-      ]
-    }
+    ]
+  }
 
-    if (route === 'agents_online') {
-        columns = [
-            {"data":"date"},
-            {"data":"hour"},
-            {"data":"agents"}
-        ]
-    }
+  if (route === 'agents_online') {
+    columns = [
+            {'data': 'date'},
+            {'data': 'hour'},
+            {'data': 'agents'}
+    ]
+  }
 
-    if (route === 'level_of_occupation') {
-      columns = [
-        {"data":"date"},
-        {"data":"hour"},
-        {"data":"indbound"},
-        {"data":"acw"},
-        {"data":"outbound"},
-        {"data":"auxiliares"},
-        {"data":"logueo"},
-        {"data":"occupation_cosapi"}
-      ]
-    }
+  if (route === 'level_of_occupation') {
+    columns = [
+        {'data': 'date'},
+        {'data': 'hour'},
+        {'data': 'indbound'},
+        {'data': 'acw'},
+        {'data': 'outbound'},
+        {'data': 'auxiliares'},
+        {'data': 'logueo'},
+        {'data': 'occupation_cosapi'}
+    ]
+  }
 
-    if (route === 'list_users') {
-      columns = [
-        {"data":"Id"},
-        {"data":"First Name"},
-        {"data":"Second Name"},
-        {"data":"Last Name"},
-        {"data":"Second Last Name"},
-        {"data":"Username"},
-        {"data":"Role"},
-        {"data":"Estado"},
-        {"data":"Change Rol"},
-        {"data":"Change Password"},
-        {"data":"Change Status"}
-      ]
-    }
+  if (route === 'list_users') {
+    columns = [
+        {'data': 'Id'},
+        {'data': 'First Name'},
+        {'data': 'Second Name'},
+        {'data': 'Last Name'},
+        {'data': 'Second Last Name'},
+        {'data': 'Username'},
+        {'data': 'Role'},
+        {'data': 'Estado'},
+        {'data': 'Change Rol'},
+        {'data': 'Change Password'},
+        {'data': 'Change Status'}
+    ]
+  }
 
-    return columns
+  return columns
 }
 
 /**
@@ -219,9 +219,9 @@ const columnsDatatable = (route) => {
  */
 const DataTableHide = (nombreDIV, numeroColumnas, roleUser) => {
   let exist = RoleTableHide().indexOf(roleUser)
-  if(exist >= 0) {
+  if (exist >= 0) {
     let DataTableDiv = $(`#${nombreDIV}`).DataTable()
-    DataTableDiv.columns( numeroColumnas ).visible( false, false )
-    DataTableDiv.columns.adjust().draw( false )
+    DataTableDiv.columns(numeroColumnas).visible(false, false)
+    DataTableDiv.columns.adjust().draw(false)
   }
 }

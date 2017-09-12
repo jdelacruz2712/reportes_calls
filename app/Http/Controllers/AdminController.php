@@ -135,7 +135,7 @@ class AdminController extends CosapiController
 			'getRemoteIp' => $_SERVER['REMOTE_ADDR'],
 			'requiredAnnexed' => $requiredAnnexed,
 			'hourServer' => date('H:i:s'),
-			'textDateServer' => date('d-m-w'),
+			'textDateServer' => date('d-m-w-Y'),
 			'dateServer' => date('Y-m-d'),
 			'annexed' => $this->UserAnexo,
 			'assistanceNextHour' => $assistanceNextHour,
@@ -155,7 +155,7 @@ class AdminController extends CosapiController
 			->get()->toArray();
 
 		$existAgent = $AgentOnline[0]['count_agent'];
-		$exits = '';
+		$exits = false;
 
 		if ($existAgent != 0) {
 			$exits = true;
@@ -169,7 +169,6 @@ class AdminController extends CosapiController
 					'event_id' => 11,
 					'event_time' => number_format(microtime(true) * 1000, 0, '.', '')
 				]);
-			$exits = false;
 		}
 
 		return response()->json(['statusAddAgentDashboard' => $exits]);

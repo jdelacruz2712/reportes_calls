@@ -78,10 +78,9 @@ const dashboard = new Vue({
       setInterval(async function () {
         if (dataDashboard[index]) {
           const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
-          const horaActual = (new Date()).getTime()
-          const elapsed = differenceHours(horaActual - horaBD)
+          const currenTime = (new Date()).getTime()
+          const elapsed = differenceHours(currenTime - horaBD)
           if (elapsed != 'NaN:NaN:NaN') dataDashboard[index].timeElapsed = elapsed
-
         }
       }.bind(this), 1000)
     },
@@ -106,7 +105,7 @@ const dashboard = new Vue({
         rangeDateSearch: rangeDateSearch,
         nameAgent: nameAgent
       }
-      let response = await this.$http.post(url,parameters)
+      let response = await this.$http.post(url, parameters)
       return response.data
     },
 
@@ -164,7 +163,7 @@ const dashboard = new Vue({
         item.color = eventList[item.event_id].color
         item.icon = eventList[item.event_id].icon
       })
-      result = await orderObjects(result, 'event_id', eventList) //Ordena por regla establecida
+      result = await orderObjects(result, 'event_id', eventList) // Ordena por regla establecida
       this.agentStatusSummary = result
     },
 
@@ -214,7 +213,6 @@ const refreshDetailsCalls = () => {
   socketAsterisk.emit('listDataDashboard')
 }
 
-
 socketAsterisk.on('connect', function () {
   dashboard.nodejsServerName = 'Servidor Asterisk'
   dashboard.ModalConnectionNodeJs = 'modal fade'
@@ -232,14 +230,14 @@ socketAsterisk.on('connect_error', function () {
     i--
     if (i === 0) clearInterval(refreshIntervalId)
   }, 1000)
-  console.log('socketAsterisk Connection Failed');
+  console.log('socketAsterisk Connection Failed')
 })
 
 socketAsterisk.on('disconnect', function () {
   dashboard.nodejsServerName = 'Servidor Asterisk'
   dashboard.ModalConnectionNodeJs = 'modal show'
   dashboard.nodejsServerMessage = 'Acabas de perder conexión con el Asterisk !!!'
-  console.log('socketAsterisk Disconnected');
+  console.log('socketAsterisk Disconnected')
 })
 
 socketAsterisk.on('AddCallWaiting', dataCallWaiting => {
@@ -267,13 +265,14 @@ socketAsterisk.on('RemoveInbound', dataInbound => removeDataDashboard(dataInboun
 socketAsterisk.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
 socketAsterisk.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
 
-
 isExistDuplicate = (data, dataDashboard) => {
   let exist = true
   let index = (dataDashboard.length)
-  if (index > 0) dataDashboard.forEach((item, index) => {
-    if (item.agent_name == data.agent_name) exist = false
-  })
+  if (index > 0) {
+    dataDashboard.forEach((item, index) => {
+      if (item.agent_name == data.agent_name) exist = false
+    })
+  }
   return exist
 }
 
@@ -292,7 +291,6 @@ AddDataDashboard = async (data, dataDashboard, namePanel) => {
     dashboard.panelAgentStatusSummary()
     dashboard.panelGroupStatistics()
   }
-
 }
 
 updateDataDashboard = (data, dataDashboard, namePanel) => {
@@ -340,7 +338,7 @@ getTotalCalls = async (data) => {
 }
 
 differenceHours = (s) => {
-  function addZ(n) {
+  function addZ (n) {
     return (n < 10 ? '0' : '') + n
   }
 
@@ -357,8 +355,8 @@ differenceHours = (s) => {
 const orderDashboard = async (dataDashboard, namePanel) => {
   if (namePanel !== '') {
     let newObject = await orderObjects(dataDashboard, 'event_time') // Ordena alfabeticamente
-    newObject = await orderObjects(newObject, 'event_id', getRulers('event_id')) //Ordena por regla establecida
-    newObject = await orderObjects(newObject, 'agent_role', getRulers('agent_role')) //Ordena por regla establecida
+    newObject = await orderObjects(newObject, 'event_id', getRulers('event_id')) // Ordena por regla establecida
+    newObject = await orderObjects(newObject, 'agent_role', getRulers('agent_role')) // Ordena por regla establecida
     eval('dashboard.' + namePanel + '= newObject')
   }
 }
@@ -410,18 +408,18 @@ const getRulers = (action) => {
       '13': {'icon': 'fa fa-volume-up', 'color': 'primary', 'position': 4},  // Ring Outbound
       '17': {'icon': 'fa fa-bell-slash', 'color': 'danger', 'position': 5},  // Hold Outbound
       '9': {'icon': 'fa fa-headphones', 'color': 'warning', 'position': 6},  // Outbound
-      '18': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 7},  //Ring Inbound Interno
-      '22': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 8},  //Hold Inbound Interno
-      '19': {'icon': 'fa fa-phone', 'color': 'default', 'position': 9},  //Inbound Interno
-      '24': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 10},  //Ring Inbound Transfer
-      '26': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 11},  //Hold Inbound Transfer
-      '25': {'icon': 'fa fa-phone', 'color': 'default', 'position': 12},  //Inbound Transfer
-      '21': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 13},  //Ring Outbound Interno
-      '23': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 14},  //Hold Outbound Interno
-      '20': {'icon': 'fa fa fa-headphones', 'color': 'default', 'position': 15},  //Outbound Interno
-      '27': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 10},  //Ring Outbound Transfer
-      '28': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 11},  //Hold Outbound Transfer
-      '29': {'icon': 'fa fa-phone', 'color': 'default', 'position': 12},  //Outbound Transfer
+      '18': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 7},  // Ring Inbound Interno
+      '22': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 8},  // Hold Inbound Interno
+      '19': {'icon': 'fa fa-phone', 'color': 'default', 'position': 9},  // Inbound Interno
+      '24': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 10},  // Ring Inbound Transfer
+      '26': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 11},  // Hold Inbound Transfer
+      '25': {'icon': 'fa fa-phone', 'color': 'default', 'position': 12},  // Inbound Transfer
+      '21': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 13},  // Ring Outbound Interno
+      '23': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 14},  // Hold Outbound Interno
+      '20': {'icon': 'fa fa fa-headphones', 'color': 'default', 'position': 15},  // Outbound Interno
+      '27': {'icon': 'fa fa-volume-up', 'color': 'default', 'position': 10},  // Ring Outbound Transfer
+      '28': {'icon': 'fa fa-bell-slash', 'color': 'default', 'position': 11},  // Hold Outbound Transfer
+      '29': {'icon': 'fa fa-phone', 'color': 'default', 'position': 12},  // Outbound Transfer
       '1': {'icon': 'fa fa-fax', 'color': 'info', 'position': 16},  // ACD
       '7': {'icon': 'fa fa-suitcase', 'color': 'primary', 'position': 17},  // Gestión BackOffice
       '2': {'icon': 'fa fa-star', 'color': 'primary', 'position': 18},  // Break
@@ -429,7 +427,7 @@ const getRulers = (action) => {
       '3': {'icon': 'fa fa-asterisk', 'color': 'primary', 'position': 20}, // SSHH
       '5': {'icon': 'fa fa-retweet', 'color': 'danger', 'position': 21}, // Feedback
       '6': {'icon': 'fa fa-book', 'color': 'danger', 'position': 22}, // Capacitación
-      '11': {'icon': 'fa fa-home', 'color': 'default', 'position': 23},  //Login
+      '11': {'icon': 'fa fa-home', 'color': 'default', 'position': 23}  // Login
     }
   }
 
@@ -453,7 +451,7 @@ const replaceCookieArray = (cookie) => {
     let thirdCookie = secondCookie.replace(']', '')
     return thirdCookie.split(',')
   } else {
-    return
+
   }
 }
 

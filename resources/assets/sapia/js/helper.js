@@ -1,4 +1,4 @@
-'use strict';
+'use strict'
 
 /*!
  * Cosapi v1.0 : JQuery Personalizado
@@ -35,11 +35,11 @@ const loadModule = (idOptionMenu) => {
 }
 
 /**
- * [get_data_filters Función que configura datos a enviar en las consultas]
+ * [getDataFilters Función que configura datos a enviar en las consultas]
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
  * @return {Array}         [Devuelve parametros configurados]
  */
-const get_data_filters = (evento) => {
+const getDataFilters = (evento) => {
   let rankHour = 1800
   if ($('select[name=rankHour]').length) rankHour = $('select[name=rankHour]').val()
   let data = {
@@ -57,11 +57,11 @@ const get_data_filters = (evento) => {
  * @return {[type]}               [description]
  */
 const exportar = (format_export) => {
-  let days      = $('#texto').val()
-  let event     = $('#hidEvent').val()
-  let rankHour  = 1800
-  if($('#rankHour').length >0 ) rankHour = $('#rankHour').val()
-  export_ajax('POST', event, format_export, days,rankHour)
+  let days = $('#texto').val()
+  let event = $('#hidEvent').val()
+  let rankHour = 1800
+  if ($('#rankHour').length > 0) rankHour = $('#rankHour').val()
+  export_ajax('POST', event, format_export, days, rankHour)
 }
 
 /**
@@ -73,7 +73,7 @@ const exportar = (format_export) => {
  *   archivo]
  * @param  {String} days          [Fecha de consulta de datos]
  */
-const export_ajax = (type, url, format_export = '', days = '',rankHour = 1800) => {
+const export_ajax = (type, url, format_export = '', days = '', rankHour = 1800) => {
   const dialog = cargar_dialog('primary', 'Download', 'Cargando el Excel', false)
   const token = $('input[name=_token]').val()
   $.ajax({
@@ -81,10 +81,10 @@ const export_ajax = (type, url, format_export = '', days = '',rankHour = 1800) =
     url: url,
     cache: false,
     data: {
-      _token          : token,
-      format_export   : format_export,
-      days            : days,
-      rank_hour       : rankHour
+      _token: token,
+      format_export: format_export,
+      days: days,
+      rank_hour: rankHour
     },
     beforeSend: function (data) {
       dialog.open()
@@ -175,34 +175,6 @@ const cargar_ajaxDIV = (type, url, nameDiv, msjError, before = false) => {
 }
 
 /**
- * [refresh_information Función que refresca la información del dahsboard 2]
- * @param  {String} evento [Tipo de reporte a visualizar: day, week, mounth]
- */
-const refresh_information = (evento) => {
-  BootstrapDialog.confirm('¿Está seguro que quieres actualizar los datos del monitor?', function (result) {
-    if (result) {
-      $('#hidReporttype').val(evento)
-      detalle_kpi_dashboard_02(evento)
-    } else {
-      $('#ulOptions li').removeClass('active')
-      var idevento = $('#hidReporttype').val()
-      $('#' + idevento).addClass('active')
-    }
-  })
-}
-
-/**
- * [detalle_kpi_dashboard_02 Función que carga los ddatos del KPI ubicados en
- * el Dashboard2]
- * @param  {string} evento [Tipo de reporte que se quiere cargar: day, week,
- *   mounth]
- * @return {[view]}          [Vista con los datos dl reporte]
- */
-const detalle_kpi_dashboard_02 = (evento) => {
-  return cargar_ajaxDIV('GET', 'dashboard_02/detail_kpi/' + evento, 'detail_kpi', 'Problema para actualizar el KPI de agentes', true)
-}
-
-/**
  * [create_sound_bite Función que reproduce el audio para llamadas en cola]
  * @param  {String} sound [Ruta donde se encuentra ubicado nuestro audio]
  */
@@ -247,24 +219,24 @@ const ajaxNodeJs = (parameters, ruta, notificacion, time) => {
   vueFront.ModalLoading = 'modal show'
   socketSails.get(ruta, parameters, function (resData, jwRes) {
     vueFront.ModalLoading = 'modal fade'
-    mostrar_notificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
-    //Muestra notificaciones al hacer QueueAdd o QueueRemove
-    if(resData['DataQueue'] != null) loadMultiNotification(resData,time,parameters)
-    if(resData['Response'] == 'success')eventPostExecuteActionSuccess(parameters)
-    if(resData['Response'] == 'error')eventPostExecuteActionError(parameters)
+    showNotificacion(resData['Response'], resData['Message'], resData['Response'].charAt(0).toUpperCase() + resData['Response'].slice(1), time, false, true, 2000)
+    // Muestra notificaciones al hacer QueueAdd o QueueRemove
+    if (resData['DataQueue'] != null) loadMultiNotification(resData, time, parameters)
+    if (resData['Response'] == 'success')eventPostExecuteActionSuccess(parameters)
+    if (resData['Response'] == 'error')eventPostExecuteActionError(parameters)
   })
 }
 
 // Función que realiza Actividades como resultado de un evento realizado con el NodeJS
 const eventPostExecuteActionSuccess = (parameters) => {
-  switch (parameters['typeActionPostRequest']){
+  switch (parameters['typeActionPostRequest']) {
     case 'changeStatus':
-      if(parameters['eventNextID'] == 1 && vueFront.getRole === 'user') setQueueAdd(true)
+      if (parameters['eventNextID'] == 1 && vueFront.getRole === 'user') setQueueAdd(true)
       break
     case 'assignAnnexed':
       vueFront.annexed = vueFront.remotoReleaseAnnexed
       vueFront.remotoReleaseAnnexed = 0
-      //socketAsterisk.emit('createRoom', vueFront.annexed)
+      // socketAsterisk.emit('createRoom', vueFront.annexed)
       break
     case 'releasesAnnexed':
       vueFront.remotoReleaseUserId = 0
@@ -285,17 +257,17 @@ const eventPostExecuteActionSuccess = (parameters) => {
       break
     case 'checkAssistance':
       vueFront.statusChangeAssistance = false
-      if(parameters['eventFechaHora'] > vueFront.hourServer ) {
+      if (parameters['eventFechaHora'] > vueFront.hourServer) {
         vueFront.statusChangeAssistance = `stand_by&${vueFront.remoteAgentHour}`
         vueFront.assistanceNextHour = vueFront.remoteAgentHour
         vueFront.loadModalStandByAssistance()
-      }else {checkPassword()}
+      } else { checkPassword() }
       break
   }
 }
 
-const eventPostExecuteActionError = function(parameters){
-  switch (parameters['typeActionPostRequest']){
+const eventPostExecuteActionError = function (parameters) {
+  switch (parameters['typeActionPostRequest']) {
     case 'assignAnnexed':
       vueFront.remotoReleaseAnnexed = 0
       break
@@ -306,14 +278,14 @@ const eventPostExecuteActionError = function(parameters){
   }
 }
 // Función que muestra multiples Notification en base a lo devuelto por el NodeJs
-const loadMultiNotification = (resData,time,parameters) => {
+const loadMultiNotification = (resData, time, parameters) => {
   let arrayMessage = resData['DataQueue']
   let message = ''
   let messageSuccess = ''
   let messageError = ''
   let messageWarning = ''
   for (let posicion = 0; posicion < arrayMessage.length; posicion++) {
-    switch (arrayMessage[posicion]['Response']){
+    switch (arrayMessage[posicion]['Response']) {
       case 'Success' :
         messageSuccess = messageSuccess + arrayMessage[posicion]['Message']
         if (posicion != ((arrayMessage.length) - 1)) messageSuccess = messageSuccess + '<br>'
@@ -329,12 +301,12 @@ const loadMultiNotification = (resData,time,parameters) => {
     }
   }
   if (messageSuccess !== '') {
-    mostrar_notificacion('success', messageSuccess, 'Success', time, false, true, 2000)
+    showNotificacion('success', messageSuccess, 'Success', time, false, true, 2000)
     if (parameters['typeActionPostRequest'] === 'changeStatus') setQueueAdd(true)
     if (parameters['typeActionPostRequest'] === 'releasesAnnexed') setQueueAdd(false)
   }
-  if (messageError !== '') mostrar_notificacion('error', messageError, 'Error', 0, false, true, 0)
-  if (messageWarning !== '') mostrar_notificacion('warning', messageWarning, 'Warning', 0, false, true, 0)
+  if (messageError !== '') showNotificacion('error', messageError, 'Error', 0, false, true, 0)
+  if (messageWarning !== '') showNotificacion('warning', messageWarning, 'Warning', 0, false, true, 0)
 }
 
 // Función que actualiza la sessión de QueueAdd
@@ -390,7 +362,7 @@ const ceroIzquierda = (numero) => {
 }
 
 // Función que crea las Notification
-const mostrar_notificacion = (type, mensaje, titulo, time, duplicate, close, extendtime) => {
+const showNotificacion = (type, mensaje, titulo, time, duplicate, close, extendtime) => {
   let position = ''
   switch (type) {
     case 'success': position = 'toast-bottom-left'; break
@@ -421,8 +393,8 @@ const mostrar_notificacion = (type, mensaje, titulo, time, duplicate, close, ext
 }
 
 // Muestra la hora actual del sistema cada 1 segundo
-const horaActual = () => {
-  setTimeout(function(){
+const currenTime = () => {
+  setTimeout(function () {
     let hourServer = vueFront.hourServer.split(':')
     let hora = parseInt(hourServer[0])
     let minuto = parseInt(hourServer[1])
@@ -449,90 +421,90 @@ const horaActual = () => {
     if (str_minuto.length == 1) minuto = '0' + minuto
     if (str_segundo.length == 1) segundo = '0' + segundo
     vueFront.hourServer = hora + ':' + minuto + ':' + segundo
-    horaActual()
+    currenTime()
   }, 1000)
 }
 
 // Muestra la fecha actual en la cabecera del sistema.
-const fechaActual = () => {
+const currentDate = () => {
   let dateServer = vueFront.textDateServer.split('-')
-  vueFront.textDateServer = nombre_dia(parseInt(dateServer[2])) + ' ' +
+  vueFront.textDateServer = nameDay(parseInt(dateServer[2])) + ' ' +
   parseInt(dateServer[0]) + ' de ' +
-  nombre_mes(parseInt(dateServer[1])) + ' de ' +
+  nameMonth(parseInt(dateServer[1])) + ' de ' +
   parseInt(dateServer[3])
 }
 
 // Función que retorna nombre del mes, en base al número enviado
-const nombre_mes = (mes) => {
-  let nombre_mes
+const nameMonth = (mes) => {
+  let nameMonth
   switch (mes) {
     case 1 :
-      nombre_mes = 'Ene'
+      nameMonth = 'Enero'
       break
     case 2 :
-      nombre_mes = 'Feb'
+      nameMonth = 'Febrero'
       break
     case 3 :
-      nombre_mes = 'Mar'
+      nameMonth = 'Marzo'
       break
     case 4 :
-      nombre_mes = 'Abr'
+      nameMonth = 'Abril'
       break
     case 5 :
-      nombre_mes = 'May'
+      nameMonth = 'Mayo'
       break
     case 6 :
-      nombre_mes = 'Jun'
+      nameMonth = 'Junio'
       break
     case 7 :
-      nombre_mes = 'Jul'
+      nameMonth = 'Julio'
       break
     case 8 :
-      nombre_mes = 'Ago'
+      nameMonth = 'Agosto'
       break
     case 9 :
-      nombre_mes = 'Septiembre'
+      nameMonth = 'Septiembre'
       break
     case 10 :
-      nombre_mes = 'Oct'
+      nameMonth = 'Octubre'
       break
     case 11 :
-      nombre_mes = 'Nov'
+      nameMonth = 'Noviembre'
       break
     case 12 :
-      nombre_mes = 'Dic'
+      nameMonth = 'Diciembre'
       break
   }
-  return nombre_mes
+  return nameMonth
 }
 
 // Función que retorna nombre del día, en base al número enviado
-const nombre_dia = (dia) => {
-  let nombre_dia
+const nameDay = (dia) => {
+  let nameDay
   switch (dia) {
     case 0 :
-      nombre_dia = 'Dom'
+      nameDay = 'Domingo'
       break
     case 1 :
-      nombre_dia = 'Lun'
+      nameDay = 'Lunes'
       break
     case 2 :
-      nombre_dia = 'Mar'
+      nameDay = 'Martes'
       break
     case 3 :
-      nombre_dia = 'Mie'
+      nameDay = 'Miercoles'
       break
     case 4 :
-      nombre_dia = 'Jue'
+      nameDay = 'Jueves'
       break
     case 5 :
-      nombre_dia = 'Viernes'
+      nameDay = 'Viernes'
       break
     case 6 :
-      nombre_dia = 'Sab'
+      nameDay = 'Sabado'
       break
   }
-  return nombre_dia
+  return nameDay
 }
 
 // Función que resta dos rango de horas
@@ -560,19 +532,19 @@ const restarHoras = (inicio, fin) => {
  * [filterLetter description]
  * @return Solo permite letras y letras con acentos en los inputs
  */
-function filterLetter(e){
+function filterLetter (e) {
   const key = e.keyCode || e.which
   const board = String.fromCharCode(key).toLowerCase()
-  const letter = " áéíóúabcdefghijklmnñopqrstuvwxyz"
-  const specials = "8-37-39-46"
+  const letter = ' áéíóúabcdefghijklmnñopqrstuvwxyz'
+  const specials = '8-37-39-46'
   let specialskey = false
-  for(let i in specials){
-    if(key === specials[i]){
+  for (let i in specials) {
+    if (key === specials[i]) {
       specialskey = true
       break
     }
   }
-  if(letter.indexOf(board) === -1 && !specialskey){
+  if (letter.indexOf(board) === -1 && !specialskey) {
     return false
   }
 }
@@ -583,8 +555,8 @@ function filterLetter(e){
  * [BlockCopyPaste description]
  * @return Bloquea el Ctrl C y Ctrl V
  */
-const BlockCopyPaste = (e) =>{
-  if(e.ctrlKey === true && (e.which === 118 || e.which === 86)) return false
+const BlockCopyPaste = (e) => {
+  if (e.ctrlKey === true && (e.which === 118 || e.which === 86)) return false
 }
 
 /**
@@ -593,7 +565,7 @@ const BlockCopyPaste = (e) =>{
  * [filterNumber description]
  * @return Solo permite ingresar numeros
  */
-const filterNumber = (e) =>{
+const filterNumber = (e) => {
   let key = window.Event ? e.which : e.keyCode
   return (key >= 48 && key <= 57 || key === 8 || key === 9)
 }

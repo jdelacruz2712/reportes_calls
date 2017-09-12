@@ -22,6 +22,6 @@
     });
 
     function buscar(){
-        show_tab_detail_events('events_detail');
+        showTabDetailEvents('events_detail');
     }
 </script>

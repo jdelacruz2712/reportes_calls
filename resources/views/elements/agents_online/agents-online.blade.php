@@ -21,6 +21,6 @@
         buscar();
     })
     function buscar(){
-        show_tab_agentOnline('agents_online')
+        showTabAgentOnline('agents_online')
     }
 </script>

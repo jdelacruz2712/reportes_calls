@@ -7,32 +7,32 @@ $(document).ready(function () {
   $('.reportes').on('click', function (e) { loadModule($(this).attr('id')) })
 })
 
-/*[show_tab_incoming Función que carga Llamadas Entrantes en el reporte] */
-const show_tab_incoming = (evento) => dataTables('table-incoming', get_data_filters(evento), 'incoming_calls')
+/* [showTabIncoming Función que carga Llamadas Entrantes en el reporte] */
+const showTabIncoming = (evento) => dataTables('table-incoming', getDataFilters(evento), 'incoming_calls')
 
-/*[show_tab_surveys Función que carga los datos de las Encuenstas] */
-const show_tab_surveys = (evento) => dataTables('table-surveys', get_data_filters(evento), 'surveys')
+/* [showTabSurveys Función que carga los datos de las Encuenstas] */
+const showTabSurveys = (evento) => dataTables('table-surveys', getDataFilters(evento), 'surveys')
 
-/*[show_tab_consolidated Función que carga los datos del Consolidado]*/
-const show_tab_consolidated = (evento) => dataTables('table-consolidated', get_data_filters(evento), 'consolidated_calls')
+/* [showTabConsolidated Función que carga los datos del Consolidado] */
+const showTabConsolidated = (evento) => dataTables('table-consolidated', getDataFilters(evento), 'consolidated_calls')
 
-/*[show_tab_detail_events Función que carga los datos detallados de los Eventos del Agente]*/
-const show_tab_detail_events = (evento) => dataTables('table-detail-events', get_data_filters(evento), 'events_detail')
+/* [showTabDetailEvents Función que carga los datos detallados de los Eventos del Agente] */
+const showTabDetailEvents = (evento) => dataTables('table-detail-events', getDataFilters(evento), 'events_detail')
 
-/*[show_tab_detail_events Función que carga los datos detallados de los Eventos del Agente]*/
-const show_tab_level_occupation = (evento) => dataTables('table-level-occupation', get_data_filters(evento), 'level_of_occupation')
+/* [showTabDetailEvents Función que carga los datos detallados de los Eventos del Agente] */
+const showTabLevelOccupation = (evento) => dataTables('table-level-occupation', getDataFilters(evento), 'level_of_occupation')
 
-/*[show_tab_angetOnline Función que carga los datos de los agentes online]*/
-const show_tab_agentOnline = (evento) => dataTables('table-agentOnline', get_data_filters(evento), 'agents_online')
+/* [show_tab_angetOnline Función que carga los datos de los agentes online] */
+const showTabAgentOnline = (evento) => dataTables('table-agentOnline', getDataFilters(evento), 'agents_online')
 
-/*[show_tab_outgoing Función que carga los datos de las Llamadas Salientes]*/
-const show_tab_outgoing = (evento) => dataTables('table-outgoing', get_data_filters(evento), 'outgoing_calls')
+/* [showTabOutgoing Función que carga los datos de las Llamadas Salientes] */
+const showTabOutgoing = (evento) => dataTables('table-outgoing', getDataFilters(evento), 'outgoing_calls')
 
-/*[show_tab_list_user Función que carga los datos detallados de los usuarios]*/
-const show_tab_list_user = (evento) => dataTables('table-list-user', get_data_filters(evento), 'list_users')
+/* [showTabListUser Función que carga los datos detallados de los usuarios] */
+const showTabListUser = (evento) => dataTables('table-list-user', getDataFilters(evento), 'list_users')
 
-/*[show_tab_annexed Función que carga la lista de anexos]*/
-const show_tab_annexed = (event) => {
+/* [showTabAnnexed Función que carga la lista de anexos] */
+const showTabAnnexed = (event) => {
   let token = $('input[name=_token]').val()
   let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
   $.ajax({
@@ -40,24 +40,23 @@ const show_tab_annexed = (event) => {
     url: 'agents_annexed/list_annexed',
     cache: false,
     data: {
-      _token : token,
-      event : event
+      _token: token,
+      event: event
     },
-    beforeSend : () => {
+    beforeSend: () => {
       $('#divListAnnexed').html(imageLoading)
     },
-    success: (data) =>{
+    success: (data) => {
       $('#divListAnnexed').html(data)
     }
   })
 }
 
-
 // Función que activa las llamadas a travez del cambio de roles
 const activeCalls = () => {
-  if(vueFront.annexed !== 0){
-      mostrar_notificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
-  }else{
+  if (vueFront.annexed !== 0) {
+    showNotificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
+  } else {
     vueFront.remoteActiveCallsUserId = vueFront.getUserId
     let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
       '<br>' +
@@ -74,10 +73,10 @@ const activeCalls = () => {
           label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
           cssClass: 'btn-success',
           action: function (dialogRef) {
-            if(vueFront.getRole !== 'user'){
+            if (vueFront.getRole !== 'user') {
               vueFront.remoteActiveCallsNameRole = 'user'
               vueFront.activeCalls('user')
-            }else{
+            } else {
               closeNotificationBootstrap()
             }
           }
@@ -86,10 +85,10 @@ const activeCalls = () => {
           label: '<i class="fa fa-times" aria-hidden="true"></i> No',
           cssClass: 'btn-danger',
           action: function (dialogRef) {
-            if(vueFront.getRole !== 'backoffice'){
+            if (vueFront.getRole !== 'backoffice') {
               vueFront.remoteActiveCallsNameRole = 'backoffice'
               vueFront.activeCalls()
-            }else{
+            } else {
               closeNotificationBootstrap()
             }
           }
@@ -109,16 +108,16 @@ const activeCalls = () => {
 
 // Función que cambia el Rol de los Usuarios
 const changeRol = (userId) => {
-  const message = 'Seleccione el rol que quiere asignar al usuario :'+
-      '<br><br>'+
-      '<div class="row">'+
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>'+
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>'+
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>'+
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="calidad">Calidad</center></div>'+
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="cliente">Cliente</center></div>'+
-      '</div>'+
-      '<br>'+
+  const message = 'Seleccione el rol que quiere asignar al usuario :' +
+      '<br><br>' +
+      '<div class="row">' +
+      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>' +
+      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>' +
+      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>' +
+      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="calidad">Calidad</center></div>' +
+      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="cliente">Cliente</center></div>' +
+      '</div>' +
+      '<br>' +
       '<b>Nota :</b> Utilizar esta opcion siempre y cuando el usuario no se encuentre en una cola.'
 
   BootstrapDialog.show({
@@ -130,18 +129,18 @@ const changeRol = (userId) => {
       {
         label: 'Aceptar',
         cssClass: 'btn-success',
-        action:  (dialogRef) => {
+        action: (dialogRef) => {
           let nameRole = $('input:radio[name=nameRole]:checked').val()
           vueFront.remoteActiveCallsUserId = userId
           vueFront.remoteActiveCallsNameRole = nameRole
           vueFront.activeCalls()
-          show_tab_list_user('list_users')
+          showTabListUser('list_users')
         }
       },
       {
         label: 'Cancelar',
         cssClass: 'btn-danger',
-        action:  (dialogRef) => {
+        action: (dialogRef) => {
           dialogRef.close()
         }
       }
@@ -150,11 +149,11 @@ const changeRol = (userId) => {
 }
 
 // Función que verifica si necesita realizar un cambio de contraseña
-const checkPassword = () => {if(vueFront.statusChangePassword == 0) changePassword()}
+const checkPassword = () => { if (vueFront.statusChangePassword == 0) changePassword() }
 
 // Función que muestra modal para el cambio de contraseña
-const changePassword = (userId = '',closable = false) => {
-  if(userId === '') userId = vueFront.getUserId
+const changePassword = (userId = '', closable = false) => {
+  if (userId === '') userId = vueFront.getUserId
   const token = $('input[name=_token]').val()
   const message = '<br>' +
     '<div class="row">' +
@@ -209,9 +208,9 @@ const changePassword = (userId = '',closable = false) => {
                   if (data == 1) {
                     dialogRef.close()
                     vueFront.statusChangePassword = 1
-                    mostrar_notificacion('success', 'El evento se realizo exitosamente!!!', 'Success', 2000, false, true)
+                    showNotificacion('success', 'El evento se realizo exitosamente!!!', 'Success', 2000, false, true)
                   } else {
-                    mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+                    showNotificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
                   }
                 }
               })
@@ -235,7 +234,7 @@ const changePassword = (userId = '',closable = false) => {
  */
 const changeStatusUser = (userId, status) => {
   let token = $('input[name=_token]').val()
-  let estado = (status === 'Inactivo')? 1 : 2
+  let estado = (status === 'Inactivo') ? 1 : 2
   let message = 'Deseas cambiar el estado del usuario ?' +
     '<br>' +
     '<b>Nota :</b> Esto afecta el estado (Activo o Inactivo).'
@@ -254,17 +253,17 @@ const changeStatusUser = (userId, status) => {
             type: 'POST',
             url: 'changeStatus',
             data: {
-              _token:     token,
-              userID:     userId,
-              estadoID:   estado
+              _token: token,
+              userID: userId,
+              estadoID: estado
             },
             success: function (data) {
               if (data === 1) {
-                show_tab_list_user('list_users')
+                showTabListUser('list_users')
                 dialogRef.close()
-                mostrar_notificacion('success', 'Se cambio el estado del usuario!!!', 'Success', 2000, false, true)
+                showNotificacion('success', 'Se cambio el estado del usuario!!!', 'Success', 2000, false, true)
               } else {
-                mostrar_notificacion('error', 'Problemas al cambiar en la base de datos', 'Error', 10000, false, true)
+                showNotificacion('error', 'Problemas al cambiar en la base de datos', 'Error', 10000, false, true)
               }
             }
           })
@@ -367,37 +366,37 @@ function createUser () {
         label: 'Aceptar',
         cssClass: 'btn-primary',
         action: function (dialogRef) {
-          let primerNombre    = $('#primerNombre').val()
-          let segundoNombre   = $('#segundoNombre').val()
+          let primerNombre = $('#primerNombre').val()
+          let segundoNombre = $('#segundoNombre').val()
           let apellidoPaterno = $('#apellidoPaterno').val()
           let apellidoMaterno = $('#apellidoMaterno').val()
-          let userName        = $('#userName').val()
+          let userName = $('#userName').val()
           let nuevaContraseña = $('#nuevaContraseña').val()
-          let email           = $('#email').val()
-          let role            = $('#slRol').val()
+          let email = $('#email').val()
+          let role = $('#slRol').val()
 
           if (primerNombre != '' && segundoNombre != '' && apellidoPaterno != '' && apellidoMaterno != '' && userName != '' && nuevaContraseña != '' && email != '' && role != 'sinrol') {
             $.ajax({
               type: 'POST',
               url: 'createUser',
               data: {
-                _token:           token,
-                primerNombre:     primerNombre,
-                segundoNombre:    segundoNombre,
-                apellidoPaterno:  apellidoPaterno,
-                apellidoMaterno:  apellidoMaterno,
-                userName:         userName,
-                nuevaContraseña:  nuevaContraseña,
-                email:            email,
-                role:             role
+                _token: token,
+                primerNombre: primerNombre,
+                segundoNombre: segundoNombre,
+                apellidoPaterno: apellidoPaterno,
+                apellidoMaterno: apellidoMaterno,
+                userName: userName,
+                nuevaContraseña: nuevaContraseña,
+                email: email,
+                role: role
               },
               success: function (data) {
                 if (data == 1) {
-                  show_tab_list_user('list_users')
+                  showTabListUser('list_users')
                   dialogRef.close()
-                  mostrar_notificacion('success', 'El usuario se registro correctamente!!!', 'Success', 2000, false, true)
+                  showNotificacion('success', 'El usuario se registro correctamente!!!', 'Success', 2000, false, true)
                 } else {
-                  mostrar_notificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+                  showNotificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
                 }
               }
             })
@@ -423,83 +422,83 @@ function createUser () {
  * [RoleTableHide description]
  * @return {Array} [Los roles con el cual me ocultaran las columnas]
  */
-const RoleTableHide = () =>  ['user','cliente']
+const RoleTableHide = () => ['user', 'cliente']
 
 // Función para asignar o liberar anexo en base al rol
-const assignAnexxed = (annexed,userId,username) => {
-    if(userId === '' && vueFront.annexed !== 0){
-        mostrar_notificacion('warning', 'Ya se encuentra asignado al anexo ' + vueFront.annexed + '.', 'Warning', 10000, false, true)
-    }else {
-        if (userId === '') {
-            vueFront.remotoReleaseAnnexed = annexed
-            vueFront.assignAnnexed()
-        }else{
-            vueFront.remotoReleaseAnnexed = annexed
-            vueFront.remotoReleaseUsername = username
-            vueFront.remotoReleaseUserId = userId
-            vueFront.remotoReleaseStatusQueueRemove = true
-            vueFront.releasesAnnexed()
-        }
+const assignAnexxed = (annexed, userId, username) => {
+  if (userId === '' && vueFront.annexed !== 0) {
+    showNotificacion('warning', 'Ya se encuentra asignado al anexo ' + vueFront.annexed + '.', 'Warning', 10000, false, true)
+  } else {
+    if (userId === '') {
+      vueFront.remotoReleaseAnnexed = annexed
+      vueFront.assignAnnexed()
+    } else {
+      vueFront.remotoReleaseAnnexed = annexed
+      vueFront.remotoReleaseUsername = username
+      vueFront.remotoReleaseUserId = userId
+      vueFront.remotoReleaseStatusQueueRemove = true
+      vueFront.releasesAnnexed()
     }
+  }
 }
 
 // Funcion que carga el modal se marcado de salida
 const disconnect = () => {
-    let hour = vueFront.hourServer
-    let rank_hours = rangoHoras(hour.trim())
-    const message_1 = 'Usted se retira de las oficinas ?'
-    const message_2 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
+  let hour = vueFront.hourServer
+  let rank_hours = rangoHoras(hour.trim())
+  const message01 = 'Usted se retira de las oficinas ?'
+  const message02 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
         '<br><br>' +
         '<div class="row">' +
         '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + hour + '">' + hour + '</center></div>' +
         '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
         '</div>'
 
-    BootstrapDialog.show({
-        type: 'type-primary',
-        title: 'Registrar Salida',
-        message: message_1,
-        closable: false,
-        buttons: [
-            {
-                label: 'Si',
-                cssClass: 'btn-primary',
-                action: function (dialogRef) {
-                    dialogRef.close()
-                    vueFront.nextEventId = 15
-                    vueFront.nextEventName = 'Desconectado'
-                    vueFront.assistanceTextModal = 'Salida'
-                    vueFront.loadModalCheckAssistance()
-                }
-            },
-            {
-                label: 'No',
-                cssClass: 'btn-primary',
-                action: function (dialogRef) {
-                    dialogRef.close()
-                    vueFront.remoteAgentHour = hour.trim()
-                    vueFront.disconnectAgent()
-                }
-            },
-            {
-                label: 'Cancelar',
-                cssClass: 'btn-danger',
-                action: function (dialogRef) {
-                    dialogRef.close()
-                }
-            }
-        ]
-    })
+  BootstrapDialog.show({
+    type: 'type-primary',
+    title: 'Registrar Salida',
+    message: message01,
+    closable: false,
+    buttons: [
+      {
+        label: 'Si',
+        cssClass: 'btn-primary',
+        action: function (dialogRef) {
+          dialogRef.close()
+          vueFront.nextEventId = 15
+          vueFront.nextEventName = 'Desconectado'
+          vueFront.assistanceTextModal = 'Salida'
+          vueFront.loadModalCheckAssistance()
+        }
+      },
+      {
+        label: 'No',
+        cssClass: 'btn-primary',
+        action: function (dialogRef) {
+          dialogRef.close()
+          vueFront.remoteAgentHour = hour.trim()
+          vueFront.disconnectAgent()
+        }
+      },
+      {
+        label: 'Cancelar',
+        cssClass: 'btn-danger',
+        action: function (dialogRef) {
+          dialogRef.close()
+        }
+      }
+    ]
+  })
 }
 
 // Función que acciona le ventana de asistencias correspondiente al estado
 const MarkAssitance = (user_id, day, hour_actually, action) => {
-    if(vueFront.statusChangeAssistance == true){
-        modalAssintance(user_id, day, hour_actually, action)
-    }else if(vueFront.statusChangeAssistance != false){
-        let assistence_user = $('#assistence_user').val().split('&')
-        ModalStandBy(assistence_user[1])
-    }else{
-        checkPassword()
-    }
+  if (vueFront.statusChangeAssistance == true) {
+    modalAssintance(user_id, day, hour_actually, action)
+  } else if (vueFront.statusChangeAssistance != false) {
+    let assistenceUser = $('#assistence_user').val().split('&')
+    ModalStandBy(assistenceUser[1])
+  } else {
+    checkPassword()
+  }
 }

@@ -1,17 +1,17 @@
 <div class="panel panel-default">
     <ul class="nav nav-tabs nav-pills ">
         <li role="tab" class="active">
-            <a href="#panel-report" role="tab" data-toggle="tab" onclick="show_tab_incoming('calls_completed')">
+            <a href="#panel-report" role="tab" data-toggle="tab" onclick="showTabIncoming('calls_completed')">
                 <icon class="glyphicon glyphicon-earphone"></icon>Atendidas
             </a>
         </li>
         <li role="tab">
-            <a href="#panel-report" role="tab" data-toggle="tab" onclick="show_tab_incoming('calls_transfer')">
+            <a href="#panel-report" role="tab" data-toggle="tab" onclick="showTabIncoming('calls_transfer')">
                 <icon class="glyphicon glyphicon-random"></icon>Transferidas
             </a>
         </li>
         <li role="tab">
-            <a href="#panel-report" role="tab" data-toggle="tab" onclick="show_tab_incoming('calls_abandone')">
+            <a href="#panel-report" role="tab" data-toggle="tab" onclick="showTabIncoming('calls_abandone')">
                 <icon class="glyphicon glyphicon-alert"></icon>Abandonadas
             </a>
         </li>
@@ -42,7 +42,7 @@
 
 <script type="text/javascript">
 $(document).ready(function(){
-    show_tab_incoming('calls_completed')
+    showTabIncoming('calls_completed')
     DataTableHide('table-incoming',[8,9],'{{Session::get('UserRole')}}')
 })
 
