@@ -15,169 +15,174 @@ use Illuminate\Support\Facades\Session;
 
 class AdminController extends CosapiController
 {
-	protected $NameProyect;
-	protected $UserId;
-	protected $UserRole;
-	protected $UserName;
-	protected $UserSystem;
-	protected $UserPassword;
-	protected $UserAnexo;
-	protected $QueueAdd;
-	protected $ChangeRole;
-	protected $AssistanceUser;
-	protected $statusAddAgentDashboard;
+    protected $NameProyect;
+    protected $UserId;
+    protected $UserRole;
+    protected $UserName;
+    protected $UserSystem;
+    protected $UserPassword;
+    protected $UserAnexo;
+    protected $QueueAdd;
+    protected $ChangeRole;
+    protected $AssistanceUser;
+    protected $statusAddAgentDashboard;
 
-	public function __construct()
-	{
-		Session::put('UserId', Auth::user()->id);
-		Session::put('UserRole', Auth::user()->role);
-		Session::put('UserName', Auth::user()->primer_nombre . ' ' . Auth::user()->apellido_paterno);
-		Session::put('UserSystem', Auth::user()->username);
-		Session::put('ChangeRole', Auth::user()->change_role);
+    public function __construct()
+    {
+        if (!Session::has('QueueAdd')) {
+            Session::put('QueueAdd', false);
+        }
 
-		$Users = User::select('change_password')->where('id', '=', Auth::user()->id)->get()->toArray();
-		Session::put('UserPassword', $Users[0]['change_password']);
+        if (!Session::has('NameProyect')) {
+            Session::put('NameProyect', strtolower(getenv('PROYECT_NAME_COMPLETE')));
+        }
 
-		$Anexos = Anexo::select('name')->where('user_id', '=', Auth::user()->id)->get()->toArray();
-		if (count($Anexos) != 0) {
-			$name_anexo = $Anexos[0]['name'];
-			Session::put('UserAnexo', $name_anexo);
-		} else {
-			Session::put('UserAnexo', 0);
-		}
+        Session::put('UserId', Auth::user()->id);
+        Session::put('UserRole', Auth::user()->role);
+        Session::put('UserName', Auth::user()->primer_nombre . ' ' . Auth::user()->apellido_paterno);
+        Session::put('UserSystem', Auth::user()->username);
+        Session::put('ChangeRole', Auth::user()->change_role);
 
-		if (!Session::has('QueueAdd')) {
-			Session::put('QueueAdd', false);
-		}
+        $Users = User::select('change_password')->where('id', '=', Auth::user()->id)->get()->toArray();
+        Session::put('UserPassword', $Users[0]['change_password']);
 
-		$this->NameProyect = strtolower(getenv('PROYECT_NAME_COMPLETE'));
-		$this->UserId = Session::get('UserId');
-		$this->UserRole = Session::get('UserRole');
-		$this->UserName = Session::get('UserName');
-		$this->UserSystem = Session::get('UserSystem');
-		$this->UserPassword = Session::get('UserPassword');
-		$this->UserAnexo = Session::get('UserAnexo');
-		$this->QueueAdd = Session::get('QueueAdd');
-		$this->ChangeRole = Session::get('ChangeRole');
+        Session::put('UserAnexo', 0);
+        $Anexos = Anexo::select('name')->where('user_id', '=', Auth::user()->id)->get()->toArray();
+        if (count($Anexos) != 0) {
+            $name_anexo = $Anexos[0]['name'];
+            Session::put('UserAnexo', $name_anexo);
+        }
 
+        $this->NameProyect =  Session::get('NameProyect');
+        $this->UserId = Session::get('UserId');
+        $this->UserRole = Session::get('UserRole');
+        $this->UserName = Session::get('UserName');
+        $this->UserSystem = Session::get('UserSystem');
+        $this->UserPassword = Session::get('UserPassword');
+        $this->UserAnexo = Session::get('UserAnexo');
+        $this->QueueAdd = Session::get('QueueAdd');
+        $this->ChangeRole = Session::get('ChangeRole');
 
-		$ultimate_event_login = $this->UltimateEventLogin();
-		if ($ultimate_event_login[0] == 1 && $ultimate_event_login[1] == null) {
-			//Redirecciona a la ventan de marcaciones
-			Session::put('AssistanceUser', true);
-		} else {
-			if ($ultimate_event_login[2] >= date('Y-m-d H:i:s')) {
-				//Redirecciona a la ventana de espera
-				$date = date_create($ultimate_event_login[2]);
-				Session::put('AssistanceUser', 'stand_by&' . date_format($date, "H:i:s"));
-			} else {
-				Session::put('AssistanceUser', false);
-			}
-		}
-		$this->AssistanceUser = Session::get('AssistanceUser');
+        $ultimate_event_login = $this->UltimateEventLogin();
+        if ($ultimate_event_login[0] == 1 && $ultimate_event_login[1] == null) {
+            //Redirecciona a la ventan de marcaciones
+            Session::put('AssistanceUser', true);
+        } else {
+            if ($ultimate_event_login[2] >= date('Y-m-d H:i:s')) {
+                //Redirecciona a la ventana de espera
+                $date = date_create($ultimate_event_login[2]);
+                Session::put('AssistanceUser', 'stand_by&' . date_format($date, "H:i:s"));
+            } else {
+                Session::put('AssistanceUser', false);
+            }
+        }
 
-		$cantidadColasAsignadas = User_Queue::select(DB::raw('COUNT(1) AS cantidadColasAsignadas'))->where('user_id',
-			$this->UserId)->get()->toArray();
-		($cantidadColasAsignadas[0]['cantidadColasAsignadas'] > 0) ? $cantidadColasAsignadas = true : $cantidadColasAsignadas = false;
+        $this->AssistanceUser = Session::get('AssistanceUser');
 
-		Session::put('quantityQueueAssign', $cantidadColasAsignadas);
-		$this->quantityQueueAssign = Session::get('quantityQueueAssign');
-	}
+        $cantidadColasAsignadas = User_Queue::select(DB::raw('COUNT(1) AS cantidadColasAsignadas'))->where(
+            'user_id',
+            $this->UserId
+        )->get()->toArray();
+        ($cantidadColasAsignadas[0]['cantidadColasAsignadas'] > 0) ? $cantidadColasAsignadas = true : $cantidadColasAsignadas = false;
 
-	/**
-	 * [index Función que carga la base del AdminLTE]
-	 * @return [view] [Returna la vista base del Admin LTE]
-	 */
+        Session::put('quantityQueueAssign', $cantidadColasAsignadas);
+        $this->quantityQueueAssign = Session::get('quantityQueueAssign');
+    }
 
-	public function index()
-	{
-		return view('/front-admin')->with(array(
-			'anexo' => $this->UserAnexo,
-			'password' => $this->UserPassword,
-			'role' => $this->UserRole
-		));
-	}
+    /**
+     * [index Función que carga la base del AdminLTE]
+     * @return [view] [Returna la vista base del Admin LTE]
+     */
 
-	public function working()
-	{
-		return view('/layout/recursos/working');
-	}
+    public function index()
+    {
+        return view('/front-admin')->with(array(
+            'anexo' => $this->UserAnexo,
+            'password' => $this->UserPassword,
+            'role' => $this->UserRole
+        ));
+    }
 
-	public function setQueueAdd(Request $request)
-	{
-		if ($request->ajax()) {
-			if ($request->QueueAdd) {
-				($request->QueueAdd == 'true') ? $this->QueueAdd = true : $this->QueueAdd = false;
-				Session::put('QueueAdd', $this->QueueAdd);
-				return response()->json($this->QueueAdd);
-			}
-		}
-	}
+    public function working()
+    {
+        return view('/layout/recursos/working');
+    }
 
-	public function getVariablesGlobals()
-	{
-		$requiredAnnexed = ($this->UserRole == 'user') ? true : false;
-		$assistanceNextHour = '';
-		if (!is_bool($this->AssistanceUser)) {
-			$assistanceNextHour = explode('&', $this->AssistanceUser);
-			$assistanceNextHour = $assistanceNextHour[1];
-		}
+    public function setQueueAdd(Request $request)
+    {
+        if ($request->ajax()) {
+            if ($request->QueueAdd) {
+                ($request->QueueAdd == 'true') ? $this->QueueAdd = true : $this->QueueAdd = false;
+                Session::put('QueueAdd', $this->QueueAdd);
+                return response()->json($this->QueueAdd);
+            }
+        }
+    }
 
-		return response()->json([
-			'getNameProyect' => $this->NameProyect,
-			'getUserId' => $this->UserId,
-			'getUsername' => $this->UserSystem,
-			'getRole' => $this->UserRole,
-			'getNameComplete' => $this->UserName,
-			'statusChangePassword' => $this->UserPassword,
-			'statusChangeAssistance' => $this->AssistanceUser,
-			'statusQueueAddAsterisk' => $this->QueueAdd,
-			'getRemoteIp' => $_SERVER['REMOTE_ADDR'],
-			'requiredAnnexed' => $requiredAnnexed,
-			'hourServer' => date('H:i:s'),
-			'textDateServer' => date('d-m-w-Y'),
-			'dateServer' => date('Y-m-d'),
-			'annexed' => $this->UserAnexo,
-			'assistanceNextHour' => $assistanceNextHour,
-			'quantityQueueAssign' => $this->quantityQueueAssign
-		], 200);
-	}
+    public function getVariablesGlobals()
+    {
+        $requiredAnnexed = ($this->UserRole == 'user') ? true : false;
+        $assistanceNextHour = '';
+        if (!is_bool($this->AssistanceUser)) {
+            $assistanceNextHour = explode('&', $this->AssistanceUser);
+            $assistanceNextHour = $assistanceNextHour[1];
+        }
 
-	function updateStatusAddAgentDashboard()
-	{
-		Session::put('statusAddAgentDashboard', true);
-	}
+        return response()->json([
+            'getNameProyect' => $this->NameProyect,
+            'getUserId' => $this->UserId,
+            'getUsername' => $this->UserSystem,
+            'getRole' => $this->UserRole,
+            'getNameComplete' => $this->UserName,
+            'statusChangePassword' => $this->UserPassword,
+            'statusChangeAssistance' => $this->AssistanceUser,
+            'statusQueueAddAsterisk' => $this->QueueAdd,
+            'getRemoteIp' => $_SERVER['REMOTE_ADDR'],
+            'requiredAnnexed' => $requiredAnnexed,
+            'hourServer' => date('H:i:s'),
+            'textDateServer' => date('d-m-w-Y'),
+            'dateServer' => date('Y-m-d'),
+            'annexed' => $this->UserAnexo,
+            'assistanceNextHour' => $assistanceNextHour,
+            'quantityQueueAssign' => $this->quantityQueueAssign
+        ], 200);
+    }
 
-	function getStatusAddAgentDashboard()
-	{
-		$AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))
-			->where('agent_name', $this->UserSystem)
-			->get()->toArray();
+    public function updateStatusAddAgentDashboard()
+    {
+        Session::put('statusAddAgentDashboard', true);
+    }
 
-		$existAgent = $AgentOnline[0]['count_agent'];
-		$exits = false;
+    public function getStatusAddAgentDashboard()
+    {
+        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))
+            ->where('agent_name', $this->UserSystem)
+            ->get()->toArray();
 
-		if ($existAgent != 0) {
-			$exits = true;
-		} else {
-			AgentOnline::updateOrCreate(
-				['agent_user_id' => Auth::user()->id],
-				[
-					'agent_name' => Auth::user()->username,
-					'agent_role' => Auth::user()->role,
-					'event_name' => 'Login',
-					'event_id' => 11,
-					'event_time' => number_format(microtime(true) * 1000, 0, '.', '')
-				]);
-		}
+        $existAgent = $AgentOnline[0]['count_agent'];
+        $exits = false;
 
-		return response()->json(['statusAddAgentDashboard' => $exits]);
-	}
+        if ($existAgent != 0) {
+            $exits = true;
+        } else {
+            AgentOnline::updateOrCreate(
+                ['agent_user_id' => Auth::user()->id],
+                [
+                    'agent_name' => Auth::user()->username,
+                    'agent_role' => Auth::user()->role,
+                    'event_name' => 'Login',
+                    'event_id' => 11,
+                    'event_time' => number_format(microtime(true) * 1000, 0, '.', '')
+                ]
+            );
+        }
 
-	function getAgentDashboard()
-	{
-		$AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
-		return response()->json(['statusAddAgentDashboard' => $AgentOnline[0]]);
-	}
+        return response()->json(['statusAddAgentDashboard' => $exits]);
+    }
 
+    public function getAgentDashboard()
+    {
+        $AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
+        return response()->json(['statusAddAgentDashboard' => $AgentOnline[0]]);
+    }
 }
