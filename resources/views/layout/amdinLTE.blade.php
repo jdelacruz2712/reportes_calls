@@ -23,7 +23,7 @@
           <section class="content-header">
             <h1>Front Panel
               <small>
-              ,Hola @{{ getNameComplete }}
+              , Hola @{{ getNameComplete }}
 
               </small>
             </h1>
