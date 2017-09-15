@@ -1,6 +1,6 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 Vue.component('v-select', VueSelect.VueSelect)
-const socketAsterisk = io.connect(restApiDashboard, {
+const socketNodejs = io.connect(restApiDashboard, {
   'reconnection': true,
   'reconnectionAttempts': 15,
   'reconnectionDelay': 9000,
@@ -51,9 +51,12 @@ const dashboard = new Vue({
     nodejsServerName: '',
     nodejsServerMessage: ''
   },
-  mounted () {
+  created () {
     this.loadListProfile()
     this.loadMetricasKpi(true)
+  },
+  mounted(){
+    this.connectSockets()
   },
   methods: {
     loadMetricasKpi: async function (viewLoad) {
@@ -148,7 +151,7 @@ const dashboard = new Vue({
     loadListProfile: async function () {
       let response = await this.sendUrlRequest('dashboard_01/getListProfile')
       this.listProfileUsers = response.message
-      await refreshDetailsCalls()
+      this.refreshDetailsCalls()
     },
 
     loadCallWaiting: function () {
@@ -189,63 +192,75 @@ const dashboard = new Vue({
     },
 
     loadRolePermission: function (val) {
-      let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
+      let cookieRole = this.replaceCookieArray(Cookies.get('roleCookie'))
+      Cookies.set('roleCookie', val, {expires: timeDaycookie, path: ''})
+      this.rolesPermission.push(val)
+    },
+
+    connectSockets: function () {
+      const cookieRole = this.replaceCookieArray(Cookies.get('roleCookie'))
+      this.roleDefault = ['User']
       if (cookieRole) {
-        Cookies.set('roleCookie', val, {expires: timeDaycookie, path: ''})
-        this.rolesPermission.push(val)
-        refreshDetailsCalls()
-      } else {
-        Cookies.set('roleCookie', val, {expires: timeDaycookie, path: ''})
-        this.rolesPermission.push(val)
-        refreshDetailsCalls()
+        if (cookieRole.toString().length !== 0) this.roleDefault = cookieRole
       }
+
+      socketNodejs.on('connect', function () {
+        console.log('Socket Nodejs connected!')
+      })
+    },
+
+    // Refresca la informacion de la tabla de DetailsCalls
+    refreshDetailsCalls: function () {
+      this.callsInbound = []
+      this.callsOutbound = []
+      this.callsWaiting = []
+      this.others = []
+      socketNodejs.emit('createRoomDashboard', {nameProyect: nameProyecto})
+      socketNodejs.emit('listDataDashboard', {nameProyect: nameProyecto})
+    },
+
+    replaceCookieArray: function (cookie) {
+      if (cookie) {
+        let firstCookie = cookie.replace(/"/g, '')
+        let secondCookie = firstCookie.replace('[', '')
+        let thirdCookie = secondCookie.replace(']', '')
+        return thirdCookie.split(',')
+      }
+    },
+
+    searchInformationProfile: function (data, index) {
+      this.others[index].role = this.listProfileUsers[data.agent_user_id]['role']
+      this.others[index].avatar = this.listProfileUsers[data.agent_user_id]['avatar']
+      this.others[index].nameComplete = this.listProfileUsers[data.agent_user_id]['nameComplete']
     }
+
   }
 })
 
-// Refresca la informacion de la tabla de DetailsCalls
-const refreshDetailsCalls = () => {
-  dashboard.callsInbound = []
-  dashboard.callsOutbound = []
-  dashboard.callsWaiting = []
-  dashboard.others = []
-  socketAsterisk.emit('createRoomDashboard', {nameProyect: nameProyecto})
-  socketAsterisk.emit('listDataDashboard')
-}
-
-socketAsterisk.on('connect', function () {
-  dashboard.nodejsServerName = 'Servidor Asterisk'
-  dashboard.ModalConnectionNodeJs = 'modal fade'
-  dashboard.nodejsServerMessage = 'Acabas de conectar con el Servidor Asterisk'
-  console.log('Socket Asterisk connected!')
-  dashboard.loadListProfile()
-})
-
-socketAsterisk.on('connect_error', function () {
-  dashboard.nodejsServerName = 'Servidor Asterisk'
+socketNodejs.on('connect_error', function () {
+  dashboard.nodejsServerName = 'Servidor Nodejs'
   dashboard.ModalConnectionNodeJs = 'modal show'
   let i = 9
   let refreshIntervalId = setInterval(() => {
-    dashboard.nodejsServerMessage = `Fallo la conexión por el Servidor Asterik volveremos a reintentar en ${i} segundos!!!`
+    dashboard.nodejsServerMessage = `Fallo la conexión con el socket del Server NodeJS volveremos a reintentar en ${i} segundos!!!`
     i--
     if (i === 0) clearInterval(refreshIntervalId)
   }, 1000)
-  console.log('socketAsterisk Connection Failed')
+  console.log('socketNodejs Connection Failed')
 })
 
-socketAsterisk.on('disconnect', function () {
-  dashboard.nodejsServerName = 'Servidor Asterisk'
+socketNodejs.on('disconnect', function () {
+  dashboard.nodejsServerName = 'Servidor NodeJS'
   dashboard.ModalConnectionNodeJs = 'modal show'
-  dashboard.nodejsServerMessage = 'Acabas de perder conexión con el Asterisk !!!'
-  console.log('socketAsterisk Disconnected')
+  dashboard.nodejsServerMessage = `Acabas de perder conexión con el socket del Server Nodejs !!!`
+  console.log('socketNodejs Disconnected')
 })
 
-socketAsterisk.on('AddCallWaiting', dataCallWaiting => {
+socketNodejs.on('AddCallWaiting', dataCallWaiting => {
   dashboard.callsWaiting.push(dataCallWaiting)
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
-
-socketAsterisk.on('RemoveCallWaiting', dataCallWaiting => {
+socketNodejs.on('RemoveCallWaiting', dataCallWaiting => {
   let numberPhone = dataCallWaiting
   dashboard.callsWaiting.forEach((item, index) => {
     if (item.number_phone === numberPhone) dashboard.callsWaiting.splice(index, 1)
@@ -253,54 +268,34 @@ socketAsterisk.on('RemoveCallWaiting', dataCallWaiting => {
   dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
-socketAsterisk.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others, 'others'))
-socketAsterisk.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'others'))
-socketAsterisk.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'others'))
+socketNodejs.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others, 'others'))
+socketNodejs.on('UpdateOther', dataOther => updateDataDashboard(dataOther, dashboard.others, 'others'))
+socketNodejs.on('AddOther', dataOther => AddDataDashboard(dataOther, dashboard.others, 'others'))
 
-socketAsterisk.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
-socketAsterisk.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
-socketAsterisk.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socketNodejs.on('RemoveOutbound', dataOutbound => removeDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socketNodejs.on('UpdateOutbound', dataOutbound => updateDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
+socketNodejs.on('AddOutbound', dataOutbound => AddDataDashboard(dataOutbound, dashboard.callsOutbound, 'callsOutbound'))
 
-socketAsterisk.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
-socketAsterisk.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
-socketAsterisk.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socketNodejs.on('RemoveInbound', dataInbound => removeDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socketNodejs.on('UpdateInbound', dataInbound => updateDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
+socketNodejs.on('AddInbound', dataInbound => AddDataDashboard(dataInbound, dashboard.callsInbound, 'callsInbound'))
 
-isExistDuplicate = (data, dataDashboard) => {
-  let exist = true
-  let index = (dataDashboard.length)
-  if (index > 0) {
-    dataDashboard.forEach((item, index) => {
-      if (item.agent_name == data.agent_name) exist = false
-    })
-  }
-  return exist
+const removeDataDashboard = (data, dataDashboard, namePanel) => {
+  dataDashboard.forEach((item, index) => {
+    if (item.agent_name === data.agent_name) {
+      dataDashboard.splice(index, 1)
+    }
+  })
+  dashboard.panelAgentStatusSummary()
 }
 
-AddDataDashboard = async (data, dataDashboard, namePanel) => {
-  let exist = isExistDuplicate(data, dataDashboard)
-  if (exist) {
-    let index = (dataDashboard.length)
-    let eventList = getRulers('event_id')
-    data.color = eventList[data.event_id].color
-    data.icon = eventList[data.event_id].icon
-    data = addInformationProfile(data)
-    dataDashboard.push(data)
-    orderDashboard(dataDashboard, namePanel)
-    dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
-    dataDashboard[index].total_calls = await getTotalCalls(data)
-    dashboard.panelAgentStatusSummary()
-    dashboard.panelGroupStatistics()
-  }
-}
-
-updateDataDashboard = (data, dataDashboard, namePanel) => {
+const updateDataDashboard = (data, dataDashboard, namePanel) => {
   dataDashboard.forEach(async (item, index) => {
     if (item.agent_name === data.agent_name) {
       if (item.event_id !== data.event_id) {
         let eventList = getRulers('event_id')
         data.color = eventList[data.event_id].color
         data.icon = eventList[data.event_id].icon
-        data = addInformationProfile(data)
         dataDashboard.splice(index, 1, data)
         dashboard.loadMetricasKpi(false)
         dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
@@ -316,28 +311,28 @@ updateDataDashboard = (data, dataDashboard, namePanel) => {
   dashboard.panelGroupStatistics()
 }
 
-addInformationProfile = (data) => {
-  data.avatar = dashboard.listProfileUsers[data.agent_user_id]['avatar']
-  data.nameComplete = dashboard.listProfileUsers[data.agent_user_id]['nameComplete']
-  data.role = dashboard.listProfileUsers[data.agent_user_id]['role']
-  return data
+const AddDataDashboard = async (data, dataDashboard, namePanel) => {
+  let exist = isExistDuplicate(data, dataDashboard)
+  if (exist) {
+    let index = (dataDashboard.length)
+    let eventList = getRulers('event_id')
+    data.color = eventList[data.event_id].color
+    data.icon = eventList[data.event_id].icon
+    dataDashboard.push(data)
+    orderDashboard(dataDashboard, namePanel)
+    dashboard.loadTimeElapsed(index, dataDashboard, namePanel)
+    dataDashboard[index].total_calls = await getTotalCalls(data)
+    dashboard.panelAgentStatusSummary()
+    dashboard.panelGroupStatistics()
+  }
 }
 
-removeDataDashboard = (data, dataDashboard, namePanel) => {
-  dataDashboard.forEach((item, index) => {
-    if (item.agent_name === data.agent_name) {
-      dataDashboard.splice(index, 1)
-    }
-  })
-  dashboard.panelAgentStatusSummary()
-}
-
-getTotalCalls = async (data) => {
+const getTotalCalls = async (data) => {
   let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', '', data.agent_name)
   return response.message
 }
 
-differenceHours = (s) => {
+const differenceHours = (s) => {
   function addZ (n) {
     return (n < 10 ? '0' : '') + n
   }
@@ -350,6 +345,17 @@ differenceHours = (s) => {
   let hrs = (s - mins) / 60
 
   return addZ(hrs) + ':' + addZ(mins) + ':' + addZ(secs)
+}
+
+const isExistDuplicate = (data, dataDashboard) => {
+  let exist = true
+  let index = (dataDashboard.length)
+  if (index > 0) {
+    dataDashboard.forEach((item, index) => {
+      if (item.agent_name == data.agent_name) exist = false
+    })
+  }
+  return exist
 }
 
 const orderDashboard = async (dataDashboard, namePanel) => {
@@ -442,23 +448,4 @@ const getRulers = (action) => {
     }
   }
   return rulers
-}
-
-const replaceCookieArray = (cookie) => {
-  if (cookie) {
-    let firstCookie = cookie.replace(/"/g, '')
-    let secondCookie = firstCookie.replace('[', '')
-    let thirdCookie = secondCookie.replace(']', '')
-    return thirdCookie.split(',')
-  } else {
-
-  }
-}
-
-let cookieRole = replaceCookieArray(Cookies.get('roleCookie'))
-if (cookieRole) {
-  if (cookieRole.toString().length === 0) dashboard.roleDefault = ['User']
-  else dashboard.roleDefault = cookieRole
-} else {
-  dashboard.roleDefault = ['User']
 }

@@ -23,6 +23,7 @@
             </thead>
             <tbody>
               <template v-for="(other, index) in others ">
+                @{{ searchInformationProfile(other,index) }}
                 <tr v-if="compareRole(other.role) === true" >
                   <td style="vertical-align: middle">@{{ index + 1 }}</td>
                   <td style="vertical-align: middle"  class="products-list product-list-in-box">
