@@ -5,6 +5,15 @@ $(document).ready(function () {
     }
   })
   $('.reportes').on('click', function (e) { loadModule($(this).attr('id')) })
+
+  $('#menuleft li.treeview ul li').click(function(){
+    $('#menuleft li.treeview ul li.active').removeClass("active")
+    $(this).addClass("active")
+
+    $('#menuleft li.treeview.active').removeClass("active")
+    $('#menuleft li.treeview.menu-open').addClass("active")
+  });
+
 })
 
 /* [showTabIncoming Función que carga Llamadas Entrantes en el reporte] */
