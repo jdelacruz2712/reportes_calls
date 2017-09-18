@@ -29,10 +29,14 @@ class OutgoingCallsController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.outgoing_calls.outgoing_calls',
                     'titleReport'           => 'Report of Calls Outbound',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_outgoing',
                     'nameRouteController'   => 'outgoing_calls'
                 ));

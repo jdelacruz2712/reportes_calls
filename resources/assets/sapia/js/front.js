@@ -29,7 +29,10 @@ const showTabAgentOnline = (evento) => dataTables('table-agentOnline', getDataFi
 const showTabOutgoing = (evento) => dataTables('table-outgoing', getDataFilters(evento), 'outgoing_calls')
 
 /* [showTabListUser Función que carga los datos detallados de los usuarios] */
-const showTabListUser = (evento) => dataTables('table-list-user', getDataFilters(evento), 'list_users')
+const showTabListUser = (evento) => dataTables('table-list-user', getDataFilters(evento), 'manage_users')
+
+/* [showTabListQueues Función que carga los datos detallados de las colas] */
+const showTabListQueues = (evento) => dataTables('table-list-queue', getDataFilters(evento), 'manage_queues')
 
 /* [showTabAnnexed Función que carga la lista de anexos] */
 const showTabAnnexed = (event) => {
@@ -501,4 +504,103 @@ const MarkAssitance = (user_id, day, hour_actually, action) => {
   } else {
     checkPassword()
   }
+}
+
+// Funcion para reutilizar Modals
+const responseModal = (nameRoute, routeLoad, valID = null) => {
+    let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
+    let token = $('input[name=_token]').val()
+    $.ajax({
+        type : 'POST',
+        url : routeLoad,
+        data: {
+            _token: token,
+            valueID: valID
+        },
+        beforeSend: function(){
+            $(nameRoute).html(imageLoading)
+        },
+        success:function(data){
+            $(nameRoute).html(data)
+        }
+    })
+}
+
+// Función para cerrar un modal y limpiar el cuerpo del mismo (Funciona con la función responseModal)
+const clearModal = (modalID, bodyModal) => {
+    $(bodyModal).html('').promise().done(function() {
+        $('#'+modalID).modal('toggle')
+    })
+}
+
+// Función para escuchar el evento cuando se cierra un modal y limpiar el cuerpo del mismo (Funciona con la función responseModal)
+const clearModalClose = (modalID, bodyModal) => {
+    $('#'+modalID).on('hidden.bs.modal', function () {
+        $(bodyModal).html('')
+    })
+}
+
+// Función que muestra un boton de carga cuando se ejecuta un formulario
+const changeButtonForm = (btnShow, btnHide) => {
+    $('.'+btnShow).fadeOut("fast", function() {
+        $('.'+btnHide).fadeIn("fast")
+    })
+}
+
+// Función que muestra los errores que emite el controlador en un DIV
+const showErrorForm = (data, formDiv) => {
+    let errors = '';
+    for(datos in data.responseJSON){
+        errors += '<li>' + data.responseJSON[datos] + '</li>'
+    }
+    $(formDiv).fadeIn().html(
+        '<span class="fa fa-close"></span> <strong>Error</strong>'+
+            '<hr class="message-inner-separator">'+
+                '<ul>' + errors + '</ul>'
+    )
+}
+
+// Función para ocultar los errores cuando se ingresa en algun campo que se requeria data
+const hideErrorForm = (formDiv) => {
+    $("input[type=text]").click(function() {
+        $(formDiv).fadeOut().html()
+    })
+}
+
+// Función para poder buscar en una tabla
+const searchTable = (idTable, idSearch) => {
+    let $rows = $(idTable+' tbody tr')
+    $(idSearch).keyup(function() {
+        let val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
+            reg = RegExp(val, 'i'),
+            text
+        $rows.show().filter(function() {
+            text = $(this).text().replace(/\s+/g, ' ');
+            return !reg.test(text);
+        }).hide()
+    })
+}
+
+// Función para seleccionar todos los checkbox con uno solo
+const mark_all = (checkGeneral) => {
+    if($(checkGeneral).is(':checked')){
+        $("input.checkNew:checkbox").prop("checked", "checked")
+        $('tr.trNew').addClass('warning')
+        $('select.selectNew').removeAttr("disabled").val('1')
+    }else{
+        $("input.checkNew:checkbox").prop("checked", false)
+        $('tr.trNew').removeClass('warning').addClass('info')
+        $('select.selectNew').attr("disabled", true).val('-')
+    }
+}
+
+// Función que deshabilita y coloca estilo a la fila de la tabla
+const markCheck = (check) => {
+    if($('#checkbox_'+check).is(':checked')){
+        $('#tr_'+check).addClass('warning')
+        $('#select_'+check).removeAttr("disabled").val('1')
+    }else{
+        $('#tr_'+check).removeClass('warning').addClass('info')
+        $('#select_'+check).attr("disabled", true).val('-')
+    }
 }

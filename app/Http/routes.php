@@ -36,8 +36,17 @@ Route::group (['middleware'=>['user']], function(){
         Route::post('agents_queue/mark'							        , ['uses'=>'AgentsQueueController@mark_form']);
         Route::get('agents_queue/users'     							, ['uses'=>'AgentsQueueController@list_users']);
 
-        // Lista de Usuarios
-        Route::post('list_users'                                        , ['uses'=>'UserController@index']);
+        // Administrar Usuarios
+        Route::post('manage_users'                                      , ['uses'=>'UserController@index']);
+
+        // Administrar Queues
+        Route::post('manage_queues'                                     , ['uses'=>'QueuesController@index']);
+        Route::post('form_queues'                                       , ['uses'=>'QueuesController@formQueues']);
+        Route::post('form_status_queue'                                 , ['uses'=>'QueuesController@formChangeStatus']);
+        Route::post('form_assign_queue'                                 , ['uses'=>'QueuesController@formAssignQueue']);
+        Route::post('saveformQueues'                                    , ['uses'=>'QueuesController@saveFormQueues']);
+        Route::post('saveformQueuesStatus'                              , ['uses'=>'QueuesController@saveFormQueuesStatus']);
+        Route::post('saveformUsersQueues'                               , ['uses'=>'QueuesController@saveFormUsersQueues']);
 
     });
 

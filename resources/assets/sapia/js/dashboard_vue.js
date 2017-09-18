@@ -1,5 +1,6 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 Vue.component('v-select', VueSelect.VueSelect)
+
 const socketAsterisk = io.connect(restApiDashboard, {
   'reconnection': true,
   'reconnectionAttempts': 15,

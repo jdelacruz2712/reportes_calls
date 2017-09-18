@@ -1,4 +1,5 @@
 var elixir = require('laravel-elixir');
+require('laravel-elixir-webpack');
 
 /*
  |--------------------------------------------------------------------------
@@ -85,7 +86,7 @@ elixir(function(mix) {
     'node_modules/vue-resource/vue-resource.min.js',
     'node_modules/vue-select/vue-select.js',
     'node_modules/socket.io-client/socket.io.min.js',
-    'sapia/js/cookie.js',
+    'sapia/js/cookie.js'
   ],'public/js/dashboard.min.js','resources/assets/');
 });
 
@@ -117,12 +118,12 @@ elixir(function(mix) {
 elixir(function(mix) {
   mix
   .styles([
-      'plugins/daterangepicker/css/daterangepicker.css'
-  ],'public/css/daterangepicker.min.css','resources/assets/')
+      'daterangepicker/daterangepicker.css'
+  ],'public/css/daterangepicker.min.css','resources/assets/node_modules/')
   .scripts([
-      'plugins/daterangepicker/js/moment.min.js',
-      'plugins/daterangepicker/js/daterangepicker.js'
-  ],'public/js/daterangepicker.min.js','resources/assets/');
+      'daterangepicker/moment.min.js',
+      'daterangepicker/daterangepicker.js'
+  ],'public/js/daterangepicker.min.js','resources/assets/node_modules/');
 });
 
 /**
@@ -180,6 +181,16 @@ elixir(function(mix) {
   .scripts([
       'plugins/select2/select2.js'
   ],'public/js/select2.min.js','resources/assets/');
+});
+
+/**
+ Generando los archivos para autogestionar los formularios con Vue
+*/
+elixir(function(mix) {
+   mix
+   .scripts([
+       'sapia/js/form/formQueues.js'
+   ], 'public/js/form/formQueues.min.js', 'resources/assets/');
 });
 
 elixir(function(mix) {

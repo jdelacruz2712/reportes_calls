@@ -8,6 +8,12 @@ class Queue extends Model
 {
     protected $connection   = 'laravel';
     protected $table        = 'queues';
+    protected $primaryKey   = 'id';
+    public    $timestamps   = false;
+
+    protected $fillable = [
+        'id', 'name', 'vdn', 'queues_strategy_id', 'queues_priority_id', 'estado_id',
+    ];
 
     public function estrategia(){
         return $this->belongsTo('Cosapi\Models\QueueStrategy','queues_strategy_id');

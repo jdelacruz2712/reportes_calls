@@ -22,9 +22,6 @@ const dataTables = (nombreDIV, data, route) => {
       type: 'POST',
       data: data
     },
-    'order': [
-      [1, 'asc']
-    ],
     'paging': true,
     'pageLength': 100,
     'lengthMenu': [100, 200, 300, 400, 500],
@@ -80,7 +77,7 @@ const columnsDatatable = (route) => {
   let columns = ''
   if (route === 'incoming_calls') {
     columns = [
-        {'data': 'date'},
+        {'data': 'date', 'order': 'asc'},
         {'data': 'hour'},
         {'data': 'telephone'},
         {'data': 'agent'},
@@ -95,7 +92,7 @@ const columnsDatatable = (route) => {
 
   if (route === 'surveys') {
     columns = [
-        {'data': 'Type Survey'},
+        {'data': 'Type Survey', 'order': 'asc'},
         {'data': 'Date'},
         {'data': 'Hour'},
         {'data': 'Username'},
@@ -113,7 +110,7 @@ const columnsDatatable = (route) => {
 
   if (route === 'consolidated_calls') {
     columns = [
-        {'data': 'Name'},
+        {'data': 'Name', 'order': 'asc'},
         {'data': 'Received'},
         {'data': 'Answered'},
         {'data': 'Abandoned'},
@@ -150,7 +147,7 @@ const columnsDatatable = (route) => {
 
   if (route === 'events_detail') {
     columns = [
-        {'data': 'nombre_agente'},
+        {'data': 'nombre_agente', 'order': 'asc'},
         {'data': 'fecha'},
         {'data': 'hora'},
         {'data': 'evento'},
@@ -160,7 +157,7 @@ const columnsDatatable = (route) => {
 
   if (route === 'outgoing_calls') {
     columns = [
-        {'data': 'date'},
+        {'data': 'date', 'order': 'asc'},
         {'data': 'hour'},
         {'data': 'annexedorigin'},
         {'data': 'username'},
@@ -173,7 +170,7 @@ const columnsDatatable = (route) => {
 
   if (route === 'agents_online') {
     columns = [
-            {'data': 'date'},
+            {'data': 'date', 'order': 'asc'},
             {'data': 'hour'},
             {'data': 'agents'}
     ]
@@ -181,7 +178,7 @@ const columnsDatatable = (route) => {
 
   if (route === 'level_of_occupation') {
     columns = [
-        {'data': 'date'},
+        {'data': 'date', 'order': 'asc'},
         {'data': 'hour'},
         {'data': 'indbound'},
         {'data': 'acw'},
@@ -192,9 +189,9 @@ const columnsDatatable = (route) => {
     ]
   }
 
-  if (route === 'list_users') {
+  if (route === 'manage_users') {
     columns = [
-        {'data': 'Id'},
+        {'data': 'Id', 'order': 'asc'},
         {'data': 'First Name'},
         {'data': 'Second Name'},
         {'data': 'Last Name'},
@@ -205,6 +202,18 @@ const columnsDatatable = (route) => {
         {'data': 'Change Rol'},
         {'data': 'Change Password'},
         {'data': 'Change Status'}
+    ]
+  }
+
+  if (route === 'manage_queues') {
+    columns = [
+         {'data': 'Id', 'order': 'asc'},
+         {'data': 'Name'},
+         {'data': 'Vdn'},
+         {'data': 'Strategy'},
+         {'data': 'Priority'},
+         {'data': 'Status'},
+         {'data': 'Actions', 'className': 'text-center'}
     ]
   }
 
