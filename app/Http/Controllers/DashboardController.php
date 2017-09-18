@@ -26,7 +26,7 @@ class DashboardController extends IncomingCallsController
         return view('elements/dashboard/dashboard_01');
     }
 
-    public function getListProfile(Request $request)
+    public function getVariablesGlobals(Request $request)
     {
         try {
             $listProfile = [];
@@ -41,7 +41,12 @@ class DashboardController extends IncomingCallsController
                 $listProfile[$users['id']]['role'] = $users['role'];
             }
 
-            return response()->json(['message' => $listProfile], 200);
+            return response()->json([
+              'listAllUserProfile' => $listProfile,
+              'hourServer' => $this->ShowDateAndTimeCurrent('justTheTime'),
+              'dateServer' => $this->ShowDateAndTimeCurrent('justTheDate'),
+              'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate')
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }

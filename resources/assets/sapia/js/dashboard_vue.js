@@ -48,10 +48,14 @@ const dashboard = new Vue({
 
     ModalConnectionNodeJs: 'modal fade',
     nodejsServerName: '',
-    nodejsServerMessage: ''
+    nodejsServerMessage: '',
+
+    dateServer:'-',
+    hourServer: '-',
+    textDateServer: '-'
   },
   created () {
-    this.loadListProfile()
+    this.loadVariablesGlobals()
     this.loadMetricasKpi(true)
   },
   mounted(){
@@ -80,7 +84,7 @@ const dashboard = new Vue({
       setInterval(async function () {
         if (dataDashboard[index]) {
           const horaBD = await this.getEventTime(index, dataDashboard, namePanel)
-          const currenTime = (new Date()).getTime()
+          const currenTime = (new Date(`${this.dateServer} ${this.hourServer}`)).getTime()
           const elapsed = differenceHours(currenTime - horaBD)
           if (elapsed != 'NaN:NaN:NaN') dataDashboard[index].timeElapsed = elapsed
         }
@@ -103,7 +107,6 @@ const dashboard = new Vue({
     },
 
     sendUrlRequest: async function (url, filterParameters) {
-      if (url == 'dashboard_01/getQuantityCalls') console.log(filterParameters);
       let response = await this.$http.post(url, filterParameters)
       return response.data
     },
@@ -144,10 +147,49 @@ const dashboard = new Vue({
       if (answeredMonth !== 0) this.slaMonth = ((answeredTimeMonth * 100) / answeredMonth).toFixed(2)
     },
 
-    loadListProfile: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getListProfile')
-      this.listProfileUsers = response.message
-      this.refreshDetailsCalls()
+    loadVariablesGlobals: async function () {
+      let response = await this.sendUrlRequest('dashboard_01/getVariablesGlobals')
+      this.listProfileUsers = response.listAllUserProfile
+      this.dateServer = response.dateServer
+      this.hourServer = response.hourServer
+      this.textDateServer = response.textDateServer
+      if (response) {
+        this.loadCurrenTime()
+        this.refreshDetailsCalls()
+      }
+    },
+
+    loadCurrenTime: function () {
+      	setTimeout(function () {
+          let hourServer = this.hourServer.split(':')
+      		let hora = parseInt(hourServer[0])
+      		let minuto = parseInt(hourServer[1])
+      		let segundo = parseInt(hourServer[2])
+      		segundo = segundo + 1
+      		if (segundo == 60) {
+      			minuto = minuto + 1
+      			segundo = 0
+      			if (minuto == 60) {
+      				minuto = 0
+      				hora = hora + 1
+      				if (hora == 24) {
+      					hora = 0
+      				}
+      			}
+      		}
+      		let str_hora = ''
+      		let str_minuto = ''
+      		let str_segundo = ''
+      		str_hora = new String(hora)
+      		str_minuto = new String(minuto)
+      		str_segundo = new String(segundo)
+      		if (str_hora.length == 1) hora = '0' + hora
+      		if (str_minuto.length == 1) minuto = '0' + minuto
+      		if (str_segundo.length == 1) segundo = '0' + segundo
+      		this.hourServer = hora + ':' + minuto + ':' + segundo
+      		this.loadCurrenTime()
+      	}.bind(this), 1000)
+
     },
 
     loadCallWaiting: function () {
@@ -226,11 +268,11 @@ const dashboard = new Vue({
       this.others[index].avatar = this.listProfileUsers[data.agent_user_id]['avatar']
       this.others[index].nameComplete = this.listProfileUsers[data.agent_user_id]['nameComplete']
     }
-
   }
 })
 
 socketNodejs.on('connect', function () {
+  dashboard.ModalConnectionNodeJs = 'modal fade'
   console.log('Socket Nodejs connected!')
 })
 
@@ -250,7 +292,7 @@ socketNodejs.on('disconnect', function () {
   dashboard.nodejsServerName = 'Servidor NodeJS'
   dashboard.ModalConnectionNodeJs = 'modal show'
   dashboard.nodejsServerMessage = `Acabas de perder conexión con el socket del Server Nodejs !!!`
-  console.log('socketNodejs Disconnected')
+  console.log('socket Nodejs Disconnected')
 })
 
 socketNodejs.on('AddCallWaiting', dataCallWaiting => {

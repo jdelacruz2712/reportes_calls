@@ -110,7 +110,6 @@ const vueFront = new Vue({
       this.quantityQueueAssign = response.quantityQueueAssign
       this.getAgentDashboard = response.getAgentDashboard
       this.assistanceNextHour = response.assistanceNextHour
-      currentDate()
       currenTime()
 
       // Cargando image del profile_user

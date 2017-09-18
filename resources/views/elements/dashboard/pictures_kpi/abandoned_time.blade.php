@@ -1,4 +1,4 @@
-<div class="col-md-2 col-sm-4 col-xs-8" @click="loadMetricasKpi">
+<div class="col-md-2 col-sm-6 col-xs-6" @click="loadMetricasKpi">
   <div class="info-box bg-red" v-if="abandonedTime != '-'">
     <span class="info-box-icon metricas-info-box-icon"><i class="fa fa-sign-out"></i></span>
     <div class="info-box-conten metricas-info-box-content" >
