@@ -14,11 +14,10 @@ const dashboard = new Vue({
     callsOutbound: [],
     callsWaiting: [],
     others: [],
-    roleDefault: [
-      'User'
-    ],
+    filterRoles: ['User'],
     rolesPermission: [],
 
+    filterParameters: [],
     agentStatusSummary: [],
     listProfileUsers: [],
 
@@ -56,7 +55,7 @@ const dashboard = new Vue({
     this.loadMetricasKpi(true)
   },
   mounted(){
-    this.connectSockets()
+    this.initialization()
   },
   methods: {
     loadMetricasKpi: async function (viewLoad) {
@@ -103,17 +102,14 @@ const dashboard = new Vue({
       setInterval(calcular(), 1000)
     },
 
-    sendUrlRequest: async function (url, rangeDateSearch, nameAgent = '') {
-      let parameters = {
-        rangeDateSearch: rangeDateSearch,
-        nameAgent: nameAgent
-      }
-      let response = await this.$http.post(url, parameters)
+    sendUrlRequest: async function (url, filterParameters) {
+      if (url == 'dashboard_01/getQuantityCalls') console.log(filterParameters);
+      let response = await this.$http.post(url, filterParameters)
       return response.data
     },
 
     loadAllKpisDay: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'forDay')
+      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', { rangeDateSearch: 'forDay' })
 
       this.abandoned = response[0].calls_abandone.message
       this.answered = response[0].calls_completed.message
@@ -135,7 +131,7 @@ const dashboard = new Vue({
     },
 
     loadAllKpisMonth: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', 'forMonth')
+      let response = await this.sendUrlRequest('dashboard_01/getEventKpi', { rangeDateSearch: 'forMonth' })
 
       this.answeredMonth = response[0].calls_completed.message
       this.answeredTimeMonth = response[0].calls_completed_time.message
@@ -159,7 +155,7 @@ const dashboard = new Vue({
     },
 
     panelAgentStatusSummary: async function () {
-      let response = await this.sendUrlRequest('dashboard_01/panelAgentStatusSummary')
+      let response = await this.sendUrlRequest('dashboard_01/panelAgentStatusSummary', { filterRoles: this.filterRoles })
       let result = response.message
       let eventList = getRulers('event_id')
       result.forEach((item, index) => {
@@ -181,32 +177,29 @@ const dashboard = new Vue({
     },
 
     compareRole: function (role) {
-      let Permission = false
+      let permission = false
       this.rolesPermission.forEach((index, value) => {
         index.forEach((roleName, roleIndex) => {
           let miniName = roleName.toLowerCase()
-          if (role === miniName) Permission = true
+          if (role === miniName) permission = true
         })
       })
-      return Permission
+      return permission
     },
 
     loadRolePermission: function (val) {
       let cookieRole = this.replaceCookieArray(Cookies.get('roleCookie'))
       Cookies.set('roleCookie', val, {expires: timeDaycookie, path: ''})
       this.rolesPermission.push(val)
+      this.panelAgentStatusSummary()
     },
 
-    connectSockets: function () {
+    initialization: function () {
       const cookieRole = this.replaceCookieArray(Cookies.get('roleCookie'))
-      this.roleDefault = ['User']
+      this.filterRoles = ['User']
       if (cookieRole) {
-        if (cookieRole.toString().length !== 0) this.roleDefault = cookieRole
+        if (cookieRole.toString().length !== 0) this.filterRoles = cookieRole
       }
-
-      socketNodejs.on('connect', function () {
-        console.log('Socket Nodejs connected!')
-      })
     },
 
     // Refresca la informacion de la tabla de DetailsCalls
@@ -235,6 +228,10 @@ const dashboard = new Vue({
     }
 
   }
+})
+
+socketNodejs.on('connect', function () {
+  console.log('Socket Nodejs connected!')
 })
 
 socketNodejs.on('connect_error', function () {
@@ -328,7 +325,7 @@ const AddDataDashboard = async (data, dataDashboard, namePanel) => {
 }
 
 const getTotalCalls = async (data) => {
-  let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', '', data.agent_name)
+  let response = await dashboard.sendUrlRequest('dashboard_01/getQuantityCalls', { nameAgent: data.agent_name })
   return response.message
 }
 
