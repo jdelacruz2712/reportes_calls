@@ -2,7 +2,7 @@
   <div class="col-md-12">
     <div class="box box-primary box-solid">
       <div class="box-header with-border ">
-        <h3 class="box-title"><b>Details Calls Inbound</b></h3>
+        <h3 class="dashboard-title">Details Calls Inbound</h3>
         <div class="box-tools pull-right">
          <button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
          </button>

@@ -27,10 +27,14 @@ class ConsolidatedCallsController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.consolidated_calls.tabs_consolidated_calls',
                     'titleReport'           => 'Report of Consolidated Calls',
-                    'viewButtonSearch'      => false,
-                    'viewHourSearch'        => true,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => true,
+                    'viewButtonSearch'      => false,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_consolidated',
                     'nameRouteController'   => ''
                 ));

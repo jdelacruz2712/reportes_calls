@@ -1,17 +1,17 @@
 <div class="panel panel-default">
     <ul class="nav nav-tabs nav-pills ">
         <li role="tab" class="active">
-            <a href="#panel-active" role="tab" data-toggle="tab" onclick="show_tab_surveys('surveys_inbound')">
+            <a href="#panel-active" role="tab" data-toggle="tab" onclick="showTabSurveys('surveys_inbound')">
                 <icon class="glyphicon glyphicon-random"></icon>Inbound
             </a>
         </li>
         <li role="tab">
-            <a href="#panel-report" role="tab" data-toggle="tab" onclick="show_tab_surveys('surveys_outbound')">
+            <a href="#panel-report" role="tab" data-toggle="tab" onclick="showTabSurveys('surveys_outbound')">
                 <icon class="glyphicon glyphicon-alert"></icon>Outbound
             </a>
         </li>
         <li role="tab">
-            <a href="#panel-report" role="tab" data-toggle="tab" onclick="show_tab_surveys('surveys_released')">
+            <a href="#panel-report" role="tab" data-toggle="tab" onclick="showTabSurveys('surveys_released')">
                 <icon class="glyphicon glyphicon-earphone"></icon>Released
             </a>
         </li>
@@ -48,6 +48,6 @@
     })
 
     function surveys(){
-        show_tab_surveys('surveys_inbound'); 
+        showTabSurveys('surveys_inbound');
     }
 </script>

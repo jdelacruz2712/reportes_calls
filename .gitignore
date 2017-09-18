@@ -5,6 +5,7 @@
 # Archivos de Laravel
 .env
 .env.php
+.env.js
 /vendor
 /public
 /resources/assets/vendor/
@@ -45,4 +46,4 @@ $RECYCLE.BIN/
 !.htaccess
 *~
 phpunit.phar
-resources/assets/cosapi/js/env.js
+

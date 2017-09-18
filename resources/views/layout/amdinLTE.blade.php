@@ -6,7 +6,10 @@
     @include('layout.recursos.icon_title')
     <title>Reportes | @yield('title')</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    {!!Html::style('css/cosapi_adminlte.min.css')!!}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    {!! Html::style('css/adminlte.min.css') !!}
+    {!! Html::style('css/notifications.min.css') !!}
+    {!! Html::style('css/fonts-googleapis.css') !!}
     @yield('css')
   </head>
   <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini ">
@@ -19,8 +22,14 @@
       <div class="content-wrapper">
         @include('layout.recursos.flash_message')
           <section class="content-header">
-            <h1>Dashboard<small>Panel de Control</small></h1>
+            <h1>Front Panel
+              <small>
+              ,Hola @{{ getNameComplete }}
+
+              </small>
+            </h1>
             <ol class="breadcrumb">
+              <li><i class="fa fa-fw fa-calendar"></i> @{{ textDateServer }} &nbsp; <i class="fa fa-fw fa-clock-o"></i> @{{ hourServer }}</li>
               <li><a href="/"><i class="fa fa-dashboard"></i>Inicio</a></li>
               <li class="active" id='urlsistema'></li>
             </ol>
@@ -38,11 +47,10 @@
       @include('layout.recursos.modals.modal_releases_annexed')
       <div class="control-sidebar-bg"></div>
     </div>
-    {!!Html::script('js/adminlte_jquerys.min.js?version='.date('YmdHis'))!!}
-    {!!Html::script('js/adminlte_notifications.min.js?version='.date('YmdHis'))!!}
-    {!!Html::script('js/adminlte_scripts.min.js?version='.date('YmdHis'))!!}
-    {!!Html::script('js/adminlte_vuesockets.min.js?version='.date('YmdHis'))!!}
-    {!!Html::script('js/cosapi.min.js?version='.date('YmdHis'))!!}
+    {!! Html::script('js/adminlte.min.js') !!}
+    {!! Html::script('js/notifications.min.js?version='.date('YmdHis')) !!}
+    {!! Html::script('js/vuesockets.min.js?version='.date('YmdHis')) !!}
+    {!! Html::script('js/personalizeFunctions.min.js?version='.date('YmdHis')) !!}
     @include('layout.recursos.fecha_hora')
     @yield('scripts')
   </body>
