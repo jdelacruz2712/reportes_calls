@@ -25,10 +25,14 @@ class DetailEventsReportController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.details_events_report.details_events_report',
                     'titleReport'           => 'Report of Details Events Report (Beta)',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_details_events_report',
                     'nameRouteController'   => ''
                 ));

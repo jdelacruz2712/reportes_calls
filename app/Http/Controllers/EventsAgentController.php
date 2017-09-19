@@ -81,10 +81,14 @@ class EventsAgentController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.events_detail.events_detail',
                     'titleReport'           => 'Report of Events',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_events_detail',
                     'nameRouteController'   => ''
                 ));
