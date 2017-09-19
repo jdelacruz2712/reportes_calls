@@ -3,7 +3,7 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Queue;
-use Cosapi\Models\User_Queue;
+use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
 use DB;
@@ -68,7 +68,7 @@ class AgentsQueueController extends CosapiController
     public function mark_form(Request $request)
     {
         if ($request->ajax()){
-            $UsersCola = User_Queue::select()->get()->toArray();
+            $UsersCola = Users_Queues::select()->get()->toArray();
             return $UsersCola;
         }
     }

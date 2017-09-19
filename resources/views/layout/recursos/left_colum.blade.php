@@ -78,8 +78,9 @@
           @if($role != 'calidad')
           @if($role != 'backoffice')
           @if($role != 'user')
-            <li><a href="#" id="list_users"         class="reportes"><i class="fa fa-circle-o text-red"></i> List Users</a></li>
-            <li><a href="#" id="agents_queue"       class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Queue</a></li>
+            <li><a href="#" id="manage_users"         class="reportes"><i class="fa fa-circle-o text-red"></i> Manage Users</a></li>
+            <!-- <li><a href="#" id="agents_queue"         class="reportes"><i class="fa fa-circle-o text-green"></i> Assign Queue</a></li> -->
+            <li><a href="#" id="manage_queues"        class="reportes"><i class="fa fa-circle-o text-success"></i> Manage Queues</a></li>
           @endif
           @endif
           @if(Session::get('ChangeRole') == 1)

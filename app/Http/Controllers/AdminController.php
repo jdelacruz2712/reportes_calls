@@ -6,7 +6,7 @@ use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
 use Cosapi\Models\DetalleEventos;
 use Cosapi\Models\User;
-use Cosapi\Models\User_Queue;
+use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\Auth;
@@ -79,7 +79,7 @@ class AdminController extends CosapiController
 
         $this->AssistanceUser = Session::get('AssistanceUser');
 
-        $cantidadColasAsignadas = User_Queue::select(DB::raw('COUNT(1) AS cantidadColasAsignadas'))->where(
+        $cantidadColasAsignadas = Users_Queues::select(DB::raw('COUNT(1) AS cantidadColasAsignadas'))->where(
             'user_id',
             $this->UserId
         )->get()->toArray();

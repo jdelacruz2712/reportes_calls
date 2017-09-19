@@ -34,10 +34,12 @@ const loadModule = (idOptionMenu) => {
  */
 const getDataFilters = (evento) => {
 	let rankHour = 1800
+	let dateEvent = moment().format("YYYY-MM-DD") + ' - ' + moment().format("YYYY-MM-DD")
 	if ($('select[name=rankHour]').length) rankHour = $('select[name=rankHour]').val()
+	if ($('input[name=fecha_evento]').length) dateEvent = $('input[name=fecha_evento]').val()
 	let data = {
 		_token: $('input[name=_token]').val(),
-		fecha_evento: $('input[name=fecha_evento]').val(),
+		fecha_evento: dateEvent,
 		rank_hour: rankHour,
 		evento: evento
 	}

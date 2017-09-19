@@ -359,4 +359,25 @@ class CosapiController extends Controller
             return mkdir($path, $mode, $recursive);
         }
     }
+
+    /**
+     * [Funcion para retornar la ruta de anuncio de la cola]
+     */
+    public function announceQueue($nameQueue){
+        switch ($nameQueue){
+            case 'IBK_Tiendas':
+                $announce = "/etc/asterisk/voces/skills/skills_tiendas";
+                break;
+            case 'IBK_Sedes':
+                $announce = "/etc/asterisk/voces/skills/skills_sedes";
+                break;
+            case 'IBK_EjecutivosVIP':
+                $announce = "/etc/asterisk/voces/skills/skills_vip";
+                break;
+            default:
+                $announce = "/etc/asterisk/voces/skills/skills_vip";
+                break;
+        }
+        return $announce;
+    }
 }

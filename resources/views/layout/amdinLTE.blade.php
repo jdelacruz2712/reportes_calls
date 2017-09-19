@@ -6,6 +6,7 @@
     @include('layout.recursos.icon_title')
     <title>Reportes | @yield('title')</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     {!! Html::style('css/adminlte.min.css') !!}
     {!! Html::style('css/notifications.min.css') !!}
     {!! Html::style('css/fonts-googleapis.css') !!}
@@ -40,9 +41,10 @@
       @include('layout.recursos.modals.modal_asssistance')
       @include('layout.recursos.modals.modal_standby')
       @include('layout.recursos.modals.modal_releases_annexed')
+      @include('layout.recursos.modals.modal_queues')
       <div class="control-sidebar-bg"></div>
     </div>
-    {!! Html::script('js/adminlte.min.js') !!}
+    {!! Html::script('js/adminlte.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/notifications.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/vuesockets.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/personalizeFunctions.min.js?version='.date('YmdHis')) !!}

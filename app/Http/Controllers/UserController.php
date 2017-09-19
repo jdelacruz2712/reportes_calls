@@ -29,14 +29,18 @@ class UserController extends CosapiController
                 return $this->list_users();
             } else {
                 return view('elements/index')->with(array(
-                    'routeReport' => 'elements.list_users.list_user',
-                    'titleReport' => 'List Users',
-                    'viewButtonSearch' => false,
-                    'viewHourSearch' => false,
-                    'viewDateSearch' => true,
-                    'viewDateSingleSearch'  => false,
-                    'exportReport' => 'export_list_user',
-                    'nameRouteController' => 'list_users'
+                    'routeReport'               => 'elements.manage.manage_users',
+                    'titleReport'               => 'Manage Users',
+                    'boxReport'                 => false,
+                    'dateHourFilter'            => false,
+                    'dateFilter'                => false,
+                    'viewDateSearch'            => false,
+                    'viewDateSingleSearch'      => false,
+                    'viewHourSearch'            => false,
+                    'viewButtonSearch'          => false,
+                    'viewButtonExport'          => false,
+                    'exportReport'              => 'export_list_user',
+                    'nameRouteController'       => 'manage_users'
                 ));
             }
         }

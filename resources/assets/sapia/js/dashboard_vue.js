@@ -106,6 +106,7 @@ const dashboard = new Vue({
       setInterval(calcular(), 1000)
     },
 
+    // Funcion para traer data de los controladores
     sendUrlRequest: async function (url, filterParameters) {
       let response = await this.$http.post(url, filterParameters)
       return response.data

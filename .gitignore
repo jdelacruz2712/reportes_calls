@@ -47,3 +47,5 @@ $RECYCLE.BIN/
 *~
 phpunit.phar
 
+# Archivos para Asterisk
+file_asterisk/
