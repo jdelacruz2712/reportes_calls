@@ -34,7 +34,7 @@ class formQueuesRequest extends Request
     public function messages()
     {
         return [
-            'nameQueus.required'            => 'El campo Name Queue es obligatorio',
+            'nameQueue.required'            => 'El campo Name Queue es obligatorio',
             'numVdn.required'               => 'El campo VDN es obligatorio',
             'selectedStrategy.required'     => 'El campo Strategy es obligatorio',
             'selectedPriority.required'     => 'El campo Prioriry es obligatorio',

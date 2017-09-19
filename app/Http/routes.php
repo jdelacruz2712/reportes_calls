@@ -50,6 +50,8 @@ Route::group (['middleware'=>['user']], function(){
         Route::post('saveformQueues'                                    , ['uses'=>'QueuesController@saveFormQueues']);
         Route::post('saveformQueuesStatus'                              , ['uses'=>'QueuesController@saveFormQueuesStatus']);
         Route::post('saveformUsersQueues'                               , ['uses'=>'QueuesController@saveFormUsersQueues']);
+        Route::post('exportQueues'                                      , ['uses'=>'QueuesController@exportQueues']);
+        Route::post('taskmanagerQueues'                                 , ['uses'=>'QueuesController@taskManagerQueues']);
 
     });
 

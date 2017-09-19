@@ -45,9 +45,10 @@
       @include('layout.recursos.modals.modal_asssistance')
       @include('layout.recursos.modals.modal_standby')
       @include('layout.recursos.modals.modal_releases_annexed')
+      @include('layout.recursos.modals.modal_queues')
       <div class="control-sidebar-bg"></div>
     </div>
-    {!! Html::script('js/adminlte.min.js') !!}
+    {!! Html::script('js/adminlte.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/notifications.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/vuesockets.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/personalizeFunctions.min.js?version='.date('YmdHis')) !!}

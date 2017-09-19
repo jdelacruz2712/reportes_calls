@@ -551,12 +551,12 @@ const changeButtonForm = (btnShow, btnHide) => {
 const showErrorForm = (data, formDiv) => {
     let errors = '';
     for(datos in data.responseJSON){
-        errors += '<li>' + data.responseJSON[datos] + '</li>'
+        errors += '<strong>' + data.responseJSON[datos] + '</strong><br>'
     }
     $(formDiv).fadeIn().html(
         '<span class="fa fa-close"></span> <strong>Error</strong>'+
             '<hr class="message-inner-separator">'+
-                '<ul>' + errors + '</ul>'
+                '<span>' + errors + '</span>'
     )
 }
 

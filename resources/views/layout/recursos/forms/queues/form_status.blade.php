@@ -18,5 +18,8 @@
         </form>
     </div>
 </div>
-{!!Html::script('js/form/formQueues.min.js')!!}
-<script> hideErrorForm('.formError') </script>
+{!!Html::script('js/form/formQueues.min.js?version='.date('YmdHis')) !!}
+<script>
+    hideErrorForm('.formError')
+    clearModalClose('modalQueues', 'div.dialogQueues')
+</script>

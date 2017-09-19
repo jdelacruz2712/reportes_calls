@@ -9,6 +9,7 @@ use Cosapi\Models\QueueStrategy;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\MessageBag;
 
 use Cosapi\Http\Requests;
@@ -272,5 +273,54 @@ class QueuesController extends CosapiController
             return ['message' => 'Error'];
         }
         return ['message' => 'Success'];
+    }
+
+    public function taskManagerQueues(){
+        return view('layout/recursos/forms/queues/form_queues_task')->with(array(
+            'titleTask'    => 'Queues'
+        ));
+    }
+
+    public function getQueueExport(){
+        $Queue = Queue::Select()
+            ->with('estrategia')
+            ->with('prioridad')
+            ->get()
+            ->toArray();
+        return $Queue;
+    }
+
+    public function exportQueues(){
+        $folderAsterisk = '../file_asterisk/';
+        $existFolder = File::exists($folderAsterisk);
+        if(!$existFolder) $this->makeDirectory($folderAsterisk);
+        $filename = $folderAsterisk.'/cosapi_queues.conf';
+        $existsFile = File::exists($filename);
+        if($existsFile) File::delete($filename);
+        $jumpLine = "\r\n";
+        $fp = fopen($filename,"w") or die("Error to Create");
+        $line = '[general]'.$jumpLine;
+        $line = $line.'persistentmembers = yes'.$jumpLine;
+        $line = $line.'autofill = yes'.$jumpLine;
+        $line = $line.'autopause = all'.$jumpLine;
+        $line = $line.$jumpLine;
+        $line = $line.'[TemplateQueue](!)'.$jumpLine;
+        $line = $line.'music = default'.$jumpLine;
+        $line = $line.'joinempty = yes'.$jumpLine;
+        $line = $line.'strategy = rrmemory'.$jumpLine;
+        $line = $line.$jumpLine;
+        $Queues = $this->getQueueExport();
+        foreach ($Queues as $queue){
+            $line = $line.'['.$queue['name'].'](TemplateQueue)'.$jumpLine;
+            $line = $line.'weight = '.$queue['prioridad']['weight_queue'].$jumpLine;
+            $line = $line.'announce = '.$this->announceQueue($queue['name']).$jumpLine;
+            $line = $line.$jumpLine;
+        }
+        fputs($fp,$line);
+        fputs($fp,chr(13).chr(10));
+        fclose($fp) ;
+        $response = response()->download($filename);
+        if($response) return ['message' => 'success'];
+        return ['message' => 'error'];
     }
 }

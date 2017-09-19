@@ -43,7 +43,11 @@ elixir(function(mix) {
 
   .scripts([
     'sapia/js/dashboard_vue.js'
-  ],'public/js/dashboard_vue.min.js','resources/assets/');
+  ],'public/js/dashboard_vue.min.js','resources/assets/')
+
+  .scripts([
+    'sapia/js/queueVue.js'
+  ],'public/js/queueVue.min.js','resources/assets/');
 
 });
 
