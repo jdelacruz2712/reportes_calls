@@ -139,9 +139,9 @@ class AdminController extends CosapiController
             'statusQueueAddAsterisk' => $this->QueueAdd,
             'getRemoteIp' => $_SERVER['REMOTE_ADDR'],
             'requiredAnnexed' => $requiredAnnexed,
-            'hourServer' => date('H:i:s'),
-            'textDateServer' => date('d-m-w-Y'),
-            'dateServer' => date('Y-m-d'),
+            'hourServer' => $this->ShowDateAndTimeCurrent('justTheTime'),
+            'dateServer' => $this->ShowDateAndTimeCurrent('justTheDate'),
+            'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate'),
             'annexed' => $this->UserAnexo,
             'assistanceNextHour' => $assistanceNextHour,
             'quantityQueueAssign' => $this->quantityQueueAssign

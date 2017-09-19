@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Auth;
 use Datatables;
 use Excel;
 use Carbon\Carbon;
+use Jenssegers\Date\Date;
 
 class CosapiController extends Controller
 {
@@ -55,6 +56,25 @@ class CosapiController extends Controller
         $this->UserSystem   = Session::get('UserSystem')    ;
         $this->UserPassword = Session::get('UserPassword')  ;
         $this->UserAnexo    = Session::get('UserAnexo')     ;
+    }
+
+    /**
+     * [MostrarFechaActual Función que permite obtener la Fecha Actual]
+     */
+    protected function ShowDateAndTimeCurrent($filter)
+    {
+        if ($filter === 'all') {
+            return Carbon::now()->toDateTimeString();
+        }
+        if ($filter === 'justTheDate') {
+            return Carbon::now()->toDateString();
+        }
+        if ($filter === 'justTheTime') {
+            return Carbon::now()->toTimeString();
+        }
+        if ($filter === 'personalizeDate') {
+            return Date::now()->format('l j \\d\\e F \\d\\e Y');
+        }
     }
 
     /**

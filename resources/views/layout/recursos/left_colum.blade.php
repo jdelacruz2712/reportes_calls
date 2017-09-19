@@ -19,10 +19,10 @@
 
     <!-- /.search form -->
     <!-- sidebar menu: : style can be found in sidebar.less -->
-    <ul class="sidebar-menu" data-widget="tree">
+    <ul class="sidebar-menu" data-widget="tree" id="menuleft">
       <li class="header">Menu Principal</li>
       @if($role != 'user' and  $role != 'backoffice')
-      <li class="active treeview">
+      <li class="treeview">
         <a href="#">
           <i class="fa fa-dashboard"></i> <span>Dashboard</span> <i class="fa fa-angle-left pull-right"></i>
         </a>
@@ -69,7 +69,7 @@
       </li>
       @endif
       @if($role != 'cliente')
-      <li class="treeview">
+      <li class="treeview active">
         <a href="#">
           <i class="fa fa-gears"></i> <span>Administrator</span> <i class="fa fa-angle-left pull-right"></i>
         </a>

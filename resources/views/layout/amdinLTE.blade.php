@@ -22,11 +22,7 @@
       <div class="content-wrapper">
         @include('layout.recursos.flash_message')
           <section class="content-header">
-            <h1>Front Panel
-              <small>
-              ,Hola @{{ getNameComplete }}
-
-              </small>
+            <h1>Front Panel, <small>Hola @{{ getNameComplete }}</small>
             </h1>
             <ol class="breadcrumb">
               <li><i class="fa fa-fw fa-calendar"></i> @{{ textDateServer }} &nbsp; <i class="fa fa-fw fa-clock-o"></i> @{{ hourServer }}</li>

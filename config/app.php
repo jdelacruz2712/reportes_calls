@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -163,6 +163,9 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
 
+        /** Carbon multi-language **/
+        Jenssegers\Date\DateServiceProvider::class,
+
         /** Excel **/
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
@@ -226,6 +229,9 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
+
+        /** Carbon multi-language **/
+        'Date' => Jenssegers\Date\Date::class,
 
         /** Excel  **/
         'Excel'     => Maatwebsite\Excel\Facades\Excel::class,
