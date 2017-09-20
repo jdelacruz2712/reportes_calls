@@ -145,6 +145,7 @@ class AdminController extends CosapiController
             'annexed' => $this->UserAnexo,
             'assistanceNextHour' => $assistanceNextHour,
             'quantityQueueAssign' => $this->quantityQueueAssign
+
         ], 200);
     }
 
@@ -155,9 +156,7 @@ class AdminController extends CosapiController
 
     public function getStatusAddAgentDashboard()
     {
-        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))
-            ->where('agent_name', $this->UserSystem)
-            ->get()->toArray();
+        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))->where('agent_name', $this->UserSystem)->get()->toArray();
 
         $existAgent = $AgentOnline[0]['count_agent'];
         $exits = false;
@@ -183,6 +182,6 @@ class AdminController extends CosapiController
     public function getAgentDashboard()
     {
         $AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
-        return response()->json(['statusAddAgentDashboard' => $AgentOnline[0]]);
+        return response()->json($AgentOnline[0]);
     }
 }

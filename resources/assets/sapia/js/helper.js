@@ -231,14 +231,14 @@ const eventPostExecuteActionSuccess = (parameters) => {
 	case 'assignAnnexed':
 		vueFront.annexed = vueFront.remotoReleaseAnnexed
 		vueFront.remotoReleaseAnnexed = 0
-		// socketAsterisk.emit('createRoom', vueFront.annexed)
+		// socketNodejs.emit('createRoom', vueFront.annexed)
 		break
 	case 'releasesAnnexed':
 		vueFront.remotoReleaseUserId = 0
 		vueFront.remotoReleaseUsername = 0
 		vueFront.remotoReleaseAnnexed = 0
 		vueFront.remotoReleaseStatusQueueRemove = false
-		socketAsterisk.emit('leaveRoom', vueFront.annexed)
+		socketNodejs.emit('leaveRoom', vueFront.annexed)
 		vueFront.annexed = 0
 		setQueueAdd(false)
 		break
