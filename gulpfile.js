@@ -225,5 +225,6 @@ elixir(function(mix) {
 		.copy('resources/assets/sapia/background'                         , 'public/background')
 		.copy('resources/assets/images/default_avatar.png'                , 'public/storage/default_avatar.png')
 		.copy('resources/assets/sapia/css/dashboard.css'                  , 'public/css/dashboard.css')
+		.copy('resources/assets/node_modules/highcharts/highcharts.js'    , 'public/js/highcharts.js')
 
 })
