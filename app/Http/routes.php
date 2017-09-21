@@ -41,6 +41,8 @@ Route::group(['middleware'=>['user']], function () {
 
         // Administrar Usuarios
         Route::post('manage_users'                                      , ['uses'=>'UserController@index']);
+        Route::post('viewqueuesUsers'                                   , ['uses'=>'UserController@viewQueuesUsers']);
+        Route::post('getqueuesUsers'                                    , ['uses'=>'UserController@getQueuesUsers']);
 
         // Administrar Queues
         Route::post('manage_queues'                                     , ['uses'=>'QueuesController@index']);

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Session;
 use Image;
 use DB;
 use Excel;
+use Illuminate\Support\Str;
 
 class UserController extends CosapiController
 {
@@ -46,7 +47,21 @@ class UserController extends CosapiController
         }
     }
 
-    public function changeProfile(Request $request){
+    public function viewqueuesUsers(Request $request){
+        $getQueue   = $this->getQueuestoUser($this->getQueuesUser($request->valueID),$this->getQueueGlobal());
+        $getUser    = $this->getUserGlobal($request->valueID);
+        return view('layout/recursos/forms/users/view_users_queues')->with(array(
+            'queuesUser'    => $getQueue[0],
+            'User'          => $getUser[0]
+        ));
+    }
+
+    public function getQueuesUsers(Request $request){
+        $getQueueUser = $this->getQueuestoUser($this->getQueuesUser($request->valueID),$this->getQueueGlobal());
+        return $getQueueUser;
+    }
+
+    public function changeProfile(){
         return view('elements/profile_users/profile_users');
     }
 
@@ -269,8 +284,8 @@ class UserController extends CosapiController
     }
 
     protected function user_list_query(){
-        $user_list_query            = User::select()
-            ->get();
+        $user_list_query = User::select()
+                                ->get();
         return $user_list_query;
     }
 
@@ -298,20 +313,23 @@ class UserController extends CosapiController
 
     protected function outgoingcollection($builderview){
         $outgoingcollection                 = new Collector();
-        foreach ($builderview as $view) {
-
+        $i = 0;
+        foreach ($builderview as $view) { $i++;
+            $countQueues = count($this->getQueuestoUser($this->getQueuesUser($view['Id']),$this->getQueueGlobal()));
+            $textQueues = ($countQueues == 0 ? 'No tiene Colas' : 'Cuenta con '.$countQueues.' Colas');
             $outgoingcollection->push([
-                'Id'                    => $view['Id'],
+                'Id'                    => $i,
                 'First Name'            => $view['First Name'],
                 'Second Name'           => $view['Second Name'],
                 'Last Name'             => $view['Last Name'],
                 'Second Last Name'      => $view['Second Last Name'],
                 'Username'              => $view['Username'],
-                'Role'                  => $view['Role'],
-                'Estado'                => $view['Estado'],
-                'Change Rol'            => '<a class="btn btn-success btn-xs" onclick="changeRol('. $view['Id'] .')"><i class="fa fa-user"></i></a>',
-                'Change Password'       => '<a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .',true)"><i class="fa fa-key"></i></a>',
-                'Change Status'         => '<a class="btn btn-info btn-xs" onclick="changeStatusUser('. $view['Id'] .', \''. $view['Estado'] .'\')"><i class="fa fa-refresh"></i></a>'
+                'Role'                  => ucwords(Str::lower($view['Role'])),
+                'Estado'                => '<span class="label label-'.($view['Estado'] == 'Activo' ? 'success' : 'danger').' labelFix">'.$view['Estado'].'</span>',
+                'Actions'               => '<span data-toggle="tooltip" data-placement="left" title="Change Role"><a class="btn btn-success btn-xs" onclick="changeRol('. $view['Id'] .')"><i class="fa fa-user"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="Change Password"><a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .',true)"><i class="fa fa-key"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="Change Status"><a class="btn btn-info btn-xs" onclick="changeStatusUser('. $view['Id'] .', \''. $view['Estado'] .'\')"><i class="fa fa-refresh"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="'.$textQueues.'"><a class="btn btn-primary btn-xs" onclick="'.($countQueues > 0 ? "responseModal('div.dialogUsers','viewqueuesUsers','".$view['Id']."')" : "").'" '.($countQueues > 0 ? 'data-toggle="modal" data-target="#modalUsers"' : 'disabled').'><i class="fa fa-phone"></i></a></span>'
             ]);
 
         }

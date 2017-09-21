@@ -37,11 +37,12 @@
         </a>
         <ul class="treeview-menu">
           @if($role != 'cliente')
-          <li><a href="#" id="events_detail" class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Events</a></li>
+            <li><a href="#" id="events_detail" class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Events</a></li>
           @endif
           @if($role != 'user')
-          <li><a href="#" id="events_consolidated"  class="reportes"><i class="fa fa-circle-o text-yellow"></i> Consolidated Events</a></li>
-          <li><a href="#" id="level_of_occupation"  class="reportes"><i class="fa fa-circle-o text-red"></i> Level Of Occupation</a></li>
+            <li><a href="#" id="events_consolidated"  class="reportes"><i class="fa fa-circle-o text-yellow"></i> Consolidated Events</a></li>
+            <li><a href="#" id="level_of_occupation"  class="reportes"><i class="fa fa-circle-o text-red"></i> Level Of Occupation</a></li>
+            <li><a href="#" id="detail_event_report"  class="reportes"><i class="fa fa-circle-o text-fuchsia"></i> Details Events Report (Beta)</a></li>
           @endif
         </ul>
       </li>

@@ -65,7 +65,7 @@
         </div>
     </div>
 </div>
-{!! Html::script('js/queueVue.min.js') !!}
+{!! Html::script('js/taskqueueVue.min.js') !!}
 <script>
     clearModalClose('modalTaskQueue', 'div.dialogTaskQueue')
 </script>

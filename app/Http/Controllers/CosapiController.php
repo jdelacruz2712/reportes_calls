@@ -3,8 +3,9 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Anexo;
-use Cosapi\Models\Queue;
+use Cosapi\Models\Queues;
 use Cosapi\Models\User;
+use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
 use Cosapi\Facades\phpAMI;
 use Cosapi\Http\Requests;
@@ -195,7 +196,7 @@ class CosapiController extends Controller
     protected function list_vdn()
     {
         $list_queues                                = [];
-        $query_queues                               = Queue::select()->get()->toArray();
+        $query_queues                               = Queues::select()->get()->toArray();
         foreach ($query_queues as $queues) {
             $list_queues[$queues['name']]['vdn']    = $queues['vdn'];
         }
@@ -210,7 +211,7 @@ class CosapiController extends Controller
     {
         $queues_proyect     = [];
         $posicion           = 0;
-        $query_queues       = Queue::select()->get()->toArray();
+        $query_queues       = Queues::select()->get()->toArray();
         foreach ($query_queues as $queues) {
             $queues_proyect[$posicion] = $queues['name'];
             $posicion++;
@@ -260,7 +261,7 @@ class CosapiController extends Controller
     protected function list_queue()
     {
         $list_prioridad     = [];
-        $Colas              = Queue::select()
+        $Colas              = Queues::select()
                                     ->with('estrategia', 'prioridad')
                                     ->where('estado_id', '=', 1)
                                     ->get()->toArray();
@@ -358,6 +359,42 @@ class CosapiController extends Controller
         } else {
             return mkdir($path, $mode, $recursive);
         }
+    }
+
+    public function getQueueGlobal(){
+        $Queues = Queues::Select()
+                    ->with('prioridad')
+                    ->get()
+                    ->toArray();
+        return $Queues;
+    }
+
+    public function getQueuesUserGlobal($userID){
+        $QueuesUser = Users_Queues::Select()
+                        ->where('user_id',$userID)
+                        ->get()
+                        ->toArray();
+        return $QueuesUser;
+    }
+
+    protected function getQueuestoUserGlobal($QueuesUser, $Queues){
+        $resultArray = $QueuesUser;
+        foreach($QueuesUser as $keyUserQueue => $valUserQueue) {
+            foreach($Queues as $keyQueue => $valQueue) {
+                if($valUserQueue['queue_id'] == $valQueue['id']) {
+                    $resultArray[$keyUserQueue] = $valUserQueue + array('Queues' => $valQueue);
+                }
+            }
+        }
+        return $resultArray;
+    }
+
+    protected function getUserGlobal($userID){
+        $Users = User::Select()
+                    ->where('id',$userID)
+                    ->get()
+                    ->toArray();
+        return $Users;
     }
 
     /**

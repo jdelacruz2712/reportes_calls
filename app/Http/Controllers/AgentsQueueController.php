@@ -2,7 +2,7 @@
 
 namespace Cosapi\Http\Controllers;
 
-use Cosapi\Models\Queue;
+use Cosapi\Models\Queues;
 use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
 use Cosapi\Http\Requests;
@@ -81,7 +81,7 @@ class AgentsQueueController extends CosapiController
 
 
         $Users                  = $this->query_user($id_usuario);
-        $Colas                  = Queue::select()
+        $Colas                  = Queues::select()
                                         ->with('estrategia','prioridad')
                                         ->where('estado_id','=',1)
                                         ->orderBy('name')

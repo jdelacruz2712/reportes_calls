@@ -3,7 +3,7 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Collector\Collector;
-use Cosapi\Models\Queue;
+use Cosapi\Models\Queues;
 use Cosapi\Models\QueuePriority;
 use Cosapi\Models\QueueStrategy;
 use Cosapi\Models\User;
@@ -53,7 +53,7 @@ class QueuesController extends CosapiController
     }
 
     protected function queues_list_query(){
-        $queues_list_query = Queue::select()
+        $queues_list_query = Queues::select()
                                 ->with('estrategia')
                                 ->with('prioridad')
                                 ->get();
@@ -89,10 +89,10 @@ class QueuesController extends CosapiController
                 'Vdn'                   => $view['Vdn'],
                 'Strategy'              => $view['Strategy'],
                 'Priority'              => $view['Priority'],
-                'Status'                => $Status,
-                'Actions'               => '<a class="btn btn-warning btn-xs" onclick="responseModal('."'div.dialogQueues','form_queues','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-edit" aria-hidden="true"></i></a>
-                                            <a class="btn btn-info btn-xs" onclick="responseModal('."'div.dialogQueuesLarge','form_assign_queue','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-group" aria-hidden="true"></i> </a>
-                                            <a class="btn btn-danger btn-xs" onclick="responseModal('."'div.dialogQueues','form_status_queue','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-ban" aria-hidden="true"></i></a>'
+                'Status'                => '<span class="label label-'.($Status == 'Activo' ? 'success' : 'danger').' labelFix">'.$Status.'</span>',
+                'Actions'               => '<span data-toggle="tooltip" data-placement="bottom" title="Change Role"><a class="btn btn-warning btn-xs" onclick="responseModal('."'div.dialogQueues','form_queues','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-edit" aria-hidden="true"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="Change Role"><a class="btn btn-info btn-xs" onclick="'.($view['Status'] == 1 ? "responseModal('div.dialogQueuesLarge','form_assign_queue','".$view['Id']."')" : "").'" '.($view['Status'] == 1 ? 'data-toggle="modal" data-target="#modalQueues"' : 'disabled').'><i class="fa fa-group" aria-hidden="true"></i> </a></span>
+                                            <span data-toggle="tooltip" data-placement="bottom" title="Change Role"><a class="btn btn-danger btn-xs" onclick="responseModal('."'div.dialogQueues','form_status_queue','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-ban" aria-hidden="true"></i></a>'
             ]);
 
         }
@@ -145,6 +145,7 @@ class QueuesController extends CosapiController
             'idQueue'       => $getQueue[0]['id'],
             'nameQueue'     => $getQueue[0]['name'],
             'Users'         => $UsersQueues,
+            'Queues'        => $getQueue,
             'Priority'      => $options['Priority'],
             'list_users'    => 'all'
         ));
@@ -167,7 +168,8 @@ class QueuesController extends CosapiController
     }
 
     public function getQueue($idQueue){
-        $queue = Queue::Select()
+        $queue = Queues::Select()
+            ->with('prioridad')
             ->where('id', $idQueue)
             ->get()
             ->toArray();
@@ -215,7 +217,7 @@ class QueuesController extends CosapiController
                 'selectedPriority'    => 'required'
             ]);
 
-            $queueQuery = Queue::updateOrCreate([
+            $queueQuery = Queues::updateOrCreate([
                 'id'                    => $request->queueID
             ], [
                 'name'                  => $request->nameQueue,
@@ -231,7 +233,7 @@ class QueuesController extends CosapiController
                 'selectedPriority'    => 'required'
             ]);
 
-            $queueQuery = Queue::updateOrCreate([
+            $queueQuery = Queues::updateOrCreate([
                 'id'                    => $request->queueID
             ], [
                 'name'                  => $request->nameQueue,
@@ -248,7 +250,7 @@ class QueuesController extends CosapiController
 
     public function saveFormQueuesStatus(Request $request){
         $statusQueue = ($request->statusQueue == 1 ? 2 : 1);
-        $queueQueryStatus = Queue::where('id', $request->queueID)
+        $queueQueryStatus = Queues::where('id', $request->queueID)
                                 ->update([
                                     'estado_id' => $statusQueue
                                 ]);
@@ -282,7 +284,7 @@ class QueuesController extends CosapiController
     }
 
     public function getQueueExport(){
-        $Queue = Queue::Select()
+        $Queue = Queues::Select()
             ->with('estrategia')
             ->with('prioridad')
             ->get()

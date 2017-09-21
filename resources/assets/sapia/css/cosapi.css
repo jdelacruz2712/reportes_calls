@@ -45,3 +45,8 @@
     float: left;
     border-bottom-width: 0;
 }
+
+/* Custom label Fix */
+.labelFix {
+    font-size: 90% !important;
+}

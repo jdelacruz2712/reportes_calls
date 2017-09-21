@@ -144,7 +144,8 @@ class AdminController extends CosapiController
             'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate'),
             'annexed' => $this->UserAnexo,
             'assistanceNextHour' => $assistanceNextHour,
-            'quantityQueueAssign' => $this->quantityQueueAssign
+            'quantityQueueAssign' => $this->quantityQueueAssign,
+            'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId),$this->getQueueGlobal())
         ], 200);
     }
 

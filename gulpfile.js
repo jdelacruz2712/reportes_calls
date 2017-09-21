@@ -46,8 +46,12 @@ elixir(function(mix) {
   ],'public/js/dashboard_vue.min.js','resources/assets/')
 
   .scripts([
-    'sapia/js/queueVue.js'
-  ],'public/js/queueVue.min.js','resources/assets/');
+    'sapia/js/taskqueueVue.js'
+  ],'public/js/taskqueueVue.min.js','resources/assets/')
+
+  .scripts([
+    'sapia/js/viewuserqueueVue.js'
+  ],'public/js/viewuserqueueVue.min.js','resources/assets/');
 
 });
 
@@ -59,6 +63,7 @@ elixir(function(mix) {
   .styles([
     'vendor/adminlte/plugins/font-awesome/css/font-awesome.css',
     'vendor/adminlte/plugins/bootstrap/dist/css/bootstrap.css',
+    'vendor/adminlte/dist/css/AdminLTE.css',
     'sapia/css/login.css'
     ],'public/css/login.min.css','resources/assets/')
   .scripts([
