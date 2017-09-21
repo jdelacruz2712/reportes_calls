@@ -48,7 +48,7 @@ class UserController extends CosapiController
     }
 
     public function viewqueuesUsers(Request $request){
-        $getQueue   = $this->getQueuestoUser($this->getQueuesUser($request->valueID),$this->getQueueGlobal());
+        $getQueue   = $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($request->valueID),$this->getQueueGlobal());
         $getUser    = $this->getUserGlobal($request->valueID);
         return view('layout/recursos/forms/users/view_users_queues')->with(array(
             'queuesUser'    => $getQueue[0],
@@ -57,7 +57,7 @@ class UserController extends CosapiController
     }
 
     public function getQueuesUsers(Request $request){
-        $getQueueUser = $this->getQueuestoUser($this->getQueuesUser($request->valueID),$this->getQueueGlobal());
+        $getQueueUser = $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($request->valueID),$this->getQueueGlobal());
         return $getQueueUser;
     }
 
@@ -315,7 +315,7 @@ class UserController extends CosapiController
         $outgoingcollection                 = new Collector();
         $i = 0;
         foreach ($builderview as $view) { $i++;
-            $countQueues = count($this->getQueuestoUser($this->getQueuesUser($view['Id']),$this->getQueueGlobal()));
+            $countQueues = count($this->getQueuestoUserGlobal($this->getQueuesUserGlobal($view['Id']),$this->getQueueGlobal()));
             $textQueues = ($countQueues == 0 ? 'No tiene Colas' : 'Cuenta con '.$countQueues.' Colas');
             $outgoingcollection->push([
                 'Id'                    => $i,
