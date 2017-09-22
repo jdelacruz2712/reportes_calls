@@ -3,7 +3,6 @@
 namespace Cosapi\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Cosapi\Http\Requests;
 use Cosapi\Collector\Collector;
 use Cosapi\Models\DetalleEventosHistory;
 use Cosapi\Models\Eventos;

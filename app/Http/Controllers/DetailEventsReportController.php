@@ -5,8 +5,6 @@ namespace Cosapi\Http\Controllers;
 use Cosapi\Collector\Collector;
 use Illuminate\Http\Request;
 
-use Cosapi\Http\Requests;
-use Cosapi\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Excel;
 

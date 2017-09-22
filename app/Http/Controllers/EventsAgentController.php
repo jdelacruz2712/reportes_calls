@@ -8,7 +8,6 @@ use Cosapi\Models\Eventos;
 use Cosapi\Models\DetalleEventosHistory;
 use Cosapi\Models\DetalleEventos;
 
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
 use Excel;
 

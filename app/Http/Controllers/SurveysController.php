@@ -5,7 +5,6 @@ namespace Cosapi\Http\Controllers;
 use Illuminate\Http\Request;
 use Cosapi\Collector\Collector;
 
-use Cosapi\Http\Requests;
 use Cosapi\Models\TipoEncuesta;
 use Excel;
 use DB;

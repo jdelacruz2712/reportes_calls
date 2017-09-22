@@ -317,5 +317,11 @@ $(function () {
 
   setup()
 
-  $('[data-toggle="tooltip"]').tooltip()
+   $('body').tooltip({
+       selector: '[data-toggle="tooltip"]',
+       animated: 'fade'
+   })
+   $('body').popover({
+       selector: '[data-toggle="popover"]'
+   })
 })
