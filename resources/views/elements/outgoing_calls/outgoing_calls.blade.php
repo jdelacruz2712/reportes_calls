@@ -25,7 +25,7 @@
     })
 
     function buscar(){
-        show_tab_outgoing('outgoing_calls');
+        showTabOutgoing('outgoing_calls');
         DataTableHide('table-outgoing',[6,7],'{{Session::get('UserRole')}}')
     }
 </script>

@@ -1,0 +1,15 @@
+.kpi-number {
+ font-size: 320%;
+}
+
+.kpi-text {
+ text-transform: capitalize;
+ font-size: 95%;
+}
+
+.dashboard-title{
+  display: inline-block;
+  font-size: 15px;
+  margin: 0;
+  line-height: 1;
+}
