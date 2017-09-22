@@ -78,14 +78,15 @@ const vueFront = new Vue({
   computed:{
       getPercentageOfWeightQueue() {
           return this.getQueuesUser.map(function(item) {
-              let weightAgent = item.Queues.prioridad.weight_agent
+              let weightAgent = item.Priority.weight_agent
               return Math.round(100/weightAgent)
           })
       },
       getColorPercentageOfWeightQueue() {
           return this.getQueuesUser.map(function(item) {
               let color
-              let percentage = Math.round(100/item.priority)
+              let weightAgent = item.Priority.weight_agent
+              let percentage = Math.round(100/weightAgent)
               switch (true){
                   case (percentage > 75):
                       color = 'success'

@@ -123,7 +123,7 @@ const activeCalls = () => {
 }
 
 // Función que verifica si necesita realizar un cambio de contraseña
-const checkPassword = () => { if (vueFront.statusChangePassword == 0) changePassword() }
+const checkPassword = () => { if (vueFront.statusChangePassword == 0) $('#changePassword').click() }
 
 
 

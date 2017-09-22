@@ -86,13 +86,13 @@ class UserController extends CosapiController
     }
 
     public function getQueuesUsers(Request $request){
-        $getQueueUser = $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($request->valueID),$this->getQueueGlobal());
+        $listQueues     = $this->getListQueues();
+        $getQueueUser   = $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($request->valueID),$this->getQueueGlobal(),$listQueues['Priority']);
         return $getQueueUser;
     }
 
     public function getListQueues(){
         $Queues = Queues::Select()
-            ->with('prioridad')
             ->where('estado_id', 1)
             ->get()
             ->toArray();
@@ -405,7 +405,7 @@ class UserController extends CosapiController
         $outgoingcollection                 = new Collector();
         $i = 0;
         foreach ($builderview as $view) { $i++;
-            $countQueues = count($this->getQueuestoUserGlobal($this->getQueuesUserGlobal($view['Id']),$this->getQueueGlobal()));
+            $countQueues = count($this->getQueuestoUserGlobal($this->getQueuesUserGlobal($view['Id']),$this->getQueueGlobal(),$this->getPriorityGlobal()));
             $textQueues = ($countQueues == 0 ? 'No tiene Colas' : 'Cuenta con '.$countQueues.' Colas');
             $outgoingcollection->push([
                 'Id'                    => $i,

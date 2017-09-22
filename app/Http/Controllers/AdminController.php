@@ -148,7 +148,7 @@ class AdminController extends CosapiController
             'annexed' => $this->UserAnexo,
             'assistanceNextHour' => $assistanceNextHour,
             'quantityQueueAssign' => $this->quantityQueueAssign,
-            'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId),$this->getQueueGlobal())
+            'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId),$this->getQueueGlobal(),$this->getPriorityGlobal())
         ], 200);
     }
 

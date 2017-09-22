@@ -42,6 +42,7 @@ $('#formChangePassword').submit(function(e) {
         success: function(data){
             if(data.message === 'Success'){
                 changeButtonForm('btnLoad','btnForm')
+                vueFront.statusChangePassword = 1
                 showNotificacion('success', 'Se cambio la contraseña al usuario correctamente !!!', 'Success', 2000, false, true)
                 clearModal('modalUsers', 'div.dialogUsers')
                 buscar()

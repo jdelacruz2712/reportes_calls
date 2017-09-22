@@ -177,7 +177,7 @@
             </li>
             <!--fin de listar tareas-->
             <!-- Button para Cambiar Contraseña -->
-            <button id="changePassword" type="button" class="hidden" onclick="responseModal('div.dialogUsers','form_change_password',vueFront.getUserId)" data-toggle="modal" data-target="#modalUsers">dsadsa</button>
+            <button id="changePassword" type="button" class="hidden" onclick="responseModal('div.dialogUsers','form_change_password',vueFront.getUserId)" data-toggle="modal" data-target="#modalUsers"></button>
             <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

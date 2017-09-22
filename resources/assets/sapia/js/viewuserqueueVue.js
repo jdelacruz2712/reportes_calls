@@ -13,14 +13,14 @@ var userQueueView = new Vue({
     computed:{
         getPercentageOfWeightUserQueue() {
             return this.UserQueue.map(function(item) {
-                let weightAgent = item.Queues.prioridad.weight_agent
+                let weightAgent = item.Priority.weight_agent
                 return Math.round(100/weightAgent)
             })
         },
         getColorPercentageOfWeightUserQueue() {
             return this.UserQueue.map(function(item) {
                 let color
-                let weightAgent = item.Queues.prioridad.weight_agent
+                let weightAgent = item.Priority.weight_agent
                 let percentage = Math.round(100/weightAgent)
                 switch (true){
                     case (percentage > 75):
@@ -48,7 +48,7 @@ var userQueueView = new Vue({
         getColorBadgeOfWeightUserQueue() {
             return this.UserQueue.map(function(item) {
                 let color
-                let weightAgent = item.Queues.prioridad.weight_agent
+                let weightAgent = item.Priority.weight_agent
                 let percentage = Math.round(100/weightAgent)
                 switch (true){
                     case (percentage > 75):

@@ -3,10 +3,12 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Anexo;
+use Cosapi\Models\QueuePriority;
 use Cosapi\Models\Queues;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
 
+use Illuminate\Queue\Queue;
 use Illuminate\Support\Facades\DB;
 use Cosapi\Models\DetalleEventos;
 use Illuminate\Support\Facades\Session;
@@ -343,7 +345,6 @@ class CosapiController extends Controller
 
     public function getQueueGlobal(){
         $Queues = Queues::Select()
-                    ->with('prioridad')
                     ->get()
                     ->toArray();
         return $Queues;
@@ -357,12 +358,23 @@ class CosapiController extends Controller
         return $QueuesUser;
     }
 
-    protected function getQueuestoUserGlobal($QueuesUser, $Queues){
+    public function getPriorityGlobal(){
+        $Priority = QueuePriority::Select()
+                        ->get()
+                        ->toArray();
+        return $Priority;
+    }
+
+    protected function getQueuestoUserGlobal($QueuesUser, $Queues, $weightPriority){
         $resultArray = $QueuesUser;
         foreach($QueuesUser as $keyUserQueue => $valUserQueue) {
             foreach($Queues as $keyQueue => $valQueue) {
                 if($valUserQueue['queue_id'] == $valQueue['id']) {
-                    $resultArray[$keyUserQueue] = $valUserQueue + array('Queues' => $valQueue);
+                    foreach($weightPriority as $keyWeight => $valWeight){
+                        if($valUserQueue['priority'] == $valWeight['id']){
+                            $resultArray[$keyUserQueue] = $valUserQueue + array('Queues' => $valQueue) + array('Priority' => $valWeight);
+                        }
+                    }
                 }
             }
         }
