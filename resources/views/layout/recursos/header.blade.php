@@ -1,42 +1,184 @@
+<!--Updated by Jasvir 01/09/2017-->
 <header class="main-header">
 
     <!-- Logo -->
     <a href="/" class="logo">
     <!-- mini logo for sidebar mini 50x50 pixels -->
-        <span class="logo-mini"><b>{{getenv('PROYECT_NAME_SHORT')}}</b></span>
+        <span class="logo-mini">{{getenv('PROYECT_NAME_SHORT')}}</span>
         <!-- logo for regular state and mobile devices -->
-        <span class="logo-lg"><b>{{getenv('PROYECT_NAME_COMPLETE')}}</b></span>
+        <span class="logo-lg">{{getenv('PROYECT_NAME_COMPLETE')}}</span>
     </a>
 
     <!-- Header Navbar: style can be found in header.less -->
     <nav class="navbar navbar-static-top" role="navigation" id="menuHeader">
         <!-- Sidebar toggle button-->
-        <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
             <span class="sr-only">Toggle navigation</span>
         </a>
         <!-- Navbar Right Menu -->
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
-                <li v-show="annexed != 0" @click="liberarAnexos">
-                    <h5 class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Anexo Actual" style="color: white">
-                      <span class="fa fa-headphones"></span> Anexo: <font >@{{ annexed}}</font>
-                    </h5>
+            <!--para liberar anexos-->
+               <li v-show="annexed != 0" @click="liberarAnexos">
+                  <h5 class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Anexo Actual" style="color: white">
+                    <span class="fa fa-headphones"></span> Anexo: <font >@{{ annexed}}</font>
+                  </h5>
+               </li>
+            <!--fin liberar anexos-->
+            <!--para la notificacion de los mensajes-->
+               <li class="dropdown messages-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <i class="fa fa-envelope-o"></i>
+                  <span class="label label-success">4</span>
+                </a>
+                <ul class="dropdown-menu">
+                  <li class="header">You have 4 messages</li>
+                  <li>
+                    <!-- inner menu: contains the actual data -->
+                    <ul class="menu">
+                      <li><!-- start message -->
+                        <a href="#">
+                          <div class="pull-left">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
+                          </div>
+                          <h4>
+                            Support Team
+                            <small><i class="fa fa-clock-o"></i> 5 mins</small>
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                      <!-- end message -->
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
+                          </div>
+                          <h4>
+                            AdminLTE Design Team
+                            <small><i class="fa fa-clock-o"></i> 2 hours</small>
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
+                          </div>
+                          <h4>
+                            Developers
+                            <small><i class="fa fa-clock-o"></i> Today</small>
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
+                          </div>
+                          <h4>
+                            Sales Department
+                            <small><i class="fa fa-clock-o"></i> Yesterday</small>
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                      <li>
+                        <a href="#">
+                          <div class="pull-left">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
+                          </div>
+                          <h4>
+                            Reviewers
+                            <small><i class="fa fa-clock-o"></i> 2 days</small>
+                          </h4>
+                          <p>Why not buy a new awesome theme?</p>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                  <li class="footer"><a href="#">See All Messages</a></li>
+                </ul>
+              </li>
+            <!--fin de la notificacion de los mensajes-->
+            <!--para las notificaciones-->
+                <li class="dropdown notifications-menu">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="label label-warning">10</span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li class="header">You have 10 notifications</li>
+                    <li>
+                      <!-- inner menu: contains the actual data -->
+                      <ul class="menu">
+                        <li>
+                          <a href="#">
+                            <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
+                            page and may cause design problems
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i class="fa fa-users text-red"></i> 5 new members joined
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i class="fa fa-shopping-cart text-green"></i> 25 sales made
+                          </a>
+                        </li>
+                        <li>
+                          <a href="#">
+                            <i class="fa fa-user text-red"></i> You changed your username
+                          </a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li class="footer"><a href="#">View all</a></li>
+                  </ul>
                 </li>
-                <li v-show="textDateServer.length != 0">
-                    <!-- Fecha Actual -->
-                    <h5 id="fecha_actual" class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Fecha Actual" style="color: white">
-                        <span class="glyphicon glyphicon-calendar"> @{{ textDateServer }}</span>
-                    </h5>
-                </li>
-                <li v-show="hourServer.length != 0">
-                    <!-- Hora Actual -->
-                    <h5 id="hora_actual"  class="navbar-text navbar-txt2" data-toggle="tooltip" data-placement="bottom" title="Hora Actual" style="color: white">
-                        <span class="glyphicon glyphicon-time"> @{{ hourServer }}</span>
-                    </h5>
-                </li>
+            <!--fin de las notificaciones-->
+            <!--para listar tareas-->
+                <li class="dropdown tasks-menu">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <i class="fa fa-phone"></i>
+                <span class="label label-info" v-text="getQueuesUser.length"></span>
+              </a>
+              <ul class="dropdown-menu">
+                <li class="header text-center text-bold">You have @{{ getQueuesUser.length }} queues</li>
                 <li>
+                  <!-- inner menu: contains the actual data -->
+                  <ul class="menu">
+                    <li v-for="(queuesUser, index) in getQueuesUser">
+                        <a style="cursor:pointer;">
+                            <h3>
+                                @{{ queuesUser['Queues']['name'] }}
+                                <small class="pull-right" v-text="getPercentageOfWeightQueue[index] + ' %'"></small>
+                            </h3>
+                            <div class="progress xs">
+                                <div :class="[ 'progress-bar progress-bar-' + getColorPercentageOfWeightQueue[index] ]" :style="{ width: getPercentageOfWeightQueue[index] + '%' }" role="progressbar"
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <span class="sr-only" v-text="getPercentageOfWeightQueue[index] + '% de Recibir Llamadas'"></span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                  </ul>
                 </li>
-                <!-- User Account: style can be found in dropdown.less -->
+              </ul>
+            </li>
+            <!--fin de listar tareas-->
+            <!-- Button para Cambiar Contraseña -->
+            <button id="changePassword" type="button" class="hidden" onclick="responseModal('div.dialogUsers','form_change_password',vueFront.getUserId)" data-toggle="modal" data-target="#modalUsers"></button>
+            <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <img :src="'storage/' + srcAvatar" class="user-image" alt="User Image">
@@ -48,7 +190,7 @@
                             <img :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
                             <p>
                                 @{{ getNameComplete + ' - ' }}<font id="UserNameRole">@{{getRole}}</font>
-                                <small>{{date('j F Y')}}</small>
+                                <small>{{ Date::now()->format('j F Y') }}</small>
                             </p>
                         </li>
                         <!-- Menu Footer-->

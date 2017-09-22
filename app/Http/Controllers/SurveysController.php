@@ -5,7 +5,6 @@ namespace Cosapi\Http\Controllers;
 use Illuminate\Http\Request;
 use Cosapi\Collector\Collector;
 
-use Cosapi\Http\Requests;
 use Cosapi\Models\TipoEncuesta;
 use Excel;
 use DB;
@@ -26,10 +25,14 @@ class SurveysController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.surveys.surveys',
                     'titleReport'           => 'Report of Surveys',
-                    'viewButtonSearch'      => false,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => false,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_surveys',
                     'nameRouteController'   => ''
                 ));

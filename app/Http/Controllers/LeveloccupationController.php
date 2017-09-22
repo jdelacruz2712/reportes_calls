@@ -3,7 +3,6 @@
 namespace Cosapi\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Cosapi\Http\Requests;
 use Cosapi\Collector\Collector;
 use Cosapi\Models\DetalleEventosHistory;
 use Cosapi\Models\Eventos;
@@ -33,10 +32,14 @@ class LeveloccupationController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.level_of_occupation.level_of_occupation',
                     'titleReport'           => 'Report of Level Occupation',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_level_occupation',
                     'nameRouteController'   => 'level_of_occupation'
                 ));

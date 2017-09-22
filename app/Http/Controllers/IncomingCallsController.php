@@ -2,7 +2,6 @@
 
 namespace Cosapi\Http\Controllers;
 
-use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\Queue_Log;
 use Cosapi\Collector\Collector;
@@ -10,7 +9,6 @@ use Cosapi\Collector\Collector;
 use DB;
 use Excel;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Session;
 
 
@@ -31,10 +29,14 @@ class IncomingCallsController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.incoming_calls.tabs_incoming_calls',
                     'titleReport'           => 'Report of Calls Inbound',
-                    'viewButtonSearch'      => false,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => false,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_incoming',
                     'nameRouteController'   => ''
                 ));

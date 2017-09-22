@@ -3,10 +3,11 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('layout.recursos.icon_title')
     <title>@yield('title')</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    {!!Html::style('css/cosapi_dashboard.min.css')!!}
+    {!!Html::style('css/dashboard.min.css')!!}
      @yield('css')
   </head>
   <body>
@@ -14,7 +15,7 @@
       @yield('content')
       @include('layout.recursos.modals.modal_reconnect')
     </div>
-    {!!Html::script('js/cosapi_dashboard.min.js?version='.date('YmdHis'))!!}
+    {!!Html::script('js/dashboard.min.js')!!}
     @yield('scripts')
   </body>
 </html>

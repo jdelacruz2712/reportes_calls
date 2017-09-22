@@ -8,7 +8,6 @@ use Cosapi\Models\Eventos;
 use Cosapi\Models\DetalleEventosHistory;
 use Cosapi\Models\DetalleEventos;
 
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
 use Excel;
 
@@ -44,10 +43,14 @@ class EventsAgentController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.events_consolidated.events_consolidated',
                     'titleReport'           => 'Report of Events Consolidateds',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_events_consolidated',
                     'nameRouteController'   => ''
                 ));
@@ -66,7 +69,6 @@ class EventsAgentController extends CosapiController
     public function events_detail (Request $request){
         if ($request->ajax()){
             if ($request->fecha_evento){
-
                 $days                   = explode(' - ',$request->fecha_evento);
                 $query_events           = $this->query_events($days);
                 $array_detail_events    = detailEvents($query_events);
@@ -78,10 +80,14 @@ class EventsAgentController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.events_detail.events_detail',
                     'titleReport'           => 'Report of Events',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_events_detail',
                     'nameRouteController'   => ''
                 ));

@@ -2,6 +2,17 @@
 <script type="text/javascript">
 $(document).ready(function() {
     $('input[name="fecha_evento"]').daterangepicker({
+        ranges: {
+            'Hoy': [moment(), moment()],
+            'Ayer': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+            'Hace 7 dias': [moment().subtract(6, 'days'), moment()],
+            'Hace 30 dias': [moment().subtract(29, 'days'), moment()],
+            'Mes Actual': [moment().startOf('month'), moment().endOf('month')],
+            'Mes Anterior': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+        alwaysShowCalendars: true,
+        showDropdowns: true,
+        opens: 'right',
         locale: {
             format: 'YYYY-MM-DD'
         }

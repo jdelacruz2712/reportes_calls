@@ -26,6 +26,6 @@
     })
 
     function buscar(){
-        show_tab_level_occupation('level_of_occupation')
+        showTabLevelOccupation('level_of_occupation')
     }
 </script>

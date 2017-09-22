@@ -1,10 +1,10 @@
 <div class="row-fluid">
   <div class="col-md-12">
-    <div class="box box-primary box-solid">
-      <div class="box-header with-border ">
-        <h3 class="box-title"><b>Details Agents Connect</b></h3>
+    <div class="box box-primary box-solid dashboard-box">
+      <div class="box-header with-border dashboard-box-header">
+        <h3 class="dashboard-title">Details Agents Connect</h3>
         <div class="box-tools pull-right">
-          <button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
+          <button type="button" class="btn btn-box-tool" data-widget="collapse" @click="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
           </button>
         </div>
       </div>
@@ -23,6 +23,7 @@
             </thead>
             <tbody>
               <template v-for="(other, index) in others ">
+                @{{ searchInformationProfile(other,index,'others') }}
                 <tr v-if="compareRole(other.role) === true" >
                   <td style="vertical-align: middle">@{{ index + 1 }}</td>
                   <td style="vertical-align: middle"  class="products-list product-list-in-box">

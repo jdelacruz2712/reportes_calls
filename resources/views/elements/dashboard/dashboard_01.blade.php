@@ -1,6 +1,8 @@
-@include('layout.plugins.css-valores-cuadros')
 @extends('layout.dashboard')
 @section('title', 'Dashboard')
+@section('css')
+  {!!Html::style('css/dashboard.css')!!}
+@stop
 @section('content')
     <input id="tokenId" type="hidden" name="_token" value="{{ csrf_token() }}">
     <p>
