@@ -38,6 +38,7 @@ const vueFront = new Vue({
     remoteActiveCallsNameRole: '',
 
     quantityQueueAssign: 0,
+    getQueuesUser: [],
     hourServer: '',
     textDateServer: '',
     dateServer: '',
@@ -73,6 +74,42 @@ const vueFront = new Vue({
   },
   mounted () {
     this.loadVariablesGlobals()
+  },
+  computed:{
+      getPercentageOfWeightQueue() {
+          return this.getQueuesUser.map(function(item) {
+              let weightAgent = item.Priority.weight_agent
+              return Math.round(100/weightAgent)
+          })
+      },
+      getColorPercentageOfWeightQueue() {
+          return this.getQueuesUser.map(function(item) {
+              let color
+              let weightAgent = item.Priority.weight_agent
+              let percentage = Math.round(100/weightAgent)
+              switch (true){
+                  case (percentage > 75):
+                      color = 'success'
+                      break
+                  case (percentage > 50 && percentage <= 75):
+                      color = 'primary'
+                      break
+                  case (percentage > 25 && percentage <= 50):
+                      color = 'info'
+                      break
+                  case (percentage > 10 && percentage <= 25):
+                      color = 'warning'
+                      break
+                  case (percentage > 0 && percentage <= 10):
+                      color = 'danger'
+                      break
+                  default:
+                      color = 'light-blue'
+                      break
+              }
+              return color
+          })
+      }
   },
   methods: {
 
@@ -113,6 +150,7 @@ const vueFront = new Vue({
       this.dateServer = dataGlobals.dateServer
       this.annexed = dataGlobals.annexed
       this.quantityQueueAssign = dataGlobals.quantityQueueAssign
+      this.getQueuesUser = dataGlobals.getQueuesUser
       this.assistanceNextHour = dataGlobals.assistanceNextHour
       currenTime()
 
@@ -237,9 +275,9 @@ const vueFront = new Vue({
 
     activeCalls: async function () {
       let parametersRole = this.loadParameters('activeCalls')
-      let response = await this.sendUrlRequest('modifyRole', parametersRole)
+      let response = await this.sendUrlRequest('saveformchangeRole', parametersRole)
       closeNotificationBootstrap()
-      if (response === 1) {
+      if (response.message === 'Success') {
         if (this.getUserId === this.remoteActiveCallsUserId) {
           this.getRole = this.remoteActiveCallsNameRole
           this.statusQueueAddAsterisk = false

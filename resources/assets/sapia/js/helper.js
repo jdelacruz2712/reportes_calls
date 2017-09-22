@@ -53,7 +53,8 @@ const getDataFilters = (evento) => {
  */
 const exportar = (format_export) => {
 	let days = $('#texto').val()
-	let event = $('#hidEvent').val()
+    let event = moment().format("YYYY-MM-DD") + ' - ' + moment().format("YYYY-MM-DD")
+    if ($('#hidEvent').length) event = $('#hidEvent').val()
 	let rankHour = 1800
 	if ($('#rankHour').length > 0) rankHour = $('#rankHour').val()
 	export_ajax('POST', event, format_export, days, rankHour)

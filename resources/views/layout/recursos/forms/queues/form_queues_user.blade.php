@@ -1,12 +1,12 @@
 <!-- Modal content-->
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <button type="button" class="close" onclick="clearModal('modalQueues', 'div.dialogQueuesLarge')">&times;</button>
-        <h4 class="modal-title">Assign Queue [{{ $nameQueue }}]</h4>
+        <button type="button" class="close" onclick="clearModalClose('modalQueues', 'div.dialogQueuesLarge')">&times;</button>
+        <h4 class="modal-title">Assign Users [{{ $nameQueue }}]</h4>
     </div>
     <div class="modal-body">
-        <form id="formQueuesUser">
-            <div class="col-md-12">
+        <form id="formAssignUser">
+            <div class="col-xs-12">
                 <div class="input-group">
                     <div class="input-group-addon">
                         <i class="fa fa-user"></i>
@@ -15,24 +15,23 @@
                 </div>
             </div>
             <div class="col-xs-12">
-                <input type="hidden" value="{{$list_users}}" id="list_users" name="list_users">
                 <table id="table-agents-queue" class="table table-fixed" cellspacing="0" width="100%">
                     <thead>
-                    <tr>
-                        <th class="text-center col-xs-2">
-                            <input type="checkbox" class="checkGeneral" onclick="mark_all('.checkGeneral')">
-                        </th>
-                        <th class="col-xs-5">Nombre Usuario</th>
-                        <th class="col-xs-3">Username</th>
-                        <th class="col-xs-2">Prioridad</th>
-                    </tr>
+                        <tr>
+                            <th class="text-center col-xs-2">
+                                <input type="checkbox" class="checkGeneral" onclick="mark_all('.checkGeneral')">
+                            </th>
+                            <th class="col-xs-5">Nombre de Usuario</th>
+                            <th class="col-xs-3">Username</th>
+                            <th class="col-xs-2">Prioridad</th>
+                        </tr>
                     </thead>
                     <tbody>
                     @foreach ($Users as $user)
                         <?php $ifExistUser = (isset($user['UserQueues']) ? true : false) ?>
                         <tr class="@if($ifExistUser) success @else info @endif @if(!$ifExistUser) trNew @endif" id="tr_{{ $user['id'] }}">
                             <td class="col-xs-2 text-center">
-                                <input type="checkbox" name="checkQueue[]" value="{{ $user['id'] }}" id="checkbox_{{ $user['id'] }}" class="@if(!$ifExistUser) checkNew @endif"
+                                <input type="checkbox" name="checkUser[]" value="{{ $user['id'] }}" id="checkbox_{{ $user['id'] }}" class="@if(!$ifExistUser) checkNew @endif"
                                     @if($ifExistUser)
                                             @if($user['id'] == $user['UserQueues']['user_id'])
                                                 checked
@@ -64,12 +63,12 @@
                     </tbody>
                 </table>
             </div>
-            <div class="alert alert-danger formError" style="display: none"></div>
+            <div class="col-xs-12 alert alert-danger formError" style="display: none"></div>
             <input type="hidden" name="queueID" value="{{ $idQueue }}">
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnForm"><i class="fa fa-save"></i> Guardar</button>
                 <button type="submit" class="btn btn-info btnLoad" style="display: none"><i class="fa fa-spin fa-spinner"></i> Cargando</button>
-                <button type="button" class="btn btn-default" onclick="clearModal('modalQueues', 'div.dialogQueuesLarge')"><i class="fa fa-close"></i> Cerrar</button>
+                <button type="button" class="btn btn-default" onclick="clearModalClose('modalQueues', 'div.dialogQueuesLarge')" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
             </div>
         </form>
     </div>

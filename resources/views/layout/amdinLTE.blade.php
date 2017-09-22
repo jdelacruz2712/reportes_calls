@@ -12,7 +12,7 @@
     {!! Html::style('css/fonts-googleapis.css') !!}
     @yield('css')
   </head>
-  <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini ">
+  <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini " style="padding-right: 0px !important;">
     <!-- Token de sistemas -->
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
 
@@ -42,6 +42,7 @@
       @include('layout.recursos.modals.modal_standby')
       @include('layout.recursos.modals.modal_releases_annexed')
       @include('layout.recursos.modals.modal_queues')
+      @include('layout.recursos.modals.modal_users')
       <div class="control-sidebar-bg"></div>
     </div>
     {!! Html::script('js/adminlte.min.js?version='.date('YmdHis')) !!}

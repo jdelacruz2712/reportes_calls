@@ -3,12 +3,12 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Anexo;
-use Cosapi\Models\Queue;
+use Cosapi\Models\QueuePriority;
+use Cosapi\Models\Queues;
 use Cosapi\Models\User;
-use Illuminate\Http\Request;
-use Cosapi\Facades\phpAMI;
-use Cosapi\Http\Requests;
+use Cosapi\Models\Users_Queues;
 
+use Illuminate\Queue\Queue;
 use Illuminate\Support\Facades\DB;
 use Cosapi\Models\DetalleEventos;
 use Illuminate\Support\Facades\Session;
@@ -195,7 +195,7 @@ class CosapiController extends Controller
     protected function list_vdn()
     {
         $list_queues                                = [];
-        $query_queues                               = Queue::select()->get()->toArray();
+        $query_queues                               = Queues::select()->get()->toArray();
         foreach ($query_queues as $queues) {
             $list_queues[$queues['name']]['vdn']    = $queues['vdn'];
         }
@@ -210,7 +210,7 @@ class CosapiController extends Controller
     {
         $queues_proyect     = [];
         $posicion           = 0;
-        $query_queues       = Queue::select()->get()->toArray();
+        $query_queues       = Queues::select()->get()->toArray();
         foreach ($query_queues as $queues) {
             $queues_proyect[$posicion] = $queues['name'];
             $posicion++;
@@ -237,30 +237,13 @@ class CosapiController extends Controller
     }
 
     /**
-     * [Función que muestra la lista de usuarios cuyo nombre coinciden con el caracter ingresado]
-     * @param string $nombre [Palabra a buscar que debe incluir en el nombre de la persona]
-     * @return mixed         [Lista de usuarios que coinciden con la busqueda]
-     */
-    protected function query_user_search($nombre = '')
-    {
-        $Users                  = User::select('id', 'primer_nombre', 'apellido_paterno', 'apellido_materno')
-                                        ->where(DB::raw('CONCAT(primer_nombre," ",apellido_paterno," ",apellido_materno)'), 'like', '%'.$nombre.'%')
-                                        ->orderBy('primer_nombre')
-                                        ->orderBy('apellido_paterno')
-                                        ->orderBy('apellido_paterno')
-                                        ->get();
-
-        return $Users;
-    }
-
-    /**
      * [Función que lista datos de las colas]
      * @return array [Array con datos de cada cola registrada en el sistema]
      */
     protected function list_queue()
     {
         $list_prioridad     = [];
-        $Colas              = Queue::select()
+        $Colas              = Queues::select()
                                     ->with('estrategia', 'prioridad')
                                     ->where('estado_id', '=', 1)
                                     ->get()->toArray();
@@ -358,6 +341,52 @@ class CosapiController extends Controller
         } else {
             return mkdir($path, $mode, $recursive);
         }
+    }
+
+    public function getQueueGlobal(){
+        $Queues = Queues::Select()
+                    ->get()
+                    ->toArray();
+        return $Queues;
+    }
+
+    public function getQueuesUserGlobal($userID){
+        $QueuesUser = Users_Queues::Select()
+                        ->where('user_id',$userID)
+                        ->get()
+                        ->toArray();
+        return $QueuesUser;
+    }
+
+    public function getPriorityGlobal(){
+        $Priority = QueuePriority::Select()
+                        ->get()
+                        ->toArray();
+        return $Priority;
+    }
+
+    protected function getQueuestoUserGlobal($QueuesUser, $Queues, $weightPriority){
+        $resultArray = $QueuesUser;
+        foreach($QueuesUser as $keyUserQueue => $valUserQueue) {
+            foreach($Queues as $keyQueue => $valQueue) {
+                if($valUserQueue['queue_id'] == $valQueue['id']) {
+                    foreach($weightPriority as $keyWeight => $valWeight){
+                        if($valUserQueue['priority'] == $valWeight['id']){
+                            $resultArray[$keyUserQueue] = $valUserQueue + array('Queues' => $valQueue) + array('Priority' => $valWeight);
+                        }
+                    }
+                }
+            }
+        }
+        return $resultArray;
+    }
+
+    protected function getUserGlobal($userID){
+        $Users = User::Select()
+                    ->where('id',$userID)
+                    ->get()
+                    ->toArray();
+        return $Users;
     }
 
     /**

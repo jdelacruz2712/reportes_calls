@@ -199,9 +199,7 @@ const columnsDatatable = (route) => {
         {'data': 'Username'},
         {'data': 'Role'},
         {'data': 'Estado'},
-        {'data': 'Change Rol'},
-        {'data': 'Change Password'},
-        {'data': 'Change Status'}
+        {'data': 'Actions', 'className': 'text-center'}
     ]
   }
 

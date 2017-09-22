@@ -69,14 +69,27 @@ const activeCalls = () => {
 		showNotificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
 	} else {
 		vueFront.remoteActiveCallsUserId = vueFront.getUserId
-		let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
-						'<br>' +
-						'<p><b>Nota : </b>Cuando active la entrada de llamadas usted tendra que seleccionar su anexo y pasar a ACD para que le puedan caer las llamadas. ' +
-						'Por favor de verificar que esta asignados a las colas correspondientes.</p>'
+        let message,title,roleAction,actionCalls
+		if(vueFront.getRole == 'backoffice'){
+			title = 'Activar Llamadas'
+            message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+                '<br>' +
+                '<p><b>Nota : </b>Cuando active la entrada de llamadas usted tendra que seleccionar su anexo y pasar a ACD para que le puedan caer las llamadas. ' +
+                'Por favor de verificar que esta asignados a las colas correspondientes.</p>'
+            roleAction = 'user'
+			actionCalls = 'user'
+		}else{
+			title = 'Desactivar Llamadas'
+            message = '<h4>¿Deseas pasar a BackOffice nuevamente?</h4>' +
+                '<br>' +
+                '<p><b>Nota : </b>Con esto volveras a pasar al rol BackOffice.</p>'
+            roleAction = 'backoffice'
+            actionCalls = ''
+		}
 
 		BootstrapDialog.show({
 			type: 'type-primary',
-			title: 'Activar Llamadas',
+			title: title,
 			message: message,
 			closable: true,
 			buttons: [
@@ -84,9 +97,12 @@ const activeCalls = () => {
 					label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
 					cssClass: 'btn-success',
 					action: function (dialogRef) {
-						if (vueFront.getRole !== 'user') {
-							vueFront.remoteActiveCallsNameRole = 'user'
-							vueFront.activeCalls('user')
+                        let $button = this
+                        $button.disable()
+						if (vueFront.getRole !== roleAction) {
+                            $button.spin()
+							vueFront.remoteActiveCallsNameRole = roleAction
+							vueFront.activeCalls(actionCalls)
 						} else {
 							closeNotificationBootstrap()
 						}
@@ -95,18 +111,6 @@ const activeCalls = () => {
 				{
 					label: '<i class="fa fa-times" aria-hidden="true"></i> No',
 					cssClass: 'btn-danger',
-					action: function (dialogRef) {
-						if (vueFront.getRole !== 'backoffice') {
-							vueFront.remoteActiveCallsNameRole = 'backoffice'
-							vueFront.activeCalls()
-						} else {
-							closeNotificationBootstrap()
-						}
-					}
-				},
-				{
-					label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
-					cssClass: 'btn-primary',
 					action: function (dialogRef) {
 						vueFront.remoteActiveCallsUserId = ''
 						dialogRef.close()
@@ -117,125 +121,10 @@ const activeCalls = () => {
 	}
 }
 
-// Función que cambia el Rol de los Usuarios
-const changeRol = (userId) => {
-	const message = 'Seleccione el rol que quiere asignar al usuario :' +
-						'<br><br>' +
-						'<div class="row">' +
-						'<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>' +
-						'<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>' +
-						'<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>' +
-						'<div class="col-md-4"><center><input type="radio" name="nameRole" value="calidad">Calidad</center></div>' +
-						'<div class="col-md-4"><center><input type="radio" name="nameRole" value="cliente">Cliente</center></div>' +
-						'</div>' +
-						'<br>' +
-						'<b>Nota :</b> Utilizar esta opcion siempre y cuando el usuario no se encuentre en una cola.'
-
-	BootstrapDialog.show({
-		type: 'type-primary',
-		title: 'Cambiar Rol',
-		message: message,
-		closable: true,
-		buttons: [
-			{
-				label: 'Aceptar',
-				cssClass: 'btn-success',
-				action: (dialogRef) => {
-					let nameRole = $('input:radio[name=nameRole]:checked').val()
-					vueFront.remoteActiveCallsUserId = userId
-					vueFront.remoteActiveCallsNameRole = nameRole
-					vueFront.activeCalls()
-					showTabListUser('list_users')
-				}
-			},
-			{
-				label: 'Cancelar',
-				cssClass: 'btn-danger',
-				action: (dialogRef) => {
-					dialogRef.close()
-				}
-			}
-		]
-	})
-}
-
 // Función que verifica si necesita realizar un cambio de contraseña
-const checkPassword = () => { if (vueFront.statusChangePassword == 0) changePassword() }
+const checkPassword = () => { if (vueFront.statusChangePassword == 0) $('#changePassword').click() }
 
-// Función que muestra modal para el cambio de contraseña
-const changePassword = (userId = '', closable = false) => {
-	if (userId === '') userId = vueFront.getUserId
-	const token = $('input[name=_token]').val()
-	const message = '<br>' +
-				'<div class="row">' +
-				'<div class="col-md-7">' +
-				'<div class="col-md-6" >' +
-				'Nueva Contraseña:' +
-				'</div>' +
-				'<div class="col-md-6">' +
-				'<input type="password" class="form-control" style="border-radius: 7px" id="newPassword">' +
-				'</div>' +
-				'<br>' + '<br>' + '<br>' +
-				'<div class="col-md-6">' +
-				'Confirma Contraseña:' +
-				'</div>' +
-				'<div class="col-md-6">' +
-				'<input type="password" class="form-control" style="border-radius: 7px" id="confirmPassword">' +
-				'</div>' +
-				'</div>' +
-				'<div class="col-md-5">' +
-				'<div class="col-md-12">' +
-				'Una contraseña segura está compuesta de 8 a 12 caracteres.<br>' +
-				'Una diferencia entre mayuscula y minuscula.<br>' +
-				'Permite números , letras y símbolos del teclado.' +
-				'</div>' +
-				'</div>' +
-				'</div>'
 
-	BootstrapDialog.show({
-		type: 'type-default',
-		title: '<font style="color:red; text-align: center">Cambiar Contraseña</font>',
-		message: message,
-		closable: closable,
-		buttons: [
-			{
-				label: 'Aceptar',
-				cssClass: 'btn-danger',
-				action: function (dialogRef) {
-					let newPassword = $('#newPassword').val()
-					let confirmPassword = $('#confirmPassword').val()
-
-					if (confirmPassword != '' && newPassword != '') {
-						if (confirmPassword == newPassword) {
-							$.ajax({
-								type: 'POST',
-								url: 'modifyPassword',
-								data: {
-									_token: token,
-									newPassword: newPassword,
-									userId: userId
-								},
-								success: function (data) {
-									if (data == 1) {
-										dialogRef.close()
-										vueFront.statusChangePassword = 1
-										showNotificacion('success', 'El evento se realizo exitosamente!!!', 'Success', 2000, false, true)
-									} else {
-										showNotificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
-									}
-								}
-							})
-						} else {
-							alert('Las contraseñas ingresadas no coinciden')
-						}
-					} else {
-						alert('Por favor de llenar todos los campos')
-					}
-				}
-			}
-		]
-	})
-}
 
 /**
  * Created by jdelacruzc on 11/04/2017.
@@ -570,9 +459,9 @@ const showErrorForm = (data, formDiv) => {
 
 // Función para ocultar los errores cuando se ingresa en algun campo que se requeria data
 const hideErrorForm = (formDiv) => {
-	$("input[type=text]").click(function() {
-		$(formDiv).fadeOut().html()
-	})
+    $("input[type=text],input[type=checkbox],input[type=password]").click(function() {
+        $(formDiv).fadeOut().html()
+    })
 }
 
 // Función para poder buscar en una tabla
