@@ -1,50 +1,20 @@
 /**
- * Created by jdelacruz on 14/09/2017.
+ * Created by jdelacruz on 21/09/2017.
  */
-$('#formQueues').submit(function(e) {
+$('#formAssignQueues').submit(function(e) {
     let data = $(this).serialize()
     changeButtonForm('btnForm','btnLoad')
     $.ajax({
         type        : 'POST',
-        url         : 'saveformQueues',
+        url         : 'saveformassignQueues',
         cache       : false,
         headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
                 changeButtonForm('btnLoad','btnForm')
-                let action = (data.action === 'create' ? 'agrego' : 'edito')
-                showNotificacion('success', 'Se '+ action +' correctamente la cola !!!', 'Success', 2000, false, true)
-                clearModal('modalQueues', 'div.dialogQueues')
-                buscar()
-            }else{
-                showNotificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
-            }
-            changeButtonForm('btnLoad','btnForm')
-        },
-        error : function(data) {
-            showNotificacion('error', 'Problema al comunicarse con la ruta "saveformQueues"', 'Error', 10000, false, true)
-            changeButtonForm('btnLoad','btnForm')
-            showErrorForm(data, '.formError')
-        }
-    })
-    e.preventDefault()
-})
-
-$('#formQueuesStatus').submit(function(e) {
-    let data = $(this).serialize()
-    changeButtonForm('btnForm','btnLoad')
-    $.ajax({
-        type        : 'POST',
-        url         : 'saveformQueuesStatus',
-        cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-        data        : data,
-        success: function(data){
-            if(data.message === 'Success'){
-                changeButtonForm('btnLoad','btnForm')
-                showNotificacion('success', 'Se cambio el estado de la cola correctamente !!!', 'Success', 2000, false, true)
-                clearModal('modalQueues', 'div.dialogQueues')
+                showNotificacion('success', 'Se guardaron las colas en el usuario, exitosamente !!!', 'Success', 2000, false, true)
+                clearModal('modalUsers', 'div.dialogUsers')
                 buscar()
             }else{
                 showNotificacion('error', 'Problemas al actualizar el dato en la base de datos', 'Error', 10000, false, true)
@@ -52,7 +22,7 @@ $('#formQueuesStatus').submit(function(e) {
             changeButtonForm('btnLoad','btnForm')
         },
         error : function(data) {
-            showNotificacion('error', 'Problema al comunicarse con la ruta "saveformQueuesStatus"', 'Error', 10000, false, true)
+            showNotificacion('error', 'Problema al comunicarse con la ruta "saveformAssignQueues"', 'Error', 10000, false, true)
             changeButtonForm('btnLoad','btnForm')
             showErrorForm(data, '.formError')
         }
@@ -60,20 +30,20 @@ $('#formQueuesStatus').submit(function(e) {
     e.preventDefault()
 })
 
-$('#formAssignUser').submit(function(e) {
+$('#formChangePassword').submit(function(e) {
     let data = $(this).serialize()
     changeButtonForm('btnForm','btnLoad')
     $.ajax({
         type        : 'POST',
-        url         : 'saveformAssignUser',
+        url         : 'saveformchangePassword',
         cache       : false,
         headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
                 changeButtonForm('btnLoad','btnForm')
-                showNotificacion('success', 'Se guardaron los usuarios en la cola, exitosamente !!!', 'Success', 2000, false, true)
-                clearModal('modalQueues', 'div.dialogQueuesLarge')
+                showNotificacion('success', 'Se cambio la contraseña al usuario correctamente !!!', 'Success', 2000, false, true)
+                clearModal('modalUsers', 'div.dialogUsers')
                 buscar()
             }else{
                 showNotificacion('error', 'Problemas al actualizar el dato en la base de datos', 'Error', 10000, false, true)
@@ -81,7 +51,40 @@ $('#formAssignUser').submit(function(e) {
             changeButtonForm('btnLoad','btnForm')
         },
         error : function(data) {
-            showNotificacion('error', 'Problema al comunicarse con la ruta "saveformUsersQueues"', 'Error', 10000, false, true)
+            showNotificacion('error', 'Problema al comunicarse con la ruta "saveformchangePassword"', 'Error', 10000, false, true)
+            changeButtonForm('btnLoad','btnForm')
+            showErrorForm(data, '.formError')
+        }
+    })
+    e.preventDefault()
+})
+
+$('#formChangeRole').submit(function(e) {
+    let data = $(this).serialize()
+    let nameRole = $('input:radio[name=nameRole]:checked').val()
+    let userID = $('input:hidden[name=userId]').val()
+    changeButtonForm('btnForm','btnLoad')
+    $.ajax({
+        type        : 'POST',
+        url         : 'saveformchangeRole',
+        cache       : false,
+        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data        : data,
+        success: function(data){
+            if(data.message === 'Success'){
+                changeButtonForm('btnLoad','btnForm')
+                vueFront.remoteActiveCallsUserId = userID
+                vueFront.remoteActiveCallsNameRole = nameRole
+                vueFront.activeCalls()
+                clearModal('modalUsers', 'div.dialogUsers')
+                showTabListUser('list_users')
+            }else{
+                showNotificacion('error', 'Problemas al actualizar el dato en la base de datos', 'Error', 10000, false, true)
+            }
+            changeButtonForm('btnLoad','btnForm')
+        },
+        error : function(data) {
+            showNotificacion('error', 'Problema al comunicarse con la ruta "saveformchangePassword"', 'Error', 10000, false, true)
             changeButtonForm('btnLoad','btnForm')
             showErrorForm(data, '.formError')
         }

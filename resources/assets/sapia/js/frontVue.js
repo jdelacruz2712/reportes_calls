@@ -277,9 +277,9 @@ const vueFront = new Vue({
 
     activeCalls: async function () {
       let parametersRole = this.loadParameters('activeCalls')
-      let response = await this.sendUrlRequest('modifyRole', parametersRole)
+      let response = await this.sendUrlRequest('saveformchangeRole', parametersRole)
       closeNotificationBootstrap()
-      if (response === 1) {
+      if (response.message === 'Success') {
         if (this.getUserId === this.remoteActiveCallsUserId) {
           this.getRole = this.remoteActiveCallsNameRole
           this.statusQueueAddAsterisk = false

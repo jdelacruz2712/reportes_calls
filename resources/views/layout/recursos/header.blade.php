@@ -150,10 +150,10 @@
                 <li class="dropdown tasks-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 <i class="fa fa-phone"></i>
-                <span class="label label-danger" v-text="getQueuesUser.length"></span>
+                <span class="label label-info" v-text="getQueuesUser.length"></span>
               </a>
               <ul class="dropdown-menu">
-                <li class="header text-center">You have @{{ getQueuesUser.length }} queues</li>
+                <li class="header text-center text-bold">You have @{{ getQueuesUser.length }} queues</li>
                 <li>
                   <!-- inner menu: contains the actual data -->
                   <ul class="menu">
@@ -176,6 +176,8 @@
               </ul>
             </li>
             <!--fin de listar tareas-->
+            <!-- Button para Cambiar Contraseña -->
+            <button id="changePassword" type="button" class="hidden" onclick="responseModal('div.dialogUsers','form_change_password',vueFront.getUserId)" data-toggle="modal" data-target="#modalUsers">dsadsa</button>
             <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -193,13 +193,16 @@ elixir(function(mix) {
 });
 
 /**
- Generando los archivos para autogestionar los formularios con Vue
+ Generando los archivos para autogestionar los formularios
 */
 elixir(function(mix) {
    mix
    .scripts([
        'sapia/js/form/formQueues.js'
-   ], 'public/js/form/formQueues.min.js', 'resources/assets/');
+   ], 'public/js/form/formQueues.min.js', 'resources/assets/')
+   .scripts([
+       'sapia/js/form/formUsers.js'
+   ], 'public/js/form/formUsers.min.js', 'resources/assets/');
 });
 
 elixir(function(mix) {

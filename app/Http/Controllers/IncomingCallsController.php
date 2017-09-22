@@ -2,7 +2,6 @@
 
 namespace Cosapi\Http\Controllers;
 
-use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\Queue_Log;
 use Cosapi\Collector\Collector;
@@ -10,7 +9,6 @@ use Cosapi\Collector\Collector;
 use DB;
 use Excel;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use Session;
 
 

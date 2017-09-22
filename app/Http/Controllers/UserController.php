@@ -2,6 +2,9 @@
 
 namespace Cosapi\Http\Controllers;
 
+use Cosapi\Models\QueuePriority;
+use Cosapi\Models\Queues;
+use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
 
 use Cosapi\Collector\Collector;
@@ -48,17 +51,136 @@ class UserController extends CosapiController
     }
 
     public function viewqueuesUsers(Request $request){
-        $getQueue   = $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($request->valueID),$this->getQueueGlobal());
         $getUser    = $this->getUserGlobal($request->valueID);
         return view('layout/recursos/forms/users/view_users_queues')->with(array(
-            'queuesUser'    => $getQueue[0],
             'User'          => $getUser[0]
+        ));
+    }
+
+    public function formAssignQueue(Request $request){
+        $getUser        = $this->getUserGlobal($request->valueID);
+        $listQueues     = $this->getListQueues();
+        $Queues         = $this->getUsertoQueues($listQueues['Queues'],$this->getUserQueues($request->valueID));
+        return view('layout/recursos/forms/users/form_users_queue')->with(array(
+            'Queues'        => $Queues,
+            'Priority'      => $listQueues['Priority'],
+            'User'          => $getUser[0],
+            'idUser'        => $request->valueID
+        ));
+    }
+
+    public function formChangePassword(Request $request){
+        $getUser        = $this->getUserGlobal($request->valueID);
+        return view('layout/recursos/forms/users/form_users_password')->with(array(
+            'User'          => $getUser[0],
+            'idUser'        => $request->valueID
+        ));
+    }
+
+    public function formChangeRol(Request $request){
+        $getUser        = $this->getUserGlobal($request->valueID);
+        return view('layout/recursos/forms/users/form_users_role')->with(array(
+            'User'          => $getUser[0],
+            'idUser'        => $request->valueID
         ));
     }
 
     public function getQueuesUsers(Request $request){
         $getQueueUser = $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($request->valueID),$this->getQueueGlobal());
         return $getQueueUser;
+    }
+
+    public function getListQueues(){
+        $Queues = Queues::Select()
+            ->with('prioridad')
+            ->where('estado_id', 1)
+            ->get()
+            ->toArray();
+
+        $Priority = QueuePriority::Select()
+            ->get()
+            ->toArray();
+
+        $list['Queues'] = $Queues;
+        $list['Priority'] = $Priority;
+        return $list;
+    }
+
+    public function getUserQueues($userID){
+        $QueuesUser = Users_Queues::Select()
+            ->where('user_id',$userID)
+            ->get()
+            ->toArray();
+        return $QueuesUser;
+    }
+
+    protected function getUsertoQueues($Queues, $QueuesUser){
+        $resultArray = $Queues;
+        foreach($Queues as $keyQueue => $valQueue) {
+            foreach($QueuesUser as $keyUserQueue => $valUserQueue) {
+                if($valQueue['id'] == $valUserQueue['queue_id']) {
+                    $resultArray[$keyQueue] = $valQueue + array('UserQueues' => $valUserQueue);
+                }
+            }
+        }
+        return $resultArray;
+    }
+
+    public function saveFormAssingQueue(Requests\usersAssignQueuesRequest $request){
+        if ($request->ajax()){
+            Users_Queues::where('user_id', $request->userID)->delete();
+            if($request->checkQueue){
+                foreach($request->checkQueue as $keyQueue => $valueQueue){
+                    $queueQuery = Users_Queues::updateOrCreate([
+                        'user_id'       => $request->userID,
+                        'queue_id'      => $valueQueue
+                    ], [
+                        'user_id'       => $request->userID,
+                        'queue_id'      => $valueQueue,
+                        'priority'      => $request->selectPriority[$keyQueue]
+                    ]);
+                }
+                if($queueQuery) return ['message' => 'Success'];
+                return ['message' => 'Error'];
+            }
+            return ['message' => 'Success'];
+        }
+        return ['message' => 'Error'];
+    }
+
+    public function saveFormChangePassword(Requests\usersChangePasswordRequest $request){
+        if ($request->ajax()){
+            $resultado = User::where('id',$request->userID)
+                            ->update([
+                                'password'          => Hash::make($request->newPassword),
+                                'change_password'   => 1
+                            ]);
+            if($resultado) return ['message' => 'Success'];
+            return ['message' => 'Error'];
+        }
+        return ['message' => 'Error'];
+    }
+
+    public function saveFormChangeRole(Requests\UsersChangeRoleRequest $request){
+        if ($request->ajax()){
+            $changeRol = 0;
+            ($this->UserId != $request->userId && $request->nameRole == 'backoffice' ? $changeRol = 1 : 0);
+            ($this->UserId == $request->userId ? $changeRol = 1 : 0);
+            $resultado = User::where('id',$request->userId)
+                            ->update([
+                                'role'          => $request->nameRole,
+                                'change_role'   => $changeRol
+                            ]);
+            if($resultado && $this->UserId == $request->userId){
+                Session::put('UserRole' ,Auth::user()->role);
+                return ['message' => 'Success'];
+            }else if($resultado) {
+                return ['message' => 'Success'];
+            }else {
+                return ['message' => 'Error'];
+            }
+        }
+        return ['message' => 'Error'];
     }
 
     public function changeProfile(){
@@ -201,39 +323,6 @@ class UserController extends CosapiController
         return $resultado;
     }
 
-    public function modifyPassword(Request $request){
-        if ($request->ajax()){
-            if ($request->newPassword){
-                $resultado = DB::table('users')
-                    ->where('id',$request->userId)
-                    ->update([
-                        'password'          => Hash::make($request->newPassword),
-                        'change_password'   => 1
-                    ]);
-
-                return (string)$resultado;
-            }
-        }
-    }
-
-    public function modifyRole(Request $request){
-        if ($request->ajax()){
-            if ($request->nameRole){
-
-                $resultado = DB::table('users')
-                    ->where('id',$request->userId)
-                    ->update([
-                        'role'    => $request->nameRole,
-                    ]);
-
-                if($resultado == true && $this->UserId ==  $request->userId){
-                    Session::put('UserRole'   ,Auth::user()->role   );
-                }
-                return response()->json($resultado);
-            }
-        }
-    }
-
     public function changeStatus(Request $request){
         if ($request->ajax()){
             if ($request->userID){
@@ -285,6 +374,7 @@ class UserController extends CosapiController
 
     protected function user_list_query(){
         $user_list_query = User::select()
+                                ->whereNotIn('role', ['admin'])
                                 ->get();
         return $user_list_query;
     }
@@ -326,9 +416,10 @@ class UserController extends CosapiController
                 'Username'              => $view['Username'],
                 'Role'                  => ucwords(Str::lower($view['Role'])),
                 'Estado'                => '<span class="label label-'.($view['Estado'] == 'Activo' ? 'success' : 'danger').' labelFix">'.$view['Estado'].'</span>',
-                'Actions'               => '<span data-toggle="tooltip" data-placement="left" title="Change Role"><a class="btn btn-success btn-xs" onclick="changeRol('. $view['Id'] .')"><i class="fa fa-user"></i></a></span>
-                                            <span data-toggle="tooltip" data-placement="left" title="Change Password"><a class="btn btn-danger btn-xs" onclick="changePassword('. $view['Id'] .',true)"><i class="fa fa-key"></i></a></span>
+                'Actions'               => '<span data-toggle="tooltip" data-placement="left" title="Change Role"><a class="btn btn-success btn-xs" onclick="responseModal('."'div.dialogUsers','form_change_rol','".$view['Id']."'".')" data-toggle="modal" data-target="#modalUsers"><i class="fa fa-user"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="Change Password"><a class="btn btn-danger btn-xs" onclick="responseModal('."'div.dialogUsers','form_change_password','".$view['Id']."'".')" data-toggle="modal" data-target="#modalUsers"><i class="fa fa-key"></i></a></span>
                                             <span data-toggle="tooltip" data-placement="left" title="Change Status"><a class="btn btn-info btn-xs" onclick="changeStatusUser('. $view['Id'] .', \''. $view['Estado'] .'\')"><i class="fa fa-refresh"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="Assign Queues"><a class="btn btn-warning btn-xs" onclick="responseModal('."'div.dialogUsers','form_assign_queue','".$view['Id']."'".')" data-toggle="modal" data-target="#modalUsers"><i class="fa fa-asterisk"></i></a></span>
                                             <span data-toggle="tooltip" data-placement="left" title="'.$textQueues.'"><a class="btn btn-primary btn-xs" onclick="'.($countQueues > 0 ? "responseModal('div.dialogUsers','viewqueuesUsers','".$view['Id']."')" : "").'" '.($countQueues > 0 ? 'data-toggle="modal" data-target="#modalUsers"' : 'disabled').'><i class="fa fa-phone"></i></a></span>'
             ]);
 

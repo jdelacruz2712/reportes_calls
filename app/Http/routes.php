@@ -3,6 +3,8 @@ Route::get('/testing'       , ['uses'=>'AdminLTEController@testing'     ,   'as'
 Route::get('/'              , ['uses'=>'Auth\AuthController@getLogin'   ,   'as' =>'login']);
 Route::post('/'             , ['uses'=>'Auth\AuthController@postLogin'  ,   'as' =>'login']);
 Route::get('logout'         , ['uses'=>'Auth\AuthController@getLogout'  ,   'as' =>'logout']);
+Route::get('errorRole'      , ['uses'=>'AdminController@errorRole'      ,   'as' =>'home']);
+
 
 Route::group(['middleware'=>['auth'], 'prefix'=>'home' ], function () {
     Route::get('/', ['uses'=>'AdminController@index'         ,    'as' => 'home'      ]);
@@ -32,26 +34,24 @@ Route::group(['middleware'=>['user']], function () {
         // Reporte de llamadas salienes
         Route::post('agents_online'                                     , ['uses'=>'AgentsOnlineController@index']);
 
-        // Asignar Cola
-        Route::post('agents_queue'                                      , ['uses'=>'AgentsQueueController@index']);
-        Route::post('agents_queue/search_users'                         , ['uses'=>'AgentsQueueController@search_users']);
-        Route::post('agents_queue/assign_queue'                         , ['uses'=>'AgentsQueueController@assign_queue']);
-        Route::post('agents_queue/mark'                                 , ['uses'=>'AgentsQueueController@mark_form']);
-        Route::get('agents_queue/users'                                 , ['uses'=>'AgentsQueueController@list_users']);
-
         // Administrar Usuarios
         Route::post('manage_users'                                      , ['uses'=>'UserController@index']);
         Route::post('viewqueuesUsers'                                   , ['uses'=>'UserController@viewQueuesUsers']);
         Route::post('getqueuesUsers'                                    , ['uses'=>'UserController@getQueuesUsers']);
+        Route::post('form_assign_queue'                                 , ['uses'=>'UserController@formAssignQueue']);
+        Route::post('form_change_password'                              , ['uses'=>'UserController@formChangePassword']);
+        Route::post('form_change_rol'                                   , ['uses'=>'UserController@formChangeRol']);
+        Route::post('saveformassignQueues'                              , ['uses'=>'UserController@saveFormAssingQueue']);
+        Route::post('saveformchangePassword'                            , ['uses'=>'UserController@saveFormChangePassword']);
 
         // Administrar Queues
         Route::post('manage_queues'                                     , ['uses'=>'QueuesController@index']);
         Route::post('form_queues'                                       , ['uses'=>'QueuesController@formQueues']);
         Route::post('form_status_queue'                                 , ['uses'=>'QueuesController@formChangeStatus']);
-        Route::post('form_assign_queue'                                 , ['uses'=>'QueuesController@formAssignQueue']);
+        Route::post('form_assign_user'                                  , ['uses'=>'QueuesController@formAssignUser']);
         Route::post('saveformQueues'                                    , ['uses'=>'QueuesController@saveFormQueues']);
         Route::post('saveformQueuesStatus'                              , ['uses'=>'QueuesController@saveFormQueuesStatus']);
-        Route::post('saveformUsersQueues'                               , ['uses'=>'QueuesController@saveFormUsersQueues']);
+        Route::post('saveformAssignUser'                                , ['uses'=>'QueuesController@saveFormAssingUser']);
         Route::post('exportQueues'                                      , ['uses'=>'QueuesController@exportQueues']);
         Route::post('taskmanagerQueues'                                 , ['uses'=>'QueuesController@taskManagerQueues']);
     });
@@ -97,11 +97,10 @@ Route::group(['middleware'=>['user']], function () {
     Route::post('list_event'								        , ['uses'=>'EventsAgentController@index']);
     Route::post('assistance'								        , ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);
     Route::post('working'								            , ['uses'=>'AdminController@working'            ,    'as' => 'working']);
-    Route::post('modifyPassword'								    , ['uses'=>'UserController@modifyPassword'      ,    'as' => 'modifyPassword']);
-    Route::post('modifyRole'								        , ['uses'=>'UserController@modifyRole'          ,    'as' => 'modifyRole']);
     Route::post('setQueueAdd'								        , ['uses'=>'AdminController@setQueueAdd'        ,    'as' => 'setQueueAdd']);
     Route::post('createUser'								        , ['uses'=>'UserController@createUser'          ,    'as' => 'createUser']);
     Route::post('changeStatus'								        , ['uses'=>'UserController@changeStatus'        ,    'as' => 'changeStatus']);
+    Route::post('saveformchangeRole'						        , ['uses'=>'UserController@saveFormChangeRole'  ,    'as' => 'changeRole']);
     Route::post('updateStatusAddAgentDashboard'					    , ['uses'=>'AdminController@updateStatusAddAgentDashboard','as'=>'updateStatusAddAgentDashboard']);
 
 

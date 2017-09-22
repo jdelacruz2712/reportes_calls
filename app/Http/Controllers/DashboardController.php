@@ -9,11 +9,8 @@ use Cosapi\Models\Cdr;
 use Cosapi\Models\Kpis;
 use Cosapi\Models\Queue_Log;
 use Cosapi\Models\User;
-use Cosapi\Models\UsersProfile;
 use Illuminate\Http\Request;
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
-use League\Flysystem\Exception;
 
 class DashboardController extends IncomingCallsController
 {

@@ -6,9 +6,6 @@ use Cosapi\Models\Anexo;
 use Cosapi\Models\Queues;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
-use Illuminate\Http\Request;
-use Cosapi\Facades\phpAMI;
-use Cosapi\Http\Requests;
 
 use Illuminate\Support\Facades\DB;
 use Cosapi\Models\DetalleEventos;
@@ -234,23 +231,6 @@ class CosapiController extends Controller
                                         ->orderBy('apellido_paterno')
                                         ->get()
                                         ->toArray();
-        return $Users;
-    }
-
-    /**
-     * [Función que muestra la lista de usuarios cuyo nombre coinciden con el caracter ingresado]
-     * @param string $nombre [Palabra a buscar que debe incluir en el nombre de la persona]
-     * @return mixed         [Lista de usuarios que coinciden con la busqueda]
-     */
-    protected function query_user_search($nombre = '')
-    {
-        $Users                  = User::select('id', 'primer_nombre', 'apellido_paterno', 'apellido_materno')
-                                        ->where(DB::raw('CONCAT(primer_nombre," ",apellido_paterno," ",apellido_materno)'), 'like', '%'.$nombre.'%')
-                                        ->orderBy('primer_nombre')
-                                        ->orderBy('apellido_paterno')
-                                        ->orderBy('apellido_paterno')
-                                        ->get();
-
         return $Users;
     }
 

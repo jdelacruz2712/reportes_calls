@@ -10,11 +10,8 @@ use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\MessageBag;
 
 use Cosapi\Http\Requests;
-use Cosapi\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Input;
 
 class QueuesController extends CosapiController
 {
@@ -90,9 +87,9 @@ class QueuesController extends CosapiController
                 'Strategy'              => $view['Strategy'],
                 'Priority'              => $view['Priority'],
                 'Status'                => '<span class="label label-'.($Status == 'Activo' ? 'success' : 'danger').' labelFix">'.$Status.'</span>',
-                'Actions'               => '<span data-toggle="tooltip" data-placement="bottom" title="Change Role"><a class="btn btn-warning btn-xs" onclick="responseModal('."'div.dialogQueues','form_queues','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-edit" aria-hidden="true"></i></a></span>
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Change Role"><a class="btn btn-info btn-xs" onclick="'.($view['Status'] == 1 ? "responseModal('div.dialogQueuesLarge','form_assign_queue','".$view['Id']."')" : "").'" '.($view['Status'] == 1 ? 'data-toggle="modal" data-target="#modalQueues"' : 'disabled').'><i class="fa fa-group" aria-hidden="true"></i> </a></span>
-                                            <span data-toggle="tooltip" data-placement="bottom" title="Change Role"><a class="btn btn-danger btn-xs" onclick="responseModal('."'div.dialogQueues','form_status_queue','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-ban" aria-hidden="true"></i></a>'
+                'Actions'               => '<span data-toggle="tooltip" data-placement="left" title="Edit Queue"><a class="btn btn-warning btn-xs" onclick="responseModal('."'div.dialogQueues','form_queues','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-edit" aria-hidden="true"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="Assign User"><a class="btn btn-info btn-xs" onclick="'.($view['Status'] == 1 ? "responseModal('div.dialogQueuesLarge','form_assign_user','".$view['Id']."')" : "").'" '.($view['Status'] == 1 ? 'data-toggle="modal" data-target="#modalQueues"' : 'disabled').'><i class="fa fa-group" aria-hidden="true"></i> </a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="Change Status"><a class="btn btn-danger btn-xs" onclick="responseModal('."'div.dialogQueues','form_status_queue','".$view['Id']."'".')" data-toggle="modal" data-target="#modalQueues"><i class="fa fa-ban" aria-hidden="true"></i></a>'
             ]);
 
         }
@@ -136,7 +133,7 @@ class QueuesController extends CosapiController
         ));
     }
 
-    public function formAssignQueue(Request $request){
+    public function formAssignUser(Request $request){
         $getQueue        = $this->getQueue($request->valueID);
         $getQueueUsers   = $this->getUsersQueues($request->valueID);
         $options         = $this->getOptions();
@@ -146,8 +143,7 @@ class QueuesController extends CosapiController
             'nameQueue'     => $getQueue[0]['name'],
             'Users'         => $UsersQueues,
             'Queues'        => $getQueue,
-            'Priority'      => $options['Priority'],
-            'list_users'    => 'all'
+            'Priority'      => $options['Priority']
         ));
     }
 
@@ -179,6 +175,7 @@ class QueuesController extends CosapiController
     protected function getUsers() {
         $Users  = User::Select()
                     ->where('estado_id', '=', '1')
+                    ->whereNotIn('role', ['admin'])
                     ->orderBy('primer_nombre')
                     ->orderBy('apellido_paterno')
                     ->orderBy('apellido_materno')
@@ -207,74 +204,57 @@ class QueuesController extends CosapiController
         return $resultArray;
     }
 
-    public function saveFormQueues(Requests\formQueuesRequest $request){
-
-        if($request->queueID){
-            $this->validate(request(), [
-                'nameQueue'           => 'required|unique:queues,name',
-                'numVdn'              => 'required',
-                'selectedStrategy'    => 'required',
-                'selectedPriority'    => 'required'
-            ]);
-
+    public function saveFormQueues(Requests\queuesRequest $request){
+        if ($request->ajax()) {
             $queueQuery = Queues::updateOrCreate([
-                'id'                    => $request->queueID
+                'id' => $request->queueID
             ], [
-                'name'                  => $request->nameQueue,
-                'queues_strategy_id'    => $request->selectedStrategy,
-                'queues_priority_id'    => $request->selectedPriority,
-                'estado_id'             => '1'
+                'name' => $request->nameQueue,
+                'vdn' => $request->numVdn,
+                'queues_strategy_id' => $request->selectedStrategy,
+                'queues_priority_id' => $request->selectedPriority,
+                'estado_id' => '1'
             ]);
-        }else{
-            $this->validate(request(), [
-                'nameQueue'           => 'required|unique:queues,name',
-                'numVdn'              => 'required|unique:queues,vdn',
-                'selectedStrategy'    => 'required',
-                'selectedPriority'    => 'required'
-            ]);
-
-            $queueQuery = Queues::updateOrCreate([
-                'id'                    => $request->queueID
-            ], [
-                'name'                  => $request->nameQueue,
-                'vdn'                   => $request->numVdn,
-                'queues_strategy_id'    => $request->selectedStrategy,
-                'queues_priority_id'    => $request->selectedPriority,
-                'estado_id'             => '1'
-            ]);
+            $action = ($request->queueID ? 'updated' : 'create');
+            if ($queueQuery) return ['message' => 'Success', 'action' => $action];
+            return ['message' => 'Error'];
         }
-
-        if($queueQuery) return ['message' => 'Success'];
         return ['message' => 'Error'];
     }
 
     public function saveFormQueuesStatus(Request $request){
-        $statusQueue = ($request->statusQueue == 1 ? 2 : 1);
-        $queueQueryStatus = Queues::where('id', $request->queueID)
-                                ->update([
-                                    'estado_id' => $statusQueue
-                                ]);
-        if($queueQueryStatus) return ['message' => 'Success'];
+        if ($request->ajax()) {
+            $statusQueue = ($request->statusQueue == 1 ? 2 : 1);
+            $queueQueryStatus = Queues::where('id', $request->queueID)
+                ->update([
+                    'estado_id' => $statusQueue
+                ]);
+            if ($queueQueryStatus) return ['message' => 'Success'];
+            return ['message' => 'Error'];
+        }
         return ['message' => 'Error'];
     }
 
-    public function saveFormUsersQueues(Request $request){
-        Users_Queues::where('queue_id', $request->queueID)->delete();
-        if($request->checkQueue){
-            foreach($request->checkQueue as $keyUserQueue => $valUserQueue){
-                $queueUserQuery = Users_Queues::updateOrCreate([
-                    'user_id'       => $valUserQueue,
-                    'queue_id'      => $request->queueID
-                ], [
-                    'user_id'       => $valUserQueue,
-                    'queue_id'      => $request->queueID,
-                    'priority'      => $request->selectPriority[$keyUserQueue]
-                ]);
+    public function saveFormAssingUser(Requests\queuesAssignUsersRequest $request){
+        if ($request->ajax()) {
+            Users_Queues::where('queue_id', $request->queueID)->delete();
+            if ($request->checkUser) {
+                foreach ($request->checkUser as $keyUserQueue => $valUserQueue) {
+                    $queueUserQuery = Users_Queues::updateOrCreate([
+                        'user_id' => $valUserQueue,
+                        'queue_id' => $request->queueID
+                    ], [
+                        'user_id' => $valUserQueue,
+                        'queue_id' => $request->queueID,
+                        'priority' => $request->selectPriority[$keyUserQueue]
+                    ]);
+                }
+                if ($queueUserQuery) return ['message' => 'Success'];
+                return ['message' => 'Error'];
             }
-            if($queueUserQuery) return ['message' => 'Success'];
-            return ['message' => 'Error'];
+            return ['message' => 'Success'];
         }
-        return ['message' => 'Success'];
+        return ['message' => 'Error'];
     }
 
     public function taskManagerQueues(){

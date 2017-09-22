@@ -1,7 +1,7 @@
 <!-- Modal content-->
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <button type="button" class="close" onclick="clearModal('modalUsers', 'div.dialogUsers')">&times;</button>
+        <button type="button" class="close" onclick="clearModalClose('modalUsers', 'div.dialogUsers')">&times;</button>
         <h4 class="modal-title">View Queues [{{ $User['primer_nombre'].' '.$User['apellido_paterno'] }}]</h4>
     </div>
     <div class="modal-body" id="userQueueView">
@@ -31,7 +31,7 @@
             </tbody>
         </table>
         <div class="modal-footer">
-            <button type="button" class="btn btn-default" onclick="clearModal('modalUsers', 'div.dialogUsers')"><i class="fa fa-close"></i> Cerrar</button>
+            <button type="button" class="btn btn-default" onclick="clearModalClose('modalUsers', 'div.dialogUsers')" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
         </div>
     </div>
 </div>

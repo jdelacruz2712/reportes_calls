@@ -12,7 +12,7 @@
     {!! Html::style('css/fonts-googleapis.css') !!}
     @yield('css')
   </head>
-  <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini ">
+  <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini " style="padding-right: 0px !important;">
     <!-- Token de sistemas -->
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
 

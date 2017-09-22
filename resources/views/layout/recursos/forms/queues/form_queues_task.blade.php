@@ -1,7 +1,7 @@
 <!-- Modal content-->
 <div class="panel panel-primary">
     <div class="panel-heading">
-        <button type="button" class="close" onclick="clearModal('modalTaskQueue', 'div.dialogTaskQueue')" data-dismiss="modal">&times;</button>
+        <button type="button" class="close" onclick="clearModalClose('modalTaskQueue', 'div.dialogTaskQueue')" data-dismiss="modal">&times;</button>
         <h4 class="modal-title">Task Manager [{{ $titleTask }}]</h4>
     </div>
     <div class="modal-body">
@@ -60,7 +60,7 @@
                     <span v-if="buttonTask == 'wait'"><i class='fa fa-refresh'></i> Ejecutar</span>
                     <span v-if="buttonTask == 'load'"><i class="fa fa-spin fa-spinner"></i> Cargando</span>
                 </button>
-                <button type="button" class="btn btn-default" onclick="clearModal('modalTaskQueue', 'div.dialogTaskQueue')" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
+                <button type="button" class="btn btn-default" onclick="clearModalClose('modalTaskQueue', 'div.dialogTaskQueue')" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
             </div>
         </div>
     </div>
