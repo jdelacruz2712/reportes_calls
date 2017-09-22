@@ -7,7 +7,7 @@ io.sails.autoConnect = false
 socketSails.reconnection = true
 socketSails.reconnectionDelayMax = 5
 
-const socketAsterisk = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts': 15, 'reconnectionDelay': 9000, 'reconnectionDelayMax': 9000})
+const socketNodejs = io.connect(restApiDashboard, {'reconnection': true, 'reconnectionAttempts': 15, 'reconnectionDelay': 9000, 'reconnectionDelayMax': 9000})
 
 const vueFront = new Vue({
   el: '#frontAminLTE',
@@ -129,25 +129,29 @@ const vueFront = new Vue({
     },
 
     loadVariablesGlobals: async function () {
-      let response = await this.sendUrlRequest('/getVariablesGlobals')
-      this.getNameProyect = response.getNameProyect
-      this.getUserId = response.getUserId
-      this.getUsername = response.getUsername
-      this.getNameComplete = response.getNameComplete
-      this.getRole = response.getRole
-      this.getRemoteIp = response.getRemoteIp
-      this.statusChangePassword = response.statusChangePassword
-      this.statusChangeAssistance = response.statusChangeAssistance
-      this.statusQueueAddAsterisk = response.statusQueueAddAsterisk
-      this.requiredAnnexed = response.requiredAnnexed
-      this.hourServer = response.hourServer
-      this.textDateServer = response.textDateServer
-      this.dateServer = response.dateServer
-      this.annexed = response.annexed
-      this.quantityQueueAssign = response.quantityQueueAssign
-      this.getQueuesUser = response.getQueuesUser
-      this.getAgentDashboard = response.getAgentDashboard
-      this.assistanceNextHour = response.assistanceNextHour
+      const dataGlobals = await this.sendUrlRequest('/getVariablesGlobals')
+      this.getAgentDashboard = await this.sendUrlRequest('/getAgentDashboard')
+
+      this.annexedStatusAsterisk = this.getAgentDashboard.agent_status
+      this.getEventName = this.getAgentDashboard.event_name
+
+      this.getNameProyect = dataGlobals.getNameProyect
+      this.getUserId = dataGlobals.getUserId
+      this.getUsername = dataGlobals.getUsername
+      this.getNameComplete = dataGlobals.getNameComplete
+      this.getRole = dataGlobals.getRole
+      this.getRemoteIp = dataGlobals.getRemoteIp
+      this.statusChangePassword = dataGlobals.statusChangePassword
+      this.statusChangeAssistance = dataGlobals.statusChangeAssistance
+      this.statusQueueAddAsterisk = dataGlobals.statusQueueAddAsterisk
+      this.requiredAnnexed = dataGlobals.requiredAnnexed
+      this.hourServer = dataGlobals.hourServer
+      this.textDateServer = dataGlobals.textDateServer
+      this.dateServer = dataGlobals.dateServer
+      this.annexed = dataGlobals.annexed
+      this.quantityQueueAssign = dataGlobals.quantityQueueAssign
+      this.getQueuesUser = dataGlobals.getQueuesUser
+      this.assistanceNextHour = dataGlobals.assistanceNextHour
       currenTime()
 
       // Cargando image del profile_user
@@ -156,25 +160,20 @@ const vueFront = new Vue({
       // Verificacion de marcado de asistencia y requerimiento de cambio de contraseña
       await this.verifyAssistance()
 
-      // Setea la etiqueta del estado actual cada vez que actualicen la pantalla del sistema
-      ajaxNodeJs({userID: this.getUserId}, '/detalle_eventos/getStatusActual', true)
-
       if (this.annexed === 0) loadModule('agents_annexed')
 
-      if (response) {
+      if (dataGlobals) {
         if (this.getUserId && this.getNameProyect) {
           this.statusAddAgentDashboard = true
-          socketAsterisk.emit('createRoomFrontPanel', { nameProyect: this.getNameProyect, agent_user_id: this.getUserId})
+          socketNodejs.emit('createRoomFrontPanel', { nameProyect: this.getNameProyect, agent_user_id: this.getUserId})
         }
 
         // Cargando registro en Dahsboard
         let responseAddDashboard = await this.sendUrlRequest('/getStatusAddAgentDashboard')
         if (responseAddDashboard.statusAddAgentDashboard === false) {
           this.statusAddAgentDashboard = true
-          let dataAddAgentDashboard = await this.sendUrlRequest('/getAgentDashboard')
-          this.getAgentDashboard = dataAddAgentDashboard.statusAddAgentDashboard
-          this.getAgentDashboard.nameProyect = this.getNameProyect
-          socketAsterisk.emit('addUserToDashboard', this.getAgentDashboard)
+          this.getAgentDashboard = await this.sendUrlRequest('/getAgentDashboard')
+          socketNodejs.emit('addUserToDashboard', this.getAgentDashboard)
         }
       }
     },
@@ -220,9 +219,7 @@ const vueFront = new Vue({
         case 'changeStatus' :
           if (this.getRole === 'user') {
             (this.statusQueueAddAsterisk === true) ? this.routeAction = '/detalle_eventos/queuePause' : this.routeAction = '/detalle_eventos/queueAdd'
-          } else {
-            this.routeAction = '/detalle_eventos/registrarDetalle'
-          }
+          } else this.routeAction = '/detalle_eventos/registrarDetalle'
           break
         case 'releasesAnnexed' :
           this.routeAction = '/anexos/liberarAnexoOnline'
@@ -373,34 +370,34 @@ const vueFront = new Vue({
   }
 })
 
-socketAsterisk.on('connect', function () {
-  vueFront.nodejsServerName = 'Servidor Asterisk'
+socketNodejs.on('connect', function () {
+  vueFront.nodejsServerName = 'Servidor Nodejs'
   vueFront.ModalConnectionNodeJs = 'modal fade'
-  vueFront.nodejsServerMessage = 'Acabas de conectar con el Servidor Asterisk'
+  vueFront.nodejsServerMessage = 'Acabas de conectar con el Servidor Nodejs'
   console.log('Socket Asterisk connected!')
 })
 
-socketAsterisk.on('connect_error', function () {
-  vueFront.nodejsServerName = 'Servidor Asterisk'
+socketNodejs.on('connect_error', function () {
+  vueFront.nodejsServerName = 'Servidor Nodejs'
   vueFront.ModalConnectionNodeJs = 'modal show'
   let i = 9
   let refreshIntervalId = setInterval(() => {
-    vueFront.nodejsServerMessage = `Fallo la conexión por el Servidor Asterik volveremos a reintentar en ${i} segundos!!!`
+    vueFront.nodejsServerMessage = `Fallo la conexión con el socket del Server NodeJS volveremos a reintentar en ${i} segundos!!!`
     i--
     if (i === 0) clearInterval(refreshIntervalId)
   }, 1000)
-  console.log('socketAsterisk Connection Failed')
+  console.log('socketNodejs Connection Failed')
 })
 
-socketAsterisk.on('disconnect', function () {
-  vueFront.nodejsServerName = 'Servidor Asterisk'
+socketNodejs.on('disconnect', function () {
+  vueFront.nodejsServerName = 'Servidor Nodejs'
   vueFront.ModalConnectionNodeJs = 'modal show'
-  vueFront.nodejsServerMessage = 'Acabas de perder conexión con el Asterisk !!!'
-  console.log('socketAsterisk Disconnected')
+  vueFront.nodejsServerMessage = 'Acabas de perder conexión con el socket del Server Nodejs !!!'
+  console.log('socketNodejs Disconnected')
 })
 
 // Cambia la etiqueta de estado actual cuando este recibe o realiza un llamada
-socketAsterisk.on('statusAgent', (data) => {
+socketNodejs.on('statusAgent', (data) => {
   vueFront.sendUrlRequest('/updateStatusAddAgentDashboard')
   vueFront.statusAddAgentDashboard = data.statusAddAgentDashboard
   vueFront.getEventName = data.eventName
