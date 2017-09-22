@@ -24,7 +24,8 @@
             </thead>
             <tbody>
               <template v-for="(outbound, index) in callsOutbound ">
-                <tr v-if="compareRole(outbound.agent_role) === true">
+                @{{ searchInformationProfile(outbound,index,'callsOutbound') }}
+                <tr v-if="compareRole(outbound.role) === true">
                   <td> @{{ index + 1 }}</td>
                   <td class="products-list product-list-in-box">
                     <div class="product-img">

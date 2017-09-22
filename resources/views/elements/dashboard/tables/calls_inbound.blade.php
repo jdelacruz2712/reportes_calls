@@ -26,7 +26,8 @@
             </thead>
             <tbody>
               <template v-for="(inbound, index) in callsInbound ">
-                <tr v-if="compareRole(inbound.agent_role) === true">
+                @{{ searchInformationProfile(inbound,index, 'callsInbound') }}
+                <tr v-if="compareRole(inbound.role) === true">
                   <td>@{{ index + 1 }}</td>
                   <td class="products-list product-list-in-box">
                     <div class="product-img">

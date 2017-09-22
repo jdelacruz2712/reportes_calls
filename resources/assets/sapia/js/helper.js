@@ -231,14 +231,12 @@ const eventPostExecuteActionSuccess = (parameters) => {
 	case 'assignAnnexed':
 		vueFront.annexed = vueFront.remotoReleaseAnnexed
 		vueFront.remotoReleaseAnnexed = 0
-		// socketNodejs.emit('createRoom', vueFront.annexed)
 		break
 	case 'releasesAnnexed':
 		vueFront.remotoReleaseUserId = 0
 		vueFront.remotoReleaseUsername = 0
 		vueFront.remotoReleaseAnnexed = 0
 		vueFront.remotoReleaseStatusQueueRemove = false
-		socketNodejs.emit('leaveRoom', vueFront.annexed)
 		vueFront.annexed = 0
 		setQueueAdd(false)
 		break
@@ -321,7 +319,10 @@ const setQueueAdd = (queueAdd) => {
 }
 
 // Función que redirecciona a la ventana Login matando las sesiones existentes
-const eventLogout = () => location.href = 'logout'
+const eventLogout = () => {
+	socketNodejs.emit('leaveRoomFrontPanel', vueFront.getAgentDashboard)
+	location.href = 'logout'
+}
 
 // Función que genera el rango de horas para la marcacion de salida del agente
 const rangoHoras = (hour_actually) => {
