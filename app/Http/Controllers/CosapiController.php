@@ -8,7 +8,6 @@ use Cosapi\Models\Queues;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
 
-use Illuminate\Queue\Queue;
 use Illuminate\Support\Facades\DB;
 use Cosapi\Models\DetalleEventos;
 use Illuminate\Support\Facades\Session;

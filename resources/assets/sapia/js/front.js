@@ -465,17 +465,19 @@ const hideErrorForm = (formDiv) => {
 }
 
 // Función para poder buscar en una tabla
-const searchTable = (idTable, idSearch) => {
-	let $rows = $(idTable+' tbody tr')
-	$(idSearch).keyup(function() {
-		let val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
-			reg = RegExp(val, 'i'),
-			text
-		$rows.show().filter(function() {
-			text = $(this).text().replace(/\s+/g, ' ')
-			return !reg.test(text)
-		}).hide()
-	})
+const searchTable = (idTable, idSearch, filterAnnexed = '') => {
+    $(idSearch).keyup(function(){
+        _this = this
+        $.each($(idTable + " tbody tr " + filterAnnexed), function() {
+            let value = -1
+            let valueSearch = $(_this).val()
+            if($(this).text().toLowerCase().indexOf(valueSearch.toLowerCase()) === value) {
+                $(this).hide()
+            }else {
+                $(this).show()
+            }
+        })
+    })
 }
 
 // Función para seleccionar todos los checkbox con uno solo
