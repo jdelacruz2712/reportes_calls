@@ -11,14 +11,25 @@
   <div class="row">
       <!--graficos del lado derecho-->
     <section class="col-lg-9 connectedSortable ui-sortable">
-      @include('elements.dashboard03.graphics.linegraph', ['nameGrafico' => 'llamadas_abandonadas'])
-      @include('elements.dashboard03.graphics.linegraph',['nameGrafico' => 'promedio_atencion'])
+      @include('elements.dashboard03.graphics.graphics',['graphicName' => 'abandonedCalls'])
+      @include('elements.dashboard03.graphics.graphics',['graphicName' => 'averageAttention'])
+      @include('elements.dashboard03.graphics.graphics',['graphicName' => 'answeredCallsQueue'])
+      @include('elements.dashboard03.graphics.graphics',['graphicName' => 'attendedAbandoned'])
     </section>
       <!--graficos del lado izquierdo-->
     <section class="col-lg-3 connectedSortable ui-sortable">
-      @include('elements.dashboard03.graphics.graphics')
+      @include('elements.dashboard03.graphics.graphicsTabs')
     </section>
   </div>
-<script src="{{ asset('js/drop-drag.min.js')}}"></script>
-<script src="{{ asset('js/highchart.min.js')}}"></script>
-{!! Html::script('js/graficos.js?version='.date('YmdHis')) !!}
+</section>
+{!! Html::script('js/drop-drag.min.js?version='.date('YmdHis')) !!}
+{!! Html::script('js/highchart.min.js?version='.date('YmdHis')) !!}
+{!! Html::script('js/graphics.js?version='.date('YmdHis')) !!}
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+  generateLineGraph(parameter01)
+  generateLineGraph(parameter02)
+  generateBarGraph(parameterBar)
+  generateBarVerticalGraph(parameterBarVertical)
+
+</script>

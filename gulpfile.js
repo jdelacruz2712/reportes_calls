@@ -248,7 +248,7 @@ elixir(function(mix) {
 		.copy('resources/assets/sapia/background'                         , 'public/background')
 		.copy('resources/assets/images/default_avatar.png'                , 'public/storage/default_avatar.png')
 		.copy('resources/assets/sapia/css/dashboard.css'                  , 'public/css/dashboard.css')
-		.copy('resources/assets/sapia/js/graficos.js'                  		, 'public/js/graficos.js')
+		.copy('resources/assets/sapia/js/graphics.js'                  		, 'public/js/graphics.js')
 
 
 })
