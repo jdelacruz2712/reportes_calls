@@ -158,6 +158,7 @@ return [
         Cosapi\Providers\SailsioServiceProvider::class,
         Cosapi\Providers\AdminLTEProvider::class,
         Cosapi\Providers\highchartsServiceProvider::class,
+        Cosapi\Providers\dropdragServiceProvider::class,
         Cosapi\Providers\DateRangePickerServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,

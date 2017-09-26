@@ -188,6 +188,29 @@ elixir(function(mix) {
 })
 
 /**
+ Generando los archivos para el drop and drag el cual se usara en el dashboard_03
+*/
+elixir(function(mix) {
+	mix
+		.scripts([
+			'vendor/drop-drag/jquery-ui/jquery-ui.min.js',
+			'vendor/drop-drag/dashboard.js'
+		],'public/js/drop-drag.min.js','resources/assets/')
+})
+
+/**
+ Generando los archivos para el highchart el cual se usara en el dashboard_03
+*/
+elixir(function(mix) {
+	mix
+		.scripts([
+			'highcharts.js',
+			'modules/exporting.js'
+	],'public/js/highchart.min.js','resources/assets/node_modules/highcharts/')
+})
+
+
+/**
  Generando los archivos para autogestionar los formularios con Vue
 */
 elixir(function(mix) {
@@ -225,6 +248,7 @@ elixir(function(mix) {
 		.copy('resources/assets/sapia/background'                         , 'public/background')
 		.copy('resources/assets/images/default_avatar.png'                , 'public/storage/default_avatar.png')
 		.copy('resources/assets/sapia/css/dashboard.css'                  , 'public/css/dashboard.css')
-		.copy('resources/assets/node_modules/highcharts/highcharts.js'    , 'public/js/highcharts.js')
+		.copy('resources/assets/sapia/js/graficos.js'                  		, 'public/js/graficos.js')
+
 
 })
