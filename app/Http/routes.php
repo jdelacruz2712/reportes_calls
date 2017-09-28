@@ -21,6 +21,7 @@ Route::group(['middleware'=>['user']], function () {
         Route::post('dashboard_01/panelAgentStatusSummary'              , ['uses'=>'DashboardController@panelAgentStatusSummary']);
         Route::post('dashboard_01/panelGroupStatistics'                 , ['uses'=>'DashboardController@panelGroupStatistics']);
         Route::get('dashboard_02'                                       , ['uses'=>'DashboardController@dashboard_02']);
+        Route::post('dashboard_03'                                       , ['uses'=>'Dashboard03Controller@index']);
 
         // Reportes de consolidado de eventos
         Route::post('events_consolidated'                               , ['uses'=>'EventsAgentController@events_consolidated']);

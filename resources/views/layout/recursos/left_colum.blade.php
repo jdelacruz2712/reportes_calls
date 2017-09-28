@@ -35,6 +35,7 @@
         </a>
         <ul class="treeview-menu">
           <li><a href="dashboard_01" target="_blank"><i class="fa fa-circle-o text-red"></i> Dashboard 01</a></li>
+          <li><a href="#" id="dashboard_03" class="reportes"><i class="fa fa-circle-o text-blue"></i> Dashboard 03</a></li>
         </ul>
       </li>
       @endif

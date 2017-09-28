@@ -8,6 +8,3 @@
 @section('routeReport')
 		@include($routeReport)
 @endsection
-
-
-
