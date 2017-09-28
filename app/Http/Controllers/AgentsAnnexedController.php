@@ -42,7 +42,6 @@ class AgentsAnnexedController extends CosapiController
                 $list_annexed = $this->queryListAnexo($request->event);
                 foreach ($list_annexed as $key => $annexed) {
 
-
                     if($request->event == 'free'){
                         if ($annexed['user'] == null) {
                             if ($contador > 5) {

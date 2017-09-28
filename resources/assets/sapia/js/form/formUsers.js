@@ -92,3 +92,32 @@ $('#formChangeRole').submit(function(e) {
     })
     e.preventDefault()
 })
+
+$('#formChangeStatus').submit(function(e) {
+    let data = $(this).serialize()
+    changeButtonForm('btnForm','btnLoad')
+    $.ajax({
+        type        : 'POST',
+        url         : 'saveformchangeStatus',
+        cache       : false,
+        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        data        : data,
+        success: function(data){
+            if(data.message === 'Success'){
+                changeButtonForm('btnLoad','btnForm')
+                showNotificacion('success', 'Se cambio el estado del usuario correctamente !!!', 'Success', 2000, false, true)
+                clearModal('modalUsers', 'div.dialogUsers')
+                buscar()
+            }else{
+                showNotificacion('error', 'Problemas al actualizar el dato en la base de datos', 'Error', 10000, false, true)
+            }
+            changeButtonForm('btnLoad','btnForm')
+        },
+        error : function(data) {
+            showNotificacion('error', 'Problema al comunicarse con la ruta "saveformchangeStatus"', 'Error', 10000, false, true)
+            changeButtonForm('btnLoad','btnForm')
+            showErrorForm(data, '.formError')
+        }
+    })
+    e.preventDefault()
+})

@@ -5,15 +5,15 @@
         <h4 class="modal-title">Assign Users [{{ $nameQueue }}]</h4>
     </div>
     <div class="modal-body">
-        <form id="formAssignUser">
-            <div class="col-xs-12">
-                <div class="input-group">
-                    <div class="input-group-addon">
-                        <i class="fa fa-user"></i>
-                    </div>
-                    <input type="text" class="form-control" id="search" placeholder="Ingrese el nombre o usuario para buscar">
+        <div class="col-xs-12">
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-user"></i>
                 </div>
+                <input type="text" class="form-control" id="search_agents_queue" placeholder="Ingrese el nombre o usuario a buscar">
             </div>
+        </div>
+        <form id="formAssignUser">
             <div class="col-xs-12">
                 <table id="table-agents-queue" class="table table-fixed" cellspacing="0" width="100%">
                     <thead>
@@ -76,6 +76,6 @@
 {!!Html::script('js/form/formQueues.min.js?version='.date('YmdHis')) !!}
 <script>
     hideErrorForm('.formError')
-    searchTable('#table-agents-queue','#search')
+    searchTable('#table-agents-queue','#search_agents_queue')
     clearModalClose('modalQueues', 'div.dialogQueuesLarge')
 </script>

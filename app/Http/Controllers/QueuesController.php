@@ -77,11 +77,12 @@ class QueuesController extends CosapiController
     }
 
     protected function outgoingcollection($builderview){
-        $outgoingcollection                 = new Collector();
-        foreach ($builderview as $view) {
+        $outgoingcollection = new Collector();
+        $i = 0;
+        foreach ($builderview as $view) { $i++;
             $Status = ($view['Status'] == 1 ? 'Activo' : 'Desactivo');
             $outgoingcollection->push([
-                'Id'                    => $view['Id'],
+                'Id'                    => $i,
                 'Name'                  => $view['Name'],
                 'Vdn'                   => $view['Vdn'],
                 'Strategy'              => $view['Strategy'],
@@ -165,7 +166,6 @@ class QueuesController extends CosapiController
 
     public function getQueue($idQueue){
         $queue = Queues::Select()
-            ->with('prioridad')
             ->where('id', $idQueue)
             ->get()
             ->toArray();

@@ -112,9 +112,9 @@ elixir(function(mix) {
 		],'public/css/adminlte.min.css','resources/assets/')
 		.scripts([
 			'vendor/adminlte/plugins/jquery/dist/jquery.js',
+            'vendor/adminlte/dist/js/adminlte.js',
 			'vendor/adminlte/plugins/bootstrap/dist/js/bootstrap.js',
 			'vendor/adminlte/plugins/fastclick/lib/fastclick.js',
-			'vendor/adminlte/dist/js/adminlte.js',
 			'sapia/js/right_menu_adminlte.js'
 		],'public/js/adminlte.min.js','resources/assets/')
 })

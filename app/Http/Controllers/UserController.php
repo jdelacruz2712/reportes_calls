@@ -85,6 +85,14 @@ class UserController extends CosapiController
         ));
     }
 
+    public function formChangeStatus(Request $request){
+        $getUser        = $this->getUserGlobal($request->valueID);
+        return view('layout/recursos/forms/users/form_users_status')->with(array(
+            'User'          => $getUser[0],
+            'idUser'        => $request->valueID
+        ));
+    }
+
     public function getQueuesUsers(Request $request){
         $listQueues     = $this->getListQueues();
         $getQueueUser   = $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($request->valueID),$this->getQueueGlobal(),$listQueues['Priority']);
@@ -179,6 +187,19 @@ class UserController extends CosapiController
             }else {
                 return ['message' => 'Error'];
             }
+        }
+        return ['message' => 'Error'];
+    }
+
+    public function saveFormChangeStatus(Requests\UsersChangeStatusRequest $request){
+        if($request->ajax()){
+            $idStatus = ($request->statusUser == 1 ? '2' : '1');
+            $resultado = User::where('id',$request->userID)
+                            ->update([
+                                'estado_id' => $idStatus
+                            ]);
+            if($resultado) return ['message' => 'Success'];
+            return ['message' => 'Error'];
         }
         return ['message' => 'Error'];
     }
@@ -418,7 +439,7 @@ class UserController extends CosapiController
                 'Estado'                => '<span class="label label-'.($view['Estado'] == 'Activo' ? 'success' : 'danger').' labelFix">'.$view['Estado'].'</span>',
                 'Actions'               => '<span data-toggle="tooltip" data-placement="left" title="Change Role"><a class="btn btn-success btn-xs" onclick="responseModal('."'div.dialogUsers','form_change_rol','".$view['Id']."'".')" data-toggle="modal" data-target="#modalUsers"><i class="fa fa-user"></i></a></span>
                                             <span data-toggle="tooltip" data-placement="left" title="Change Password"><a class="btn btn-danger btn-xs" onclick="responseModal('."'div.dialogUsers','form_change_password','".$view['Id']."'".')" data-toggle="modal" data-target="#modalUsers"><i class="fa fa-key"></i></a></span>
-                                            <span data-toggle="tooltip" data-placement="left" title="Change Status"><a class="btn btn-info btn-xs" onclick="changeStatusUser('. $view['Id'] .', \''. $view['Estado'] .'\')"><i class="fa fa-refresh"></i></a></span>
+                                            <span data-toggle="tooltip" data-placement="left" title="Change Status"><a class="btn btn-info btn-xs" onclick="responseModal('."'div.dialogUsers','form_status_user','".$view['Id']."'".')" data-toggle="modal" data-target="#modalUsers"><i class="fa fa-refresh"></i></a></span>
                                             <span data-toggle="tooltip" data-placement="left" title="Assign Queues"><a class="btn btn-warning btn-xs" onclick="responseModal('."'div.dialogUsers','form_assign_queue','".$view['Id']."'".')" data-toggle="modal" data-target="#modalUsers"><i class="fa fa-asterisk"></i></a></span>
                                             <span data-toggle="tooltip" data-placement="left" title="'.$textQueues.'"><a class="btn btn-primary btn-xs" onclick="'.($countQueues > 0 ? "responseModal('div.dialogUsers','viewqueuesUsers','".$view['Id']."')" : "").'" '.($countQueues > 0 ? 'data-toggle="modal" data-target="#modalUsers"' : 'disabled').'><i class="fa fa-phone"></i></a></span>'
             ]);
