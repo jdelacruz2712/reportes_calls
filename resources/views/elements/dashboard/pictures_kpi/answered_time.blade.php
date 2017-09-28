@@ -6,5 +6,5 @@
       <span class="info-box-number metricas-info-box-number">@{{ answeredTime }}</span>
     </div>
   </div>
-  <div v-else>@include('layout.recursos.loading_bar')</div>
+  <div v-else="answeredTime = '-'">@include('layout.recursos.loading_bar')</div>
 </div>

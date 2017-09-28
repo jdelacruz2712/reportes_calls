@@ -6,5 +6,5 @@
       <span class="info-box-number metricas-info-box-number">@{{ slaDay }}</span>
     </div>
   </div>
-  <div v-else>@include('layout.recursos.loading_bar')</div>
+  <div  v-else="slaDay = '-'">@include('layout.recursos.loading_bar')</div>
 </div>

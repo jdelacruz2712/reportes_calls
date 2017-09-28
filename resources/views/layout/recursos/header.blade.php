@@ -39,7 +39,7 @@
                       <li><!-- start message -->
                         <a href="#">
                           <div class="pull-left">
-                            <img src="adminlte/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
                           </div>
                           <h4>
                             Support Team
@@ -52,7 +52,7 @@
                       <li>
                         <a href="#">
                           <div class="pull-left">
-                            <img src="adminlte/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
                           </div>
                           <h4>
                             AdminLTE Design Team
@@ -64,7 +64,7 @@
                       <li>
                         <a href="#">
                           <div class="pull-left">
-                            <img src="adminlte/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
                           </div>
                           <h4>
                             Developers
@@ -76,7 +76,7 @@
                       <li>
                         <a href="#">
                           <div class="pull-left">
-                            <img src="adminlte/img/user3-128x128.jpg" class="img-circle" alt="User Image">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
                           </div>
                           <h4>
                             Sales Department
@@ -88,7 +88,7 @@
                       <li>
                         <a href="#">
                           <div class="pull-left">
-                            <img src="adminlte/img/user4-128x128.jpg" class="img-circle" alt="User Image">
+                            <img src="storage/default_avatar.png" class="img-circle" alt="User Image">
                           </div>
                           <h4>
                             Reviewers
@@ -149,82 +149,35 @@
             <!--para listar tareas-->
                 <li class="dropdown tasks-menu">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                <i class="fa fa-flag-o"></i>
-                <span class="label label-danger">9</span>
+                <i class="fa fa-phone"></i>
+                <span class="label label-info" v-text="getQueuesUser.length"></span>
               </a>
               <ul class="dropdown-menu">
-                <li class="header">You have 9 tasks</li>
+                <li class="header text-center text-bold">You have @{{ getQueuesUser.length }} queues</li>
                 <li>
                   <!-- inner menu: contains the actual data -->
                   <ul class="menu">
-                    <li><!-- Task item -->
-                      <a href="#">
-                        <h3>
-                          Design some buttons
-                          <small class="pull-right">20%</small>
-                        </h3>
-                        <div class="progress xs">
-                          <div class="progress-bar progress-bar-aqua" style="width: 20%" role="progressbar"
-                               aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only">20% Complete</span>
-                          </div>
-                        </div>
-                      </a>
+                    <li v-for="(queuesUser, index) in getQueuesUser">
+                        <a style="cursor:pointer;">
+                            <h3>
+                                @{{ queuesUser['Queues']['name'] }}
+                                <small class="pull-right" v-text="getPercentageOfWeightQueue[index] + ' %'"></small>
+                            </h3>
+                            <div class="progress xs">
+                                <div :class="[ 'progress-bar progress-bar-' + getColorPercentageOfWeightQueue[index] ]" :style="{ width: getPercentageOfWeightQueue[index] + '%' }" role="progressbar"
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                                    <span class="sr-only" v-text="getPercentageOfWeightQueue[index] + '% de Recibir Llamadas'"></span>
+                                </div>
+                            </div>
+                        </a>
                     </li>
-                    <!-- end task item -->
-                    <li><!-- Task item -->
-                      <a href="#">
-                        <h3>
-                          Create a nice theme
-                          <small class="pull-right">40%</small>
-                        </h3>
-                        <div class="progress xs">
-                          <div class="progress-bar progress-bar-green" style="width: 40%" role="progressbar"
-                               aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only">40% Complete</span>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <!-- end task item -->
-                    <li><!-- Task item -->
-                      <a href="#">
-                        <h3>
-                          Some task I need to do
-                          <small class="pull-right">60%</small>
-                        </h3>
-                        <div class="progress xs">
-                          <div class="progress-bar progress-bar-red" style="width: 60%" role="progressbar"
-                               aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only">60% Complete</span>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <!-- end task item -->
-                    <li><!-- Task item -->
-                      <a href="#">
-                        <h3>
-                          Make beautiful transitions
-                          <small class="pull-right">80%</small>
-                        </h3>
-                        <div class="progress xs">
-                          <div class="progress-bar progress-bar-yellow" style="width: 80%" role="progressbar"
-                               aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
-                            <span class="sr-only">80% Complete</span>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                    <!-- end task item -->
                   </ul>
-                </li>
-                <li class="footer">
-                  <a href="#">View all tasks</a>
                 </li>
               </ul>
             </li>
             <!--fin de listar tareas-->
+            <!-- Button para Cambiar Contraseña -->
+            <button id="changePassword" type="button" class="hidden" onclick="responseModal('div.dialogUsers','form_change_password',vueFront.getUserId)" data-toggle="modal" data-target="#modalUsers"></button>
             <!-- User Account: style can be found in dropdown.less -->
                 <li class="dropdown user user-menu">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -237,7 +190,7 @@
                             <img :src="'storage/' + srcAvatar" class="img-circle" alt="User Image">
                             <p>
                                 @{{ getNameComplete + ' - ' }}<font id="UserNameRole">@{{getRole}}</font>
-                                <small>{{date('j F Y')}}</small>
+                                <small>{{ Date::now()->format('j F Y') }}</small>
                             </p>
                         </li>
                         <!-- Menu Footer-->

@@ -4,6 +4,7 @@
     <div class="box-header">
         <h3 class="box-title">@yield('titleReport')</h3>
         <div class="box-tools">
+            <input type="hidden" id="hidEvent" value="{{ $exportReport }}">
             <div class="btn-group pull-right">
                 <a onclick="createUser();" class="btn btn-primary"><i class="fa fa-user-plus" aria-hidden="true"></i> Add User</a>
                 @include('layout.recursos.buttons_export')
@@ -22,9 +23,7 @@
                     <th>Username</th>
                     <th>Role</th>
                     <th>Estado</th>
-                    <th>Change Rol</th>
-                    <th>Change Password</th>
-                    <th>Change Status</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
         </table>

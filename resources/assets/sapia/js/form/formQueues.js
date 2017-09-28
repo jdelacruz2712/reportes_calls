@@ -13,7 +13,8 @@ $('#formQueues').submit(function(e) {
         success: function(data){
             if(data.message === 'Success'){
                 changeButtonForm('btnLoad','btnForm')
-                showNotificacion('success', 'Se agrego correctamente la cola !!!', 'Success', 2000, false, true)
+                let action = (data.action === 'create' ? 'agrego' : 'edito')
+                showNotificacion('success', 'Se '+ action +' correctamente la cola !!!', 'Success', 2000, false, true)
                 clearModal('modalQueues', 'div.dialogQueues')
                 buscar()
             }else{
@@ -59,12 +60,12 @@ $('#formQueuesStatus').submit(function(e) {
     e.preventDefault()
 })
 
-$('#formQueuesUser').submit(function(e) {
+$('#formAssignUser').submit(function(e) {
     let data = $(this).serialize()
     changeButtonForm('btnForm','btnLoad')
     $.ajax({
         type        : 'POST',
-        url         : 'saveformUsersQueues',
+        url         : 'saveformAssignUser',
         cache       : false,
         headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
         data        : data,

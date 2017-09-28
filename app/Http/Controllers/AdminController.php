@@ -4,11 +4,9 @@ namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
-use Cosapi\Models\DetalleEventos;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Illuminate\Support\Facades\Session;
@@ -108,6 +106,11 @@ class AdminController extends CosapiController
         return view('/layout/recursos/working');
     }
 
+    public function errorRole()
+    {
+        return view('/layout/recursos/error_role');
+    }
+
     public function setQueueAdd(Request $request)
     {
         if ($request->ajax()) {
@@ -144,8 +147,8 @@ class AdminController extends CosapiController
             'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate'),
             'annexed' => $this->UserAnexo,
             'assistanceNextHour' => $assistanceNextHour,
-            'quantityQueueAssign' => $this->quantityQueueAssign
-
+            'quantityQueueAssign' => $this->quantityQueueAssign,
+            'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId),$this->getQueueGlobal(),$this->getPriorityGlobal())
         ], 200);
     }
 
