@@ -34,6 +34,7 @@ class IncomingCallsController extends CosapiController
                     'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewRolTypeSearch'     => false,
                     'viewHourSearch'        => false,
                     'viewButtonSearch'      => false,
                     'viewButtonExport'      => true,

@@ -42,7 +42,6 @@
     })
 
     function buscar(){
-        let fecha = $("#texto").val()
         $("#table-details-events-report").dataTable().fnDestroy()
         $("#table-details-events-report").DataTable({
             "ajax"              : {
@@ -50,8 +49,10 @@
                 type    : "POST",
                 dataSrc : "data",
                 data :{
-                    _token       : $('input[name=_token]').val(),
-                    fecha_evento : fecha
+                    _token       : $('meta[name="_token"]').attr('content'),
+                    filter_rol   : $('select[name=rolUser]').val(),
+                    group_filter : $('select[name=groupFilter]').val(),
+                    fecha_evento : $("input[name=fecha_evento]").val()
                 }
             },
             "columns"    : [

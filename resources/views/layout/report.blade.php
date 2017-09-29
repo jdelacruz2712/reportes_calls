@@ -7,7 +7,6 @@
 				<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
 			</div>
 		</div>
-		<input type="hidden" name="_token" value="{!! csrf_token() !!}">
 		<input type="hidden" id="hidEvent" value="{{ $exportReport }}">
 		<input type="hidden" id="hidDefaultEvent" value="{{$nameRouteController}}">
         @if($dateHourFilter)
@@ -44,22 +43,26 @@
                                 </div>
                             </div>
                         @endif
-                        @if($viewRolSearch)
+                        @if($viewRolTypeSearch)
                             <div class="@if($viewButtonSearch) col-md-2 @else col-md-4 @endif">
-                                <!-- Hour range -->
+                                <!-- Rol Search -->
                                 <div class="input-group">
                                     <div class="input-group-addon">
-                                        <i class="fa fa-user"></i>
+                                        <i class="fa fa-filter"></i>
                                     </div>
                                     <select class="form-control" name="rolUser" id="rolUser">
                                         <option value="user">User</option>
                                         <option value="backoffice">Backoffice</option>
                                     </select>
+                                    <select class="form-control" name="groupFilter" id="rolUser">
+                                        <option value="groupDay">Group Day</option>
+                                        <option value="groupAgent">Group Agent</option>
+                                    </select>
                                 </div>
                             </div>
                         @endif
                         @if($viewButtonSearch)
-                            @if(!$viewHourSearch || $viewRolSearch)
+                            @if(!$viewHourSearch || !$viewRolSearch)
                                 <div class="col-md-2"></div>
                             @endif
                             <div class="col-md-2 pull-left visible-lg">

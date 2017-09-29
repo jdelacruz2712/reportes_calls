@@ -41,6 +41,7 @@ class UserController extends CosapiController
                     'viewDateSearch'            => false,
                     'viewDateSingleSearch'      => false,
                     'viewHourSearch'            => false,
+                    'viewRolTypeSearch'         => false,
                     'viewButtonSearch'          => false,
                     'viewButtonExport'          => false,
                     'exportReport'              => 'export_list_user',
