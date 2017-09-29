@@ -6,15 +6,13 @@
     @include('layout.recursos.icon_title')
     <title>Reportes | @yield('title')</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    {!! Html::style('css/adminlte.min.css') !!}
-    {!! Html::style('css/notifications.min.css') !!}
-    {!! Html::style('css/fonts-googleapis.css') !!}
+    <meta name="_token" content="{{ csrf_token() }}">
+    {!! Html::style('css/adminlte.min.css?version='.date('YmdHis')) !!}
+    {!! Html::style('css/notifications.min.css?version='.date('YmdHis')) !!}
+    {!! Html::style('css/fonts-googleapis.css?version='.date('YmdHis')) !!}
     @yield('css')
   </head>
-  <body class="hold-transition {{getenv('REPORT_THEME')}} sidebar-mini ">
-    <!-- Token de sistemas -->
-    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
+  <body class=" sidebar-mini {{getenv('REPORT_THEME')}}  " style="padding-right: 0px !important;">
 
     <div class="wrapper" id="frontAminLTE">
       @include('layout.recursos.header')
@@ -22,11 +20,7 @@
       <div class="content-wrapper">
         @include('layout.recursos.flash_message')
           <section class="content-header">
-            <h1>Front Panel
-              <small>
-              ,Hola @{{ getNameComplete }}
-
-              </small>
+            <h1>Front Panel, <small>Hola @{{ getNameComplete }}</small>
             </h1>
             <ol class="breadcrumb">
               <li><i class="fa fa-fw fa-calendar"></i> @{{ textDateServer }} &nbsp; <i class="fa fa-fw fa-clock-o"></i> @{{ hourServer }}</li>
@@ -45,9 +39,11 @@
       @include('layout.recursos.modals.modal_asssistance')
       @include('layout.recursos.modals.modal_standby')
       @include('layout.recursos.modals.modal_releases_annexed')
+      @include('layout.recursos.modals.modal_queues')
+      @include('layout.recursos.modals.modal_users')
       <div class="control-sidebar-bg"></div>
     </div>
-    {!! Html::script('js/adminlte.min.js') !!}
+    {!! Html::script('js/adminlte.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/notifications.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/vuesockets.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/personalizeFunctions.min.js?version='.date('YmdHis')) !!}

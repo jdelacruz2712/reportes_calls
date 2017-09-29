@@ -65,7 +65,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'en',
+    'fallback_locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -163,6 +163,9 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
 
+        /** Carbon multi-language **/
+        Jenssegers\Date\DateServiceProvider::class,
+
         /** Excel **/
         Maatwebsite\Excel\ExcelServiceProvider::class,
 
@@ -207,7 +210,7 @@ return [
         'Log'       => Illuminate\Support\Facades\Log::class,
         'Mail'      => Illuminate\Support\Facades\Mail::class,
         'Password'  => Illuminate\Support\Facades\Password::class,
-        'Queue'     => Illuminate\Support\Facades\Queue::class,
+        'Queues'     => Illuminate\Support\Facades\Queues::class,
         'Redirect'  => Illuminate\Support\Facades\Redirect::class,
         'Redis'     => Illuminate\Support\Facades\Redis::class,
         'Request'   => Illuminate\Support\Facades\Request::class,
@@ -226,6 +229,9 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
+
+        /** Carbon multi-language **/
+        'Date' => Jenssegers\Date\Date::class,
 
         /** Excel  **/
         'Excel'     => Maatwebsite\Excel\Facades\Excel::class,

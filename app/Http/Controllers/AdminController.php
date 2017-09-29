@@ -4,11 +4,9 @@ namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
-use Cosapi\Models\DetalleEventos;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Illuminate\Support\Facades\Session;
@@ -108,6 +106,11 @@ class AdminController extends CosapiController
         return view('/layout/recursos/working');
     }
 
+    public function errorRole()
+    {
+        return view('/layout/recursos/error_role');
+    }
+
     public function setQueueAdd(Request $request)
     {
         if ($request->ajax()) {
@@ -139,12 +142,13 @@ class AdminController extends CosapiController
             'statusQueueAddAsterisk' => $this->QueueAdd,
             'getRemoteIp' => $_SERVER['REMOTE_ADDR'],
             'requiredAnnexed' => $requiredAnnexed,
-            'hourServer' => date('H:i:s'),
-            'textDateServer' => date('d-m-w-Y'),
-            'dateServer' => date('Y-m-d'),
+            'hourServer' => $this->ShowDateAndTimeCurrent('justTheTime'),
+            'dateServer' => $this->ShowDateAndTimeCurrent('justTheDate'),
+            'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate'),
             'annexed' => $this->UserAnexo,
             'assistanceNextHour' => $assistanceNextHour,
-            'quantityQueueAssign' => $this->quantityQueueAssign
+            'quantityQueueAssign' => $this->quantityQueueAssign,
+            'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId),$this->getQueueGlobal(),$this->getPriorityGlobal())
         ], 200);
     }
 
@@ -155,9 +159,7 @@ class AdminController extends CosapiController
 
     public function getStatusAddAgentDashboard()
     {
-        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))
-            ->where('agent_name', $this->UserSystem)
-            ->get()->toArray();
+        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))->where('agent_name', $this->UserSystem)->get()->toArray();
 
         $existAgent = $AgentOnline[0]['count_agent'];
         $exits = false;
@@ -183,6 +185,6 @@ class AdminController extends CosapiController
     public function getAgentDashboard()
     {
         $AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
-        return response()->json(['statusAddAgentDashboard' => $AgentOnline[0]]);
+        return response()->json($AgentOnline[0]);
     }
 }

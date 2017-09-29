@@ -4,7 +4,7 @@
       <div class="box-header with-border ">
         <h3 class="dashboard-title">Details Calls Inbound</h3>
         <div class="box-tools pull-right">
-         <button type="button" class="btn btn-box-tool" data-widget="collapse" onclick="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
+         <button type="button" class="btn btn-box-tool" data-widget="collapse" @click="refreshDetailsCalls()" data-toggle="tooltip" title="Refresh"><i class="fa fa-refresh"></i>
          </button>
         </div>
       </div>
@@ -26,7 +26,8 @@
             </thead>
             <tbody>
               <template v-for="(inbound, index) in callsInbound ">
-                <tr v-if="compareRole(inbound.agent_role) === true">
+                @{{ searchInformationProfile(inbound,index, 'callsInbound') }}
+                <tr v-if="compareRole(inbound.role) === true">
                   <td>@{{ index + 1 }}</td>
                   <td class="products-list product-list-in-box">
                     <div class="product-img">

@@ -2,7 +2,6 @@
 
 namespace Cosapi\Http\Controllers;
 
-use Cosapi\Http\Requests;
 use Cosapi\Models\Anexo;
 use Illuminate\Http\Request;
 use Cosapi\Models\Cdr;
@@ -11,7 +10,6 @@ use Cosapi\Collector\Collector;
 use DB;
 use Carbon\Carbon;
 use Session;
-use Illuminate\Support\Facades\Log;
 
 class OutgoingCallsController extends CosapiController
 {

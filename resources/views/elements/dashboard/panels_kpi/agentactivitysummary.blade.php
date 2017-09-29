@@ -1,6 +1,6 @@
 <div class="row-fluid" id='detailAgents'>
-		<div class="box box-primary box-solid">
-			<div class="box-header with-border">
+		<div class="box box-primary box-solid dashboard-box">
+			<div class="box-header with-border dashboard-box-header">
 		  	<h3 class="dashboard-title">Agent Activity Summary</h3>
 			</div>
 			<div class="box-body" v-for="agentStatus in agentStatusSummary" style="padding: 0px">

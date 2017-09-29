@@ -8,7 +8,7 @@
 			</div>
 		</div>
 		<input type="hidden" name="_token" value="{!! csrf_token() !!}">
-		<input type="hidden" id="hidEvent" value="{{$exportReport}}">
+		<input type="hidden" id="hidEvent" value="{{ $exportReport }}">
 		<input type="hidden" id="hidDefaultEvent" value="{{$nameRouteController}}">
         @if($dateHourFilter)
             <div class="box-body">

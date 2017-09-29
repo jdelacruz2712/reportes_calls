@@ -4,11 +4,9 @@ namespace Cosapi\Http\Controllers;
 
 
 use Cosapi\Collector\Collector;
-use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\AgentesOnline;
 use DB;
-use Illuminate\Support\Facades\Log;
 
 class AgentsOnlineController extends CosapiController
 {

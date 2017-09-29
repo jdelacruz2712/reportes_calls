@@ -1,10 +1,19 @@
 $(document).ready(function () {
-  $.ajaxSetup({
-    headers: {
-      'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-    }
-  })
-  $('.reportes').on('click', function (e) { loadModule($(this).attr('id')) })
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+
+        }
+	})
+	$('.reportes').on('click', function (e) { loadModule($(this).attr('id')) })
+
+	$('#menuleft li.treeview ul li').click(function(){
+		$('#menuleft li.treeview ul li.active').removeClass("active")
+		$(this).addClass("active")
+
+		$('#menuleft li.treeview.active').removeClass("active")
+		$('#menuleft li.treeview.menu-open').addClass("active")
+	})
 })
 
 /* [showTabIncoming Función que carga Llamadas Entrantes en el reporte] */
@@ -36,198 +45,87 @@ const showTabListQueues = (evento) => dataTables('table-list-queue', getDataFilt
 
 /* [showTabAnnexed Función que carga la lista de anexos] */
 const showTabAnnexed = (event) => {
-  let token = $('input[name=_token]').val()
-  let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
-  $.ajax({
-    type: 'POST',
-    url: 'agents_annexed/list_annexed',
-    cache: false,
-    data: {
-      _token: token,
-      event: event
-    },
-    beforeSend: () => {
-      $('#divListAnnexed').html(imageLoading)
-    },
-    success: (data) => {
-      $('#divListAnnexed').html(data)
-    }
-  })
+	let token = $('meta[name="_token"]').attr('content')
+	let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
+	$.ajax({
+		type: 'POST',
+		url: 'agents_annexed/list_annexed',
+		cache: false,
+		data: {
+			_token: token,
+			event: event
+		},
+		beforeSend: () => {
+			$('#divListAnnexed').html(imageLoading)
+		},
+		success: (data) => {
+			$('#divListAnnexed').html(data)
+		}
+	})
 }
 
 // Función que activa las llamadas a travez del cambio de roles
 const activeCalls = () => {
-  if (vueFront.annexed !== 0) {
-    showNotificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
-  } else {
-    vueFront.remoteActiveCallsUserId = vueFront.getUserId
-    let message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
-      '<br>' +
-      '<p><b>Nota : </b>Cuando active la entrada de llamadas usted tendra que seleccionar su anexo y pasar a ACD para que le puedan caer las llamadas. ' +
-      'Por favor de verificar que esta asignados a las colas correspondientes.</p>'
+	if (vueFront.annexed !== 0) {
+		showNotificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
+	} else {
+		vueFront.remoteActiveCallsUserId = vueFront.getUserId
+        let message,title,roleAction,actionCalls
+		if(vueFront.getRole == 'backoffice'){
+			title = 'Activar Llamadas'
+            message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+                '<br>' +
+                '<p><b>Nota : </b>Cuando active la entrada de llamadas usted tendra que seleccionar su anexo y pasar a ACD para que le puedan caer las llamadas. ' +
+                'Por favor de verificar que esta asignados a las colas correspondientes.</p>'
+            roleAction = 'user'
+			actionCalls = 'user'
+		}else{
+			title = 'Desactivar Llamadas'
+            message = '<h4>¿Deseas pasar a BackOffice nuevamente?</h4>' +
+                '<br>' +
+                '<p><b>Nota : </b>Con esto volveras a pasar al rol BackOffice.</p>'
+            roleAction = 'backoffice'
+            actionCalls = ''
+		}
 
-    BootstrapDialog.show({
-      type: 'type-primary',
-      title: 'Activar Llamadas',
-      message: message,
-      closable: true,
-      buttons: [
-        {
-          label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
-          cssClass: 'btn-success',
-          action: function (dialogRef) {
-            if (vueFront.getRole !== 'user') {
-              vueFront.remoteActiveCallsNameRole = 'user'
-              vueFront.activeCalls('user')
-            } else {
-              closeNotificationBootstrap()
-            }
-          }
-        },
-        {
-          label: '<i class="fa fa-times" aria-hidden="true"></i> No',
-          cssClass: 'btn-danger',
-          action: function (dialogRef) {
-            if (vueFront.getRole !== 'backoffice') {
-              vueFront.remoteActiveCallsNameRole = 'backoffice'
-              vueFront.activeCalls()
-            } else {
-              closeNotificationBootstrap()
-            }
-          }
-        },
-        {
-          label: '<i class="fa fa-sign-out" aria-hidden="true"></i> Cancelar',
-          cssClass: 'btn-primary',
-          action: function (dialogRef) {
-            vueFront.remoteActiveCallsUserId = ''
-            dialogRef.close()
-          }
-        }
-      ]
-    })
-  }
-}
-
-// Función que cambia el Rol de los Usuarios
-const changeRol = (userId) => {
-  const message = 'Seleccione el rol que quiere asignar al usuario :' +
-      '<br><br>' +
-      '<div class="row">' +
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="user" checked="checked">User</center></div>' +
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="supervisor">Supervisor</center></div>' +
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="backoffice">BackOffice</center></div>' +
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="calidad">Calidad</center></div>' +
-      '<div class="col-md-4"><center><input type="radio" name="nameRole" value="cliente">Cliente</center></div>' +
-      '</div>' +
-      '<br>' +
-      '<b>Nota :</b> Utilizar esta opcion siempre y cuando el usuario no se encuentre en una cola.'
-
-  BootstrapDialog.show({
-    type: 'type-primary',
-    title: 'Cambiar Rol',
-    message: message,
-    closable: true,
-    buttons: [
-      {
-        label: 'Aceptar',
-        cssClass: 'btn-success',
-        action: (dialogRef) => {
-          let nameRole = $('input:radio[name=nameRole]:checked').val()
-          vueFront.remoteActiveCallsUserId = userId
-          vueFront.remoteActiveCallsNameRole = nameRole
-          vueFront.activeCalls()
-          showTabListUser('list_users')
-        }
-      },
-      {
-        label: 'Cancelar',
-        cssClass: 'btn-danger',
-        action: (dialogRef) => {
-          dialogRef.close()
-        }
-      }
-    ]
-  })
+		BootstrapDialog.show({
+			type: 'type-primary',
+			title: title,
+			message: message,
+			closable: true,
+			buttons: [
+				{
+					label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
+					cssClass: 'btn-success',
+					action: function (dialogRef) {
+                        let $button = this
+                        $button.disable()
+						if (vueFront.getRole !== roleAction) {
+                            $button.spin()
+							vueFront.remoteActiveCallsNameRole = roleAction
+							vueFront.activeCalls(actionCalls)
+						} else {
+							closeNotificationBootstrap()
+						}
+					}
+				},
+				{
+					label: '<i class="fa fa-times" aria-hidden="true"></i> No',
+					cssClass: 'btn-danger',
+					action: function (dialogRef) {
+						vueFront.remoteActiveCallsUserId = ''
+						dialogRef.close()
+					}
+				}
+			]
+		})
+	}
 }
 
 // Función que verifica si necesita realizar un cambio de contraseña
-const checkPassword = () => { if (vueFront.statusChangePassword == 0) changePassword() }
+const checkPassword = () => { if (vueFront.statusChangePassword == 0) $('#changePassword').click() }
 
-// Función que muestra modal para el cambio de contraseña
-const changePassword = (userId = '', closable = false) => {
-  if (userId === '') userId = vueFront.getUserId
-  const token = $('input[name=_token]').val()
-  const message = '<br>' +
-    '<div class="row">' +
-    '<div class="col-md-7">' +
-    '<div class="col-md-6" >' +
-    'Nueva Contraseña:' +
-    '</div>' +
-    '<div class="col-md-6">' +
-    '<input type="password" class="form-control" style="border-radius: 7px" id="newPassword">' +
-    '</div>' +
-    '<br>' + '<br>' + '<br>' +
-    '<div class="col-md-6">' +
-    'Confirma Contraseña:' +
-    '</div>' +
-    '<div class="col-md-6">' +
-    '<input type="password" class="form-control" style="border-radius: 7px" id="confirmPassword">' +
-    '</div>' +
-    '</div>' +
-    '<div class="col-md-5">' +
-    '<div class="col-md-12">' +
-    'Una contraseña segura está compuesta de 8 a 12 caracteres.<br>' +
-    'Una diferencia entre mayuscula y minuscula.<br>' +
-    'Permite números , letras y símbolos del teclado.' +
-    '</div>' +
-    '</div>' +
-    '</div>'
 
-  BootstrapDialog.show({
-    type: 'type-default',
-    title: '<font style="color:red; text-align: center">Cambiar Contraseña</font>',
-    message: message,
-    closable: closable,
-    buttons: [
-      {
-        label: 'Aceptar',
-        cssClass: 'btn-danger',
-        action: function (dialogRef) {
-          var newPassword = $('#newPassword').val()
-          var confirmPassword = $('#confirmPassword').val()
-
-          if (confirmPassword != '' && newPassword != '') {
-            if (confirmPassword == newPassword) {
-              $.ajax({
-                type: 'POST',
-                url: 'modifyPassword',
-                data: {
-                  _token: token,
-                  newPassword: newPassword,
-                  userId: userId
-                },
-                success: function (data) {
-                  if (data == 1) {
-                    dialogRef.close()
-                    vueFront.statusChangePassword = 1
-                    showNotificacion('success', 'El evento se realizo exitosamente!!!', 'Success', 2000, false, true)
-                  } else {
-                    showNotificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
-                  }
-                }
-              })
-            } else {
-              alert('Las contraseñas ingresadas no coinciden')
-            }
-          } else {
-            alert('Por favor de llenar todos los campos')
-          }
-        }
-      }
-    ]
-  })
-}
 
 /**
  * Created by jdelacruzc on 11/04/2017.
@@ -236,51 +134,51 @@ const changePassword = (userId = '', closable = false) => {
  * @return Cambia el estado del usuario
  */
 const changeStatusUser = (userId, status) => {
-  let token = $('input[name=_token]').val()
-  let estado = (status === 'Inactivo') ? 1 : 2
-  let message = 'Deseas cambiar el estado del usuario ?' +
-    '<br>' +
-    '<b>Nota :</b> Esto afecta el estado (Activo o Inactivo).'
+	let token = $('meta[name="_token"]').attr('content')
+	let estado = (status === 'Inactivo') ? 1 : 2
+	let message = 'Deseas cambiar el estado del usuario ?' +
+				'<br>' +
+				'<b>Nota :</b> Esto afecta el estado (Activo o Inactivo).'
 
-  BootstrapDialog.show({
-    type: 'type-primary',
-    title: 'Cambiar Estado',
-    message: message,
-    closable: true,
-    buttons: [
-      {
-        label: 'Si',
-        cssClass: 'btn-success',
-        action: function (dialogRef) {
-          $.ajax({
-            type: 'POST',
-            url: 'changeStatus',
-            data: {
-              _token: token,
-              userID: userId,
-              estadoID: estado
-            },
-            success: function (data) {
-              if (data === 1) {
-                showTabListUser('list_users')
-                dialogRef.close()
-                showNotificacion('success', 'Se cambio el estado del usuario!!!', 'Success', 2000, false, true)
-              } else {
-                showNotificacion('error', 'Problemas al cambiar en la base de datos', 'Error', 10000, false, true)
-              }
-            }
-          })
-        }
-      },
-      {
-        label: 'No',
-        cssClass: 'btn-danger',
-        action: function (dialogRef) {
-          dialogRef.close()
-        }
-      }
-    ]
-  })
+	BootstrapDialog.show({
+		type: 'type-primary',
+		title: 'Cambiar Estado',
+		message: message,
+		closable: true,
+		buttons: [
+			{
+				label: 'Si',
+				cssClass: 'btn-success',
+				action: function (dialogRef) {
+					$.ajax({
+						type: 'POST',
+						url: 'changeStatus',
+						data: {
+							_token: token,
+							userID: userId,
+							estadoID: estado
+						},
+						success: function (data) {
+							if (data === 1) {
+								showTabListUser('list_users')
+								dialogRef.close()
+								showNotificacion('success', 'Se cambio el estado del usuario!!!', 'Success', 2000, false, true)
+							} else {
+								showNotificacion('error', 'Problemas al cambiar en la base de datos', 'Error', 10000, false, true)
+							}
+						}
+					})
+				}
+			},
+			{
+				label: 'No',
+				cssClass: 'btn-danger',
+				action: function (dialogRef) {
+					dialogRef.close()
+				}
+			}
+		]
+	})
 }
 
 /**
@@ -290,133 +188,133 @@ const changeStatusUser = (userId, status) => {
  * @return Crea un usuario nuevo y refersca el datatable listuser
  */
 function createUser () {
-  const token = $('input[name=_token]').val()
-  const message = '<br>' +
-      '<div class="row">' +
-      '<div class="col-md-12">' +
-      '<div class="col-md-6" >' +
-      'Primer Nombre:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<input type="text" class="form-control" style="border-radius: 7px" id="primerNombre" placeholder="Test">' +
-      '</div>' +
-      '<br>' + '<br>' + '<br>' +
-      '<div class="col-md-6">' +
-      'Segundo Nombre:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<input type="text" class="form-control" style="border-radius: 7px" id="segundoNombre" placeholder="Test 2">' +
-      '</div>' +
-      '<br>' + '<br>' + '<br>' +
-      '<div class="col-md-6">' +
-      'Apellido Paterno:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoPaterno" placeholder="Cosapi">' +
-      '</div>' +
-      '<br>' + '<br>' + '<br>' +
-      '<div class="col-md-6">' +
-      'Apellido Materno:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<input type="text" class="form-control" style="border-radius: 7px" id="apellidoMaterno" placeholder="Cosapi 2">' +
-      '</div>' +
-      '<br>' + '<br>' + '<br>' +
-      '<div class="col-md-6">' +
-      'Username:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<input type="text" class="form-control" style="border-radius: 7px" id="userName" placeholder="testCosapi">' +
-      '</div>' +
-      '<br>' + '<br>' + '<br>' +
-      '<div class="col-md-6">' +
-      'Contraseña:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<input type="password" class="form-control" style="border-radius: 7px" id="nuevaContraseña" placeholder="xxxxxx">' +
-      '</div>' +
-      '<br>' + '<br>' + '<br>' +
-      '<div class="col-md-6">' +
-      'Correo:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<input type="text" class="form-control" style="border-radius: 7px" id="email" placeholder="cosapi@cosapidata.com.pe">' +
-      '</div>' +
-      '<br>' + '<br>' + '<br>' +
-      '<div class="col-md-6">' +
-      'Rol de Usuario:' +
-      '</div>' +
-      '<div class="col-md-6">' +
-      '<select class="form-control" style="border-radius: 7px" id="slRol">' +
-      '<option value="sinrol" selected>Seleccionar Aqui</option>' +
-      '<option value="user">Usuario</option>' +
-      '<option value="backoffice">BackOffice</option>' +
-      '<option value="supervisor">Supervisor</option>' +
-      '<option value="cliente">Cliente</option>' +
-      '<option value="calidad">Calidad</option>' +
-      '</select>' +
-      '</div>' +
-      '</div>' +
-      '</div>'
+	const token = $('meta[name="_token"]').attr('content')
+	const message = '<br>' +
+						'<div class="row">' +
+						'<div class="col-md-12">' +
+						'<div class="col-md-6" >' +
+						'Primer Nombre:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<input type="text" class="form-control" style="border-radius: 7px" id="primerNombre" placeholder="Test">' +
+						'</div>' +
+						'<br>' + '<br>' + '<br>' +
+						'<div class="col-md-6">' +
+						'Segundo Nombre:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<input type="text" class="form-control" style="border-radius: 7px" id="segundoNombre" placeholder="Test 2">' +
+						'</div>' +
+						'<br>' + '<br>' + '<br>' +
+						'<div class="col-md-6">' +
+						'Apellido Paterno:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<input type="text" class="form-control" style="border-radius: 7px" id="apellidoPaterno" placeholder="Cosapi">' +
+						'</div>' +
+						'<br>' + '<br>' + '<br>' +
+						'<div class="col-md-6">' +
+						'Apellido Materno:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<input type="text" class="form-control" style="border-radius: 7px" id="apellidoMaterno" placeholder="Cosapi 2">' +
+						'</div>' +
+						'<br>' + '<br>' + '<br>' +
+						'<div class="col-md-6">' +
+						'Username:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<input type="text" class="form-control" style="border-radius: 7px" id="userName" placeholder="testCosapi">' +
+						'</div>' +
+						'<br>' + '<br>' + '<br>' +
+						'<div class="col-md-6">' +
+						'Contraseña:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<input type="password" class="form-control" style="border-radius: 7px" id="nuevaContraseña" placeholder="xxxxxx">' +
+						'</div>' +
+						'<br>' + '<br>' + '<br>' +
+						'<div class="col-md-6">' +
+						'Correo:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<input type="text" class="form-control" style="border-radius: 7px" id="email" placeholder="cosapi@cosapidata.com.pe">' +
+						'</div>' +
+						'<br>' + '<br>' + '<br>' +
+						'<div class="col-md-6">' +
+						'Rol de Usuario:' +
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<select class="form-control" style="border-radius: 7px" id="slRol">' +
+						'<option value="sinrol" selected>Seleccionar Aqui</option>' +
+						'<option value="user">Usuario</option>' +
+						'<option value="backoffice">BackOffice</option>' +
+						'<option value="supervisor">Supervisor</option>' +
+						'<option value="cliente">Cliente</option>' +
+						'<option value="calidad">Calidad</option>' +
+						'</select>' +
+						'</div>' +
+						'</div>' +
+						'</div>'
 
-  BootstrapDialog.show({
-    type: 'type-primary',
-    title: 'Crear Nuevo Usuario',
-    message: message,
-    closable: true,
-    buttons: [
-      {
-        label: 'Aceptar',
-        cssClass: 'btn-primary',
-        action: function (dialogRef) {
-          let primerNombre = $('#primerNombre').val()
-          let segundoNombre = $('#segundoNombre').val()
-          let apellidoPaterno = $('#apellidoPaterno').val()
-          let apellidoMaterno = $('#apellidoMaterno').val()
-          let userName = $('#userName').val()
-          let nuevaContraseña = $('#nuevaContraseña').val()
-          let email = $('#email').val()
-          let role = $('#slRol').val()
+	BootstrapDialog.show({
+		type: 'type-primary',
+		title: 'Crear Nuevo Usuario',
+		message: message,
+		closable: true,
+		buttons: [
+			{
+				label: 'Aceptar',
+				cssClass: 'btn-primary',
+				action: function (dialogRef) {
+					let primerNombre = $('#primerNombre').val()
+					let segundoNombre = $('#segundoNombre').val()
+					let apellidoPaterno = $('#apellidoPaterno').val()
+					let apellidoMaterno = $('#apellidoMaterno').val()
+					let userName = $('#userName').val()
+					let nuevaContraseña = $('#nuevaContraseña').val()
+					let email = $('#email').val()
+					let role = $('#slRol').val()
 
-          if (primerNombre != '' && segundoNombre != '' && apellidoPaterno != '' && apellidoMaterno != '' && userName != '' && nuevaContraseña != '' && email != '' && role != 'sinrol') {
-            $.ajax({
-              type: 'POST',
-              url: 'createUser',
-              data: {
-                _token: token,
-                primerNombre: primerNombre,
-                segundoNombre: segundoNombre,
-                apellidoPaterno: apellidoPaterno,
-                apellidoMaterno: apellidoMaterno,
-                userName: userName,
-                nuevaContraseña: nuevaContraseña,
-                email: email,
-                role: role
-              },
-              success: function (data) {
-                if (data == 1) {
-                  showTabListUser('list_users')
-                  dialogRef.close()
-                  showNotificacion('success', 'El usuario se registro correctamente!!!', 'Success', 2000, false, true)
-                } else {
-                  showNotificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
-                }
-              }
-            })
-          } else {
-            alert('Por favor de llenar todos los campos')
-          }
-        }
-      },
-      {
-        label: 'Cancelar',
-        cssClass: 'btn-primary',
-        action: function (dialogRef) {
-          dialogRef.close()
-        }
-      }
-    ]
-  })
+					if (primerNombre != '' && segundoNombre != '' && apellidoPaterno != '' && apellidoMaterno != '' && userName != '' && nuevaContraseña != '' && email != '' && role != 'sinrol') {
+						$.ajax({
+							type: 'POST',
+							url: 'createUser',
+							data: {
+								_token: token,
+								primerNombre: primerNombre,
+								segundoNombre: segundoNombre,
+								apellidoPaterno: apellidoPaterno,
+								apellidoMaterno: apellidoMaterno,
+								userName: userName,
+								nuevaContraseña: nuevaContraseña,
+								email: email,
+								role: role
+							},
+							success: function (data) {
+								if (data == 1) {
+									showTabListUser('list_users')
+									dialogRef.close()
+									showNotificacion('success', 'El usuario se registro correctamente!!!', 'Success', 2000, false, true)
+								} else {
+									showNotificacion('error', 'Problemas de inserción a la base de datos', 'Error', 10000, false, true)
+								}
+							}
+						})
+					} else {
+						alert('Por favor de llenar todos los campos')
+					}
+				}
+			},
+			{
+				label: 'Cancelar',
+				cssClass: 'btn-primary',
+				action: function (dialogRef) {
+					dialogRef.close()
+				}
+			}
+		]
+	})
 }
 
 /**
@@ -429,178 +327,180 @@ const RoleTableHide = () => ['user', 'cliente']
 
 // Función para asignar o liberar anexo en base al rol
 const assignAnexxed = (annexed, userId, username) => {
-  if (userId === '' && vueFront.annexed !== 0) {
-    showNotificacion('warning', 'Ya se encuentra asignado al anexo ' + vueFront.annexed + '.', 'Warning', 10000, false, true)
-  } else {
-    if (userId === '') {
-      vueFront.remotoReleaseAnnexed = annexed
-      vueFront.assignAnnexed()
-    } else {
-      vueFront.remotoReleaseAnnexed = annexed
-      vueFront.remotoReleaseUsername = username
-      vueFront.remotoReleaseUserId = userId
-      vueFront.remotoReleaseStatusQueueRemove = true
-      vueFront.releasesAnnexed()
-    }
-  }
+	if (userId === '' && vueFront.annexed !== 0) {
+		showNotificacion('warning', 'Ya se encuentra asignado al anexo ' + vueFront.annexed + '.', 'Warning', 10000, false, true)
+	} else {
+		if (userId === '') {
+			vueFront.remotoReleaseAnnexed = annexed
+			vueFront.assignAnnexed()
+		} else {
+			vueFront.remotoReleaseAnnexed = annexed
+			vueFront.remotoReleaseUsername = username
+			vueFront.remotoReleaseUserId = userId
+			vueFront.remotoReleaseStatusQueueRemove = true
+			vueFront.releasesAnnexed()
+		}
+	}
 }
 
 // Funcion que carga el modal se marcado de salida
 const disconnect = () => {
-  let hour = vueFront.hourServer
-  let rank_hours = rangoHoras(hour.trim())
-  const message01 = 'Usted se retira de las oficinas ?'
-  const message02 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
-        '<br><br>' +
-        '<div class="row">' +
-        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + hour + '">' + hour + '</center></div>' +
-        '<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
-        '</div>'
+	let hour = vueFront.hourServer
+	let rank_hours = rangoHoras(hour.trim())
+	const message01 = 'Usted se retira de las oficinas ?'
+	const message02 = 'Por favor de seleccionar la hora correspondiente a su Salida.' +
+								'<br><br>' +
+								'<div class="row">' +
+								'<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour" value="' + hour + '">' + hour + '</center></div>' +
+								'<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
+								'</div>'
 
-  BootstrapDialog.show({
-    type: 'type-primary',
-    title: 'Registrar Salida',
-    message: message01,
-    closable: false,
-    buttons: [
-      {
-        label: 'Si',
-        cssClass: 'btn-primary',
-        action: function (dialogRef) {
-          dialogRef.close()
-          vueFront.nextEventId = 15
-          vueFront.nextEventName = 'Desconectado'
-          vueFront.assistanceTextModal = 'Salida'
-          vueFront.loadModalCheckAssistance()
-        }
-      },
-      {
-        label: 'No',
-        cssClass: 'btn-primary',
-        action: function (dialogRef) {
-          dialogRef.close()
-          vueFront.remoteAgentHour = hour.trim()
-          vueFront.disconnectAgent()
-        }
-      },
-      {
-        label: 'Cancelar',
-        cssClass: 'btn-danger',
-        action: function (dialogRef) {
-          dialogRef.close()
-        }
-      }
-    ]
-  })
+	BootstrapDialog.show({
+		type: 'type-primary',
+		title: 'Registrar Salida',
+		message: message01,
+		closable: false,
+		buttons: [
+			{
+				label: 'Si',
+				cssClass: 'btn-primary',
+				action: function (dialogRef) {
+					dialogRef.close()
+					vueFront.nextEventId = 15
+					vueFront.nextEventName = 'Desconectado'
+					vueFront.assistanceTextModal = 'Salida'
+					vueFront.loadModalCheckAssistance()
+				}
+			},
+			{
+				label: 'No',
+				cssClass: 'btn-primary',
+				action: function (dialogRef) {
+					dialogRef.close()
+					vueFront.remoteAgentHour = hour.trim()
+					vueFront.disconnectAgent()
+				}
+			},
+			{
+				label: 'Cancelar',
+				cssClass: 'btn-danger',
+				action: function (dialogRef) {
+					dialogRef.close()
+				}
+			}
+		]
+	})
 }
 
 // Función que acciona le ventana de asistencias correspondiente al estado
 const MarkAssitance = (user_id, day, hour_actually, action) => {
-  if (vueFront.statusChangeAssistance == true) {
-    modalAssintance(user_id, day, hour_actually, action)
-  } else if (vueFront.statusChangeAssistance != false) {
-    let assistenceUser = $('#assistence_user').val().split('&')
-    ModalStandBy(assistenceUser[1])
-  } else {
-    checkPassword()
-  }
+	if (vueFront.statusChangeAssistance == true) {
+		modalAssintance(user_id, day, hour_actually, action)
+	} else if (vueFront.statusChangeAssistance != false) {
+		let assistenceUser = $('#assistence_user').val().split('&')
+		ModalStandBy(assistenceUser[1])
+	} else {
+		checkPassword()
+	}
 }
 
 // Funcion para reutilizar Modals
 const responseModal = (nameRoute, routeLoad, valID = null) => {
-    let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
-    let token = $('input[name=_token]').val()
-    $.ajax({
-        type : 'POST',
-        url : routeLoad,
-        data: {
-            _token: token,
-            valueID: valID
-        },
-        beforeSend: function(){
-            $(nameRoute).html(imageLoading)
-        },
-        success:function(data){
-            $(nameRoute).html(data)
-        }
-    })
+	let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
+	let token = $('meta[name="_token"]').attr('content')
+	$.ajax({
+		type : 'POST',
+		url : routeLoad,
+		data: {
+			_token: token,
+			valueID: valID
+		},
+		beforeSend: function(){
+			$(nameRoute).html(imageLoading)
+		},
+		success:function(data){
+			$(nameRoute).html(data)
+		}
+	})
 }
 
 // Función para cerrar un modal y limpiar el cuerpo del mismo (Funciona con la función responseModal)
 const clearModal = (modalID, bodyModal) => {
-    $(bodyModal).html('').promise().done(function() {
-        $('#'+modalID).modal('toggle')
-    })
+	$(bodyModal).html('').promise().done(function() {
+		$('#'+modalID).modal('toggle')
+	})
 }
 
 // Función para escuchar el evento cuando se cierra un modal y limpiar el cuerpo del mismo (Funciona con la función responseModal)
 const clearModalClose = (modalID, bodyModal) => {
-    $('#'+modalID).on('hidden.bs.modal', function () {
-        $(bodyModal).html('')
-    })
+	$('#'+modalID).on('hidden.bs.modal', function () {
+		$(bodyModal).html('')
+	})
 }
 
 // Función que muestra un boton de carga cuando se ejecuta un formulario
 const changeButtonForm = (btnShow, btnHide) => {
-    $('.'+btnShow).fadeOut("fast", function() {
-        $('.'+btnHide).fadeIn("fast")
-    })
+	$('.'+btnShow).fadeOut("fast", function() {
+		$('.'+btnHide).fadeIn("fast")
+	})
 }
 
 // Función que muestra los errores que emite el controlador en un DIV
 const showErrorForm = (data, formDiv) => {
-    let errors = '';
-    for(datos in data.responseJSON){
-        errors += '<li>' + data.responseJSON[datos] + '</li>'
-    }
-    $(formDiv).fadeIn().html(
-        '<span class="fa fa-close"></span> <strong>Error</strong>'+
-            '<hr class="message-inner-separator">'+
-                '<ul>' + errors + '</ul>'
-    )
+	let errors = ''
+	for(datos in data.responseJSON){
+		errors += '<strong>' + data.responseJSON[datos] + '</strong><br>'
+	}
+	$(formDiv).fadeIn().html(
+		'<span class="fa fa-close"></span> <strong>Error</strong>'+
+												'<hr class="message-inner-separator">'+
+																'<span>' + errors + '</span>'
+	)
 }
 
 // Función para ocultar los errores cuando se ingresa en algun campo que se requeria data
 const hideErrorForm = (formDiv) => {
-    $("input[type=text]").click(function() {
+    $("input[type=text],input[type=checkbox],input[type=password]").click(function() {
         $(formDiv).fadeOut().html()
     })
 }
 
 // Función para poder buscar en una tabla
-const searchTable = (idTable, idSearch) => {
-    let $rows = $(idTable+' tbody tr')
-    $(idSearch).keyup(function() {
-        let val = '^(?=.*\\b' + $.trim($(this).val()).split(/\s+/).join('\\b)(?=.*\\b') + ').*$',
-            reg = RegExp(val, 'i'),
-            text
-        $rows.show().filter(function() {
-            text = $(this).text().replace(/\s+/g, ' ');
-            return !reg.test(text);
-        }).hide()
+const searchTable = (idTable, idSearch, filterAnnexed = '') => {
+    $(idSearch).keyup(function(){
+        _this = this
+        $.each($(idTable + " tbody tr " + filterAnnexed), function() {
+            let value = -1
+            let valueSearch = $(_this).val()
+            if($(this).text().toLowerCase().indexOf(valueSearch.toLowerCase()) === value) {
+                $(this).hide()
+            }else {
+                $(this).show()
+            }
+        })
     })
 }
 
 // Función para seleccionar todos los checkbox con uno solo
 const mark_all = (checkGeneral) => {
-    if($(checkGeneral).is(':checked')){
-        $("input.checkNew:checkbox").prop("checked", "checked")
-        $('tr.trNew').addClass('warning')
-        $('select.selectNew').removeAttr("disabled").val('1')
-    }else{
-        $("input.checkNew:checkbox").prop("checked", false)
-        $('tr.trNew').removeClass('warning').addClass('info')
-        $('select.selectNew').attr("disabled", true).val('-')
-    }
+	if($(checkGeneral).is(':checked')){
+		$("input.checkNew:checkbox").prop("checked", "checked")
+		$('tr.trNew').addClass('warning')
+		$('select.selectNew').removeAttr("disabled").val('1')
+	}else{
+		$("input.checkNew:checkbox").prop("checked", false)
+		$('tr.trNew').removeClass('warning').addClass('info')
+		$('select.selectNew').attr("disabled", true).val('-')
+	}
 }
 
 // Función que deshabilita y coloca estilo a la fila de la tabla
 const markCheck = (check) => {
-    if($('#checkbox_'+check).is(':checked')){
-        $('#tr_'+check).addClass('warning')
-        $('#select_'+check).removeAttr("disabled").val('1')
-    }else{
-        $('#tr_'+check).removeClass('warning').addClass('info')
-        $('#select_'+check).attr("disabled", true).val('-')
-    }
+	if($('#checkbox_'+check).is(':checked')){
+		$('#tr_'+check).addClass('warning')
+		$('#select_'+check).removeAttr("disabled").val('1')
+	}else{
+		$('#tr_'+check).removeClass('warning').addClass('info')
+		$('#select_'+check).attr("disabled", true).val('-')
+	}
 }
