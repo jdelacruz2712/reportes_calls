@@ -176,6 +176,10 @@ return [
 
         /** Intervention Image **/
         Intervention\Image\ImageServiceProvider::class,
+
+        /** Ami para conectarse al ASterisk **/
+        Cosapi\Providers\PHPAmiServiceProvider::class,
+
     ],
 
     /*
@@ -231,6 +235,9 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Debugbar'  => Barryvdh\Debugbar\Facade::class,
+
+        /** Ami para conectarse al ASterisk **/
+        'phpAMI'    => Cosapi\Facades\phpAMI::class,
 
         /** Carbon multi-language **/
         'Date' => Jenssegers\Date\Date::class,
