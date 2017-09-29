@@ -6,7 +6,7 @@ const loadModule = (idOptionMenu) => {
 		type: 'POST',
 		url: url,
 		data: {
-			_token: $('input[name=_token]').val(),
+			_token: $('meta[name="_token"]').attr('content'),
 			url: url
 		},
 		beforeSend: function (data) {
@@ -38,7 +38,7 @@ const getDataFilters = (evento) => {
 	if ($('select[name=rankHour]').length) rankHour = $('select[name=rankHour]').val()
 	if ($('input[name=fecha_evento]').length) dateEvent = $('input[name=fecha_evento]').val()
 	let data = {
-		_token: $('input[name=_token]').val(),
+		_token: $('meta[name="_token"]').attr('content'),
 		fecha_evento: dateEvent,
 		rank_hour: rankHour,
 		evento: evento
@@ -71,7 +71,7 @@ const exportar = (format_export) => {
  */
 const export_ajax = (type, url, format_export = '', days = '', rankHour = 1800) => {
 	const dialog = cargar_dialog('primary', 'Download', 'Cargando el Excel', false)
-	const token = $('input[name=_token]').val()
+	const token = $('meta[name="_token"]').attr('content')
 	$.ajax({
 		type: type,
 		url: url,
@@ -305,7 +305,7 @@ const loadMultiNotification = (resData, time, parameters) => {
 
 // Función que actualiza la sessión de QueueAdd
 const setQueueAdd = (queueAdd) => {
-	const token = $('input[name=_token]').val()
+	const token = $('meta[name="_token"]').attr('content')
 	$.ajax({
 		type: 'POST',
 		url: 'setQueueAdd',

@@ -2,7 +2,8 @@ $(document).ready(function () {
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-		}
+
+        }
 	})
 	$('.reportes').on('click', function (e) { loadModule($(this).attr('id')) })
 
@@ -44,7 +45,7 @@ const showTabListQueues = (evento) => dataTables('table-list-queue', getDataFilt
 
 /* [showTabAnnexed Función que carga la lista de anexos] */
 const showTabAnnexed = (event) => {
-	let token = $('input[name=_token]').val()
+	let token = $('meta[name="_token"]').attr('content')
 	let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
 	$.ajax({
 		type: 'POST',
@@ -133,7 +134,7 @@ const checkPassword = () => { if (vueFront.statusChangePassword == 0) $('#change
  * @return Cambia el estado del usuario
  */
 const changeStatusUser = (userId, status) => {
-	let token = $('input[name=_token]').val()
+	let token = $('meta[name="_token"]').attr('content')
 	let estado = (status === 'Inactivo') ? 1 : 2
 	let message = 'Deseas cambiar el estado del usuario ?' +
 				'<br>' +
@@ -187,7 +188,7 @@ const changeStatusUser = (userId, status) => {
  * @return Crea un usuario nuevo y refersca el datatable listuser
  */
 function createUser () {
-	const token = $('input[name=_token]').val()
+	const token = $('meta[name="_token"]').attr('content')
 	const message = '<br>' +
 						'<div class="row">' +
 						'<div class="col-md-12">' +
@@ -406,7 +407,7 @@ const MarkAssitance = (user_id, day, hour_actually, action) => {
 // Funcion para reutilizar Modals
 const responseModal = (nameRoute, routeLoad, valID = null) => {
 	let imageLoading = `<div class="loading" id="loading"><li></li><li></li><li></li><li></li><li></li></div>`
-	let token = $('input[name=_token]').val()
+	let token = $('meta[name="_token"]').attr('content')
 	$.ajax({
 		type : 'POST',
 		url : routeLoad,

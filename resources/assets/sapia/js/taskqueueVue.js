@@ -1,7 +1,7 @@
 /**
  * Created by jdelacruz on 19/09/2017.
  */
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 var queuesTask = new Vue({
     el: '#formTaskQueues',
     data: {
