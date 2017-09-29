@@ -102,8 +102,13 @@ Route::group(['middleware'=>['user']], function () {
     Route::post('setQueueAdd'								        , ['uses'=>'AdminController@setQueueAdd'        ,    'as' => 'setQueueAdd']);
     Route::post('createUser'								        , ['uses'=>'UserController@createUser'          ,    'as' => 'createUser']);
     Route::post('changeStatus'								        , ['uses'=>'UserController@changeStatus'        ,    'as' => 'changeStatus']);
-    Route::post('form_change_password'                              , ['uses'=>'UserController@formChangePassword',  'as' => 'changePassword']);
+    Route::post('form_change_password'                              , ['uses'=>'UserController@formChangePassword'  ,    'as' => 'changePassword']);
     Route::post('saveformchangePassword'                            , ['uses'=>'UserController@saveFormChangePassword']);
+    Route::get('dashboardUser'                                      , ['uses'=>'DashboardUserController@index']);
+    Route::post('getInformationCall'                                , ['uses'=>'DashboardUserController@dataInformationCall']);
+    Route::post('savecalluserInformation'                           , ['uses'=>'DashboardUserController@saveCallUserInformation']);
+    Route::post('savecallPhone'                                     , ['uses'=>'DashboardUserController@saveCallPhone']);
+    Route::post('savepersonalContact'                               , ['uses'=>'DashboardUserController@savePersonalContact']);
 
     Route::post('updateStatusAddAgentDashboard'					    , ['uses'=>'AdminController@updateStatusAddAgentDashboard','as'=>'updateStatusAddAgentDashboard']);
 

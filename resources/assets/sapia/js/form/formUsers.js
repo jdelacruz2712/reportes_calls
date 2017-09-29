@@ -8,7 +8,7 @@ $('#formAssignQueues').submit(function(e) {
         type        : 'POST',
         url         : 'saveformassignQueues',
         cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        headers     : {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
@@ -37,7 +37,7 @@ $('#formChangePassword').submit(function(e) {
         type        : 'POST',
         url         : 'saveformchangePassword',
         cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        headers     : {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
@@ -69,7 +69,7 @@ $('#formChangeRole').submit(function(e) {
         type        : 'POST',
         url         : 'saveformchangeRole',
         cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        headers     : {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
@@ -100,7 +100,7 @@ $('#formChangeStatus').submit(function(e) {
         type        : 'POST',
         url         : 'saveformchangeStatus',
         cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        headers     : {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){

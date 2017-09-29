@@ -67,7 +67,7 @@
             <input type="hidden" name="queueID" value="{{ $idQueue }}">
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnForm"><i class="fa fa-save"></i> Guardar</button>
-                <button type="submit" class="btn btn-info btnLoad" style="display: none"><i class="fa fa-spin fa-spinner"></i> Cargando</button>
+                <button type="button" class="btn btn-info btnLoad" style="display: none"><i class="fa fa-spin fa-spinner"></i> Cargando</button>
                 <button type="button" class="btn btn-default" onclick="clearModalClose('modalQueues', 'div.dialogQueuesLarge')" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
             </div>
         </form>

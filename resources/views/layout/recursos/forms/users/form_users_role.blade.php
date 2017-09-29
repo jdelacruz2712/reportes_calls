@@ -57,7 +57,7 @@
             <input type="hidden" name="userId" value="{{ $idUser }}">
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary btnForm"><i class='fa fa-edit'></i> Editar</button>
-                <button type="submit" class="btn btn-info btnLoad" style="display: none"><i class="fa fa-spin fa-spinner"></i> Cargando</button>
+                <button type="button" class="btn btn-info btnLoad" style="display: none"><i class="fa fa-spin fa-spinner"></i> Cargando</button>
                 <button type="button" class="btn btn-default" onclick="clearModalClose('modalUsers', 'div.dialogUsers')" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
             </div>
         </form>

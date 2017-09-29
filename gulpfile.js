@@ -119,6 +119,35 @@ elixir(function(mix) {
 		],'public/js/adminlte.min.js','resources/assets/')
 })
 
+/*
+ Generando los archivos css y js para el layout que necesita DashboardUser
+ */
+elixir(function(mix) {
+    mix
+        .styles([
+            'vendor/adminlte/plugins/bootstrap/dist/css/bootstrap.css',
+            'vendor/adminlte/plugins/font-awesome/css/font-awesome.css',
+            'vendor/adminlte/plugins/Ionicons/css/ionicons.css',
+            'vendor/adminlte/dist/css/AdminLTE.css'
+        ],'public/css/dashboard_user.min.css','resources/assets/')
+        .scripts([
+            'vendor/adminlte/plugins/jquery/dist/jquery.js',
+            'vendor/adminlte/dist/js/adminlte.js',
+            'vendor/adminlte/plugins/bootstrap/dist/js/bootstrap.js',
+            'vendor/adminlte/plugins/fastclick/lib/fastclick.js',
+            'node_modules/vue/vue.min.js',
+            'node_modules/vue-resource/vue-resource.min.js'
+        ],'public/js/dashboard_user.min.js','resources/assets/')
+		.scripts([
+            'sapia/js/front.js',
+            'sapia/js/helper.js',
+            'sapia/js/datatable.js'
+		],'public/js/dashboardUserFunctions.min.js','resources/assets/')
+		.scripts([
+            'sapia/js/form/formDashboardUser.js'
+		],'public/js/form/formDashboardUser.min.js','resources/assets/')
+})
+
 /**
  Generando un solo archivo css y js para la funcionalidad de daterangepicker
 */
@@ -209,11 +238,11 @@ elixir(function(mix) {
   */
 	mix
 	/** Archivos necesario para el Adminlte 2.4 */
-		.copy('resources/assets/vendor/adminlte/plugins/bootstrap/dist/fonts'       , 'public/fonts')
-		.copy('resources/assets/vendor/adminlte/plugins/Ionicons/fonts'             , 'public/fonts')
-		.copy('resources/assets/vendor/adminlte/plugins/font-awesome/fonts'         , 'public/fonts')
-		.copy('resources/assets/sapia/css/fonts-googleapis.css'                     , 'public/css/fonts-googleapis.css')
-		.copy('resources/assets/sapia/css/fonts-google-apis'                        , 'public/css/fonts-google-apis')
+		.copy('resources/assets/vendor/adminlte/plugins/bootstrap/dist/fonts'       						, 'public/fonts')
+		.copy('resources/assets/vendor/adminlte/plugins/Ionicons/fonts'             						, 'public/fonts')
+		.copy('resources/assets/vendor/adminlte/plugins/font-awesome/fonts'         						, 'public/fonts')
+		.copy('resources/assets/sapia/css/fonts-googleapis.css'                     						, 'public/css/fonts-googleapis.css')
+		.copy('resources/assets/sapia/css/fonts-google-apis'                        						, 'public/css/fonts-google-apis')
 
 	/**
   Copy files individuales

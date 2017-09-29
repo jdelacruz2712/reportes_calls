@@ -38,7 +38,7 @@ const getDataFilters = (evento) => {
 	if ($('select[name=rankHour]').length) rankHour = $('select[name=rankHour]').val()
 	if ($('input[name=fecha_evento]').length) dateEvent = $('input[name=fecha_evento]').val()
 	let data = {
-		_token: $('input[name=_token]').val(),
+		_token: $('meta[name="_token"]').attr('content'),
 		fecha_evento: dateEvent,
 		rank_hour: rankHour,
 		evento: evento

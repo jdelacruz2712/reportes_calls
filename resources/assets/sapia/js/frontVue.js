@@ -1,5 +1,5 @@
 'use strict'
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 
 const socketIO = io.connect(restApiSails)
 const socketSails = io.sails.connect(restApiSails)
@@ -44,6 +44,7 @@ const vueFront = new Vue({
 
 		quantityQueueAssign: 0,
 		getQueuesUser: [],
+		inboundUser: true,
 		hourServer: '',
 		textDateServer: '',
 		dateServer: '',
@@ -117,7 +118,6 @@ const vueFront = new Vue({
 		}
 	},
 	methods: {
-
 		sendUrlRequest: async function (url, parameters = {}) {
 			try {
 				let response = await this.$http.post(url, parameters)
@@ -280,7 +280,8 @@ const vueFront = new Vue({
 
 		activeCalls: async function () {
 			let parametersRole = this.loadParameters('activeCalls')
-			let response = await this.sendUrlRequest('saveformchangeRole', parametersRole)
+			let response = await this.sendUrlRequest('saveformchangeRole', parametersRole)
+
 			closeNotificationBootstrap()
 			if (response.message === 'Success') {
 				if (this.getUserId === this.remoteActiveCallsUserId) {
@@ -371,6 +372,10 @@ const vueFront = new Vue({
 				statusQueueRemove: (this.remotoReleaseStatusQueueRemove === false) ? this.statusQueueAddAsterisk : this.remotoReleaseStatusQueueRemove
 			}
 			return data
+		},
+
+		checkInbound: function (){
+            open("dashboardUser","","height=150")
 		}
 	}
 })
