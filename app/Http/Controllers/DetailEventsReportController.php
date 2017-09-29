@@ -20,15 +20,20 @@ class DetailEventsReportController extends CosapiController
     public function index(Request $request){
         if ($request->ajax()){
             if ($request->fecha_evento){
-                return $this->list_detail_event_report($request->fecha_evento);
+                return $this->list_detail_event_report($request->fecha_evento, $request->rolUser);
             }else{
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.details_events_report.details_events_report',
                     'titleReport'           => 'Report of Details Events Report (Beta)',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewRolSearch'         => true,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_details_events_report',
                     'nameRouteController'   => ''
                 ));
@@ -36,17 +41,17 @@ class DetailEventsReportController extends CosapiController
         }
     }
 
-    protected function list_detail_event_report($fecha_evento){
-        $query_detail_event_report          = $this->query_detail_event_report($fecha_evento);
+    protected function list_detail_event_report($fecha_evento, $rolUser){
+        $query_detail_event_report          = $this->query_detail_event_report($fecha_evento, $rolUser);
         $builderview_detail_event_report    = $this->builderview_detail_event_report($query_detail_event_report);
         $collection_detail_event_report     = $this->collection_detail_event_report($builderview_detail_event_report);
         $list_detail_event_report           = $this->FormatDatatable($collection_detail_event_report);
         return $list_detail_event_report;
     }
 
-    protected function query_detail_event_report ($fecha_evento){
+    protected function query_detail_event_report ($fecha_evento, $rolUser){
         list($fecha_inicial,$fecha_final) = explode(' - ', $fecha_evento);
-        $query_detail_event_report = DB::select('CALL sp_get_detail_event_report_beta ("'.$fecha_inicial.'","'.$fecha_final.'")');
+        $query_detail_event_report = DB::select('CALL sp_get_detail_event_report_beta ("'.$fecha_inicial.'","'.$fecha_final.'","'.$rolUser.'")');
         return $query_detail_event_report;
     }
 

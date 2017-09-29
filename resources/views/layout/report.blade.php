@@ -15,7 +15,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         @if($dateFilter)
-                            <div class="@if($viewButtonSearch == true || $viewHourSearch == true) col-md-8 @else col-md-12 @endif">
+                            <div class="@if($viewButtonSearch == true || $viewHourSearch == true || $viewRolSearch == true) col-md-8 @else col-md-12 @endif">
                                 <!-- Date range -->
                                 <div class="input-group">
                                     <div class="input-group-addon">
@@ -35,7 +35,7 @@
                                 <!-- Hour range -->
                                 <div class="input-group">
                                     <div class="input-group-addon">
-                                        <i class="fa fa-calendar"></i>
+                                        <i class="fa fa-clock-o"></i>
                                     </div>
                                     <select class="form-control" name="rankHour" id="rankHour">
                                         <option value="1800">30 minutos</option>
@@ -44,8 +44,22 @@
                                 </div>
                             </div>
                         @endif
+                        @if($viewRolSearch)
+                            <div class="@if($viewButtonSearch) col-md-2 @else col-md-4 @endif">
+                                <!-- Hour range -->
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-user"></i>
+                                    </div>
+                                    <select class="form-control" name="rolUser" id="rolUser">
+                                        <option value="user">User</option>
+                                        <option value="backoffice">Backoffice</option>
+                                    </select>
+                                </div>
+                            </div>
+                        @endif
                         @if($viewButtonSearch)
-                            @if(!$viewHourSearch)
+                            @if(!$viewHourSearch || $viewRolSearch)
                                 <div class="col-md-2"></div>
                             @endif
                             <div class="col-md-2 pull-left visible-lg">
