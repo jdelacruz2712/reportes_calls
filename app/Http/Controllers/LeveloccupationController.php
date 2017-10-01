@@ -35,6 +35,7 @@ class LeveloccupationController extends CosapiController
                     'titleReport'           => 'Report of Level Occupation',
                     'viewButtonSearch'      => true,
                     'viewHourSearch'        => false,
+                    'viewRolTypeSearch'     => false,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_level_occupation',

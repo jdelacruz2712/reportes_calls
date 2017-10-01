@@ -29,6 +29,7 @@ class ConsolidatedCallsController extends CosapiController
                     'titleReport'           => 'Report of Consolidated Calls',
                     'viewButtonSearch'      => false,
                     'viewHourSearch'        => true,
+                    'viewRolTypeSearch'     => false,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_consolidated',

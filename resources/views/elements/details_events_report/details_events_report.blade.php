@@ -51,6 +51,8 @@
                 dataSrc : "data",
                 data :{
                     _token       : $('input[name=_token]').val(),
+                    filter_rol   : $('select[name=rolUser]').val(),
+                    group_filter : $('select[name=groupFilter]').val(),
                     fecha_evento : fecha
                 }
             },

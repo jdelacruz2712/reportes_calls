@@ -33,6 +33,7 @@ class IncomingCallsController extends CosapiController
                     'titleReport'           => 'Report of Calls Inbound',
                     'viewButtonSearch'      => false,
                     'viewHourSearch'        => false,
+                    'viewRolTypeSearch'     => false,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
                     'exportReport'          => 'export_incoming',

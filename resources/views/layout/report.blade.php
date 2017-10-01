@@ -44,10 +44,28 @@
 						</div>
 					</div>
 				</div>
-			@else
+			@elseif(!$viewRolTypeSearch)
 				<div class="col-md-2"></div>
 			@endif
 
+			@if($viewRolTypeSearch)
+				<div class="@if($viewButtonSearch) col-md-2 @else col-md-4 @endif">
+					<!-- Rol Search -->
+					<div class="input-group">
+						<div class="input-group-addon">
+							<i class="fa fa-filter"></i>
+						</div>
+						<select class="form-control" name="rolUser" id="rolUser">
+							<option value="user">User</option>
+							<option value="backoffice">Backoffice</option>
+						</select>
+						<select class="form-control" name="groupFilter" id="rolUser">
+							<option value="groupDay">Group Day</option>
+							<option value="groupAgent">Group Agent</option>
+						</select>
+					</div>
+				</div>
+			@endif
 
 			<div class="col-md-6">
 				<div class="box-body">
