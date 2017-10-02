@@ -1,5 +1,8 @@
 <div class="box box-primary">
     <div class="box-body">
+        <div class="box-tools">
+            <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#modalDetailsEvents"><i class="fa fa-eercast"></i> Leyenda</button><br>
+        </div><br>
         <table id="table-details-events-report" class="table table-bordered display nowrap table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
@@ -31,11 +34,18 @@
                     <th>Hold Outbound Transfer</th>
                     <th>Outbound Transfer</th>
                     <th>Desconectado</th>
+                    <th>Total ACD</th>
+                    <th>Total Outbound</th>
+                    <th>Auxiliares S/Backoffice</th>
+                    <th>Auxiliares C/Backoffice</th>
+                    <th>Nivel Ocupación S/Backoffice</th>
+                    <th>Nivel Ocupación C/Backoffice</th>
                 </tr>
             </thead>
         </table>
     </div>
 </div>
+@include('layout.recursos.modals.modal_leyendas')
 <script type="text/javascript">
     $(document).ready(function(){
         buscar()
@@ -84,7 +94,13 @@
                 {"data" : "Ring Outbound Transfer"},
                 {"data" : "Hold Outbound Transfer"},
                 {"data" : "Outbound Transfer"},
-                {"data" : "Desconectado"}
+                {"data" : "Desconectado"},
+                {"data" : "Total ACD"},
+                {"data" : "Total Outbound"},
+                {"data" : "Auxiliares"},
+                {"data" : "Auxiliares Backoffice"},
+                {"data" : "Nivel Ocupacion"},
+                {"data" : "Nivel Ocupacion Backoffice"}
             ],
             "paging"            : true,
             "pageLength"        : 100,

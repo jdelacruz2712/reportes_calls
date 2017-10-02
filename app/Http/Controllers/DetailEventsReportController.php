@@ -55,6 +55,14 @@ class DetailEventsReportController extends CosapiController
         $builderview = [];
         $posicion = 0;
         foreach ($query_detail_event_report as $query_event) {
+            $totalACD = $query_event->Inbound + $query_event->Hold_Inbound + $query_event->Ring_Inbound_Interno + $query_event->Inbound_Interno + $query_event->Hold_Inbound_Interno;
+            $totalOutbound = $query_event->OutBound + $query_event->Ring_Outbound + $query_event->Hold_Outbound + $query_event->Outbound_Interno + $query_event->Hold_Outbound_Interno;
+            $totalAuxiliares = $query_event->Break + $query_event->SSHH + $query_event->Refrigerio + $query_event->Feedback + $query_event->Capacitacion;
+            $totalAuxiliaresBack = $query_event->Break + $query_event->SSHH + $query_event->Refrigerio + $query_event->Feedback + $query_event->Capacitacion + $query_event->Gestion_BackOffice;
+            $totalSuma = $query_event->Login + $query_event->ACD + $query_event->Break + $query_event->SSHH + $query_event->Refrigerio + $query_event->Feedback + $query_event->Capacitacion + $query_event->Gestion_BackOffice + $query_event->Inbound + $query_event->OutBound + $query_event->Ring_Inbound + $query_event->Ring_Outbound + $query_event->Hold_Inbound + $query_event->Hold_Outbound + $query_event->Ring_Inbound_Interno + $query_event->Inbound_Interno + $query_event->Outbound_Interno + $query_event->Ring_Outbound_Interno + $query_event->Hold_Inbound_Interno + $query_event->Hold_Outbound_Interno + $query_event->Ring_Inbound_Transfer + $query_event->Inbound_Transfer + $query_event->Hold_Inbound_Transfer + $query_event->Ring_Outbound_Transfer + $query_event->Hold_Outbound_Transfer + $query_event->Outbound_Transfer;
+            $tiempoLogeo = $totalSuma - $query_event->Desconectado;
+            $totalOcupacion = ($totalACD + $totalOutbound)/($tiempoLogeo - $totalAuxiliaresBack);
+            $totalOcupacionBack = ($totalACD + $totalOutbound + $query_event->Gestion_BackOffice)/($tiempoLogeo - $totalAuxiliares);
             $builderview[$posicion]['Name']                        = $query_event->date_register;
             $builderview[$posicion]['Login']                       = conversorSegundosHoras($query_event->Login, false);
             $builderview[$posicion]['ACD']                         = conversorSegundosHoras($query_event->ACD, false);
@@ -83,6 +91,12 @@ class DetailEventsReportController extends CosapiController
             $builderview[$posicion]['Hold Outbound Transfer']      = conversorSegundosHoras($query_event->Hold_Outbound_Transfer, false);
             $builderview[$posicion]['Outbound Transfer']           = conversorSegundosHoras($query_event->Outbound_Transfer, false);
             $builderview[$posicion]['Desconectado']                = conversorSegundosHoras($query_event->Desconectado, false);
+            $builderview[$posicion]['Total ACD']                   = conversorSegundosHoras($totalACD, false);
+            $builderview[$posicion]['Total Outbound']              = conversorSegundosHoras($totalOutbound, false);
+            $builderview[$posicion]['Auxiliares']                  = conversorSegundosHoras($totalAuxiliares, false);
+            $builderview[$posicion]['Auxiliares Backoffice']       = conversorSegundosHoras($totalAuxiliaresBack, false);
+            $builderview[$posicion]['Nivel Ocupacion']             = (number_format($totalOcupacion,4)*100).' %';
+            $builderview[$posicion]['Nivel Ocupacion Backoffice']  = (number_format($totalOcupacionBack,4)*100).' %';
             $posicion ++;
         }
         return $builderview;
@@ -119,7 +133,13 @@ class DetailEventsReportController extends CosapiController
                 'Ring Outbound Transfer'     => $view['Ring Outbound Transfer'],
                 'Hold Outbound Transfer'     => $view['Hold Outbound Transfer'],
                 'Outbound Transfer'          => $view['Outbound Transfer'],
-                'Desconectado'               => $view['Desconectado']
+                'Desconectado'               => $view['Desconectado'],
+                'Total ACD'                  => $view['Total ACD'],
+                'Total Outbound'             => $view['Total Outbound'],
+                'Auxiliares'                 => $view['Auxiliares'],
+                'Auxiliares Backoffice'      => $view['Auxiliares Backoffice'],
+                'Nivel Ocupacion'            => '<b>'.$view['Nivel Ocupacion'].'</b>',
+                'Nivel Ocupacion Backoffice' => '<b>'.$view['Nivel Ocupacion Backoffice'].'</b>'
             ]);
         }
         return $eventconsolidatedcollection;
