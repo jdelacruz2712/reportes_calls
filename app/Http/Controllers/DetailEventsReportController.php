@@ -126,7 +126,7 @@ class DetailEventsReportController extends CosapiController
     }
 
     public function export_details_events_report(Request $request){
-        return call_user_func_array([$this,'export_details_events_report_'.$request->format_export], [$request->days, $request->filter_rol]);
+        return call_user_func_array([$this,'export_details_events_report_'.$request->format_export], [$request->days, $request->filter_rol, $request->group_filter]);
     }
 
     protected function export_details_events_report_csv($days, $filter_rol, $type_report){
