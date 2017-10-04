@@ -18,7 +18,7 @@
 
     <div class="wrapper" id="frontAminLTE">
       @include('layout.recursos.header')
-      @include('layout.recursos.left_colum')
+      @include('layout.recursos.left_menu.index')
       <div class="content-wrapper">
         @include('layout.recursos.flash_message')
           <section class="content-header">
@@ -49,6 +49,7 @@
     {!! Html::script('js/notifications.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/vuesockets.min.js?version='.date('YmdHis')) !!}
     {!! Html::script('js/personalizeFunctions.min.js?version='.date('YmdHis')) !!}
+    {!! Html::script('js/push.min.js?version='.date('YmdHis')) !!}
     @include('layout.recursos.fecha_hora')
     @yield('scripts')
   </body>

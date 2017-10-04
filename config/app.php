@@ -137,7 +137,6 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
 
-
         /*
          * Application Service Providers...
          */
@@ -157,8 +156,9 @@ return [
         Cosapi\Providers\VuejsServiceProvider::class,
         Cosapi\Providers\SailsioServiceProvider::class,
         Cosapi\Providers\AdminLTEProvider::class,
-        Cosapi\Providers\highchartsServiceProvider::class,
-        Cosapi\Providers\dropdragServiceProvider::class,
+        Cosapi\Providers\HighchartsServiceProvider::class,
+        Cosapi\Providers\DropdragServiceProvider::class,
+        Cosapi\Providers\PushjsServiceProvider::class,
         Cosapi\Providers\DateRangePickerServiceProvider::class,
 
         Collective\Html\HtmlServiceProvider::class,
@@ -179,7 +179,6 @@ return [
 
         /** Ami para conectarse al ASterisk **/
         Cosapi\Providers\PHPAmiServiceProvider::class,
-
     ],
 
     /*

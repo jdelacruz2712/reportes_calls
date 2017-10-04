@@ -1,32 +1,4 @@
 'use strict'
-// Función que carga HTML en una etiqueta div de ID => container
-const loadModule = (idOptionMenu) => {
-	let url = idOptionMenu
-	$.ajax({
-		type: 'POST',
-		url: url,
-		data: {
-			_token: $('input[name=_token]').val(),
-			url: url
-		},
-		beforeSend: function (data) {
-			let divLoading = '<div class="loading" id="loading" style="display: inline;"><li></li><li></li><li></li><li></li><li></li></div>'
-			$('#container').html(divLoading)
-		},
-		success: function (data) {
-			$('#container').html(data)
-			$('#urlsistema a').remove()
-			$('#urlsistema').append('<a href="#" id="' + url + '" class="reportes">' + $('#' + url).text() + '</a>')
-		},
-		error: function (data) {
-			$('#container').html('problemas para actualizar')
-		},
-		complete: function () {
-			$('#loading').hide()
-		}
-	})
-}
-
 /**
  * [getDataFilters Función que configura datos a enviar en las consultas]
  * @param  {String} evento [Tipo de reporte a cargar en la vista]
@@ -53,8 +25,8 @@ const getDataFilters = (evento) => {
  */
 const exportar = (format_export) => {
 	let days = $('#texto').val()
-    let event = moment().format("YYYY-MM-DD") + ' - ' + moment().format("YYYY-MM-DD")
-    if ($('#hidEvent').length) event = $('#hidEvent').val()
+	let event = moment().format("YYYY-MM-DD") + ' - ' + moment().format("YYYY-MM-DD")
+	if ($('#hidEvent').length) event = $('#hidEvent').val()
 	let rankHour = 1800
 	if ($('#rankHour').length > 0) rankHour = $('#rankHour').val()
 	export_ajax('POST', event, format_export, days, rankHour)

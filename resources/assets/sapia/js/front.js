@@ -4,7 +4,6 @@ $(document).ready(function () {
 			'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
 		}
 	})
-	$('.reportes').on('click', function (e) { loadModule($(this).attr('id')) })
 
 	$('#menuleft li.treeview ul li').click(function(){
 		$('#menuleft li.treeview ul li.active').removeClass("active")
@@ -69,22 +68,22 @@ const activeCalls = () => {
 		showNotificacion('warning', 'Usted debe liberar el anexo antes de activar las llamadas.', 'Ooops!!!', 10000, false, true)
 	} else {
 		vueFront.remoteActiveCallsUserId = vueFront.getUserId
-        let message,title,roleAction,actionCalls
+		let message,title,roleAction,actionCalls
 		if(vueFront.getRole == 'backoffice'){
 			title = 'Activar Llamadas'
-            message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
-                '<br>' +
-                '<p><b>Nota : </b>Cuando active la entrada de llamadas usted tendra que seleccionar su anexo y pasar a ACD para que le puedan caer las llamadas. ' +
-                'Por favor de verificar que esta asignados a las colas correspondientes.</p>'
-            roleAction = 'user'
+			message = '<h4>¿Usted desea poder recibir llamadas?</h4>' +
+																'<br>' +
+																'<p><b>Nota : </b>Cuando active la entrada de llamadas usted tendra que seleccionar su anexo y pasar a ACD para que le puedan caer las llamadas. ' +
+																'Por favor de verificar que esta asignados a las colas correspondientes.</p>'
+			roleAction = 'user'
 			actionCalls = 'user'
 		}else{
 			title = 'Desactivar Llamadas'
-            message = '<h4>¿Deseas pasar a BackOffice nuevamente?</h4>' +
-                '<br>' +
-                '<p><b>Nota : </b>Con esto volveras a pasar al rol BackOffice.</p>'
-            roleAction = 'backoffice'
-            actionCalls = ''
+			message = '<h4>¿Deseas pasar a BackOffice nuevamente?</h4>' +
+																'<br>' +
+																'<p><b>Nota : </b>Con esto volveras a pasar al rol BackOffice.</p>'
+			roleAction = 'backoffice'
+			actionCalls = ''
 		}
 
 		BootstrapDialog.show({
@@ -97,10 +96,10 @@ const activeCalls = () => {
 					label: '<i class="fa fa-check" aria-hidden="true"></i> Si',
 					cssClass: 'btn-success',
 					action: function (dialogRef) {
-                        let $button = this
-                        $button.disable()
+						let $button = this
+						$button.disable()
 						if (vueFront.getRole !== roleAction) {
-                            $button.spin()
+							$button.spin()
 							vueFront.remoteActiveCallsNameRole = roleAction
 							vueFront.activeCalls(actionCalls)
 						} else {
@@ -459,25 +458,25 @@ const showErrorForm = (data, formDiv) => {
 
 // Función para ocultar los errores cuando se ingresa en algun campo que se requeria data
 const hideErrorForm = (formDiv) => {
-    $("input[type=text],input[type=checkbox],input[type=password]").click(function() {
-        $(formDiv).fadeOut().html()
-    })
+	$("input[type=text],input[type=checkbox],input[type=password]").click(function() {
+		$(formDiv).fadeOut().html()
+	})
 }
 
 // Función para poder buscar en una tabla
 const searchTable = (idTable, idSearch, filterAnnexed = '') => {
-    $(idSearch).keyup(function(){
-        _this = this
-        $.each($(idTable + " tbody tr " + filterAnnexed), function() {
-            let value = -1
-            let valueSearch = $(_this).val()
-            if($(this).text().toLowerCase().indexOf(valueSearch.toLowerCase()) === value) {
-                $(this).hide()
-            }else {
-                $(this).show()
-            }
-        })
-    })
+	$(idSearch).keyup(function(){
+		_this = this
+		$.each($(idTable + " tbody tr " + filterAnnexed), function() {
+			let value = -1
+			let valueSearch = $(_this).val()
+			if($(this).text().toLowerCase().indexOf(valueSearch.toLowerCase()) === value) {
+				$(this).hide()
+			}else {
+				$(this).show()
+			}
+		})
+	})
 }
 
 // Función para seleccionar todos los checkbox con uno solo

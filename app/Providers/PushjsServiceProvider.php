@@ -4,7 +4,7 @@ namespace Cosapi\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class HighchartsServiceProvider extends ServiceProvider
+class PushjsServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -13,8 +13,8 @@ class HighchartsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-      $this->publishes([
-          __DIR__ . '/../../node_modules/highcharts/' => public_path('../resources/assets/node_modules/highcharts/'),
+        $this->publishes([
+          __DIR__ . '/../../node_modules/push.js/bin' => public_path('../resources/assets/node_modules/push.js/'),
       ], 'public');
     }
 

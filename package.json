@@ -17,6 +17,7 @@
     "daterangepicker": "^2.1.25",
     "highcharts": "^5.0.14",
     "laravel-elixir-webpack": "^1.0.1",
+    "push.js": "^1.0.4",
     "sails.io.js": "^1.1.9",
     "socket.io": "^1.7.3",
     "socket.io-client": "^1.7.3",

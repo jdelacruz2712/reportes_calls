@@ -1,10 +1,16 @@
 <?php
-Route::get('/asterisk', ['uses'=>'AsteriskController@index'     ,   'as' => 'asterisk']);
-Route::get('/testing', ['uses'=>'AdminLTEController@testing'     ,   'as' => 'testing']);
-Route::get('/', ['uses'=>'Auth\AuthController@getLogin'   ,   'as' =>'login']);
-Route::post('/', ['uses'=>'Auth\AuthController@postLogin'  ,   'as' =>'login']);
-Route::get('logout', ['uses'=>'Auth\AuthController@getLogout'  ,   'as' =>'logout']);
-Route::get('errorRole', ['uses'=>'AdminController@errorRole'      ,   'as' =>'home']);
+/**
+ * Rutas GET
+ */
+Route::get('/', ['uses'=>'Auth\AuthController@getLogin'       ,   'as' => 'login']);
+Route::get('logout', ['uses'=>'Auth\AuthController@getLogout' ,   'as' => 'logout']);
+Route::get('errorRole', ['uses'=>'AdminController@errorRole'  ,   'as' => 'home']);
+Route::get('/testing', ['uses'=>'AdminLTEController@testing'  ,   'as' => 'testing']);
+
+/**
+ * Rutas POST
+ */
+Route::post('/', ['uses'=>'Auth\AuthController@postLogin'     ,   'as' => 'login']);
 
 
 Route::group(['middleware'=>['auth'], 'prefix'=>'home' ], function () {
@@ -16,13 +22,13 @@ Route::group(['middleware'=>['user']], function () {
 
         // Dashboard
         Route::get('dashboard_01', ['uses'=>'DashboardController@dashboard_01']);
+        Route::post('dashboard_03', ['uses'=>'Dashboard03Controller@index']);
+
         Route::post('dashboard_01/getVariablesGlobals', ['uses'=>'DashboardController@getVariablesGlobals']);
         Route::post('dashboard_01/getEventKpi', ['uses'=>'DashboardController@getEventKpi']);
         Route::post('dashboard_01/getQuantityCalls', ['uses'=>'DashboardController@getQuantityCalls']);
         Route::post('dashboard_01/panelAgentStatusSummary', ['uses'=>'DashboardController@panelAgentStatusSummary']);
         Route::post('dashboard_01/panelGroupStatistics', ['uses'=>'DashboardController@panelGroupStatistics']);
-        Route::get('dashboard_02', ['uses'=>'DashboardController@dashboard_02']);
-        Route::post('dashboard_03', ['uses'=>'Dashboard03Controller@index']);
 
         // Reportes de consolidado de eventos
         Route::post('events_consolidated', ['uses'=>'EventsAgentController@events_consolidated']);
@@ -58,6 +64,9 @@ Route::group(['middleware'=>['user']], function () {
         Route::post('saveformAssignUser', ['uses'=>'QueuesController@saveFormAssingUser']);
         Route::post('exportQueues', ['uses'=>'QueuesController@exportQueues']);
         Route::post('taskmanagerQueues', ['uses'=>'QueuesController@taskManagerQueues']);
+
+        // Broadcast Message
+        Route::post('broadcast_message', ['uses'=>'BroadcastMessageController@index']);
     });
 
     // Reporte de encuestaa

@@ -14,9 +14,6 @@ require('laravel-elixir-webpack')
 elixir.config.sourcemaps = false
 
 elixir(function(mix) {
-	/**
-  Generando el archivo cosapi_adminlte.min.js para el Layout adminLTE
-  */
 	mix
 		.scripts([
 			'node_modules/vue/vue.min.js',
@@ -26,9 +23,9 @@ elixir(function(mix) {
 			'../../.env.js'
 		],'public/js/vuesockets.min.js','resources/assets/')
 
-	/**
-  Generando el archivo cosapi_realtime.min.js para mostrar data realtime en panel
-  */
+		/**
+	  Generando el archivo cosapi_realtime.min.js para mostrar data realtime en panel
+	  */
 		.scripts([
 			'sapia/js/front.js',
 			'sapia/js/helper.js',
@@ -40,17 +37,6 @@ elixir(function(mix) {
 			'node_modules/vue-select/vue-select.js',
 			'sapia/js/profileuserVue.js'
 		],'public/js/profileuserVue.min.js','resources/assets/')
-
-		.scripts([
-			'sapia/js/dashboard_vue.js'
-		],'public/js/dashboard_vue.min.js','resources/assets/')
-		.scripts([
-    		'sapia/js/taskqueueVue.js'
-  		],'public/js/taskqueueVue.min.js','resources/assets/')
-
-	  	.scripts([
-			'sapia/js/viewuserqueueVue.js'
-	  	],'public/js/viewuserqueueVue.min.js','resources/assets/');
 })
 
 /*
@@ -61,7 +47,7 @@ elixir(function(mix) {
 		.styles([
 			'vendor/adminlte/plugins/font-awesome/css/font-awesome.css',
 			'vendor/adminlte/plugins/bootstrap/dist/css/bootstrap.css',
-            'vendor/adminlte/dist/css/AdminLTE.css',
+			'vendor/adminlte/dist/css/AdminLTE.css',
 			'sapia/css/login.css'
 		],'public/css/login.min.css','resources/assets/')
 		.scripts([
@@ -112,7 +98,7 @@ elixir(function(mix) {
 		],'public/css/adminlte.min.css','resources/assets/')
 		.scripts([
 			'vendor/adminlte/plugins/jquery/dist/jquery.js',
-            'vendor/adminlte/dist/js/adminlte.js',
+			'vendor/adminlte/dist/js/adminlte.js',
 			'vendor/adminlte/plugins/bootstrap/dist/js/bootstrap.js',
 			'vendor/adminlte/plugins/fastclick/lib/fastclick.js',
 			'sapia/js/right_menu_adminlte.js'
@@ -209,49 +195,48 @@ elixir(function(mix) {
 		.scripts([
 			'highcharts.js',
 			'modules/exporting.js'
-	],'public/js/highchart.min.js','resources/assets/node_modules/highcharts/')
+		],'public/js/highchart.min.js','resources/assets/node_modules/highcharts/')
 })
 
 
-/**
-* Generando los archivos para autogestionar los formularios con Vue
-*/
-elixir(function(mix) {
-   mix
-	   .scripts([
-		   'sapia/js/form/formUsers.js'
-	   ], 'public/js/form/formUsers.min.js', 'resources/assets/');
-});
 
 elixir(function(mix) {
 	/**
   Copiar archivos para funcionamiento de adminLTE y Boostrap
   */
 	mix
-	/** Archivos necesario para el Adminlte 2.4 */
+		/**
+		 * Archivos necesario para el Adminlte 2.4
+		 */
 		.copy('resources/assets/vendor/adminlte/plugins/bootstrap/dist/fonts'       , 'public/fonts')
 		.copy('resources/assets/vendor/adminlte/plugins/Ionicons/fonts'             , 'public/fonts')
 		.copy('resources/assets/vendor/adminlte/plugins/font-awesome/fonts'         , 'public/fonts')
 		.copy('resources/assets/sapia/css/fonts-googleapis.css'                     , 'public/css/fonts-googleapis.css')
 		.copy('resources/assets/sapia/css/fonts-google-apis'                        , 'public/css/fonts-google-apis')
 
-	/**
-  Copy files individuales
-  */
-		.copy('resources/assets/index.php'                                 , 'public/index.php')
-		.copy('resources/assets/favicon.ico'                               , 'public/favicon.ico')
+		/**
+		* Generando los archivos para autogestionar los formularios con Vue
+		*/
+		.copy('resources/assets/sapia/js/form/formUsers.js'									, 'public/js/form/formUsers.min.js')
 
-	/**
-  Copiar imagenes en una sola carpeta
-  */
-		.copy('resources/assets/images'                                    , 'public/img')
-		.copy('resources/assets/sapia/img'                                 , 'public/img')
+		/**
+	  * Copiar imagenes en una sola carpeta
+	  */
+		.copy('resources/assets/images'																			, 'public/img')
+		.copy('resources/assets/sapia/img'																	, 'public/img')
+		.copy('resources/assets/index.php'																	, 'public/index.php')
+		.copy('resources/assets/favicon.ico'																, 'public/favicon.ico')
 
-		.copy('resources/assets/sapia/favicon'                            , 'public/favicon')
-		.copy('resources/assets/sapia/background'                         , 'public/background')
-		.copy('resources/assets/images/default_avatar.png'                , 'public/storage/default_avatar.png')
-		.copy('resources/assets/sapia/css/dashboard.css'                  , 'public/css/dashboard.css')
-		.copy('resources/assets/sapia/js/graphics.js'                  		, 'public/js/graphics.js')
+		.copy('resources/assets/sapia/favicon'															, 'public/favicon')
+		.copy('resources/assets/sapia/background'														, 'public/background')
+		.copy('resources/assets/images/default_avatar.png'									, 'public/storage/default_avatar.png')
 
+		.copy('resources/assets/sapia/css/dashboard.css'										, 'public/css/dashboard.css')
+		.copy('resources/assets/sapia/js/graphics.js'												, 'public/js/graphics.js')
 
+		.copy('resources/assets/sapia/js/dashboard_vue.js'									, 'public/js/dashboard_vue.min.js')
+		.copy('resources/assets/sapia/js/taskqueueVue.js'										, 'public/js/taskqueueVue.min.js')
+		.copy('resources/assets/sapia/js/viewuserqueueVue.js'								, 'public/js/viewuserqueueVue.min.js')
+
+		.copy('resources/assets/node_modules/push.js/push.min.js'						, 'public/js/push.min.js')
 })

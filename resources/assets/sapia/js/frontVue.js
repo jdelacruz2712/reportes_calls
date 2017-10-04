@@ -1,7 +1,6 @@
 'use strict'
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
 
-const socketIO = io.connect(restApiSails)
 const socketSails = io.sails.connect(restApiSails)
 io.sails.autoConnect = false
 socketSails.reconnection = true
@@ -17,6 +16,8 @@ const socketNodejs = io.connect(restApiDashboard, {
 const vueFront = new Vue({
 	el: '#frontAminLTE',
 	data: {
+		divContainer: '-',
+
 		getNameProyect: '',
 		getUserId: '',
 		getUsername: '',
@@ -70,7 +71,7 @@ const vueFront = new Vue({
 
 		nodejsStatusSails: false,
 		nodejsStatusAsterisk: false,
-
+		nodejsServerStatus: 'activo',
 		nodejsServerName: '',
 		nodejsServerMessage: '',
 
@@ -165,7 +166,7 @@ const vueFront = new Vue({
 			// Verificacion de marcado de asistencia y requerimiento de cambio de contraseña
 			await this.verifyAssistance()
 
-			if (this.annexed === 0) loadModule('agents_annexed')
+			if (this.annexed === 0) this.loadOptionMenu('agents_annexed')
 
 			if (dataGlobals) {
 				if (this.getUserId && this.getNameProyect) {
@@ -258,7 +259,7 @@ const vueFront = new Vue({
 			this.nextEventName = this.getEventName
 			let parameters = this.loadParameters('assignAnnexed')
 			ajaxNodeJs(parameters, this.routeAction, true, 2000)
-			loadModule('agents_annexed')
+			this.loadOptionMenu('agents_annexed')
 		},
 
 		liberarAnexos: function () {
@@ -275,12 +276,13 @@ const vueFront = new Vue({
 			let parameters = this.loadParameters('releasesAnnexed')
 			vueFront.ModalReleasesAnnexed = 'modal fade'
 			ajaxNodeJs(parameters, this.routeAction, true, 2000)
-			loadModule('agents_annexed')
+			this.loadOptionMenu('agents_annexed')
 		},
 
 		activeCalls: async function () {
 			let parametersRole = this.loadParameters('activeCalls')
-			let response = await this.sendUrlRequest('saveformchangeRole', parametersRole)
+			let response = await this.sendUrlRequest('saveformchangeRole', parametersRole)
+
 			closeNotificationBootstrap()
 			if (response.message === 'Success') {
 				if (this.getUserId === this.remoteActiveCallsUserId) {
@@ -371,6 +373,14 @@ const vueFront = new Vue({
 				statusQueueRemove: (this.remotoReleaseStatusQueueRemove === false) ? this.statusQueueAddAsterisk : this.remotoReleaseStatusQueueRemove
 			}
 			return data
+		},
+
+		loadOptionMenu: async function (idMenu) {
+			if (idMenu === "activate_calls") activeCalls()
+			else {
+				$('#container').html('<div class="loading" id="loading" style="display: inline;"><li></li><li></li><li></li><li></li><li></li></div>')
+				$('#container').html(await this.sendUrlRequest(`/${idMenu}`))
+			}
 		}
 	}
 })
@@ -379,7 +389,11 @@ socketNodejs.on('connect', function () {
 	vueFront.nodejsServerName = 'Servidor Nodejs'
 	vueFront.ModalConnectionNodeJs = 'modal fade'
 	vueFront.nodejsServerMessage = 'Acabas de conectar con el Servidor Nodejs'
-	console.log('Socket Asterisk connected!')
+	if (vueFront.nodejsServerStatus === 'inactivo') {
+		vueFront.loadVariablesGlobals()
+		vueFront.nodejsServerStatus = 'activo'
+	}
+	console.log('socketNodejs connected!')
 })
 
 socketNodejs.on('connect_error', function () {
@@ -398,6 +412,7 @@ socketNodejs.on('disconnect', function () {
 	vueFront.nodejsServerName = 'Servidor Nodejs'
 	vueFront.ModalConnectionNodeJs = 'modal show'
 	vueFront.nodejsServerMessage = 'Acabas de perder conexión con el socket del Server Nodejs !!!'
+	vueFront.nodejsServerStatus = 'inactivo'
 	console.log('socketNodejs Disconnected')
 })
 
