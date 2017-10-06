@@ -17,7 +17,7 @@
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
 
     <div class="wrapper" id="frontAminLTE">
-      @include('layout.recursos.header')
+      @include('layout.recursos.header.index')
       @include('layout.recursos.left_menu.index')
       <div class="content-wrapper">
         @include('layout.recursos.flash_message')

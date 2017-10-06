@@ -8,7 +8,7 @@
       <template v-if="getRole === 'admin' || getRole === 'supervision'">
         @include('layout.recursos.left_menu.supervision')
       </template>
-
+      
       <template v-if="getRole === 'user' ">  @include('layout.recursos.left_menu.user') </template>
       <template v-if="getRole === 'backoffice' ">  @include('layout.recursos.left_menu.backoffice') </template>
 

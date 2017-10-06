@@ -3,10 +3,10 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\Anexo;
-use Cosapi\Models\QueuePriority;
 use Cosapi\Models\Queues;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
+use Cosapi\Models\QueuePriority;
 
 use Illuminate\Support\Facades\DB;
 use Cosapi\Models\DetalleEventos;
@@ -323,11 +323,7 @@ class CosapiController extends Controller
      */
     protected function lengthAnnexed()
     {
-        $lengthAnnexed = Anexo::select(DB::raw('LENGTH(name) AS annexed_length'))
-                                ->groupBy(DB::raw('LENGTH(name)'))
-                                ->get()
-                                ->toArray();
-        return $lengthAnnexed;
+        return Anexo::select(DB::raw('LENGTH(name) AS annexed_length'))->groupBy(DB::raw('LENGTH(name)'))->get()->toArray();
     }
 
     /**
@@ -342,35 +338,29 @@ class CosapiController extends Controller
         }
     }
 
-    public function getQueueGlobal(){
-        $Queues = Queues::Select()
-                    ->get()
-                    ->toArray();
-        return $Queues;
+    public function getQueueGlobal()
+    {
+        return Queues::Select()->get()->toArray();
     }
 
-    public function getQueuesUserGlobal($userID){
-        $QueuesUser = Users_Queues::Select()
-                        ->where('user_id',$userID)
-                        ->get()
-                        ->toArray();
-        return $QueuesUser;
+    public function getQueuesUserGlobal($userID)
+    {
+        return Users_Queues::Select()->where('user_id', $userID)->get()->toArray();
     }
 
-    public function getPriorityGlobal(){
-        $Priority = QueuePriority::Select()
-                        ->get()
-                        ->toArray();
-        return $Priority;
+    public function getPriorityGlobal()
+    {
+        return  QueuePriority::Select()->get()->toArray();
     }
 
-    protected function getQueuestoUserGlobal($QueuesUser, $Queues, $weightPriority){
+    protected function getQueuestoUserGlobal($QueuesUser, $Queues, $weightPriority)
+    {
         $resultArray = $QueuesUser;
-        foreach($QueuesUser as $keyUserQueue => $valUserQueue) {
-            foreach($Queues as $keyQueue => $valQueue) {
-                if($valUserQueue['queue_id'] == $valQueue['id']) {
-                    foreach($weightPriority as $keyWeight => $valWeight){
-                        if($valUserQueue['priority'] == $valWeight['id']){
+        foreach ($QueuesUser as $keyUserQueue => $valUserQueue) {
+            foreach ($Queues as $keyQueue => $valQueue) {
+                if ($valUserQueue['queue_id'] == $valQueue['id']) {
+                    foreach ($weightPriority as $keyWeight => $valWeight) {
+                        if ($valUserQueue['priority'] == $valWeight['id']) {
                             $resultArray[$keyUserQueue] = $valUserQueue + array('Queues' => $valQueue) + array('Priority' => $valWeight);
                         }
                     }
@@ -380,19 +370,17 @@ class CosapiController extends Controller
         return $resultArray;
     }
 
-    protected function getUserGlobal($userID){
-        $Users = User::Select()
-                    ->where('id',$userID)
-                    ->get()
-                    ->toArray();
-        return $Users;
+    protected function getUserGlobal($userID)
+    {
+        return User::Select()->where('id', $userID)->get()->toArray();
     }
 
     /**
      * [Funcion para retornar la ruta de anuncio de la cola]
      */
-    public function announceQueue($nameQueue){
-        switch ($nameQueue){
+    public function announceQueue($nameQueue)
+    {
+        switch ($nameQueue) {
             case 'IBK_Tiendas':
                 $announce = "/etc/asterisk/voces/skills/skills_tiendas";
                 break;

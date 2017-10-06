@@ -76,15 +76,6 @@ class AdminController extends CosapiController
         }
 
         $this->AssistanceUser = Session::get('AssistanceUser');
-
-        $cantidadColasAsignadas = Users_Queues::select(DB::raw('COUNT(1) AS cantidadColasAsignadas'))->where(
-            'user_id',
-            $this->UserId
-        )->get()->toArray();
-        ($cantidadColasAsignadas[0]['cantidadColasAsignadas'] > 0) ? $cantidadColasAsignadas = true : $cantidadColasAsignadas = false;
-
-        Session::put('quantityQueueAssign', $cantidadColasAsignadas);
-        $this->quantityQueueAssign = Session::get('quantityQueueAssign');
     }
 
     /**
@@ -146,9 +137,15 @@ class AdminController extends CosapiController
             'dateServer' => $this->ShowDateAndTimeCurrent('justTheDate'),
             'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate'),
             'annexed' => $this->UserAnexo,
-            'assistanceNextHour' => $assistanceNextHour,
-            'quantityQueueAssign' => $this->quantityQueueAssign,
-            'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId),$this->getQueueGlobal(),$this->getPriorityGlobal())
+            'assistanceNextHour' => $assistanceNextHour
+        ], 200);
+    }
+
+
+    public function getQueuesUser()
+    {
+        return response()->json([
+          'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId), $this->getQueueGlobal(), $this->getPriorityGlobal())
         ], 200);
     }
 

@@ -99,6 +99,7 @@ elixir(function(mix) {
 		.scripts([
 			'vendor/adminlte/plugins/jquery/dist/jquery.js',
 			'vendor/adminlte/dist/js/adminlte.js',
+			'vendor/adminlte/dist/js/app.js',
 			'vendor/adminlte/plugins/bootstrap/dist/js/bootstrap.js',
 			'vendor/adminlte/plugins/fastclick/lib/fastclick.js',
 			'sapia/js/right_menu_adminlte.js'
