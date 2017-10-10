@@ -18,7 +18,7 @@ class DetailEventsReportController extends CosapiController
     public function index(Request $request){
         if ($request->ajax()){
             if ($request->fecha_evento){
-                return $this->list_detail_event_report($request->fecha_evento);
+                return $this->list_detail_event_report($request->fecha_evento, $request->filter_rol, $request->group_filter);
             }else{
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.details_events_report.details_events_report',
@@ -29,6 +29,7 @@ class DetailEventsReportController extends CosapiController
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
                     'viewHourSearch'        => false,
+                    'viewRolTypeSearch'     => true,
                     'viewButtonSearch'      => true,
                     'viewButtonExport'      => true,
                     'exportReport'          => 'export_details_events_report',
@@ -38,17 +39,17 @@ class DetailEventsReportController extends CosapiController
         }
     }
 
-    protected function list_detail_event_report($fecha_evento){
-        $query_detail_event_report          = $this->query_detail_event_report($fecha_evento);
+    protected function list_detail_event_report($fecha_evento, $rolUser, $typeReport){
+        $query_detail_event_report          = $this->query_detail_event_report($fecha_evento, $rolUser, $typeReport);
         $builderview_detail_event_report    = $this->builderview_detail_event_report($query_detail_event_report);
         $collection_detail_event_report     = $this->collection_detail_event_report($builderview_detail_event_report);
         $list_detail_event_report           = $this->FormatDatatable($collection_detail_event_report);
         return $list_detail_event_report;
     }
 
-    protected function query_detail_event_report ($fecha_evento){
+    protected function query_detail_event_report ($fecha_evento, $rolUser, $typeReport){
         list($fecha_inicial,$fecha_final) = explode(' - ', $fecha_evento);
-        $query_detail_event_report = DB::select('CALL sp_get_detail_event_report_beta ("'.$fecha_inicial.'","'.$fecha_final.'")');
+        $query_detail_event_report = DB::select('CALL sp_get_detail_event_report_beta ("'.$fecha_inicial.'","'.$fecha_final.'","'.$rolUser.'","'.$typeReport.'")');
         return $query_detail_event_report;
     }
 
@@ -127,12 +128,12 @@ class DetailEventsReportController extends CosapiController
     }
 
     public function export_details_events_report(Request $request){
-        return call_user_func_array([$this,'export_details_events_report_'.$request->format_export], [$request->days]);
+        return call_user_func_array([$this,'export_details_events_report_'.$request->format_export], [$request->days, $request->filter_rol]);
     }
 
-    protected function export_details_events_report_csv($days){
+    protected function export_details_events_report_csv($days, $filter_rol, $type_report){
         $filename               = 'details_events_report_'.substr(time(),6,4);
-        $builderview            = $this->builderview_detail_event_report($this->query_detail_event_report($days));
+        $builderview            = $this->builderview_detail_event_report($this->query_detail_event_report($days, $filter_rol, $type_report));
         $this->BuilderExport($builderview,$filename,'csv','exports');
 
         $data = [
@@ -145,12 +146,12 @@ class DetailEventsReportController extends CosapiController
         return $data;
     }
 
-    protected function export_details_events_report_excel($days){
-        $filename               = 'details_events_report_'.time();
-        Excel::create($filename, function($excel) use($days) {
-
-            $excel->sheet('Details Events Report', function($sheet) use($days) {
-                $sheet->fromArray($this->builderview_detail_event_report($this->query_detail_event_report($days)));
+    protected function export_details_events_report_excel($days, $filter_rol, $type_report){
+        $filename = 'details_events_report_'.time();
+        $query    = $this->query_detail_event_report($days, $filter_rol, $type_report);
+        Excel::create($filename, function($excel) use($query) {
+            $excel->sheet('Details Events Report', function($sheet) use($query) {
+                $sheet->fromArray($this->builderview_detail_event_report($query));
             });
 
         })->store('xlsx','exports');

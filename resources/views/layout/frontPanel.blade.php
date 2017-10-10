@@ -6,15 +6,13 @@
     @include('layout.recursos.icon_title')
     <title>Reportes | @yield('title')</title>
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    {!! Html::style('css/adminlte.min.css') !!}
-    {!! Html::style('css/notifications.min.css') !!}
-    {!! Html::style('css/fonts-googleapis.css') !!}
+    <meta name="_token" content="{{ csrf_token() }}">
+    {!! Html::style('css/adminlte.min.css?version='.date('YmdHis')) !!}
+    {!! Html::style('css/notifications.min.css?version='.date('YmdHis')) !!}
+    {!! Html::style('css/fonts-googleapis.css?version='.date('YmdHis')) !!}
     @yield('css')
   </head>
   <body class=" sidebar-mini {{getenv('REPORT_THEME')}}  " style="padding-right: 0px !important;">
-    <!-- Token de sistemas -->
-    <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
 
     <div class="wrapper" id="frontAminLTE">
       @include('layout.recursos.header')

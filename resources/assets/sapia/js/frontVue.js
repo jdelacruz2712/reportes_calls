@@ -1,5 +1,5 @@
 'use strict'
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 
 const socketSails = io.sails.connect(restApiSails)
 io.sails.autoConnect = false

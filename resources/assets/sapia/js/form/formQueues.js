@@ -8,7 +8,7 @@ $('#formQueues').submit(function(e) {
         type        : 'POST',
         url         : 'saveformQueues',
         cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        headers     : {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
@@ -38,7 +38,7 @@ $('#formQueuesStatus').submit(function(e) {
         type        : 'POST',
         url         : 'saveformQueuesStatus',
         cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        headers     : {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
@@ -67,7 +67,7 @@ $('#formAssignUser').submit(function(e) {
         type        : 'POST',
         url         : 'saveformAssignUser',
         cache       : false,
-        headers     : {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+        headers     : {'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')},
         data        : data,
         success: function(data){
             if(data.message === 'Success'){
