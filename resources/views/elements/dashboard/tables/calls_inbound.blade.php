@@ -47,7 +47,7 @@
                   <td>
                     <span :class ="'label label-' + inbound.color">
                       <i :class ="inbound.icon" style="padding: 1px;" aria-hidden="true"></i>
-                      @{{ inbound.event_name }}
+                      @{{ searchNameEvent(inbound.event_id) }}
                     </span>
                   </td>
                   <td>@{{ inbound.inbound_queue }}</td>

@@ -61,8 +61,7 @@
             "composer publish-gulp"
         ],
         "pre-update-cmd": [
-            "php artisan clear-compiled",
-            "composer publish-gulp"
+            "php artisan clear-compiled"
         ],
         "post-update-cmd": [
             "php artisan optimize",

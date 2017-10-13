@@ -45,7 +45,7 @@
                   <td>
                     <span :class ="'label label-' + outbound.color">
                       <i :class ="outbound.icon" style="padding: 1px;" aria-hidden="true"></i>
-                      @{{ outbound.event_name }}
+                        @{{ searchNameEvent(outbound.event_id) }}
                     </span>
                   </td>
                   <td>@{{ outbound.outbound_phone }}</td>

@@ -5,6 +5,7 @@ namespace Cosapi\Http\Controllers;
 use Carbon\Carbon;
 use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
+use Cosapi\Models\Eventos;
 use Cosapi\Models\Cdr;
 use Cosapi\Models\Kpis;
 use Cosapi\Models\Queue_Log;
@@ -38,8 +39,11 @@ class DashboardController extends IncomingCallsController
                 $listProfile[$users['id']]['role'] = $users['role'];
             }
 
+            $listEventos = Eventos::select()->get()->toArray();
+
             return response()->json([
               'listAllUserProfile' => $listProfile,
+              'listAllEventos' => $listEventos,
               'hourServer' => $this->ShowDateAndTimeCurrent('justTheTime'),
               'dateServer' => $this->ShowDateAndTimeCurrent('justTheDate'),
               'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate')
@@ -108,9 +112,10 @@ class DashboardController extends IncomingCallsController
     public function panelAgentStatusSummary(Request $request)
     {
         try {
-            $AgentOnline = AgentOnline::select(DB::raw('agent_role, event_id, event_name, count(1) as quantity'))
+            $AgentOnline = AgentOnline::select(DB::raw('agent_role, event_id, eventos.name as event_name, count(1) as quantity'))
+                            ->join('eventos', 'eventos.id', '=', 'event_id')
                             ->whereIn('agent_role', $request->filterRoles)
-                            ->groupBy('event_name')
+                            ->groupBy('event_id')
                             ->get()->toArray();
 
             return response()->json(['message' => $AgentOnline], 200);

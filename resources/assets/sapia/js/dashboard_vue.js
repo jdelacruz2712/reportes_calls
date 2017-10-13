@@ -20,6 +20,7 @@ const dashboard = new Vue({
 		filterParameters: [],
 		agentStatusSummary: [],
 		listProfileUsers: [],
+		listEventos:[],
 
 		percentageAnswer: '',
 		percentageUnanswer: '',
@@ -72,8 +73,8 @@ const dashboard = new Vue({
 				this.slaDay = '-'
 			}
 
-			this.panelAgentStatusSummary()
-			this.panelGroupStatistics()
+			//this.panelAgentStatusSummary()
+			//this.panelGroupStatistics()
 			await this.loadAllKpisDay()
 			await this.loadSlaDay()
 
@@ -152,6 +153,7 @@ const dashboard = new Vue({
 		loadVariablesGlobals: async function () {
 			let response = await this.sendUrlRequest('dashboard_01/getVariablesGlobals')
 			this.listProfileUsers = response.listAllUserProfile
+			this.listEventos = response.listAllEventos
 			this.dateServer = response.dateServer
 			this.hourServer = response.hourServer
 			this.textDateServer = response.textDateServer
@@ -289,7 +291,14 @@ const dashboard = new Vue({
 					this.others[index].nameComplete = nameComplete
 				}
 			}
-		}
+		},
+
+		searchNameEvent: function (eventID) {
+			if (eventID) {
+				let index = parseInt(eventID) - 1
+				return this.listEventos[index]['name']
+			}
+		},
 	}
 })
 

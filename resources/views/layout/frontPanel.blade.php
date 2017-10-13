@@ -14,8 +14,8 @@
   </head>
   <body class=" sidebar-mini {{getenv('REPORT_THEME')}}  " style="padding-right: 0px !important;">
 
-    <div class="wrapper" id="frontAminLTE">
-      @include('layout.recursos.header')
+    <div class="wrapper" style="height: auto; min-height: 100%;" id="frontAminLTE">
+      @include('layout.recursos.header.index')
       @include('layout.recursos.left_menu.index')
       <div class="content-wrapper">
         @include('layout.recursos.flash_message')

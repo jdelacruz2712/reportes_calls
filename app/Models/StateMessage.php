@@ -4,8 +4,8 @@ namespace Cosapi\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Eventos extends Model
+class StateMessage extends Model
 {
     protected $connection   = 'laravel';
-    protected $table        = 'eventos';
+    protected $table        = 'state_messages';
 }

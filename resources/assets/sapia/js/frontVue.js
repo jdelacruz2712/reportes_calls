@@ -43,16 +43,16 @@ const vueFront = new Vue({
 		remoteActiveCallsUserId: '',
 		remoteActiveCallsNameRole: '',
 
-		quantityQueueAssign: 0,
 		getQueuesUser: [],
+		getListEvents: [],
+		getAgentDashboard: [],
+		getBroadcastMessage: [],
+
 		hourServer: '',
 		textDateServer: '',
 		dateServer: '',
 		requiredAnnexed: false,
 		differenceHour: '00:00:00',
-
-		getListEvents: [],
-		getAgentDashboard: [],
 
 		assistanceTextModal: 'Entrada',
 		assistanceHour: '',
@@ -78,8 +78,13 @@ const vueFront = new Vue({
 		titleStandBy: '',
 		messageStandBy: ''
 	},
-	mounted () {
+	created(){
 		this.loadVariablesGlobals()
+	},
+	mounted () {
+		this.loadAgentDashboard()
+		this.loadQueuesUser()
+		this.loadBroadcastMessage()
 	},
 	computed:{
 		getPercentageOfWeightQueue() {
@@ -135,11 +140,7 @@ const vueFront = new Vue({
 		},
 
 		loadVariablesGlobals: async function () {
-			const dataGlobals = await this.sendUrlRequest('/getVariablesGlobals')
-			this.getAgentDashboard = await this.sendUrlRequest('/getAgentDashboard')
-
-			this.annexedStatusAsterisk = this.getAgentDashboard.agent_status
-			this.getEventName = this.getAgentDashboard.event_name
+			const dataGlobals = await this.sendUrlRequest('/frontPanel/getVariablesGlobals')
 
 			this.getNameProyect = dataGlobals.getNameProyect
 			this.getUserId = dataGlobals.getUserId
@@ -155,8 +156,6 @@ const vueFront = new Vue({
 			this.textDateServer = dataGlobals.textDateServer
 			this.dateServer = dataGlobals.dateServer
 			this.annexed = dataGlobals.annexed
-			this.quantityQueueAssign = dataGlobals.quantityQueueAssign
-			this.getQueuesUser = dataGlobals.getQueuesUser
 			this.assistanceNextHour = dataGlobals.assistanceNextHour
 			currenTime()
 
@@ -175,22 +174,38 @@ const vueFront = new Vue({
 				}
 
 				// Cargando registro en Dahsboard
-				let responseAddDashboard = await this.sendUrlRequest('/getStatusAddAgentDashboard')
+				let responseAddDashboard = await this.sendUrlRequest('/frontPanel/getStatusAddAgentDashboard')
 				if (responseAddDashboard.statusAddAgentDashboard === false) {
 					this.statusAddAgentDashboard = true
-					this.getAgentDashboard = await this.sendUrlRequest('/getAgentDashboard')
+					this.getAgentDashboard = await this.sendUrlRequest('/frontPanel/getAgentDashboard')
 					socketNodejs.emit('addUserToDashboard', this.getAgentDashboard)
 				}
 			}
 		},
 
+		loadQueuesUser: async function () {
+			const response = await this.sendUrlRequest('/frontPanel/getQueuesUser')
+			this.getQueuesUser = response.getQueuesUser
+		},
+
+		loadAgentDashboard: async function (){
+			const response = await this.sendUrlRequest('/frontPanel/getAgentDashboard')
+			this.getAgentDashboard = response
+			this.annexedStatusAsterisk = response.agent_status
+			this.getEventName = response.event_name
+		},
+
+		loadBroadcastMessage: async function () {
+			const response = await this.sendUrlRequest('/frontPanel/broadcastMessage')
+			this.getBroadcastMessage = response.getBroadcastMessage
+		},
+
 		verifyQueueAssign: function () {
 			if (this.getRole === 'user') {
-				if (this.quantityQueueAssign === false) {
+				if (this.getQueuesUser.length === '0') {
 					showNotificacion('warning', 'Usted no tiene colas asignadas.', 'Ooops!!!', 10000, false, true)
 					return false
 				}
-				return true
 			}
 			return true
 		},

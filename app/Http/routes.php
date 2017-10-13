@@ -118,8 +118,11 @@ Route::group(['middleware'=>['user']], function () {
 
     Route::post('updateStatusAddAgentDashboard', ['uses'=>'AdminController@updateStatusAddAgentDashboard','as'=>'updateStatusAddAgentDashboard']);
 
+    // FrontPanel
+    Route::post('frontPanel/getQueuesUser', ['uses'=>'AdminController@getQueuesUser']);
+    Route::post('frontPanel/getAgentDashboard', ['uses'=>'AdminController@getAgentDashboard']);
+    Route::post('frontPanel/broadcastMessage', ['uses'=>'BroadcastMessageController@getBroadcastMessage']);
 
-    Route::post('/getVariablesGlobals', ['uses'=>'AdminController@getVariablesGlobals',    'as' => 'home'      ]);
-    Route::post('/getStatusAddAgentDashboard', ['uses'=>'AdminController@getStatusAddAgentDashboard',    'as' => 'home'      ]);
-    Route::post('/getAgentDashboard', ['uses'=>'AdminController@getAgentDashboard',    'as' => 'home'      ]);
+    Route::post('frontPanel/getVariablesGlobals', ['uses'=>'AdminController@getVariablesGlobals']);
+    Route::post('frontPanel/getStatusAddAgentDashboard', ['uses'=>'AdminController@getStatusAddAgentDashboard']);
 });
