@@ -43,7 +43,7 @@
                   <td style="vertical-align: middle">
                     <span :class ="'label label-' + other.color">
                       <i :class ="other.icon" style="padding: 1px;" aria-hidden="true"></i>
-                      @{{ other.event_name }}
+                      @{{ searchNameEvent(other.event_id) }}
                     </span>
                   </td>
                   <td style="vertical-align: middle">@{{ other.timeElapsed }}</td>

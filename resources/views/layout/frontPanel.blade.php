@@ -16,7 +16,7 @@
     <!-- Token de sistemas -->
     <input type="hidden" name="_token" value="{{ csrf_token() }}" id="tokenId">
 
-    <div class="wrapper" id="frontAminLTE">
+    <div class="wrapper" style="height: auto; min-height: 100%;" id="frontAminLTE">
       @include('layout.recursos.header.index')
       @include('layout.recursos.left_menu.index')
       <div class="content-wrapper">
