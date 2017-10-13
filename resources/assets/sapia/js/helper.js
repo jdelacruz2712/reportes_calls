@@ -31,7 +31,10 @@ const exportar = (format_export) => {
 	if ($('#rankHour').length > 0) rankHour = $('#rankHour').val()
     let filterRol = 'user'
     if ($('select[name=rolUser]').length) filterRol = $('select[name=rolUser]').val()
-	export_ajax('POST', event, format_export, days, rankHour, filterRol)
+    let filterGroup = 'groupDay'
+    if ($('select[name=groupFilter]').length) filterGroup = $('select[name=groupFilter]').val()
+    export_ajax('POST', event, format_export, days, rankHour, filterRol, filterGroup)
+
 }
 
 /**
@@ -43,7 +46,7 @@ const exportar = (format_export) => {
  *   archivo]
  * @param  {String} days          [Fecha de consulta de datos]
  */
-const export_ajax = (type, url, format_export = '', days = '', rankHour = 1800, filterRol = 'user') => {
+const export_ajax = (type, url, format_export = '', days = '',rankHour = 1800, filterRol = 'user', filterGroup = 'groupDay') => {
 	const dialog = cargar_dialog('primary', 'Download', 'Cargando el Excel', false)
 	const token = $('meta[name="_token"]').attr('content')
 	$.ajax({
@@ -51,13 +54,14 @@ const export_ajax = (type, url, format_export = '', days = '', rankHour = 1800, 
 		url: url,
 		cache: false,
 		data: {
-			_token: token,
-			format_export: format_export,
-			days: days,
-			rank_hour: rankHour,
-            filter_rol: filterRol
+			_token			: token,
+			format_export	: format_export,
+			days			: days,
+            rank_hour       : rankHour,
+            filter_rol      : filterRol,
+            group_filter    : filterGroup
 
-		},
+        },
 		beforeSend: function (data) {
 			dialog.open()
 		},
