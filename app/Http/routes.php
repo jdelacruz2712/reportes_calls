@@ -121,6 +121,7 @@ Route::group(['middleware'=>['user']], function () {
     // FrontPanel
     Route::post('frontPanel/getQueuesUser', ['uses'=>'AdminController@getQueuesUser']);
     Route::post('frontPanel/getAgentDashboard', ['uses'=>'AdminController@getAgentDashboard']);
+    Route::post('frontPanel/getAllListEvents', ['uses'=>'AdminController@getAllListEvents']);
     Route::post('frontPanel/broadcastMessage', ['uses'=>'BroadcastMessageController@getBroadcastMessage']);
 
     Route::post('frontPanel/getVariablesGlobals', ['uses'=>'AdminController@getVariablesGlobals']);

@@ -7,12 +7,12 @@
     <input type="hidden"  v-model="getEventId" id="getEventId">
     <p><template v-if="getNameComplete">@{{ getNameComplete }}</template><template v-else>...</template></p>
     <a href="#">
-      <template v-if="getEventName">
+      <template v-if="getEventId">
         <template v-if="statusQueueAddAsterisk === true">
           <i :class ="((annexedStatusAsterisk == '0') ? 'fa fa-circle text-green' : 'fa fa-circle text-red')"></i>
         </template>
         <template v-else> <i class ="fa fa-circle text-red"></i> </template>
-        @{{ getEventName }}
+        @{{ searchNameEvent(getEventId) }}
       </template>
     </a>
   </div>

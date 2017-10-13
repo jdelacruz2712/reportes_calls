@@ -39,7 +39,7 @@ class DashboardController extends IncomingCallsController
                 $listProfile[$users['id']]['role'] = $users['role'];
             }
 
-            $listEventos = Eventos::select()->get()->toArray();
+            $listEventos = Eventos::select('id', 'name')->Orderby('id')->get()->toArray();
 
             return response()->json([
               'listAllUserProfile' => $listProfile,

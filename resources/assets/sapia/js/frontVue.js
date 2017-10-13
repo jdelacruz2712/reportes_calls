@@ -18,13 +18,14 @@ const vueFront = new Vue({
 	data: {
 		divContainer: '-',
 
+		listEventos: [],
+
 		getNameProyect: '',
 		getUserId: '',
 		getUsername: '',
 		getNameComplete: '',
 		getRole: '',
 		getRemoteIp: '',
-		getEventName: '',
 		getEventId: '',
 		statusChangePassword: '',
 		statusChangeAssistance: '',
@@ -82,9 +83,10 @@ const vueFront = new Vue({
 		this.loadVariablesGlobals()
 	},
 	mounted () {
-		this.loadAgentDashboard()
+		this.loadAllListEvent()
 		this.loadQueuesUser()
 		this.loadBroadcastMessage()
+		this.loadAgentDashboard()
 	},
 	computed:{
 		getPercentageOfWeightQueue() {
@@ -140,23 +142,22 @@ const vueFront = new Vue({
 		},
 
 		loadVariablesGlobals: async function () {
-			const dataGlobals = await this.sendUrlRequest('/frontPanel/getVariablesGlobals')
-
-			this.getNameProyect = dataGlobals.getNameProyect
-			this.getUserId = dataGlobals.getUserId
-			this.getUsername = dataGlobals.getUsername
-			this.getNameComplete = dataGlobals.getNameComplete
-			this.getRole = dataGlobals.getRole
-			this.getRemoteIp = dataGlobals.getRemoteIp
-			this.statusChangePassword = dataGlobals.statusChangePassword
-			this.statusChangeAssistance = dataGlobals.statusChangeAssistance
-			this.statusQueueAddAsterisk = dataGlobals.statusQueueAddAsterisk
-			this.requiredAnnexed = dataGlobals.requiredAnnexed
-			this.hourServer = dataGlobals.hourServer
-			this.textDateServer = dataGlobals.textDateServer
-			this.dateServer = dataGlobals.dateServer
-			this.annexed = dataGlobals.annexed
-			this.assistanceNextHour = dataGlobals.assistanceNextHour
+			const response = await this.sendUrlRequest('/frontPanel/getVariablesGlobals')
+			this.getNameProyect = response.getNameProyect
+			this.getUserId = response.getUserId
+			this.getUsername = response.getUsername
+			this.getNameComplete = response.getNameComplete
+			this.getRole = response.getRole
+			this.getRemoteIp = response.getRemoteIp
+			this.statusChangePassword = response.statusChangePassword
+			this.statusChangeAssistance = response.statusChangeAssistance
+			this.statusQueueAddAsterisk = response.statusQueueAddAsterisk
+			this.requiredAnnexed = response.requiredAnnexed
+			this.hourServer = response.hourServer
+			this.textDateServer = response.textDateServer
+			this.dateServer = response.dateServer
+			this.annexed = response.annexed
+			this.assistanceNextHour = response.assistanceNextHour
 			currenTime()
 
 			// Cargando image del profile_user
@@ -167,7 +168,7 @@ const vueFront = new Vue({
 
 			if (this.annexed === 0) this.loadOptionMenu('agents_annexed')
 
-			if (dataGlobals) {
+			if (response) {
 				if (this.getUserId && this.getNameProyect) {
 					this.statusAddAgentDashboard = true
 					socketNodejs.emit('createRoomFrontPanel', { nameProyect: this.getNameProyect, agent_user_id: this.getUserId})
@@ -188,11 +189,15 @@ const vueFront = new Vue({
 			this.getQueuesUser = response.getQueuesUser
 		},
 
+		loadAllListEvent: async function (){
+			this.listEventos = await this.sendUrlRequest('/frontPanel/getAllListEvents')
+		},
+
 		loadAgentDashboard: async function (){
 			const response = await this.sendUrlRequest('/frontPanel/getAgentDashboard')
 			this.getAgentDashboard = response
 			this.annexedStatusAsterisk = response.agent_status
-			this.getEventName = response.event_name
+			this.getEventId = response.event_id
 		},
 
 		loadBroadcastMessage: async function () {
@@ -271,7 +276,6 @@ const vueFront = new Vue({
 		assignAnnexed: function () {
 			this.defineRoute('assignAnnexed')
 			this.nextEventId = this.getEventId
-			this.nextEventName = this.getEventName
 			let parameters = this.loadParameters('assignAnnexed')
 			ajaxNodeJs(parameters, this.routeAction, true, 2000)
 			this.loadOptionMenu('agents_annexed')
@@ -376,7 +380,6 @@ const vueFront = new Vue({
 				username: (this.remotoReleaseUsername === 0) ? this.getUsername : this.remotoReleaseUsername,
 				userRol: this.getRole,
 				eventID: this.getEventId,
-				eventName: this.getEventName,
 				eventNextID: this.nextEventId,
 				eventNextName: this.nextEventName,
 				eventFechaHora: `${this.dateServer} ${this.remoteAgentHour}`,
@@ -396,7 +399,14 @@ const vueFront = new Vue({
 				$('#container').html('<div class="loading" id="loading" style="display: inline;"><li></li><li></li><li></li><li></li><li></li></div>')
 				$('#container').html(await this.sendUrlRequest(`/${idMenu}`))
 			}
-		}
+		},
+
+		searchNameEvent: function (eventID) {
+			if (eventID) {
+				let index = parseInt(eventID) - 1
+				return this.listEventos[index]['name']
+			}
+		},
 	}
 })
 
@@ -435,7 +445,6 @@ socketNodejs.on('disconnect', function () {
 socketNodejs.on('statusAgent', (data) => {
 	vueFront.sendUrlRequest('/updateStatusAddAgentDashboard')
 	vueFront.statusAddAgentDashboard = data.statusAddAgentDashboard
-	vueFront.getEventName = data.eventName
 	vueFront.getEventId = data.eventId
 	vueFront.annexedStatusAsterisk = data.annexedStatusAsterisk
 	vueFront.nextEventId = ''
@@ -445,7 +454,6 @@ socketNodejs.on('statusAgent', (data) => {
 // Cambia la etiqueta del estado actual cada vez que realiza un cambio de estado
 socketSails.on('statusSails', function (data) {
 	vueFront.ModalLoading = 'modal fade'
-	vueFront.getEventName = data.eventName
 	vueFront.getEventId = data.eventId
 	vueFront.nextEventId = ''
 	vueFront.nextEventName = ''
