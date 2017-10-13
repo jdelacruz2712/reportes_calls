@@ -4,6 +4,7 @@ namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
+use Cosapi\Models\Eventos;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
@@ -169,7 +170,6 @@ class AdminController extends CosapiController
                 [
                     'agent_name' => Auth::user()->username,
                     'agent_role' => Auth::user()->role,
-                    'event_name' => 'Login',
                     'event_id' => 11,
                     'event_time' => number_format(microtime(true) * 1000, 0, '.', '')
                 ]
@@ -182,6 +182,14 @@ class AdminController extends CosapiController
     public function getAgentDashboard()
     {
         $AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
-        return response()->json($AgentOnline[0]);
+        if ($AgentOnline) {
+            return response()->json($AgentOnline[0]);
+        }
+    }
+
+    public function getAllListEvents()
+    {
+        $listEventos = Eventos::select('id', 'name')->Orderby('id')->get()->toArray();
+        return response()->json($listEventos);
     }
 }
