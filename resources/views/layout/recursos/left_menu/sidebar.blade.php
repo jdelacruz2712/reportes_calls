@@ -12,7 +12,7 @@
           <i :class ="((annexedStatusAsterisk == '0') ? 'fa fa-circle text-green' : 'fa fa-circle text-red')"></i>
         </template>
         <template v-else> <i class ="fa fa-circle text-red"></i> </template>
-        @{{ searchNameEvent(getEventId) }}
+        @{{ getNameEvent }}
       </template>
     </a>
   </div>

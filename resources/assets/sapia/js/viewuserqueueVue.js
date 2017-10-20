@@ -1,7 +1,7 @@
 /**
  * Created by jdelacruz on 20/09/2017.
  */
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 Vue.component('data', {
     props: ['idUser']
 })

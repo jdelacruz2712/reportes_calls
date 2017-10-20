@@ -31,6 +31,7 @@ class SurveysController extends CosapiController
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
                     'viewHourSearch'        => false,
+                    'viewRolTypeSearch'     => true,
                     'viewButtonSearch'      => false,
                     'viewButtonExport'      => true,
                     'exportReport'          => 'export_surveys',

@@ -10,7 +10,7 @@ const getDataFilters = (evento) => {
 	if ($('select[name=rankHour]').length) rankHour = $('select[name=rankHour]').val()
 	if ($('input[name=fecha_evento]').length) dateEvent = $('input[name=fecha_evento]').val()
 	let data = {
-		_token: $('input[name=_token]').val(),
+		_token: $('meta[name="_token"]').attr('content'),
 		fecha_evento: dateEvent,
 		rank_hour: rankHour,
 		evento: evento
@@ -29,7 +29,12 @@ const exportar = (format_export) => {
 	if ($('#hidEvent').length) event = $('#hidEvent').val()
 	let rankHour = 1800
 	if ($('#rankHour').length > 0) rankHour = $('#rankHour').val()
-	export_ajax('POST', event, format_export, days, rankHour)
+    let filterRol = 'user'
+    if ($('select[name=rolUser]').length) filterRol = $('select[name=rolUser]').val()
+    let filterGroup = 'groupDay'
+    if ($('select[name=groupFilter]').length) filterGroup = $('select[name=groupFilter]').val()
+    export_ajax('POST', event, format_export, days, rankHour, filterRol, filterGroup)
+
 }
 
 /**
@@ -41,19 +46,22 @@ const exportar = (format_export) => {
  *   archivo]
  * @param  {String} days          [Fecha de consulta de datos]
  */
-const export_ajax = (type, url, format_export = '', days = '', rankHour = 1800) => {
+const export_ajax = (type, url, format_export = '', days = '',rankHour = 1800, filterRol = 'user', filterGroup = 'groupDay') => {
 	const dialog = cargar_dialog('primary', 'Download', 'Cargando el Excel', false)
-	const token = $('input[name=_token]').val()
+	const token = $('meta[name="_token"]').attr('content')
 	$.ajax({
 		type: type,
 		url: url,
 		cache: false,
 		data: {
-			_token: token,
-			format_export: format_export,
-			days: days,
-			rank_hour: rankHour
-		},
+			_token			: token,
+			format_export	: format_export,
+			days			: days,
+            rank_hour       : rankHour,
+            filter_rol      : filterRol,
+            group_filter    : filterGroup
+
+        },
 		beforeSend: function (data) {
 			dialog.open()
 		},
@@ -277,7 +285,7 @@ const loadMultiNotification = (resData, time, parameters) => {
 
 // Función que actualiza la sessión de QueueAdd
 const setQueueAdd = (queueAdd) => {
-	const token = $('input[name=_token]').val()
+	const token = $('meta[name="_token"]').attr('content')
 	$.ajax({
 		type: 'POST',
 		url: 'setQueueAdd',

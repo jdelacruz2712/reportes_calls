@@ -11,8 +11,7 @@
             <div class="modal-body">
                 <div class="row">
                     <template v-for="getListEvent in getListEvents">
-
-                        <div class="col-md-3" data-toggle="tooltip" :title="getListEvent.name" style="margin-bottom: 10px;" v-if="getEventId != '11'">
+                        <div class="col-md-3" data-toggle="tooltip" :title="getListEvent.name" style="margin-bottom: 10px;" v-if="getListEvent.estado_visible_id == '1'  && getEventId != '11'">
                             <a href="#" @click="changeStatus(getListEvent.id,getListEvent.name,getListEvent.estado_call_id)">
                             <span :class=" 'info-box-icon bg-' + getListEvent.color " style="width:100%; height: 100%">
                                 <i :class="getListEvent.icon"></i>

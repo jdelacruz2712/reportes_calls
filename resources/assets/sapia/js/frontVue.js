@@ -1,5 +1,5 @@
 'use strict'
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 
 const socketSails = io.sails.connect(restApiSails)
 io.sails.autoConnect = false
@@ -17,8 +17,6 @@ const vueFront = new Vue({
 	el: '#frontAminLTE',
 	data: {
 		divContainer: '-',
-
-		listEventos: [],
 
 		getNameProyect: '',
 		getUserId: '',
@@ -122,6 +120,9 @@ const vueFront = new Vue({
 				}
 				return color
 			})
+		},
+		getNameEvent : function() {
+			return this.searchNameEvent(this.getEventId)
 		}
 	},
 	methods: {
@@ -190,7 +191,7 @@ const vueFront = new Vue({
 		},
 
 		loadAllListEvent: async function (){
-			this.listEventos = await this.sendUrlRequest('/frontPanel/getAllListEvents')
+			this.getListEvents = await this.sendUrlRequest('/frontPanel/getAllListEvents')
 		},
 
 		loadAgentDashboard: async function (){
@@ -220,8 +221,6 @@ const vueFront = new Vue({
 			let isVerifyAnnexed = false
 			let isVerifyQueueAssign = this.verifyQueueAssign()
 			if (isVerifyQueueAssign) isVerifyAnnexed = this.verifyAnnexed()
-			if (isVerifyAnnexed) response = await this.sendUrlRequest('list_event')
-			if (isVerifyAnnexed) this.getListEvents = response.getListEvents
 			if (isVerifyAnnexed) this.ModalChangeStatus = 'modal show'
 		},
 
@@ -402,9 +401,11 @@ const vueFront = new Vue({
 		},
 
 		searchNameEvent: function (eventID) {
-			if (eventID) {
-				let index = parseInt(eventID) - 1
-				return this.listEventos[index]['name']
+			if(this.getListEvents.length != 0){
+                if (eventID) {
+                    let index = parseInt(eventID) - 1
+                    return this.getListEvents[index]['name']
+                }
 			}
 		},
 	}
