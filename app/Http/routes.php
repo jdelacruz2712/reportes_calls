@@ -107,7 +107,6 @@ Route::group(['middleware'=>['user']], function () {
     Route::post('viewDistrito', ['uses'=>'UserController@viewDistrito']);
 
     // Miscelaneas
-    Route::post('list_event', ['uses'=>'EventsAgentController@index']);
     Route::post('assistance', ['uses'=>'AssistanceController@index'         ,    'as' => 'assistance']);
     Route::post('working', ['uses'=>'AdminController@working'            ,    'as' => 'working']);
     Route::post('setQueueAdd', ['uses'=>'AdminController@setQueueAdd'        ,    'as' => 'setQueueAdd']);
