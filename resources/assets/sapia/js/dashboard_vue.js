@@ -1,4 +1,4 @@
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 Vue.component('v-select', VueSelect.VueSelect)
 const socketNodejs = io.connect(restApiDashboard, {
 	'reconnection': true,
@@ -336,7 +336,7 @@ socketNodejs.on('AddCallWaiting', dataCallWaiting => {
 	dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 socketNodejs.on('RemoveCallWaiting', dataCallWaiting => {
-	let numberPhone = dataCallWaiting
+	let numberPhone = dataCallWaiting.number_phone
 	dashboard.callsWaiting.forEach((item, index) => {
 		if (item.number_phone === numberPhone) dashboard.callsWaiting.splice(index, 1)
 	})
