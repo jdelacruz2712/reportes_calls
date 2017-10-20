@@ -189,7 +189,7 @@ class AdminController extends CosapiController
 
     public function getAllListEvents()
     {
-        $listEventos = Eventos::select('id', 'name')->Orderby('id')->get()->toArray();
+        $listEventos = Eventos::select('id', 'name', 'estado_call_id', 'estado_visible_id', 'icon', 'color')->Orderby('id')->get()->toArray();
         return response()->json($listEventos);
     }
 }

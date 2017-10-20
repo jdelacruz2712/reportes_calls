@@ -218,6 +218,7 @@ elixir(function(mix) {
 		* Generando los archivos para autogestionar los formularios con Vue
 		*/
 		.copy('resources/assets/sapia/js/form/formUsers.js'									, 'public/js/form/formUsers.min.js')
+        .copy('resources/assets/sapia/js/form/formQueues.js'								, 'public/js/form/formQueues.min.js')
 
 		/**
 	  * Copiar imagenes en una sola carpeta

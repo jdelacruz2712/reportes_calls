@@ -15,20 +15,6 @@ use Excel;
 class EventsAgentController extends CosapiController
 {
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        $events = Eventos::select()->where('estado_visible_id','=',1)->get()->toArray();
-        return response()->json([
-            'getListEvents'                 => $events,
-        ], 200);
-    }
-
     /**
      * [events_consolidated Función que retorna la vista o datos para el reporte de Consolidated Events]
      * @param  Request $request  [Recepciona datos enviado por POST]
