@@ -4,7 +4,7 @@
     </a>
     <ul class="treeview-menu">
       <li><a href="dashboard_01" target="_blank"><i class="fa fa-circle-o text-red"></i> Dashboard 01</a></li>
-      <li><a href="#" v-on:click="loadOptionMenu('dashboard_03')"> <i class="fa fa-circle-o text-blue"></i> Dashboard 03</a></li>
+      <!--<li><a href="#" v-on:click="loadOptionMenu('dashboard_03')"> <i class="fa fa-circle-o text-blue"></i> Dashboard 03</a></li>-->
     </ul>
   </li>
 
@@ -51,6 +51,6 @@
 
       <li><a href="#" v-on:click="loadOptionMenu('agents_annexed')"> <i class="fa fa-circle-o text-purple"></i> Assign Annexed</a></li>
       <li><a href="#" v-on:click="loadOptionMenu('activate_calls')"> <i class="fa fa-circle-o text-orange"></i> Activate Calls</a></li>
-      <li><a href="#" v-on:click="loadOptionMenu('broadcast_message')"> <i class="fa fa-circle-o text-green"></i> BroadCast Message</a></li>
+      <!--<li><a href="#" v-on:click="loadOptionMenu('broadcast_message')"> <i class="fa fa-circle-o text-green"></i> BroadCast Message</a></li>-->
     </ul>
   </li>
