@@ -221,23 +221,24 @@ elixir(function(mix) {
         .copy('resources/assets/sapia/js/form/formQueues.js'								, 'public/js/form/formQueues.min.js')
 
 		/**
-	  * Copiar imagenes en una sola carpeta
-	  */
-		.copy('resources/assets/images'																			, 'public/img')
-		.copy('resources/assets/sapia/img'																	, 'public/img')
-		.copy('resources/assets/index.php'																	, 'public/index.php')
-		.copy('resources/assets/favicon.ico'																, 'public/favicon.ico')
+	  	* Copiar imagenes en una sola carpeta
+	  	*/
+		.copy('resources/assets/images'										, 'public/img')
+		.copy('resources/assets/sapia/img'									, 'public/img')
+		.copy('resources/assets/index.php'									, 'public/index.php')
+		.copy('resources/assets/favicon.ico'								, 'public/favicon.ico')
 
-		.copy('resources/assets/sapia/favicon'															, 'public/favicon')
-		.copy('resources/assets/sapia/background'														, 'public/background')
-		.copy('resources/assets/images/default_avatar.png'									, 'public/storage/default_avatar.png')
+		.copy('resources/assets/sapia/favicon'								, 'public/favicon')
+		.copy('resources/assets/sapia/background'							, 'public/background')
+        .copy('resources/assets/sapia/script_php'							, 'public/script_php')
+		.copy('resources/assets/images/default_avatar.png'					, 'public/storage/default_avatar.png')
 
-		.copy('resources/assets/sapia/css/dashboard.css'										, 'public/css/dashboard.css')
-		.copy('resources/assets/sapia/js/graphics.js'												, 'public/js/graphics.js')
+		.copy('resources/assets/sapia/css/dashboard.css'					, 'public/css/dashboard.css')
+		.copy('resources/assets/sapia/js/graphics.js'						, 'public/js/graphics.js')
 
-		.copy('resources/assets/sapia/js/dashboard_vue.js'									, 'public/js/dashboard_vue.min.js')
-		.copy('resources/assets/sapia/js/taskqueueVue.js'										, 'public/js/taskqueueVue.min.js')
-		.copy('resources/assets/sapia/js/viewuserqueueVue.js'								, 'public/js/viewuserqueueVue.min.js')
+		.copy('resources/assets/sapia/js/dashboard_vue.js'					, 'public/js/dashboard_vue.min.js')
+		.copy('resources/assets/sapia/js/taskqueueVue.js'					, 'public/js/taskqueueVue.min.js')
+		.copy('resources/assets/sapia/js/viewuserqueueVue.js'				, 'public/js/viewuserqueueVue.min.js')
 
-		.copy('resources/assets/node_modules/push.js/push.min.js'						, 'public/js/push.min.js')
+		.copy('resources/assets/node_modules/push.js/push.min.js'			, 'public/js/push.min.js')
 })
