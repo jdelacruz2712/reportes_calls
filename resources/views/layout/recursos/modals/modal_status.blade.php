@@ -29,7 +29,6 @@
                                 </a>
                             </div>
                         </div>
-
                     </template>
                 </div>
             </div>

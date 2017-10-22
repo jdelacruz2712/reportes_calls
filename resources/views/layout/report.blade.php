@@ -14,7 +14,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         @if($dateFilter)
-                            <div class="@if($viewButtonSearch == true || $viewHourSearch == true || $viewRolSearch == true) col-md-8 @else col-md-12 @endif">
+                            <div class="@if($viewButtonSearch == true || $viewHourSearch == true || $viewRolTypeSearch == true) col-md-8 @else col-md-12 @endif">
                                 <!-- Date range -->
                                 <div class="input-group">
                                     <div class="input-group-addon">
@@ -62,7 +62,7 @@
                             </div>
                         @endif
                         @if($viewButtonSearch)
-                            @if(!$viewHourSearch || !$viewRolSearch)
+                            @if(!$viewHourSearch || !$viewRolTypeSearch)
                                 <div class="col-md-2"></div>
                             @endif
                             <div class="col-md-2 pull-left visible-lg">

@@ -1,4 +1,4 @@
-<div class="col-md-3 col-sm-6 col-xs-6 " @click="loadMetricasKpi">
+<div class="col-md-3 col-sm-6 col-xs-6 " @click="loadMetricasKpi" v-if="totalCallsWaiting == 0">
   <div class="info-box bg-blue" v-if="textDateServer != '-'">
     <span class="info-box-icon metricas-info-box-icon"><i class="fa fa-fw fa-calendar"></i></span>
     <div class="info-box-content metricas-info-box-content" >
