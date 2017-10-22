@@ -8,28 +8,12 @@ use Cosapi\Models\Eventos;
 use Cosapi\Models\DetalleEventosHistory;
 use Cosapi\Models\DetalleEventos;
 
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
 use Excel;
 
 
 class EventsAgentController extends CosapiController
 {
-
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request)
-    {
-        $events = Eventos::select()->where('estado_visible_id','=',1)->get()->toArray();
-        return response()->json([
-            'getListEvents'                 => $events,
-        ], 200);
-    }
-
     /**
      * [events_consolidated Función que retorna la vista o datos para el reporte de Consolidated Events]
      * @param  Request $request  [Recepciona datos enviado por POST]
@@ -44,10 +28,15 @@ class EventsAgentController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.events_consolidated.events_consolidated',
                     'titleReport'           => 'Report of Events Consolidateds',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewRolTypeSearch'     => false,
+                    'viewHourSearch'        => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_events_consolidated',
                     'nameRouteController'   => ''
                 ));
@@ -55,8 +44,6 @@ class EventsAgentController extends CosapiController
         }
 
     }
-
-
 
     /**
      * [events_detail Función que carga los datos y vista del Details Events]
@@ -77,10 +64,15 @@ class EventsAgentController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.events_detail.events_detail',
                     'titleReport'           => 'Report of Events',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewRolTypeSearch'     => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_events_detail',
                     'nameRouteController'   => ''
                 ));

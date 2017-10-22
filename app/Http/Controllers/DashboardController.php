@@ -5,15 +5,13 @@ namespace Cosapi\Http\Controllers;
 use Carbon\Carbon;
 use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
+use Cosapi\Models\Eventos;
 use Cosapi\Models\Cdr;
 use Cosapi\Models\Kpis;
 use Cosapi\Models\Queue_Log;
 use Cosapi\Models\User;
-use Cosapi\Models\UsersProfile;
 use Illuminate\Http\Request;
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\DB;
-use League\Flysystem\Exception;
 
 class DashboardController extends IncomingCallsController
 {
@@ -26,7 +24,7 @@ class DashboardController extends IncomingCallsController
         return view('elements/dashboard/dashboard_01');
     }
 
-    public function getListProfile(Request $request)
+    public function getVariablesGlobals(Request $request)
     {
         try {
             $listProfile = [];
@@ -41,7 +39,15 @@ class DashboardController extends IncomingCallsController
                 $listProfile[$users['id']]['role'] = $users['role'];
             }
 
-            return response()->json(['message' => $listProfile], 200);
+            $listEventos = Eventos::select('id', 'name')->Orderby('id')->get()->toArray();
+
+            return response()->json([
+              'listAllUserProfile' => $listProfile,
+              'listAllEventos' => $listEventos,
+              'hourServer' => $this->ShowDateAndTimeCurrent('justTheTime'),
+              'dateServer' => $this->ShowDateAndTimeCurrent('justTheDate'),
+              'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate')
+            ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
         }
@@ -95,6 +101,7 @@ class DashboardController extends IncomingCallsController
             try {
                 $query_calls = $this->query_calls(date('Y-m-d') . ' - ' . date('Y-m-d'), 'calls_completed', $request->nameAgent);
                 $QuantityCalls = count($query_calls);
+
                 return response()->json(['message' => $QuantityCalls], 200);
             } catch (\Exception $e) {
                 return response()->json(['message' => $e->getMessage()], 500);
@@ -105,7 +112,12 @@ class DashboardController extends IncomingCallsController
     public function panelAgentStatusSummary(Request $request)
     {
         try {
-            $AgentOnline = AgentOnline::select(DB::raw('event_id, event_name, count(1) as quantity'))->groupBy('event_name')->get()->toArray();
+            $AgentOnline = AgentOnline::select(DB::raw('agent_role, event_id, eventos.name as event_name, count(1) as quantity'))
+                            ->join('eventos', 'eventos.id', '=', 'event_id')
+                            ->whereIn('agent_role', $request->filterRoles)
+                            ->groupBy('event_id')
+                            ->get()->toArray();
+
             return response()->json(['message' => $AgentOnline], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
@@ -127,23 +139,24 @@ class DashboardController extends IncomingCallsController
             $percentageUnanswer = 0;
 
             $Queue_Log = Queue_Log::select(DB::raw('event, SUM(ABS(info1)) as timeInQueue, SUM(ABS(info2)) AS timeCallDuration, count(1) AS quantityEvent '))
-        ->where(DB::raw('DATE(datetime)'), date('Y-m-d'))
-        ->groupBy('event')
-        ->get()
-        ->toArray();
+                          ->where(DB::raw('DATE(datetime)'), date('Y-m-d'))
+                          ->groupBy('event')
+                          ->get()
+                          ->toArray();
 
             $days = explode(' - ', date('Y-m-d') . ' - ' . date('Y-m-d'));
             $range_annexed = Anexo::select('name')->where('estado_id', '1')->get()->toArray();
             $tamano_anexo = $this->lengthAnnexed();
+
             $OutgoingCallsController = Cdr::Select(DB::raw('SUM(billsec) AS billsec'))
-        ->whereIn(DB::raw('LENGTH(src)'), $tamano_anexo)
-        ->where('dst', 'not like', '*%')
-        ->where('disposition', '=', 'ANSWERED')
-        ->where('lastapp', '=', 'Dial')
-        ->whereIn('src', $range_annexed)
-        ->filtro_days($days)
-        ->get()
-        ->toArray();
+                                        ->whereIn(DB::raw('LENGTH(src)'), $tamano_anexo)
+                                        ->where('dst', 'not like', '*%')
+                                        ->where('disposition', '=', 'ANSWERED')
+                                        ->where('lastapp', '=', 'Dial')
+                                        ->whereIn('src', $range_annexed)
+                                        ->filtro_days($days)
+                                        ->get()
+                                        ->toArray();
 
             for ($i = 0; $i < count($Queue_Log); $i++) {
                 if ($Queue_Log[$i]['event'] != 'ABANDON') {

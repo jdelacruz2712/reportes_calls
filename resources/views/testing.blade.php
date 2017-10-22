@@ -840,5 +840,6 @@
 </div>
 <!-- ./wrapper -->
 <script src="{{ asset('js/adminlte.js')}}"></script>
+
 </body>
 </html>

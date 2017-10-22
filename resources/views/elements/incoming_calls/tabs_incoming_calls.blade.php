@@ -38,8 +38,6 @@
         </div>
     </div>
 </div>
-
-
 <script type="text/javascript">
 $(document).ready(function(){
     showTabIncoming('calls_completed')

@@ -2,7 +2,6 @@
 
 namespace Cosapi\Http\Controllers;
 
-use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\Queue_Log;
 use Cosapi\Collector\Collector;
@@ -27,10 +26,15 @@ class ConsolidatedCallsController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.consolidated_calls.tabs_consolidated_calls',
                     'titleReport'           => 'Report of Consolidated Calls',
-                    'viewButtonSearch'      => false,
-                    'viewHourSearch'        => true,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewRolTypeSearch'     => false,
+                    'viewHourSearch'        => true,
+                    'viewButtonSearch'      => false,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_consolidated',
                     'nameRouteController'   => ''
                 ));

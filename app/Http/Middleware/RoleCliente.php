@@ -27,7 +27,6 @@ class RoleCliente
         if(Auth::check() && (Auth::user()->role == 'cliente' || Auth::user()->role == 'admin' || Auth::user()->role == 'backoffice' || Auth::user()->role == 'calidad' || Auth::user()->role == 'supervisor')) {
             return $next($request);
         }
-        $request->session()->flash('alert-danger','Usted no cuenta con los permisos necesarios para este recurso');
-        return redirect('/home');
+        return redirect('/errorRole');
     }
 }

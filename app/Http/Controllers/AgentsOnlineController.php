@@ -4,11 +4,9 @@ namespace Cosapi\Http\Controllers;
 
 
 use Cosapi\Collector\Collector;
-use Cosapi\Http\Requests;
 use Illuminate\Http\Request;
 use Cosapi\Models\AgentesOnline;
 use DB;
-use Illuminate\Support\Facades\Log;
 
 class AgentsOnlineController extends CosapiController
 {
@@ -28,10 +26,15 @@ class AgentsOnlineController extends CosapiController
                 return view('elements/index')->with(array(
                     'routeReport'           => 'elements.agents_online.agents-online',
                     'titleReport'           => 'Report of Agent Online',
-                    'viewButtonSearch'      => true,
-                    'viewHourSearch'        => false,
+                    'boxReport'             => true,
+                    'dateHourFilter'        => true,
+                    'dateFilter'            => true,
                     'viewDateSearch'        => true,
                     'viewDateSingleSearch'  => false,
+                    'viewHourSearch'        => false,
+                    'viewRolTypeSearch'     => false,
+                    'viewButtonSearch'      => true,
+                    'viewButtonExport'      => true,
                     'exportReport'          => 'export_agents_online',
                     'nameRouteController'   => 'agents_online'
                 ));

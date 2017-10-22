@@ -1,5 +1,6 @@
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#tokenId').getAttribute('value')
+Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 Vue.component('v-select', VueSelect.VueSelect)
+
 var ubigeoID = ''
 var idDepartamentoProfile = ''
 var idProvinciaProfile = ''

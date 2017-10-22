@@ -4,11 +4,10 @@ namespace Cosapi\Http\Controllers;
 
 use Cosapi\Models\AgentOnline;
 use Cosapi\Models\Anexo;
-use Cosapi\Models\DetalleEventos;
+use Cosapi\Models\Eventos;
 use Cosapi\Models\User;
-use Cosapi\Models\User_Queue;
+use Cosapi\Models\Users_Queues;
 use Illuminate\Http\Request;
-use Cosapi\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Illuminate\Support\Facades\Session;
@@ -78,15 +77,6 @@ class AdminController extends CosapiController
         }
 
         $this->AssistanceUser = Session::get('AssistanceUser');
-
-        $cantidadColasAsignadas = User_Queue::select(DB::raw('COUNT(1) AS cantidadColasAsignadas'))->where(
-            'user_id',
-            $this->UserId
-        )->get()->toArray();
-        ($cantidadColasAsignadas[0]['cantidadColasAsignadas'] > 0) ? $cantidadColasAsignadas = true : $cantidadColasAsignadas = false;
-
-        Session::put('quantityQueueAssign', $cantidadColasAsignadas);
-        $this->quantityQueueAssign = Session::get('quantityQueueAssign');
     }
 
     /**
@@ -106,6 +96,11 @@ class AdminController extends CosapiController
     public function working()
     {
         return view('/layout/recursos/working');
+    }
+
+    public function errorRole()
+    {
+        return view('/layout/recursos/error_role');
     }
 
     public function setQueueAdd(Request $request)
@@ -139,12 +134,19 @@ class AdminController extends CosapiController
             'statusQueueAddAsterisk' => $this->QueueAdd,
             'getRemoteIp' => $_SERVER['REMOTE_ADDR'],
             'requiredAnnexed' => $requiredAnnexed,
-            'hourServer' => date('H:i:s'),
-            'textDateServer' => date('d-m-w-Y'),
-            'dateServer' => date('Y-m-d'),
+            'hourServer' => $this->ShowDateAndTimeCurrent('justTheTime'),
+            'dateServer' => $this->ShowDateAndTimeCurrent('justTheDate'),
+            'textDateServer' => $this->ShowDateAndTimeCurrent('personalizeDate'),
             'annexed' => $this->UserAnexo,
-            'assistanceNextHour' => $assistanceNextHour,
-            'quantityQueueAssign' => $this->quantityQueueAssign
+            'assistanceNextHour' => $assistanceNextHour
+        ], 200);
+    }
+
+
+    public function getQueuesUser()
+    {
+        return response()->json([
+          'getQueuesUser' => $this->getQueuestoUserGlobal($this->getQueuesUserGlobal($this->UserId), $this->getQueueGlobal(), $this->getPriorityGlobal())
         ], 200);
     }
 
@@ -155,9 +157,7 @@ class AdminController extends CosapiController
 
     public function getStatusAddAgentDashboard()
     {
-        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))
-            ->where('agent_name', $this->UserSystem)
-            ->get()->toArray();
+        $AgentOnline = AgentOnline::select(DB::raw('COUNT(*) AS count_agent'))->where('agent_name', $this->UserSystem)->get()->toArray();
 
         $existAgent = $AgentOnline[0]['count_agent'];
         $exits = false;
@@ -170,7 +170,6 @@ class AdminController extends CosapiController
                 [
                     'agent_name' => Auth::user()->username,
                     'agent_role' => Auth::user()->role,
-                    'event_name' => 'Login',
                     'event_id' => 11,
                     'event_time' => number_format(microtime(true) * 1000, 0, '.', '')
                 ]
@@ -183,6 +182,14 @@ class AdminController extends CosapiController
     public function getAgentDashboard()
     {
         $AgentOnline = AgentOnline::select()->where('agent_user_id', '=', $this->UserId)->get()->toArray();
-        return response()->json(['statusAddAgentDashboard' => $AgentOnline[0]]);
+        if ($AgentOnline) {
+            return response()->json($AgentOnline[0]);
+        }
+    }
+
+    public function getAllListEvents()
+    {
+        $listEventos = Eventos::select('id', 'name','estado_call_id','estado_visible_id','icon','color')->Orderby('id')->get()->toArray();
+        return response()->json($listEventos);
     }
 }
