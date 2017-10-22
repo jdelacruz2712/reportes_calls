@@ -11,7 +11,7 @@
 
       <template v-if="getRole === 'user' ">  @include('layout.recursos.left_menu.user') </template>
       <template v-if="getRole === 'backoffice' ">  @include('layout.recursos.left_menu.backoffice') </template>
-
+      <template v-if="getRole === 'monitor' ">  @include('layout.recursos.left_menu.monitor') </template>
     </ul>
   </section>
 </aside>
