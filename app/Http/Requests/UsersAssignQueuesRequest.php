@@ -4,7 +4,7 @@ namespace Cosapi\Http\Requests;
 
 use Cosapi\Http\Requests\Request;
 
-class usersAssignQueuesRequest extends Request
+class UsersAssignQueuesRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -215,7 +215,7 @@ class QueuesController extends CosapiController
         return $resultArray;
     }
 
-    public function saveFormQueues(Requests\queuesRequest $request)
+    public function saveFormQueues(Requests\QueuesRequest $request)
     {
         if ($request->ajax()) {
             $queueQuery = Queues::updateOrCreate([
@@ -252,7 +252,7 @@ class QueuesController extends CosapiController
         return ['message' => 'Error'];
     }
 
-    public function saveFormAssingUser(Requests\queuesAssignUsersRequest $request)
+    public function saveFormAssingUser(Requests\QueuesAssignUsersRequest $request)
     {
         if ($request->ajax()) {
             Users_Queues::where('queue_id', $request->queueID)->delete();

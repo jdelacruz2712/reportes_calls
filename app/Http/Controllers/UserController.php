@@ -135,7 +135,7 @@ class UserController extends CosapiController
         return $resultArray;
     }
 
-    public function saveFormAssingQueue(Requests\usersAssignQueuesRequest $request){
+    public function saveFormAssingQueue(Requests\UsersAssignQueuesRequest $request){
         if ($request->ajax()){
             Users_Queues::where('user_id', $request->userID)->delete();
             if($request->checkQueue){
@@ -157,7 +157,7 @@ class UserController extends CosapiController
         return ['message' => 'Error'];
     }
 
-    public function saveFormChangePassword(Requests\usersChangePasswordRequest $request){
+    public function saveFormChangePassword(Requests\UsersChangePasswordRequest $request){
         if ($request->ajax()){
             $resultado = User::where('id',$request->userID)
                             ->update([
