@@ -80,7 +80,7 @@ elixir(function(mix) {
 			'node_modules/vue-select/vue-select.js',
 			'node_modules/socket.io-client/socket.io.min.js',
 			'sapia/js/cookie.js',
-            'daterangepicker/moment.min.js'
+            'node_modules/daterangepicker/moment.min.js'
 		],'public/js/dashboard.min.js','resources/assets/')
 })
 
