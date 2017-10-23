@@ -256,6 +256,7 @@ const dashboard = new Vue({
 			this.others = []
 			socketNodejs.emit('createRoomDashboard', {nameProyect: nameProyecto})
 			socketNodejs.emit('listDataDashboard', {nameProyect: nameProyecto})
+            socketNodejs.emit('listCallsWaiting', {nameProyect: nameProyecto})
 		},
 
 		replaceCookieArray: function (cookie) {
