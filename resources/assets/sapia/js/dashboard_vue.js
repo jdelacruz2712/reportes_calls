@@ -311,6 +311,10 @@ socketNodejs.on('connect', function () {
 	console.log('Socket Nodejs connected!')
 })
 
+socketNodejs.on('datetime', function (data) {
+    dashboard.hourServer = data.datetime
+})
+
 socketNodejs.on('connect_error', function () {
 	dashboard.nodejsServerName = 'Servidor Nodejs'
 	dashboard.ModalConnectionNodeJs = 'modal show'
