@@ -354,41 +354,46 @@ const disconnect = () => {
 								'<div class="col-md-6"><center><input type="radio" name="rbtnHour" id="rbtnHour_after" value="' + rank_hours[2] + '">' + rank_hours[2] + '</center></div>' +
 								'</div>'
 
-	BootstrapDialog.show({
-		type: 'type-primary',
-		title: 'Registrar Salida',
-		message: message01,
-		closable: false,
-		buttons: [
-			{
-				label: 'Si',
-				cssClass: 'btn-primary',
-				action: function (dialogRef) {
-					dialogRef.close()
-					vueFront.nextEventId = 15
-					vueFront.nextEventName = 'Desconectado'
-					vueFront.assistanceTextModal = 'Salida'
-					vueFront.loadModalCheckAssistance()
-				}
-			},
-			{
-				label: 'No',
-				cssClass: 'btn-primary',
-				action: function (dialogRef) {
-					dialogRef.close()
-					vueFront.remoteAgentHour = hour.trim()
-					vueFront.disconnectAgent()
-				}
-			},
-			{
-				label: 'Cancelar',
-				cssClass: 'btn-danger',
-				action: function (dialogRef) {
-					dialogRef.close()
-				}
-			}
-		]
-	})
+    if (vueFront.searchStatusVisible(vueFront.getEventId) === 2 && vueFront.getEventId != 11) {
+        showNotificacion('error', 'No puedes desconectarte, en plena llamada', 'Ooops!!!', 10000, false, true)
+    }else{
+        BootstrapDialog.show({
+            type: 'type-primary',
+            title: 'Registrar Salida',
+            message: message01,
+            closable: false,
+            buttons: [
+                {
+                    label: 'Si',
+                    cssClass: 'btn-primary',
+                    action: function (dialogRef) {
+                        dialogRef.close()
+                        vueFront.nextEventId = 15
+                        vueFront.nextEventName = 'Desconectado'
+                        vueFront.assistanceTextModal = 'Salida'
+                        vueFront.loadModalCheckAssistance()
+                    }
+                },
+                {
+                    label: 'No',
+                    cssClass: 'btn-primary',
+                    action: function (dialogRef) {
+                        dialogRef.close()
+                        vueFront.remoteAgentHour = hour.trim()
+                        vueFront.disconnectAgent()
+                    }
+                },
+                {
+                    label: 'Cancelar',
+                    cssClass: 'btn-danger',
+                    action: function (dialogRef) {
+                        dialogRef.close()
+                    }
+                }
+            ]
+        })
+	}
+
 }
 
 // Función que acciona le ventana de asistencias correspondiente al estado

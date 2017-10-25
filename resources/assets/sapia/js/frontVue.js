@@ -219,9 +219,10 @@ const vueFront = new Vue({
 
 		loadModalStatus: async function () {
 			let isVerifyAnnexed = false
+            let isVerifyEvent = (this.getEventId == 11) ? true : this.verifyEvent(this.getEventId)
 			let isVerifyQueueAssign = this.verifyQueueAssign()
 			if (isVerifyQueueAssign) isVerifyAnnexed = this.verifyAnnexed()
-			if (isVerifyAnnexed) this.ModalChangeStatus = 'modal show'
+            if (isVerifyAnnexed && isVerifyEvent) this.ModalChangeStatus = 'modal show'
 		},
 
 		verifyAnnexed: function () {
@@ -238,6 +239,16 @@ const vueFront = new Vue({
 			}
 			return true
 		},
+
+        verifyEvent: function (eventID) {
+            if (this.searchStatusVisible(eventID) === 2) {
+                closeNotificationBootstrap()
+                showNotificacion('error', 'No puede cambiar de evento en plena llamada', 'Ooops!!!', 8000, true, true)
+                return false
+            }else{
+                return true
+            }
+        },
 
 		defineRoute: function (event) {
 			switch (event) {
@@ -280,10 +291,14 @@ const vueFront = new Vue({
 			this.loadOptionMenu('agents_annexed')
 		},
 
-		liberarAnexos: function () {
-			if (this.annexed != 0) this.ModalReleasesAnnexed = 'modal show'
-			else showNotificacion('warning', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
-		},
+        liberarAnexos: function () {
+            let isVerifyAnnexed = (this.annexed != 0) ? true : false
+            let isVerifyStatusVisible = (this.searchStatusVisible(this.getEventId) === 2 && this.getEventId != 11) ? false : true
+
+            if (isVerifyAnnexed && isVerifyStatusVisible) this.ModalReleasesAnnexed = 'modal show'
+            if (!isVerifyAnnexed) showNotificacion('error', 'No tiene un anexo asignado', 'Warning', 10000, false, true)
+            if (!isVerifyStatusVisible) showNotificacion('error', 'No puedes liberar el anexo, en plena llamada', 'Warning', 10000, false, true)
+        },
 
 		releasesAnnexed: function () {
 			this.defineRoute('releasesAnnexed')
@@ -408,6 +423,15 @@ const vueFront = new Vue({
 				}
 			}
 		},
+
+        searchStatusVisible: function (eventID) {
+            if(this.getListEvents.length != 0){
+                if (eventID) {
+                    let index = parseInt(eventID) - 1
+                    return this.getListEvents[index]['estado_visible_id']
+                }
+            }
+        },
 	}
 })
 
