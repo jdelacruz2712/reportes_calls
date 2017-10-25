@@ -341,10 +341,10 @@ socketNodejs.on('AddCallWaiting', dataCallWaiting => {
 	dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 socketNodejs.on('RemoveCallWaiting', dataCallWaiting => {
-	let numberPhone = dataCallWaiting.number_phone
-	dashboard.callsWaiting.forEach((item, index) => {
-		if (item.number_phone === numberPhone) dashboard.callsWaiting.splice(index, 1)
-	})
+    let startCall = dataCallWaiting.start_call
+    dashboard.callsWaiting.forEach((item, index) => {
+        if (item.start_call === startCall) dashboard.callsWaiting.splice(index, 1)
+    })
 	dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
 })
 
