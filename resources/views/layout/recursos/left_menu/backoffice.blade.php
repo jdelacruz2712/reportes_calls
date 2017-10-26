@@ -6,7 +6,6 @@
       <li><a href="#" v-on:click="loadOptionMenu('events_detail')" class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Events</a></li>
       <li><a href="#" v-on:click="loadOptionMenu('events_consolidated')"  class="reportes"><i class="fa fa-circle-o text-yellow"></i> Consolidated Events</a></li>
       <li><a href="#" v-on:click="loadOptionMenu('level_of_occupation')"  class="reportes"><i class="fa fa-circle-o text-red"></i> Level Of Occupation</a></li>
-      <li><a href="#" v-on:click="loadOptionMenu('detail_event_report')"  class="reportes"><i class="fa fa-circle-o text-fuchsia"></i> Details Events Report (Beta)</a></li>
   </ul>
 </li>
 

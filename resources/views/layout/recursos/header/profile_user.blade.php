@@ -15,7 +15,7 @@
         <!-- Menu Footer-->
         <li class="user-footer">
             <div class="pull-left">
-                <a href="#" class="btn btn-default btn-flat reportes" id="profile_users" >Profile</a>
+                <a href="#" v-on:click="loadOptionMenu('profile_users')" class="btn btn-default btn-flat" >Profile</a>
             </div>
             <div class="pull-right">
                 <a href="#" onClick="javascript:disconnect()" class="btn btn-default btn-flat">Sign out</a>

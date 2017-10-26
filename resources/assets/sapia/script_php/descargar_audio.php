@@ -15,29 +15,34 @@ $RutaGrabaciones	= $_GET["proyect"].'/'.$_GET["url"];
 $NombreAudio 		= $_GET["nameaudio"];
 $hour				= $_GET["hour"];
 $newHour			= date("His",strtotime($hour));
+
 /**
  * $destino Concatena las variable para armar la URL completa para descargar el audio.
  * @var string
  */
-//$destino 			= "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio;
-$destino 			= "../grabaciones_asterisk/".$RutaGrabaciones.$NombreAudio.$newHour.".gsm";
+$destino 			= "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$newHour.".gsm";
+//$destino 			= "../grabaciones_asterisk/".$RutaGrabaciones.$NombreAudio.$newHour.".gsm";
 
-if(file_exists($destino)){
-    $nuevaHora=date("His",strtotime($hour));
-    $destino 			= "../grabaciones_asterisk/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
-    $NombreAudio		= $NombreAudio.$nuevaHora.".gsm";
-
+if(url_exists($destino)){
+    $nuevaHora          =   date("His",strtotime($hour));
+    $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+    $NombreAudio		=   $NombreAudio.$nuevaHora.".gsm";
 }else{
-    $nuevaHora=date("His",strtotime($hour)-1);
-    $destino 			= "../grabaciones_asterisk/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
-    if(file_exists($destino)){
-        $destino 			= "../grabaciones_asterisk/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
-        $NombreAudio		= $NombreAudio.$nuevaHora.".gsm";
+    $nuevaHora          =   date("His",strtotime($hour)-1);
+    $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+    if(url_exists($destino)){
+        $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+        $NombreAudio		=   $NombreAudio.$nuevaHora.".gsm";
     }else{
-        $nuevaHora=date("His",strtotime($hour)+1);
-        $destino 			= "../grabaciones_asterisk/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
-        $NombreAudio		= $NombreAudio.$nuevaHora.".gsm";
+        $nuevaHora          =   date("His",strtotime($hour)+1);
+        $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+        $NombreAudio		=   $NombreAudio.$nuevaHora.".gsm";
     }
+}
+
+function url_exists($url){
+    $headers = get_headers($url);
+    return stripos($headers[0],"200 OK") ? true : false;
 }
 
 

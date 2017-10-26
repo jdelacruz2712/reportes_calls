@@ -5,6 +5,7 @@
 @stop
 @section('content')
     <p></p>
+    <audio ref="audioElm" :src="routeMusicQueue" preload="none" loop></audio>
     <div>
         @include('elements.dashboard.pictures_kpi.index')
         @include('elements.dashboard.tables.calls_inbound')
