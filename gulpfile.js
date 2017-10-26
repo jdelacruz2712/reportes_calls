@@ -232,6 +232,7 @@ elixir(function(mix) {
 		.copy('resources/assets/sapia/favicon'								, 'public/favicon')
 		.copy('resources/assets/sapia/background'							, 'public/background')
         .copy('resources/assets/sapia/script_php'							, 'public/script_php')
+        .copy('resources/assets/sapia/sonidos'								, 'public/sonidos')
 		.copy('resources/assets/images/default_avatar.png'					, 'public/storage/default_avatar.png')
 
 		.copy('resources/assets/sapia/css/dashboard.css'					, 'public/css/dashboard.css')

@@ -1,24 +1,6 @@
 Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('meta[name="_token"]').getAttribute('content')
 Vue.component('v-select', VueSelect.VueSelect)
 
-const listQueues = [
-    {
-        'name': 'IBK_Sedes',
-        'limitEncoladas': '1',
-        'routeMusic': 'sonidos/alerta_03.mp3'
-    },
-    {
-        'name': 'IBK_EjecutivosVIP',
-        'limitEncoladas': '1',
-        'routeMusic': 'sonidos/alerta_01.mp3'
-    },
-    {
-        'name': 'IBK_Tiendas',
-        'limitEncoladas': '1',
-        'routeMusic': 'sonidos/alerta_05.mp3'
-    }
-]
-
 const socketNodejs = io.connect(restApiDashboard, {
     'reconnection': true,
     'reconnectionAttempts': 15,
@@ -39,7 +21,8 @@ const dashboard = new Vue({
         filterParameters: [],
         agentStatusSummary: [],
         listProfileUsers: [],
-        listEventos:[],
+        listEventos: [],
+        listQueues: [],
 
         percentageAnswer: '',
         percentageUnanswer: '',
@@ -74,8 +57,7 @@ const dashboard = new Vue({
         dateServer:'-',
         hourServer: '-',
         textDateServer: '-',
-        routeMusicQueue: '-',
-        isMusicQueue: false
+        routeMusicQueue: '-'
     },
     created () {
         this.loadVariablesGlobals()
@@ -83,8 +65,13 @@ const dashboard = new Vue({
     },
     mounted(){
         this.initialization()
+        this.loadQueues()
     },
     methods: {
+        loadQueues: async function () {
+            let response = await this.sendUrlRequest('dashboard_01/getListQueues')
+            this.listQueues = response.listQueues
+        },
         loadMetricasKpi: async function (viewLoad) {
             if (viewLoad) {
                 this.answered = '-'
@@ -324,19 +311,20 @@ const dashboard = new Vue({
 
         musicQueues: function () {
             let listCallWaiting = dashboard.callsWaiting
-            if(listCallWaiting.length === 0) this.isMusicQueue = false
-            if(!this.isMusicQueue) dashboard.$refs.audioElm.pause()
-            listQueues.forEach((item, index) => {
-                listQueues[index].metricas = (Object.keys(listCallWaiting).filter(key => (listCallWaiting[key].name_queue === item.name) ? true : false)).length
+            this.listQueues.forEach((item, index) => {
+                this.listQueues[index].totalWaiting = (Object.keys(listCallWaiting).filter(key => (listCallWaiting[key].name_queue === item.name) ? true : false)).length
             })
 
-            Object.keys(listQueues).filter(key => (listQueues[key].metricas != 0) ? true : false).some((item, index) => {
+            Object.keys(this.listQueues).filter(key => (this.listQueues[key].totalWaiting != 0) ? true : false).some((item, index) => {
                 if(item) {
-                    if(listQueues[item].metricas >= listQueues[item].limitEncoladas) {
-                        this.routeMusicQueue = listQueues[item].routeMusic
-                        this.isMusicQueue = true
+                    console.log(this.listQueues[item].totalWaiting)
+                    console.log(this.listQueues[item].limit_call_waiting)
+                    if(this.listQueues[item].totalWaiting >= this.listQueues[item].limit_call_waiting) {
+                        this.routeMusicQueue = this.listQueues[item].music.route_music
                         setTimeout(function() { dashboard.$refs.audioElm.play() },800)
                         return true
+                    }else{
+                        dashboard.$refs.audioElm.pause()
                     }
                 }
             })
@@ -378,7 +366,7 @@ socketNodejs.on('disconnect', function () {
 })
 
 socketNodejs.on('AddCallWaiting', dataCallWaiting => {
-	dashboard.callsWaiting.push(dataCallWaiting)
+    dashboard.callsWaiting.push(dataCallWaiting)
     dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
     dashboard.musicQueues()
 })

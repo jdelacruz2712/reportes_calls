@@ -26,6 +26,7 @@ Route::group(['middleware'=>['user']], function () {
 
         Route::post('dashboard_01/getVariablesGlobals', ['uses'=>'DashboardController@getVariablesGlobals']);
         Route::post('dashboard_01/getEventKpi', ['uses'=>'DashboardController@getEventKpi']);
+        Route::post('dashboard_01/getListQueues', ['uses'=>'DashboardController@getListQueues']);
         Route::post('dashboard_01/getQuantityCalls', ['uses'=>'DashboardController@getQuantityCalls']);
         Route::post('dashboard_01/panelAgentStatusSummary', ['uses'=>'DashboardController@panelAgentStatusSummary']);
         Route::post('dashboard_01/panelGroupStatistics', ['uses'=>'DashboardController@panelGroupStatistics']);

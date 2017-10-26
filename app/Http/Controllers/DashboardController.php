@@ -9,6 +9,7 @@ use Cosapi\Models\Eventos;
 use Cosapi\Models\Cdr;
 use Cosapi\Models\Kpis;
 use Cosapi\Models\Queue_Log;
+use Cosapi\Models\Queues;
 use Cosapi\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -124,6 +125,19 @@ class DashboardController extends IncomingCallsController
         }
     }
 
+    public function getListQueues (Request $request) {
+        try {
+            $query = Queues::select()
+                        ->with('music')
+                        ->where('estado_id','=','1')
+                        ->orderBy('queues_priority_id', 'desc')
+                        ->get()->toArray();
+            return response()->json(['listQueues' => $query], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 500);
+        }
+    }
+
     public function panelGroupStatistics(Request $request)
     {
         try {
@@ -174,12 +188,12 @@ class DashboardController extends IncomingCallsController
             $percentageUnanswer = ($totalReceived != 0) ? ($Unanswer * 100) / $totalReceived : 0;
 
             return response()->json([
-        'avgWait' => conversorSegundosHoras(intval($avgWait), false),
-        'avgCallDuration' => conversorSegundosHoras(intval($avgCallDuratioInbound), false),
-        'percentageAnswer' => convertDecimales($percentageAnswer, 2),
-        'percentageUnanswer' => convertDecimales($percentageUnanswer, 2),
-        'totalCallDurationInbound' => conversorSegundosHoras(intval($totalCallDurationInbound), false),
-        'totalCallDurationOutbound' => conversorSegundosHoras(intval($OutgoingCallsController[0]['billsec']), false)
+                'avgWait' => conversorSegundosHoras(intval($avgWait), false),
+                'avgCallDuration' => conversorSegundosHoras(intval($avgCallDuratioInbound), false),
+                'percentageAnswer' => convertDecimales($percentageAnswer, 2),
+                'percentageUnanswer' => convertDecimales($percentageUnanswer, 2),
+                'totalCallDurationInbound' => conversorSegundosHoras(intval($totalCallDurationInbound), false),
+                'totalCallDurationOutbound' => conversorSegundosHoras(intval($OutgoingCallsController[0]['billsec']), false)
       ], 200);
         } catch (\Exception $e) {
             return response()->json(['message' => $e->getMessage()], 500);
