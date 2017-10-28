@@ -25,6 +25,7 @@ const vueFront = new Vue({
 		getRole: '',
 		getRemoteIp: '',
 		getEventId: '',
+        getChangeRole: '',
 		statusChangePassword: '',
 		statusChangeAssistance: '',
 		statusAddAgentDashboard: '',
@@ -150,6 +151,7 @@ const vueFront = new Vue({
 			this.getUsername = response.getUsername
 			this.getNameComplete = response.getNameComplete
 			this.getRole = response.getRole
+            this.getChangeRole = response.getChangeRole
 			this.getRemoteIp = response.getRemoteIp
 			this.statusChangePassword = response.statusChangePassword
 			this.statusChangeAssistance = response.statusChangeAssistance
@@ -273,14 +275,20 @@ const vueFront = new Vue({
 		},
 
 		changeStatus: function (eventId, eventName, eventStatusPause) {
-			this.ModalChangeStatus = 'modal fade'
-			this.defineRoute('changeStatus')
-			this.nextEventId = eventId
-			this.nextEventName = eventName
-			this.eventStatusPause = eventStatusPause
-			this.remoteAgentHour = this.hourServer
-			let parameters = this.loadParameters('changeStatus')
-			ajaxNodeJs(parameters, this.routeAction, true, 2000)
+            const arrayEventRing = ['12','13','18','21','24','27']
+            if(arrayEventRing.includes(this.getEventId)){
+                this.ModalChangeStatus = 'modal fade'
+                showNotificacion('error', 'No puede cambiar de evento, ya que acaba de ingresarle una llamada', 'Warning', 10000, false, true)
+            } else {
+                this.ModalChangeStatus = 'modal fade'
+                this.defineRoute('changeStatus')
+                this.nextEventId = eventId
+                this.nextEventName = eventName
+                this.eventStatusPause = eventStatusPause
+                this.remoteAgentHour = this.hourServer
+                let parameters = this.loadParameters('changeStatus')
+                ajaxNodeJs(parameters, this.routeAction, true, 2000)
+            }
 		},
 
 		assignAnnexed: function () {

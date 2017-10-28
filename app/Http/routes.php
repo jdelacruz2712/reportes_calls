@@ -52,7 +52,6 @@ Route::group(['middleware'=>['user']], function () {
         Route::post('form_change_rol', ['uses'=>'UserController@formChangeRol']);
         Route::post('form_status_user', ['uses'=>'UserController@formChangeStatus']);
         Route::post('saveformassignQueues', ['uses'=>'UserController@saveFormAssingQueue']);
-        Route::post('saveformchangeRole', ['uses'=>'UserController@saveFormChangeRole']);
         Route::post('saveformchangeStatus', ['uses'=>'UserController@saveFormChangeStatus']);
 
         // Administrar Queues
@@ -115,6 +114,7 @@ Route::group(['middleware'=>['user']], function () {
     Route::post('changeStatus', ['uses'=>'UserController@changeStatus'        ,    'as' => 'changeStatus']);
     Route::post('form_change_password', ['uses'=>'UserController@formChangePassword',  'as' => 'changePassword']);
     Route::post('saveformchangePassword', ['uses'=>'UserController@saveFormChangePassword']);
+    Route::post('saveformchangeRole', ['uses'=>'UserController@saveFormChangeRole']);
 
     Route::post('updateStatusAddAgentDashboard', ['uses'=>'AdminController@updateStatusAddAgentDashboard','as'=>'updateStatusAddAgentDashboard']);
 

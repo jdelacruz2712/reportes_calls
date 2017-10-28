@@ -317,8 +317,6 @@ const dashboard = new Vue({
 
             Object.keys(this.listQueues).filter(key => (this.listQueues[key].totalWaiting != 0) ? true : false).some((item, index) => {
                 if(item) {
-                    console.log(this.listQueues[item].totalWaiting)
-                    console.log(this.listQueues[item].limit_call_waiting)
                     if(this.listQueues[item].totalWaiting >= this.listQueues[item].limit_call_waiting) {
                         this.routeMusicQueue = this.listQueues[item].music.route_music
                         setTimeout(function() { dashboard.$refs.audioElm.play() },800)
