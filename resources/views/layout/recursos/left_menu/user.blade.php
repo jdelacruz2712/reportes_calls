@@ -35,5 +35,8 @@
   </a>
   <ul class="treeview-menu">
     <li><a href="#" v-on:click="loadOptionMenu('agents_annexed')"> <i class="fa fa-circle-o text-purple"></i> Assign Annexed</a></li>
+    <template v-if="getChangeRole == 1">
+      <li><a href="#" v-on:click="loadOptionMenu('activate_calls')"> <i class="fa fa-circle-o text-orange"></i> Activate Calls</a></li>
+    </template>
   </ul>
 </li>

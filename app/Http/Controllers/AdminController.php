@@ -128,6 +128,7 @@ class AdminController extends CosapiController
             'getUserId' => $this->UserId,
             'getUsername' => $this->UserSystem,
             'getRole' => $this->UserRole,
+            'getChangeRole' => $this->ChangeRole,
             'getNameComplete' => $this->UserName,
             'statusChangePassword' => $this->UserPassword,
             'statusChangeAssistance' => $this->AssistanceUser,
