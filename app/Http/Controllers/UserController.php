@@ -171,26 +171,23 @@ class UserController extends CosapiController
     }
 
     public function saveFormChangeRole(Requests\UsersChangeRoleRequest $request){
-        if($this->UserId != $request->userId && $request->nameRole == 'backoffice'){
-            $changeRol = 1;
-        } else if($this->UserId == $request->userId) {
-            $changeRol = 1;
-        } else {
-            $changeRol = 0;
+        if ($request->ajax()){
+            if($this->UserId != $request->userId && $request->nameRole == 'backoffice'){ $changeRol = 1; } else if($this->UserId == $request->userId) { $changeRol = 1; } else { $changeRol = 0; }
+            $resultado = User::where('id',$request->userId)
+                            ->update([
+                                'role'          => $request->nameRole,
+                                'change_role'   => $changeRol
+                            ]);
+            if($resultado && $this->UserId == $request->userId){
+                Session::put('UserRole' ,Auth::user()->role);
+                return ['message' => 'Success'];
+            }else if($resultado) {
+                return ['message' => 'Success'];
+            }else {
+                return ['message' => 'Error'];
+            }
         }
-        $resultado = User::where('id',$request->userId)
-                        ->update([
-                            'role'          => $request->nameRole,
-                            'change_role'   => $changeRol
-                        ]);
-        if($resultado && $this->UserId == $request->userId){
-            Session::put('UserRole' ,Auth::user()->role);
-            return ['message' => 'Success'];
-        }else if($resultado) {
-            return ['message' => 'Success'];
-        }else {
-            return ['message' => 'Error'];
-        }
+        return ['message' => 'Error'];
     }
 
     public function saveFormChangeStatus(Requests\UsersChangeStatusRequest $request){

@@ -63,6 +63,12 @@ const dashboard = new Vue({
         this.loadVariablesGlobals()
         this.loadMetricasKpi(true)
     },
+    computed: {
+        getTotalCallsWaiting: function () {
+            this.musicQueues()
+            return this.totalCallsWaiting
+        }
+    },
     mounted(){
         this.initialization()
         this.loadQueues()
@@ -310,20 +316,17 @@ const dashboard = new Vue({
         },
 
         musicQueues: function () {
-            let listCallWaiting = dashboard.callsWaiting
+            let listCallWaiting = this.callsWaiting
             this.listQueues.forEach((item, index) => {
                 this.listQueues[index].totalWaiting = (Object.keys(listCallWaiting).filter(key => (listCallWaiting[key].name_queue === item.name) ? true : false)).length
             })
 
-            Object.keys(this.listQueues).filter(key => (this.listQueues[key].totalWaiting != 0) ? true : false).some((item, index) => {
-                if(item) {
-                    if(this.listQueues[item].totalWaiting >= this.listQueues[item].limit_call_waiting) {
-                        this.routeMusicQueue = this.listQueues[item].music.route_music
-                        setTimeout(function() { dashboard.$refs.audioElm.play() },800)
-                        return true
-                    }else{
-                        dashboard.$refs.audioElm.pause()
-                    }
+            Object.keys(this.listQueues).filter(key => this.listQueues[key].totalWaiting != 0 ? true : false).some((item, index) => {
+                if(this.listQueues[item].totalWaiting >= this.listQueues[item].limit_call_waiting) {
+                    this.routeMusicQueue = this.listQueues[item].music.route_music
+                    setTimeout(function() { dashboard.$refs.audioElm.play() },800)
+                }else{
+                    setTimeout(function() { dashboard.$refs.audioElm.pause() },800)
                 }
             })
         },
@@ -364,18 +367,18 @@ socketNodejs.on('disconnect', function () {
 })
 
 socketNodejs.on('AddCallWaiting', dataCallWaiting => {
-    dashboard.callsWaiting.push(dataCallWaiting)
-    dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
-    dashboard.musicQueues()
+    if((dashboard.callsWaiting).length === 0 || dashboard.callsWaiting.find(item => item.unique_id != dataCallWaiting.unique_id)){
+        dashboard.callsWaiting.push(dataCallWaiting)
+        dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
+    }
 })
 
 socketNodejs.on('RemoveCallWaiting', dataCallWaiting => {
-    let startCall = dataCallWaiting.start_call
+    let uniqueID = dataCallWaiting.unique_id
     dashboard.callsWaiting.forEach((item, index) => {
-        if (item.start_call === startCall) dashboard.callsWaiting.splice(index, 1)
+        if (item.unique_id === uniqueID) dashboard.callsWaiting.splice(index, 1)
     })
     dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
-    dashboard.musicQueues()
 })
 
 socketNodejs.on('RemoveOther', dataOther => removeDataDashboard(dataOther, dashboard.others, 'others'))

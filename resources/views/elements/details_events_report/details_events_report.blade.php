@@ -1,5 +1,8 @@
 <div class="box box-primary">
     <div class="box-body">
+        <div class="box-tools">
+            <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#modalDetailsEvents"><i class="fa fa-eercast"></i> Leyenda</button><br>
+        </div><br>
         <table id="table-details-events-report" class="table table-bordered display nowrap table-responsive" cellspacing="0" width="100%">
             <thead>
                 <tr>
