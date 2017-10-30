@@ -15,8 +15,7 @@
     <ul class="treeview-menu">
         <li><a href="#" v-on:click="loadOptionMenu('events_detail')" class="reportes"><i class="fa fa-circle-o text-purple"></i> Detail Events</a></li>
         <li><a href="#" v-on:click="loadOptionMenu('events_consolidated')"  class="reportes"><i class="fa fa-circle-o text-yellow"></i> Consolidated Events</a></li>
-        <li><a href="#" v-on:click="loadOptionMenu('level_of_occupation')"  class="reportes"><i class="fa fa-circle-o text-red"></i> Level Of Occupation</a></li>
-        <li><a href="#" v-on:click="loadOptionMenu('detail_event_report')"  class="reportes"><i class="fa fa-circle-o text-fuchsia"></i> Details Events Report (Beta)</a></li>
+        <li><a href="#" v-on:click="loadOptionMenu('detail_event_report')"  class="reportes"><i class="fa fa-circle-o text-fuchsia"></i> Level Of Occupation</a></li>
     </ul>
   </li>
 
@@ -50,7 +49,6 @@
       <li><a href="#" v-on:click="loadOptionMenu('manage_queues')"> <i class="fa fa-circle-o text-red"></i> Manage Queues</a></li>
 
       <li><a href="#" v-on:click="loadOptionMenu('agents_annexed')"> <i class="fa fa-circle-o text-purple"></i> Assign Annexed</a></li>
-      <li><a href="#" v-on:click="loadOptionMenu('activate_calls')"> <i class="fa fa-circle-o text-orange"></i> Activate Calls</a></li>
       <!--<li><a href="#" v-on:click="loadOptionMenu('broadcast_message')"> <i class="fa fa-circle-o text-green"></i> BroadCast Message</a></li>-->
     </ul>
   </li>
