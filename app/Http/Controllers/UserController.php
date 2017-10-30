@@ -172,9 +172,7 @@ class UserController extends CosapiController
 
     public function saveFormChangeRole(Requests\UsersChangeRoleRequest $request){
         if ($request->ajax()){
-            $changeRol = 0;
-            ($this->UserId != $request->userId && $request->nameRole == 'backoffice' ? $changeRol = 1 : 0);
-            ($this->UserId == $request->userId ? $changeRol = 1 : 0);
+            if($this->UserId != $request->userId && $request->nameRole == 'backoffice'){ $changeRol = 1; } else if($this->UserId == $request->userId) { $changeRol = 1; } else { $changeRol = 0; }
             $resultado = User::where('id',$request->userId)
                             ->update([
                                 'role'          => $request->nameRole,

@@ -74,11 +74,9 @@ $('#formChangeRole').submit(function(e) {
         success: function(data){
             if(data.message === 'Success'){
                 changeButtonForm('btnLoad','btnForm')
-                vueFront.remoteActiveCallsUserId = userID
-                vueFront.remoteActiveCallsNameRole = nameRole
-                vueFront.activeCalls()
                 clearModal('modalUsers', 'div.dialogUsers')
                 showTabListUser('list_users')
+                showNotificacion('success', 'El cambio de rol se realizo exitosamente !!!', 'Success', 5000, false, true)
             }else{
                 showNotificacion('error', 'Problemas al actualizar el dato en la base de datos', 'Error', 10000, false, true)
             }

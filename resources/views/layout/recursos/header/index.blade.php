@@ -10,8 +10,8 @@
         <div class="navbar-custom-menu">
             <ul class="nav navbar-nav">
               @include('layout.recursos.header.release_from_extension')
-              @include('layout.recursos.header.message')
-              @include('layout.recursos.header.notification')
+              {{-- @include('layout.recursos.header.message') --}}
+              {{-- @include('layout.recursos.header.notification') --}}
               @include('layout.recursos.header.view_queues')
               @include('layout.recursos.header.profile_user')
               <li>
