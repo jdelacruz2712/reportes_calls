@@ -49,7 +49,7 @@ class DetailEventsReportController extends CosapiController
 
     protected function query_detail_event_report ($fecha_evento, $rolUser, $typeReport){
         list($fecha_inicial,$fecha_final) = explode(' - ', $fecha_evento);
-        $query_detail_event_report = DB::select('CALL sp_get_detail_event_report_beta ("'.$fecha_inicial.'","'.$fecha_final.'","'.$rolUser.'","'.$typeReport.'")');
+        $query_detail_event_report = DB::select('CALL sp_detail_event_report ("'.$fecha_inicial.'","'.$fecha_final.'","'.$rolUser.'","'.$typeReport.'")');
         return $query_detail_event_report;
     }
 
