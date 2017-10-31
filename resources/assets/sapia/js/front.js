@@ -483,6 +483,17 @@ const searchRouteMusic = (selectMusic, audioTag) => {
     })
 }
 
+const searchLegendQueue = (selectedStrategy) => {
+    $(selectedStrategy).change(function(){
+        let nameStrategy = $(selectedStrategy + " option:selected").data('name')
+        $('#'+nameStrategy).fadeOut(function() {
+            $('.legend').fadeOut(function() {
+                $('#'+nameStrategy).show()
+            })
+        })
+    })
+}
+
 // Función para poder buscar en una tabla
 const searchTable = (idTable, idSearch, filterAnnexed = '') => {
 	$(idSearch).keyup(function(){

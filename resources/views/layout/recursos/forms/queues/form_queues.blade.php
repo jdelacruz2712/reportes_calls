@@ -16,9 +16,9 @@
             </div>
             <div class="form-group">
                 <label>Strategy</label>
-                <select name="selectedStrategy" class="form-control">
+                <select id="selectedStrategy" name="selectedStrategy" class="form-control">
                     @foreach ($optionsStrategy as $strategy)
-                        <option value="{{ $strategy['id'] }}" {{ $strategy['id'] === $selectedStrategy ? "selected" : "" }}>{{ $strategy['name'] }}</option>
+                        <option value="{{ $strategy['id'] }}" {{ $strategy['id'] === $selectedStrategy ? "selected" : "" }} data-name="{{ $strategy['name'] }}">{{ $strategy['name'] }}</option>
                     @endforeach
                 </select>
             </div>
@@ -48,6 +48,9 @@
                     Your browser does not support the audio element.
                 </audio>
             </div>
+
+            @include('layout.recursos.forms.queues.legendQueue.legendQueue')
+
             <div class="alert alert-danger formError" style="display: none"></div>
             <input type="hidden" name="queueID" value="{{ $idQueue }}">
             <div class="modal-footer">
@@ -62,6 +65,7 @@
 <script>
     hideErrorForm('.formError')
     loadRouteMusic('#selectedMusic','#audioTag')
+    searchLegendQueue('#selectedStrategy')
     searchRouteMusic('#selectedMusic','#audioTag')
     clearModalClose('modalQueues', 'div.dialogQueues')
 </script>
