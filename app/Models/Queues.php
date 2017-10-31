@@ -12,7 +12,7 @@ class Queues extends Model
     public    $timestamps   = false;
 
     protected $fillable = [
-        'id', 'name', 'vdn', 'queues_strategy_id', 'queues_priority_id', 'music_id', 'estado_id',
+        'id', 'name', 'vdn', 'queues_strategy_id', 'queues_priority_id', 'music_id', 'estado_id', 'limit_call_waiting',
     ];
 
     public function estrategia(){

@@ -16,9 +16,9 @@
             </div>
             <div class="form-group">
                 <label>Strategy</label>
-                <select name="selectedStrategy" class="form-control">
+                <select id="selectedStrategy" name="selectedStrategy" class="form-control">
                     @foreach ($optionsStrategy as $strategy)
-                        <option value="{{ $strategy['id'] }}" {{ $strategy['id'] === $selectedStrategy ? "selected" : "" }}>{{ $strategy['name'] }}</option>
+                        <option value="{{ $strategy['id'] }}" {{ $strategy['id'] === $selectedStrategy ? "selected" : "" }} data-name="{{ $strategy['name'] }}">{{ $strategy['name'] }}</option>
                     @endforeach
                 </select>
             </div>
@@ -30,6 +30,27 @@
                     @endforeach
                 </select>
             </div>
+            <div class="form-group">
+                <label>N° Limit Call Waiting</label>
+                <input type="text" name="limitCallWaiting" class="form-control" placeholder="Enter Limit Call Waiting" value="{{ $numLimitCallWaiting }}" onkeypress="return filterNumber(event)" onkeydown="return BlockCopyPaste(event)">
+            </div>
+            <div class="form-group">
+                <label>Music Choose</label>
+                <select id="selectedMusic" name="selectedMusic" class="form-control">
+                    @foreach ($optionsMusic as $music)
+                        <option value="{{ $music['id'] }}" {{ $music['id'] === $selectedMusic ? "selected" : "" }} data-route="{{ $music['route_music'] }}">{{ $music['name_music'] }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
+                <audio id="audioTag" controls="controls" style="width: 100%">
+                    <source src="" type="audio/mp3" />
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+
+            @include('layout.recursos.forms.queues.legendQueue.legendQueue')
+
             <div class="alert alert-danger formError" style="display: none"></div>
             <input type="hidden" name="queueID" value="{{ $idQueue }}">
             <div class="modal-footer">
@@ -43,5 +64,8 @@
 {!!Html::script('js/form/formQueues.min.js?version='.date('YmdHis')) !!}
 <script>
     hideErrorForm('.formError')
+    loadRouteMusic('#selectedMusic','#audioTag')
+    searchLegendQueue('#selectedStrategy')
+    searchRouteMusic('#selectedMusic','#audioTag')
     clearModalClose('modalQueues', 'div.dialogQueues')
 </script>
