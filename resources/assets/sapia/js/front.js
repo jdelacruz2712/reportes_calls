@@ -469,6 +469,31 @@ const hideErrorForm = (formDiv) => {
 	})
 }
 
+// Función que carga automaticamente la ruta de la musica al iniciar el formQueues
+const loadRouteMusic = (selectMusic, audioTag) => {
+    let src = $(selectMusic + " option:selected").data('route')
+    $(audioTag).attr('src', src)
+}
+
+// Función que detecta el cambio en un select y manda mediante el data-id la ruta para el audio
+const searchRouteMusic = (selectMusic, audioTag) => {
+    $(selectMusic).change(function(){
+        let src = $(selectMusic + " option:selected").data('route')
+        $(audioTag).attr('src', src)
+    })
+}
+
+const searchLegendQueue = (selectedStrategy) => {
+    $(selectedStrategy).change(function(){
+        let nameStrategy = $(selectedStrategy + " option:selected").data('name')
+        $('#'+nameStrategy).fadeOut(function() {
+            $('.legend').fadeOut(function() {
+                $('#'+nameStrategy).show()
+            })
+        })
+    })
+}
+
 // Función para poder buscar en una tabla
 const searchTable = (idTable, idSearch, filterAnnexed = '') => {
 	$(idSearch).keyup(function(){

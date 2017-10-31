@@ -3,6 +3,7 @@
 namespace Cosapi\Http\Controllers;
 
 use Cosapi\Collector\Collector;
+use Cosapi\Models\QueueMusic;
 use Cosapi\Models\Queues;
 use Cosapi\Models\QueuePriority;
 use Cosapi\Models\QueueStrategy;
@@ -108,11 +109,14 @@ class QueuesController extends CosapiController
                 'updateForm'             => false,
                 'optionsStrategy'        => $options['Strategy'],
                 'optionsPriority'        => $options['Priority'],
+                'optionsMusic'           => $options['Music'],
                 'idQueue'                => '',
                 'nameQueue'              => '',
                 'numVdn'                 => '',
+                'numLimitCallWaiting'    => '',
                 'selectedStrategy'       => '',
-                'selectedPriority'       => ''
+                'selectedPriority'       => '',
+                'selectedMusic'          => ''
             ));
         } else {
             $getQueue   = $this->getQueue($request->valueID);
@@ -120,11 +124,14 @@ class QueuesController extends CosapiController
                 'updateForm'             => true,
                 'optionsStrategy'        => $options['Strategy'],
                 'optionsPriority'        => $options['Priority'],
+                'optionsMusic'           => $options['Music'],
                 'idQueue'                => $request->valueID,
                 'nameQueue'              => $getQueue[0]['name'],
                 'numVdn'                 => $getQueue[0]['vdn'],
+                'numLimitCallWaiting'    => $getQueue[0]['limit_call_waiting'],
                 'selectedStrategy'       => $getQueue[0]['queues_strategy_id'],
-                'selectedPriority'       => $getQueue[0]['queues_priority_id']
+                'selectedPriority'       => $getQueue[0]['queues_priority_id'],
+                'selectedMusic'          => $getQueue[0]['music_id']
             ));
         }
     }
@@ -164,9 +171,14 @@ class QueuesController extends CosapiController
             ->get()
             ->toArray();
 
+        $music = QueueMusic::Select()
+            ->get()
+            ->toArray();
+
         $users = $this->getUsers();
         $options['Strategy']  = $strategy;
         $options['Priority']  = $priority;
+        $options['Music']     = $music;
         $options['Users']     = $users;
         return $options;
     }
@@ -225,6 +237,8 @@ class QueuesController extends CosapiController
                 'vdn' => $request->numVdn,
                 'queues_strategy_id' => $request->selectedStrategy,
                 'queues_priority_id' => $request->selectedPriority,
+                'limit_call_waiting' => $request->limitCallWaiting,
+                'music_id' => $request->selectedMusic,
                 'estado_id' => '1'
             ]);
             $action = ($request->queueID ? 'updated' : 'create');
