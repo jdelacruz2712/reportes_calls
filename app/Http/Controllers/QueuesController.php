@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
 use Cosapi\Http\Requests;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class QueuesController extends CosapiController
 {
@@ -53,9 +55,9 @@ class QueuesController extends CosapiController
     protected function queues_list_query()
     {
         $queues_list_query = Queues::select()
-                                ->with('estrategia')
-                                ->with('prioridad')
-                                ->get();
+            ->with('estrategia')
+            ->with('prioridad')
+            ->get();
         return $queues_list_query;
     }
 
@@ -195,22 +197,22 @@ class QueuesController extends CosapiController
     protected function getUsers()
     {
         $Users  = User::Select()
-                    ->where('estado_id', '=', '1')
-                    ->whereNotIn('role', ['admin'])
-                    ->orderBy('primer_nombre')
-                    ->orderBy('apellido_paterno')
-                    ->orderBy('apellido_materno')
-                    ->get()
-                    ->toArray();
+            ->where('estado_id', '=', '1')
+            ->whereNotIn('role', ['admin'])
+            ->orderBy('primer_nombre')
+            ->orderBy('apellido_paterno')
+            ->orderBy('apellido_materno')
+            ->get()
+            ->toArray();
         return $Users;
     }
 
     protected function getUsersQueues($queueID)
     {
         $UsersQueue = Users_Queues::Select()
-                        ->where('queue_id', $queueID)
-                        ->get()
-                        ->toArray();
+            ->where('queue_id', $queueID)
+            ->get()
+            ->toArray();
         return $UsersQueue;
     }
 
@@ -347,5 +349,21 @@ class QueuesController extends CosapiController
             return ['message' => 'success'];
         }
         return ['message' => 'error'];
+    }
+
+    public function executeSSH () {
+        //172.11.1.30 cosapi_data/archivos_www/webconsole/file_asterisk cosapi_data/archivos_asterisk cosapi_queues.conf
+        $pathDirectory = base_path();
+        /*$process = new Process('scp /cosapi_data/archivos_www/webconsole/file_asterisk/cosapi_queues.conf root@172.11.1.30:/cosapi_data/archivos_asterisk/');
+        $process->run();*/
+
+        $process = new Process('sh /cosapi_data/archivos_www/webconsole/copy_files.sh 172.11.1.30 cosapi_data/archivos_www/webconsole/file_asterisk cosapi_data/archivos_asterisk cosapi_queues.conf');
+        try {
+            $process->mustRun();
+
+            echo $process->getOutput();
+        } catch (ProcessFailedException $e) {
+            echo $e->getMessage();
+        }
     }
 }
