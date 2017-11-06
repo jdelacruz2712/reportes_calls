@@ -35,7 +35,8 @@ var queuesTask = new Vue({
         },
         secondTask: async function () {
             this.statusTaskTwo = 'load'
-            let response = await this.sendUrlRequest('exportQueues')
+            let response = await this.sendUrlRequest('executeSSH')
+            console.log(response)
             if(response.message) return response.message
             return response
         },

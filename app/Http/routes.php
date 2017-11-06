@@ -63,6 +63,7 @@ Route::group(['middleware'=>['user']], function () {
         Route::post('saveformQueuesStatus', ['uses'=>'QueuesController@saveFormQueuesStatus']);
         Route::post('saveformAssignUser', ['uses'=>'QueuesController@saveFormAssingUser']);
         Route::post('exportQueues', ['uses'=>'QueuesController@exportQueues']);
+        Route::post('executeSSH', ['uses'=>'QueuesController@executeSSH']);
         Route::post('taskmanagerQueues', ['uses'=>'QueuesController@taskManagerQueues']);
 
         // Broadcast Message
