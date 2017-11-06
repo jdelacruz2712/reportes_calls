@@ -34,6 +34,12 @@
                     <th>Hold Outbound Transfer</th>
                     <th>Outbound Transfer</th>
                     <th>Desconectado</th>
+                    <th>Total ACD</th>
+                    <th>Total Outbound</th>
+                    <th>Auxiliares S/Backoffice</th>
+                    <th>Auxiliares C/Backoffice</th>
+                    <th>Nivel Ocupación S/Backoffice</th>
+                    <th>Nivel Ocupación C/Backoffice</th>
                 </tr>
             </thead>
         </table>
@@ -86,7 +92,13 @@
                 {"data" : "Ring Outbound Transfer"},
                 {"data" : "Hold Outbound Transfer"},
                 {"data" : "Outbound Transfer"},
-                {"data" : "Desconectado"}
+                {"data" : "Desconectado"},
+                {"data" : "Total ACD"},
+                {"data" : "Total Outbound"},
+                {"data" : "Auxiliares"},
+                {"data" : "Auxiliares Backoffice"},
+                {"data" : "Nivel Ocupacion"},
+                {"data" : "Nivel Ocupacion Backoffice"}
             ],
             "paging"            : true,
             "pageLength"        : 100,
