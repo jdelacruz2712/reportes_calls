@@ -366,8 +366,15 @@ socketNodejs.on('disconnect', function () {
     console.log('socket Nodejs Disconnected')
 })
 
+const objectFindByKey = (array, key, value) => {
+    for (let i = 0; i < array.length; i++) {
+        if (array[i][key] === value) return false
+    }
+    return true
+}
+
 socketNodejs.on('AddCallWaiting', dataCallWaiting => {
-    if((dashboard.callsWaiting).length === 0 || dashboard.callsWaiting.find(item => item.unique_id != dataCallWaiting.unique_id)){
+    if(objectFindByKey(dashboard.callsWaiting, 'unique_id', dataCallWaiting.unique_id)){
         dashboard.callsWaiting.push(dataCallWaiting)
         dashboard.totalCallsWaiting = (dashboard.callsWaiting).length
     }
