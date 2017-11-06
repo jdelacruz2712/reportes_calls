@@ -305,6 +305,7 @@ class QueuesController extends CosapiController
         $Queue = Queues::Select()
             ->with('estrategia')
             ->with('prioridad')
+            ->where('estado_id','=','1')
             ->get()
             ->toArray();
         return $Queue;
@@ -352,18 +353,13 @@ class QueuesController extends CosapiController
     }
 
     public function executeSSH () {
-        //172.11.1.30 cosapi_data/archivos_www/webconsole/file_asterisk cosapi_data/archivos_asterisk cosapi_queues.conf
         $pathDirectory = base_path();
-        /*$process = new Process('scp /cosapi_data/archivos_www/webconsole/file_asterisk/cosapi_queues.conf root@172.11.1.30:/cosapi_data/archivos_asterisk/');
-        $process->run();*/
-
-        $process = new Process('sh /cosapi_data/archivos_www/webconsole/copy_files.sh 172.11.1.30 cosapi_data/archivos_www/webconsole/file_asterisk cosapi_data/archivos_asterisk cosapi_queues.conf');
+        $process = new Process('rsync -avz --delete '.$pathDirectory.'/file_asterisk/cosapi_queues.conf '.getenv('ASTERISK_SERVER').'::archivos_rsyncd');
         try {
             $process->mustRun();
-
-            echo $process->getOutput();
+            return ['message' => 'success'];
         } catch (ProcessFailedException $e) {
-            echo $e->getMessage();
+            return ['message' => 'error'];
         }
     }
 }
