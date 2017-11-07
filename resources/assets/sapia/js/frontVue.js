@@ -474,6 +474,10 @@ socketNodejs.on('disconnect', function () {
 	console.log('socketNodejs Disconnected')
 })
 
+socketNodejs.on('datetime', function (data) {
+    vueFront.hourServer = data.datetime
+})
+
 // Cambia la etiqueta de estado actual cuando este recibe o realiza un llamada
 socketNodejs.on('statusAgent', (data) => {
 	vueFront.sendUrlRequest('/updateStatusAddAgentDashboard')
