@@ -305,6 +305,7 @@ class QueuesController extends CosapiController
         $Queue = Queues::Select()
             ->with('estrategia')
             ->with('prioridad')
+            ->with('announce')
             ->where('estado_id','=','1')
             ->get()
             ->toArray();
@@ -333,13 +334,13 @@ class QueuesController extends CosapiController
         $line = $line.'[TemplateQueue](!)'.$jumpLine;
         $line = $line.'music = default'.$jumpLine;
         $line = $line.'joinempty = yes'.$jumpLine;
-        $line = $line.'strategy = rrmemory'.$jumpLine;
         $line = $line.$jumpLine;
         $Queues = $this->getQueueExport();
         foreach ($Queues as $queue) {
             $line = $line.'['.$queue['name'].'](TemplateQueue)'.$jumpLine;
+            $line = $line.'strategy = '.$queue['estrategia']['name'].$jumpLine;
             $line = $line.'weight = '.$queue['prioridad']['weight_queue'].$jumpLine;
-            $line = $line.'announce = '.$this->announceQueue($queue['name']).$jumpLine;
+            $line = $line.'announce = '.$queue['announce']['route_announce'].$jumpLine;
             $line = $line.$jumpLine;
         }
         fputs($fp, $line);

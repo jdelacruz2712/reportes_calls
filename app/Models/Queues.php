@@ -26,4 +26,8 @@ class Queues extends Model
     public function music(){
         return $this->belongsTo('Cosapi\Models\QueueMusic','music_id');
     }
+
+    public function announce(){
+        return $this->belongsTo('Cosapi\Models\QueueAnnounce','queues_announce_id');
+    }
 }
