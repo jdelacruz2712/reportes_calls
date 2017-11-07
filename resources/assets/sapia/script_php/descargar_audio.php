@@ -20,22 +20,22 @@ $newHour			= date("His",strtotime($hour));
  * $destino Concatena las variable para armar la URL completa para descargar el audio.
  * @var string
  */
-$destino 			= "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$newHour.".gsm";
+$destino 			= "http://grabaciones.sapia.pe/".$RutaGrabaciones.$NombreAudio.$newHour.".gsm";
 //$destino 			= "../grabaciones_asterisk/".$RutaGrabaciones.$NombreAudio.$newHour.".gsm";
 
 if(url_exists($destino)){
     $nuevaHora          =   date("His",strtotime($hour));
-    $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+    $destino 			=   "http://grabaciones.sapia.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
     $NombreAudio		=   $NombreAudio.$nuevaHora.".gsm";
 }else{
     $nuevaHora          =   date("His",strtotime($hour)-1);
-    $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+    $destino 			=   "http://grabaciones.sapia.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
     if(url_exists($destino)){
-        $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+        $destino 			=   "http://grabaciones.sapia.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
         $NombreAudio		=   $NombreAudio.$nuevaHora.".gsm";
     }else{
         $nuevaHora          =   date("His",strtotime($hour)+1);
-        $destino 			=   "http://grabaciones.cosapidata.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
+        $destino 			=   "http://grabaciones.sapia.pe/".$RutaGrabaciones.$NombreAudio.$nuevaHora.".gsm";
         $NombreAudio		=   $NombreAudio.$nuevaHora.".gsm";
     }
 }
