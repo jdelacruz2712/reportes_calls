@@ -301,8 +301,8 @@ const setQueueAdd = (queueAdd) => {
 
 // Función que redirecciona a la ventana Login matando las sesiones existentes
 const eventLogout = () => {
-	socketNodejs.emit('leaveRoomFrontPanel', vueFront.getAgentDashboard)
-	location.href = 'logout'
+    socketNodejs.emit('leaveRoomFrontPanel', vueFront.getAgentDashboard)
+    location.href = 'logout'
 }
 
 // Función que genera el rango de horas para la marcacion de salida del agente
