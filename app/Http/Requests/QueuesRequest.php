@@ -25,7 +25,7 @@ class QueuesRequest extends Request
     {
         return [
             'nameQueue'           => 'required|unique:queues,name,'.$this->queueID,
-            'numVdn'              => 'required|unique:queues,vdn,'.$this->queueID,
+            'numVdn'              => 'required|min:4|max:5|unique:queues,vdn,'.$this->queueID,
             'selectedStrategy'    => 'required',
             'selectedPriority'    => 'required'
         ];
@@ -36,6 +36,8 @@ class QueuesRequest extends Request
         return [
             'nameQueue.required'            => 'Debes ingresar un nombre para la Cola (Queue)',
             'numVdn.required'               => 'Debes ingresar un número VDN',
+            'numVdn.min'                    => 'El número de VDN debe ser minimo de 4 números',
+            'numVdn.max'                    => 'El número de VDN debe ser máximo de 5 números',
             'selectedStrategy.required'     => 'Debes escoger una Estrategia',
             'selectedPriority.required'     => 'Debes escoger una prioridad',
             'nameQueue.unique'              => 'El nombre de la Cola ingresada ya existe',

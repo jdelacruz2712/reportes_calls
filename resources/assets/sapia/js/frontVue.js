@@ -175,7 +175,7 @@ const vueFront = new Vue({
 			if (response) {
 				if (this.getUserId && this.getNameProyect) {
 					this.statusAddAgentDashboard = true
-					socketNodejs.emit('createRoomFrontPanel', { nameProyect: this.getNameProyect, agent_user_id: this.getUserId})
+                    socketNodejs.emit('createRoomFrontPanel', { nameProyect: this.getNameProyect, agent_user_id: this.getUserId})
 				}
 
 				// Cargando registro en Dahsboard
