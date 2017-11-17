@@ -5,6 +5,7 @@
         <h4 class="modal-title">Task Manager [{{ $titleTask }}]</h4>
     </div>
     <div class="modal-body">
+        @if($countQueues > 0)
         <div id="formTaskQueues">
             <div class="col-xs-12">
                 <div class="col-xs-4">
@@ -63,6 +64,11 @@
                 <button type="button" class="btn btn-default" onclick="clearModalClose('modalTaskQueue', 'div.dialogTaskQueue')" data-dismiss="modal"><i class="fa fa-close"></i> Cerrar</button>
             </div>
         </div>
+        @else
+            <div class="alert alert-warning">
+                <span class="fa fa-warning"></span> <strong>Debes tener por lo menos una cola creada y/o habilitada para ejecutar esta acción.</strong>
+            </div>
+        @endif
     </div>
 </div>
 {!! Html::script('js/taskqueueVue.min.js') !!}

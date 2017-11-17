@@ -6,6 +6,7 @@ use Cosapi\Collector\Collector;
 use Cosapi\Models\QueueMusic;
 use Cosapi\Models\Queues;
 use Cosapi\Models\QueuePriority;
+use Cosapi\Models\QueuesTemplate;
 use Cosapi\Models\QueueStrategy;
 use Cosapi\Models\User;
 use Cosapi\Models\Users_Queues;
@@ -194,6 +195,14 @@ class QueuesController extends CosapiController
         return $queue;
     }
 
+    public function countQueue()
+    {
+        $countQueue = Queues::Select()
+            ->where('estado_id', '=', '1')
+            ->count();
+        return $countQueue;
+    }
+
     protected function getUsers()
     {
         $Users  = User::Select()
@@ -295,8 +304,10 @@ class QueuesController extends CosapiController
 
     public function taskManagerQueues()
     {
+        $countQueues = $this->countQueue();
         return view('layout/recursos/forms/queues/form_queues_task')->with(array(
-            'titleTask'    => 'Queues'
+            'titleTask'    => 'Queues',
+            'countQueues'  => $countQueues
         ));
     }
 
@@ -306,10 +317,21 @@ class QueuesController extends CosapiController
             ->with('estrategia')
             ->with('prioridad')
             ->with('announce')
+            ->with('template')
             ->where('estado_id','=','1')
             ->get()
             ->toArray();
         return $Queue;
+    }
+
+    public function getQueuesTemplateExport()
+    {
+        $QueuesTemplate = QueuesTemplate::Select()
+            ->with('musicOnHold')
+            ->where('estado_id','=','1')
+            ->get()
+            ->toArray();
+        return $QueuesTemplate;
     }
 
     public function exportQueues()
@@ -331,13 +353,16 @@ class QueuesController extends CosapiController
         $line = $line.'autofill = yes'.$jumpLine;
         $line = $line.'autopause = all'.$jumpLine;
         $line = $line.$jumpLine;
-        $line = $line.'[TemplateQueue](!)'.$jumpLine;
-        $line = $line.'music = default'.$jumpLine;
-        $line = $line.'joinempty = yes'.$jumpLine;
-        $line = $line.$jumpLine;
+        $QueuesTemplate = $this->getQueuesTemplateExport();
+        foreach ($QueuesTemplate as $template) {
+            $line = $line.'['.$template['name_template'].'](!)'.$jumpLine;
+            $line = $line.'music = '.$template['music_on_hold']['name_music'].''.$jumpLine;
+            $line = $line.'joinempty = '.$template['empty_template'].''.$jumpLine;
+            $line = $line.$jumpLine;
+        }
         $Queues = $this->getQueueExport();
         foreach ($Queues as $queue) {
-            $line = $line.'['.$queue['name'].'](TemplateQueue)'.$jumpLine;
+            $line = $line.'['.$queue['name'].']('.$queue['template']['name_template'].')'.$jumpLine;
             $line = $line.'strategy = '.$queue['estrategia']['name'].$jumpLine;
             $line = $line.'weight = '.$queue['prioridad']['weight_queue'].$jumpLine;
             $line = $line.'announce = '.$queue['announce']['route_announce'].$jumpLine;
