@@ -134,7 +134,7 @@ class QueuesController extends CosapiController
                 'numLimitCallWaiting'    => $getQueue[0]['limit_call_waiting'],
                 'selectedStrategy'       => $getQueue[0]['queues_strategy_id'],
                 'selectedPriority'       => $getQueue[0]['queues_priority_id'],
-                'selectedMusic'          => $getQueue[0]['music_id']
+                'selectedMusic'          => $getQueue[0]['queues_music_id']
             ));
         }
     }
@@ -249,9 +249,11 @@ class QueuesController extends CosapiController
                 'queues_strategy_id' => $request->selectedStrategy,
                 'queues_priority_id' => $request->selectedPriority,
                 'limit_call_waiting' => $request->limitCallWaiting,
-                'music_id' => $request->selectedMusic,
+                'queues_music_id' => $request->selectedMusic,
+                'queues_template_id' => '1',
                 'estado_id' => '1'
             ]);
+
             $action = ($request->queueID ? 'updated' : 'create');
             if ($queueQuery) {
                 return ['message' => 'Success', 'action' => $action];
