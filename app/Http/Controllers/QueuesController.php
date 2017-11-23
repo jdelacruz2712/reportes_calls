@@ -107,6 +107,7 @@ class QueuesController extends CosapiController
     public function formQueues(Request $request)
     {
         $options    = $this->getOptions();
+        $countTemplateQueues = $this->countTemplateQueues();
         if ($request->valueID == null) {
             return view('layout/recursos/forms/queues/form_queues')->with(array(
                 'updateForm'             => false,
@@ -119,7 +120,8 @@ class QueuesController extends CosapiController
                 'numLimitCallWaiting'    => '',
                 'selectedStrategy'       => '',
                 'selectedPriority'       => '',
-                'selectedMusic'          => ''
+                'selectedMusic'          => '',
+                'countTemplateQueues'    => $countTemplateQueues
             ));
         } else {
             $getQueue   = $this->getQueue($request->valueID);
@@ -134,7 +136,8 @@ class QueuesController extends CosapiController
                 'numLimitCallWaiting'    => $getQueue[0]['limit_call_waiting'],
                 'selectedStrategy'       => $getQueue[0]['queues_strategy_id'],
                 'selectedPriority'       => $getQueue[0]['queues_priority_id'],
-                'selectedMusic'          => $getQueue[0]['queues_music_id']
+                'selectedMusic'          => $getQueue[0]['queues_music_id'],
+                'countTemplateQueues'    => $countTemplateQueues
             ));
         }
     }
@@ -203,6 +206,14 @@ class QueuesController extends CosapiController
             ->where('estado_id', '=', '1')
             ->count();
         return $countQueue;
+    }
+
+    public function countTemplateQueues()
+    {
+        $countTemplateQueues = QueuesTemplate::Select()
+            ->where('estado_id', '=', '1')
+            ->count();
+        return $countTemplateQueues;
     }
 
     protected function getUsers()
