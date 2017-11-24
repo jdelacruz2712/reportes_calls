@@ -200,14 +200,6 @@ class QueuesController extends CosapiController
         return $queue;
     }
 
-    public function countQueue()
-    {
-        $countQueue = Queues::Select()
-            ->where('estado_id', '=', '1')
-            ->count();
-        return $countQueue;
-    }
-
     public function countTemplateQueues()
     {
         $countTemplateQueues = QueuesTemplate::Select()
@@ -319,10 +311,8 @@ class QueuesController extends CosapiController
 
     public function taskManagerQueues()
     {
-        $countQueues = $this->countQueue();
         return view('layout/recursos/forms/queues/form_queues_task')->with(array(
-            'titleTask'    => 'Queues',
-            'countQueues'  => $countQueues
+            'titleTask'    => 'Queues'
         ));
     }
 
