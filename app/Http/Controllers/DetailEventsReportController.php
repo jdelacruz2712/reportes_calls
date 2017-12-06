@@ -20,21 +20,19 @@ class DetailEventsReportController extends CosapiController
             if ($request->fecha_evento){
                 return $this->list_detail_event_report($request->fecha_evento, $request->filter_rol, $request->group_filter);
             }else{
-                return view('elements/index')->with(array(
+
+                $arrayReport = $this->reportAction(array(
+                    'boxReport','dateHourFilter','dateFilter','viewDateSearch','viewRolTypeSearch','viewButtonSearch','viewButtonExport'
+                ),'');
+
+                $arrayMerge = array_merge(array(
                     'routeReport'           => 'elements.details_events_report.details_events_report',
-                    'titleReport'           => 'Report of Details Events Report (Beta)',
-                    'boxReport'             => true,
-                    'dateHourFilter'        => true,
-                    'dateFilter'            => true,
-                    'viewDateSearch'        => true,
-                    'viewDateSingleSearch'  => false,
-                    'viewHourSearch'        => false,
-                    'viewRolTypeSearch'     => true,
-                    'viewButtonSearch'      => true,
-                    'viewButtonExport'      => true,
+                    'titleReport'           => 'Report Level of Occupation',
                     'exportReport'          => 'export_details_events_report',
                     'nameRouteController'   => ''
-                ));
+                ),$arrayReport);
+
+                return view('elements/index')->with($arrayMerge);
             }
         }
     }

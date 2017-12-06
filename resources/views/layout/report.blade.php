@@ -76,20 +76,26 @@
             </div>
         @endif
         @if($viewButtonExport)
-        <div class="box-body">
-            <div class="row">
-                <div class="col-md-12">
+            <div class="box-body">
+                <div class="row">
                     <div class="col-md-12">
                         <div class="text-center">
                             <div class="btn-group">
                                 @include('layout.recursos.buttons_export')
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-        </div>
+        @endif
+        @if($viewCustomFilter)
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        @include('layout.recursos.custom_filter')
+                    </div>
+                </div>
+            </div>
         @endif
 	</div>
 @endif
